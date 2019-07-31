@@ -1,0 +1,20 @@
+steps:
+- task: Npm@1
+  displayName: 'npm install'
+  inputs:
+    workingDir: frontend/
+    verbose: false
+
+- task: Npm@1
+  displayName: 'Build Angular'
+  inputs:
+    command: custom
+    workingDir: frontend/
+    verbose: false
+    customCommand: 'run build -- --prod'
+
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish Frontend Artifact'
+  inputs:
+    targetPath: frontend/dist/frontend
+    artifact: 'frontend-artifact'
