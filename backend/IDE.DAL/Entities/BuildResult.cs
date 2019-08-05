@@ -6,12 +6,12 @@ namespace IDE.DAL.Entities
 {
     public class BuildResult
     {
-        int Id { get; set; }
-        int ProjectId { get; set; }
-        int UserId { get; set; }
-        DateTime BuildStarted { get; set; }
-        DateTime BuildFinished { get; set; }
-        BuildStatuses BuildStatus { get; set; }
-        string BuildMessage { get; set; } 
+        public int Id { get; set; }
+        public int ProjectId { get; set; }
+        public int UserId { get; set; }
+        public DateTime BuildStarted { get; set; }
+        public DateTime BuildFinished { get; set; }
+        public BuildStatuses BuildStatus { get; set; }
+        public string BuildMessage { get; set; } 
     }
 }
