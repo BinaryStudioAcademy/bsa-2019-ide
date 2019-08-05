@@ -8,7 +8,6 @@ namespace IDE.DAL.Context
         public IdeContext(DbContextOptions<IdeContext> options) : base(options) { }
 
         public DbSet<Build> Builds { get; private set; }
-        public DbSet<LastSuccessfulBuild> LastSuccessfulBuilds { get; private set; }
         public DbSet<Project> Projects { get; private set; }
         public DbSet<User> Users { get; private set; }
         public DbSet<ProjectMember> ProjectMembers { get; private set; }

@@ -17,12 +17,14 @@ namespace IDE.DAL.Entities
         public AccessModifiers AccessModifier { get; set; }
         public string ProjectLink { get; set; }
         public int AuthorId { get; set; }
+
+        public User Author { get; set; }
         public string GitUrl{ get; set; }
         public string GitCredentials { get; set; }
         public int CountOfSaveBuilds { get; set; }
         public int CountOfBuildAttempts { get; set; }
 
         public IList<Build> Builds { get; set; }
-        public IList<Project> ProjectMembers { get; set; }
+        public IList<ProjectMember> ProjectMembers { get; set; }
     }
 }
