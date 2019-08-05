@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IDE.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 

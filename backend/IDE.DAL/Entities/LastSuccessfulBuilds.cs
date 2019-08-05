@@ -1,6 +1,6 @@
 ﻿namespace IDE.DAL.Entities
 {
-    class LastSuccessfulBuilds
+    public class LastSuccessfulBuilds
     {
         public int Id { get; set; }
         public int ProjectId { get; set; }

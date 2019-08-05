@@ -10,6 +10,6 @@ namespace IDE.DAL.Entities
         public int Id { get; set; }
         public int ProjectId { get; set; }
         public int UserId { get; set; }
-        public UserAccesses UserAcces { get; set; }
+        public UserAccesses UserAccess { get; set; }
     }
 }
