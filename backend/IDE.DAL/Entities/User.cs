@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace IDE.DAL.Entities
 {
@@ -15,5 +16,8 @@ namespace IDE.DAL.Entities
         public DateTime LastActive { get; set; }
         public string LogoUrl { get; set; }
         public string GitHubUrl { get; set; }
+
+        public IList<Build> Builds { get; set; }
+        public IList<Project> ProjectMembers { get; set; }
     }
 }

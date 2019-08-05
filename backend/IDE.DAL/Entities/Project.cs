@@ -1,9 +1,10 @@
 ﻿using IDE.Common.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace IDE.DAL.Entities
 {
-    public class Projects
+    public class Project
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -20,5 +21,9 @@ namespace IDE.DAL.Entities
         public string GitCredentials { get; set; }
         public int CountOfSaveBuilds { get; set; }
         public int CountOfBuildAttempts { get; set; }
+
+        public IList<Build> Builds { get; set; }
+        public IList<Project> ProjectMembers { get; set; }
+        public IList<LastSuccessfulBuild> LastSuccessfulBuilds { get; set; }
     }
 }
