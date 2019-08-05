@@ -1,10 +1,10 @@
-﻿using System;
+﻿using IDE.Common.Enums;
+using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace IDE.DAL.Entities
 {
-    public class Projects
+    public class Project
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,12 +14,18 @@ namespace IDE.DAL.Entities
         public Languages Language { get; set; }
         public ProjectTypes ProjectType { get; set; }
         public CompilerTypes CompilerType { get; set; }
-        public int MyProperty { get; set; }
+        public AccessModifiers AccessModifier { get; set; }
         public string ProjectLink { get; set; }
         public int AuthorId { get; set; }
+
+        public User Author { get; set; }
         public string GitUrl{ get; set; }
         public string GitCredentials { get; set; }
         public int CountOfSaveBuilds { get; set; }
         public int CountOfBuildAttempts { get; set; }
+
+        public IList<Build> Builds { get; set; }
+        public IList<ProjectMember> ProjectMembers { get; set; }
+        public IList<LastSuccessfulBuild> LastSuccessfulBuilds { get; set; }
     }
 }
