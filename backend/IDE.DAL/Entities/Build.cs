@@ -1,5 +1,6 @@
 ﻿using IDE.Common.Enums;
 using System;
+using System.Collections.Generic;
 
 namespace IDE.DAL.Entities
 {
@@ -15,5 +16,7 @@ namespace IDE.DAL.Entities
 
         public User User { get; set; }
         public Project Project { get; set; }
+        public IList<LastSuccessfulBuild> LastSuccessfulBuilds { get; set; }
+
     }
 }

@@ -24,6 +24,5 @@ namespace IDE.DAL.Entities
 
         public IList<Build> Builds { get; set; }
         public IList<Project> ProjectMembers { get; set; }
-        public IList<LastSuccessfulBuild> LastSuccessfulBuilds { get; set; }
     }
 }
