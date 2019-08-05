@@ -9,12 +9,12 @@ namespace IDE.DAL.Context
     {
         public static void Configure(this ModelBuilder modelBuilder)
         {
-
+            // Add Fluent API configuration here
         }
 
         public static void Seed(this ModelBuilder modelBuilder)
         {
-
+            // Add database seed logic here
         }
     }
 }
