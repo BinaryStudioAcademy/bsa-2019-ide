@@ -1,5 +1,5 @@
 ﻿using IDE.Common;
-using IDE.Common.Entities;
+using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace IDE.Common.Entities
+namespace IDE.DAL.Entities
 {
     public class RefreshToken
     {
+
         private const int DAYS_TO_EXPIRE = 5;
 
         public RefreshToken()
@@ -19,6 +20,6 @@ namespace IDE.Common.Entities
         public int UserId { get; set; }
         public BaseUser User { get; set; }
 
-        public bool IsActive => DateTime.UtcNow < Expires;
+        public bool IsActive => DateTime.UtcNow <= Expires;
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace IDE.Common
+namespace IDE.DAL.Entities
 {
     public class BaseUser
     {

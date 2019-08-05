@@ -35,6 +35,7 @@ namespace IDE.API
                 .AddJsonFormatters();
 
             services.RegisterCustomServices();
+            services.RegisterCustomValidators();
             services.ConfigureJwt(Configuration);
         }
         

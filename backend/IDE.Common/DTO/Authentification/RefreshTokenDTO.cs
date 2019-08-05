@@ -8,7 +8,7 @@ namespace IDE.Common.DTO.Authentification
 {
     public class RefreshTokenDTO
     {
-        public AccessToken AccessToken { get; set; }
+        public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
 
         [JsonIgnore]

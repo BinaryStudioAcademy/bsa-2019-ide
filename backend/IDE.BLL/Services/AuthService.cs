@@ -3,7 +3,7 @@ using IDE.BLL.JWT;
 using IDE.Common;
 using IDE.Common.DTO.Authentification;
 using IDE.Common.DTO.User;
-using IDE.Common.Entities;
+using IDE.DAL.Entities;
 using IDE.Common.Security;
 using IDE.DAL;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IDE.BLL.ExceptionsCustom;
 
 namespace IDE.BLL.Services
 {
@@ -84,12 +85,12 @@ namespace IDE.BLL.Services
 
             if (rToken == null)
             {
-                throw new Exception("While getting a token such token doesn't exist");// InvalidTokenException("refresh");
+                throw new InvalidTokenException("refresh");
             }
 
             if (!rToken.IsActive)
             {
-                throw new Exception("While getting a token such token expired"); //ExpiredRefreshTokenException();
+                throw new ExpiredRefreshTokenException();
             }
 
             var jwtToken = await _jwtFactory.GenerateAccessToken(userEntity.Id, userEntity.UserName, userEntity.Email); //generate access token
@@ -113,7 +114,7 @@ namespace IDE.BLL.Services
 
             if (rToken == null)
             {
-                throw new Exception("While getting a token such token doesn't exist");// new InvalidTokenException("refresh");
+                throw new InvalidTokenException("refresh");
             }
 
             _context.RefreshTokens.Remove(rToken); //remove it
