@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IDE.Common.Enums;
+using System;
 
 namespace IDE.DAL.Entities
 {
@@ -12,7 +13,7 @@ namespace IDE.DAL.Entities
         public Languages Language { get; set; }
         public ProjectTypes ProjectType { get; set; }
         public CompilerTypes CompilerType { get; set; }
-        public int MyProperty { get; set; }
+        public AccessModifiers AccessModifier { get; set; }
         public string ProjectLink { get; set; }
         public int AuthorId { get; set; }
         public string GitUrl{ get; set; }
