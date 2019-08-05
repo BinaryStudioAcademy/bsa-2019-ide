@@ -18,7 +18,7 @@ namespace IDE.DAL.Entities
         public string ProjectLink { get; set; }
         public int AuthorId { get; set; }
 
-        public User Author { get;set }
+        public User Author { get; set; }
         public string GitUrl{ get; set; }
         public string GitCredentials { get; set; }
         public int CountOfSaveBuilds { get; set; }
