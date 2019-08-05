@@ -2,5 +2,6 @@
 {
     public enum CompilerTypes
     {
+        NetCore = 0
     }
 }
