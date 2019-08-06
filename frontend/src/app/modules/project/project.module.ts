@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ProjectRootComponent } from './components/project-root/project-root.component';
 import { ProjectSettingsComponent } from './components/project-settings/project-settings.component';
 import { ProjectDetailsComponent } from './components/project-details/project-details.component';
-import { AppRoutingModule } from 'src/app/app-routing.module';
+import { ProjectRoutingModule } from './project-routing.module';
 
 @NgModule({
   declarations: [ProjectRootComponent, ProjectSettingsComponent, ProjectDetailsComponent],
   imports: [
     CommonModule,
-    AppRoutingModule
+    ProjectRoutingModule
   ]
 })
 export class ProjectModule { }

@@ -17,13 +17,13 @@ import { WorkspaceModule } from './modules/workspace/workspace.module';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
     AuthorizationModule,
     DashboardModule,
     LandingModule,
     ProjectModule,
     UserModule,
-    WorkspaceModule
+    WorkspaceModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
