@@ -11,9 +11,11 @@ namespace IDE.DAL.Context
         public DbSet<Project> Projects { get; private set; }
         public DbSet<User> Users { get; private set; }
         public DbSet<ProjectMember> ProjectMembers { get; private set; }
-        public DbSet<Image> Images { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
-        public DbSet<GitCredential> GitCredentials { get; set; }
+        public DbSet<Image> Images { get; private set; }
+        public DbSet<RefreshToken> RefreshTokens { get; private set; }
+        public DbSet<GitCredential> GitCredentials { get; private set; }
+        public DbSet<Files> Files { get; private set; }
+        public DbSet<FileHistories> FileHistories { get; private set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
