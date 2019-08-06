@@ -10,6 +10,8 @@ namespace IDE.DAL.Context
     {
         public static void Configure(this ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<RefreshToken>().Ignore(t => t.IsActive);
+
             modelBuilder.Entity<ProjectMember>()
                .HasKey(pm => new { pm.ProjectId, pm.UserId });
             modelBuilder.Entity<ProjectMember>()
