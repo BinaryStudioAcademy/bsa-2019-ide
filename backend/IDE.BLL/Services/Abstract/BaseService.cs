@@ -12,5 +12,11 @@ namespace IDE.BLL.Services.Abstract
         {
             _context = context;
         }
+
+        public abstract Task<ICollection<T>> GetAll();
+        public abstract Task<T> GetById(int id);
+        public abstract Task<T> Create(T entity);
+        public abstract Task Update(T entity);
+        public abstract Task Delete(int Id);
     }
 }
