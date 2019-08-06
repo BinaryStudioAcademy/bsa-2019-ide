@@ -12,6 +12,9 @@ import { ProjectModule } from './modules/project/project.module';
 import { UserModule } from './modules/user/user.module';
 import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
+import { MenubarModule } from 'primeng/menubar';
+import { ButtonModule } from 'primeng/button';
+
 
 @NgModule({
   declarations: [
@@ -27,7 +30,9 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
     ProjectModule,
     UserModule,
     WorkspaceModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MenubarModule,
+    ButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]
