@@ -1,17 +1,17 @@
+
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using IDE.API.Extensions;
+﻿using IDE.DAL.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace IDE.API
 {
@@ -27,17 +27,24 @@ namespace IDE.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            
+
+            services.RegisterCustomServices();
+            services.RegisterCustomValidators();
+            services.ConfigureJwt(Configuration);
+
             services.AddMvcCore()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation()
                 .AddAuthorization()
                 .AddJsonFormatters();
 
-            services.RegisterCustomServices();
-            services.RegisterCustomValidators();
-            services.ConfigureJwt(Configuration);
+            services.AddDbContext<IdeContext>(option =>
+                option.UseSqlServer(Configuration.GetConnectionString("IdeDBConnection")));
         }
+
+
+            
+        
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {

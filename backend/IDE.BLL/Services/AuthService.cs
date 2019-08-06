@@ -13,18 +13,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IDE.BLL.ExceptionsCustom;
+using IDE.DAL.Context;
+using IDE.BLL.Services.Abstract;
+using IDE.BLL.Helpers;
 
 namespace IDE.BLL.Services
 {
-    public class AuthService
+    public class AuthService : BaseService<object>
     {
-        private readonly BaseContext _context;
+        
         private readonly JWTFactory _jwtFactory;
         private readonly IMapper _mapper;
 
-        public AuthService(BaseContext context, IMapper mapper, JWTFactory jwtFactory)// : base(context, mapper)
+        public AuthService(IdeContext context, IMapper mapper, JWTFactory jwtFactory) : base(context)
         {
-            _context = context;
+     
             _jwtFactory = jwtFactory;
             _mapper = mapper;
         }
@@ -39,12 +42,12 @@ namespace IDE.BLL.Services
                 throw new NotFoundException(name: nameof(userEntity));
             }
 
-            if (!SecurityHelper.ValidatePassword(userDto.Password, userEntity.Password, userEntity.Salt))
+            if (!SecurityHelper.ValidatePassword(userDto.Password, userEntity.PasswordHash, userEntity.PasswordSalt))
             {
                 throw new InvalidUsernameOrPasswordException("wrong passwork or username");
             }
 
-            var token = await GenerateAccessToken(userEntity.Id, userEntity.UserName, userEntity.Email);
+            var token = await GenerateAccessToken(userEntity.Id, userEntity.GetUserName(), userEntity.Email);
             var user = _mapper.Map<UserDTO>(userEntity);
 
             return new AuthUserDTO
@@ -93,7 +96,7 @@ namespace IDE.BLL.Services
                 throw new ExpiredRefreshTokenException();
             }
 
-            var jwtToken = await _jwtFactory.GenerateAccessToken(userEntity.Id, userEntity.UserName, userEntity.Email); //generate access token
+            var jwtToken = await _jwtFactory.GenerateAccessToken(userEntity.Id, userEntity.GetUserName(), userEntity.Email); //generate access token
             var refreshToken = JWTFactory.GenerateRefreshToken(); //generate random token 
 
             _context.RefreshTokens.Remove(rToken); // remove previous one
