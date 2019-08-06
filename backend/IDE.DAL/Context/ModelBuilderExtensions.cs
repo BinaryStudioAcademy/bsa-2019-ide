@@ -10,7 +10,6 @@ namespace IDE.DAL.Context
     {
         public static void Configure(this ModelBuilder modelBuilder)
         {
-            // Add Fluent API configuration here
             modelBuilder.Entity<ProjectMember>()
                .HasKey(pm => new { pm.ProjectId, pm.UserId });
             modelBuilder.Entity<ProjectMember>()
