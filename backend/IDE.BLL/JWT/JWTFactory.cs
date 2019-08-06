@@ -53,7 +53,7 @@ namespace IDE.BLL.JWT
             return new AccessToken(_jwtSecurityTokenHandler.WriteToken(jwt), (int)_jwtOptions.ValidFor.TotalSeconds);
         }
 
-        public string GenerateRefreshToken()
+        public static  string GenerateRefreshToken()
         {
             return Convert.ToBase64String(SecurityHelper.GetRandomBytes());
         }

@@ -36,12 +36,12 @@ namespace IDE.BLL.Services
 
             if (userEntity == null)
             {
-                throw new Exception("Such user doesn't exist");//NotFoundException(nameof(User));
+                throw new NotFoundException(name: nameof(userEntity));
             }
 
             if (!SecurityHelper.ValidatePassword(userDto.Password, userEntity.Password, userEntity.Salt))
             {
-                throw new Exception("Incorrect password or username");//InvalidUsernameOrPasswordException();
+                throw new InvalidUsernameOrPasswordException("wrong passwork or username");
             }
 
             var token = await GenerateAccessToken(userEntity.Id, userEntity.UserName, userEntity.Email);
@@ -56,7 +56,7 @@ namespace IDE.BLL.Services
 
         public async Task<AccessTokenDTO> GenerateAccessToken(int userId, string userName, string email)
         {
-            var refreshToken = _jwtFactory.GenerateRefreshToken();
+            var refreshToken = JWTFactory.GenerateRefreshToken();
 
             _context.RefreshTokens.Add(new RefreshToken
             {
@@ -78,7 +78,7 @@ namespace IDE.BLL.Services
 
             if (userEntity == null) 
             {
-                throw new Exception("While getting a token such user doesn't exist"); //NotFoundException(nameof(BaseUser), userId);
+                throw new NotFoundException(nameof(userEntity)); 
             }
 
             var rToken = await _context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == dto.RefreshToken && t.UserId == userId); // find such token for user
@@ -94,7 +94,7 @@ namespace IDE.BLL.Services
             }
 
             var jwtToken = await _jwtFactory.GenerateAccessToken(userEntity.Id, userEntity.UserName, userEntity.Email); //generate access token
-            var refreshToken = _jwtFactory.GenerateRefreshToken(); //generate random token 
+            var refreshToken = JWTFactory.GenerateRefreshToken(); //generate random token 
 
             _context.RefreshTokens.Remove(rToken); // remove previous one
             _context.RefreshTokens.Add(new RefreshToken //create new token

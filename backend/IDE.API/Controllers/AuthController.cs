@@ -14,7 +14,7 @@ namespace IDE.API.Controllers
     [ApiController]
     public class AuthController : Controller
     {
-        private AuthService _authService;
+        private readonly AuthService _authService;
 
         public AuthController(AuthService authService)
         {
