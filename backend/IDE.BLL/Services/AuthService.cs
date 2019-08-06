@@ -15,7 +15,7 @@ namespace IDE.BLL.Services
 {
     public class AuthService
     {
-        private protected readonly IdeContext _context;
+        private readonly IdeContext _context;
         private readonly JWTFactory _jwtFactory;
         private readonly IMapper _mapper;
 
