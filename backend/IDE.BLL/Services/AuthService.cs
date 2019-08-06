@@ -1,33 +1,27 @@
 ﻿using AutoMapper;
 using IDE.BLL.JWT;
-using IDE.Common;
 using IDE.Common.DTO.Authentification;
 using IDE.Common.DTO.User;
 using IDE.DAL.Entities;
 using IDE.Common.Security;
-using IDE.DAL;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using IDE.BLL.ExceptionsCustom;
 using IDE.DAL.Context;
-using IDE.BLL.Services.Abstract;
 using IDE.BLL.Helpers;
 
 namespace IDE.BLL.Services
 {
-    public class AuthService : BaseService<object>
+    public class AuthService
     {
-        
+        private protected readonly IdeContext _context;
         private readonly JWTFactory _jwtFactory;
         private readonly IMapper _mapper;
 
-        public AuthService(IdeContext context, IMapper mapper, JWTFactory jwtFactory) : base(context)
+        public AuthService(IdeContext context, IMapper mapper, JWTFactory jwtFactory)
         {
-     
+            _context = context;
             _jwtFactory = jwtFactory;
             _mapper = mapper;
         }
