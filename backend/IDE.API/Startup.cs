@@ -1,11 +1,6 @@
-
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using IDE.API.Extensions;
-﻿using IDE.DAL.Context;
+using IDE.DAL.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +22,8 @@ namespace IDE.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<IdeContext>(option =>
+                option.UseSqlServer(Configuration.GetConnectionString("IdeDBConnection")));
 
             services.RegisterCustomServices();
             services.RegisterCustomValidators();
@@ -37,14 +34,7 @@ namespace IDE.API
                 .AddFluentValidation()
                 .AddAuthorization()
                 .AddJsonFormatters();
-
-            services.AddDbContext<IdeContext>(option =>
-                option.UseSqlServer(Configuration.GetConnectionString("IdeDBConnection")));
         }
-
-
-            
-        
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
