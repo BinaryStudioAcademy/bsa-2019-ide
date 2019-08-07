@@ -5,12 +5,15 @@ import { ProjectSettingsComponent } from './components/project-settings/project-
 import { ProjectDetailsComponent } from './components/project-details/project-details.component';
 
 const projectRoutes: Routes = [
-  {path: 'project/:id', component: ProjectRootComponent,
+  /*{path: 'project/:id', component: ProjectRootComponent,
     children: [
       {path: '', component: ProjectDetailsComponent},
       {path: 'settings', component: ProjectSettingsComponent}
-    ]
-  }
+       ]
+  }*/
+      {path:'projects', component: ProjectRootComponent},
+      {path:'projects/:id', component:ProjectDetailsComponent},
+      {path:'projects/:id/settings', component:ProjectSettingsComponent}
 ];
 
 @NgModule({
