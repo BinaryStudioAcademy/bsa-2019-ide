@@ -15,6 +15,7 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { HttpClientModule } from '@angular/common/http';
+import {ToastrModule} from 'ngx-toastr';
 import { MatDialogModule, MatSnackBarModule } from '@angular/material';
 
 
@@ -36,9 +37,7 @@ import { MatDialogModule, MatSnackBarModule } from '@angular/material';
     AppRoutingModule,
     MenubarModule,
     ButtonModule,
-    MatDialogModule,
-    HttpClientModule,
-    MatSnackBarModule
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

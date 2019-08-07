@@ -4,13 +4,12 @@ namespace IDE.DAL.Entities
 {
     public class ProjectMember
     {
-        public int Id { get; set; }
-        public UserAccesses UserAccess { get; set; }
-
-        public int UserId { get; set; }
-        public User User { get; set; }
+        public UserAccess UserAccess { get; set; }
 
         public int ProjectId { get; set; }
         public Project Project { get; set; }
+
+        public int UserId { get; set; }
+        public User User { get; set; }
     }
 }

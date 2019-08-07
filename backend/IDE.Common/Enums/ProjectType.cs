@@ -1,6 +1,6 @@
 ﻿namespace IDE.Common.Enums
 {
-    public enum ProjectTypes
+    public enum ProjectType
     {
         Console = 0,
         Web = 1,

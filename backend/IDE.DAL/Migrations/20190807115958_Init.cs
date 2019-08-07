@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IDE.DAL.Migrations
 {
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -49,10 +49,10 @@ namespace IDE.DAL.Migrations
                     Email = table.Column<string>(nullable: true),
                     PasswordHash = table.Column<string>(nullable: true),
                     PasswordSalt = table.Column<string>(nullable: true),
+                    GitHubUrl = table.Column<string>(nullable: true),
                     Birthday = table.Column<DateTime>(nullable: false),
                     RegisteredAt = table.Column<DateTime>(nullable: false),
                     LastActive = table.Column<DateTime>(nullable: false),
-                    GitHubUrl = table.Column<string>(nullable: true),
                     AvatarId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -75,16 +75,16 @@ namespace IDE.DAL.Migrations
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
+                    ProjectLink = table.Column<string>(nullable: true),
+                    CountOfSaveBuilds = table.Column<int>(nullable: false),
+                    CountOfBuildAttempts = table.Column<int>(nullable: false),
                     Language = table.Column<int>(nullable: false),
                     ProjectType = table.Column<int>(nullable: false),
                     CompilerType = table.Column<int>(nullable: false),
                     AccessModifier = table.Column<int>(nullable: false),
-                    ProjectLink = table.Column<string>(nullable: true),
-                    CountOfSaveBuilds = table.Column<int>(nullable: false),
-                    CountOfBuildAttempts = table.Column<int>(nullable: false),
                     AuthorId = table.Column<int>(nullable: false),
                     GitCredentialId = table.Column<int>(nullable: false),
-                    LogoId = table.Column<int>(nullable: false)
+                    LogoId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -106,7 +106,7 @@ namespace IDE.DAL.Migrations
                         column: x => x.LogoId,
                         principalTable: "Images",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -127,24 +127,25 @@ namespace IDE.DAL.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Builds",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
-                    ProjectId = table.Column<int>(nullable: false),
-                    Id = table.Column<int>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    BuildMessage = table.Column<string>(nullable: true),
                     BuildStarted = table.Column<DateTime>(nullable: false),
-                    BuildFinished = table.Column<DateTime>(nullable: false),
+                    BuildFinished = table.Column<DateTime>(nullable: true),
                     BuildStatus = table.Column<int>(nullable: false),
-                    BuildMessage = table.Column<string>(nullable: true)
+                    ProjectId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Builds", x => new { x.ProjectId, x.UserId });
+                    table.PrimaryKey("PK_Builds", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Builds_Projects_ProjectId",
                         column: x => x.ProjectId,
@@ -163,9 +164,8 @@ namespace IDE.DAL.Migrations
                 name: "ProjectMembers",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
                     ProjectId = table.Column<int>(nullable: false),
-                    Id = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
                     UserAccess = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -184,6 +184,11 @@ namespace IDE.DAL.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Builds_ProjectId",
+                table: "Builds",
+                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Builds_UserId",

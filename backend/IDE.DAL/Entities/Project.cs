@@ -16,13 +16,13 @@ namespace IDE.DAL.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
-        public Languages Language { get; set; }
-        public ProjectTypes ProjectType { get; set; }
-        public CompilerTypes CompilerType { get; set; }
-        public AccessModifiers AccessModifier { get; set; }
         public string ProjectLink { get; set; }
         public int CountOfSaveBuilds { get; set; }
         public int CountOfBuildAttempts { get; set; }
+        public Language Language { get; set; }
+        public ProjectType ProjectType { get; set; }
+        public CompilerType CompilerType { get; set; }
+        public AccessModifier AccessModifier { get; set; }
 
         public int AuthorId { get; set; }
         public User Author { get; set; }
@@ -30,7 +30,7 @@ namespace IDE.DAL.Entities
         public int GitCredentialId { get; set; }
         public GitCredential GitCredential { get; set; }
 
-        public int LogoId { get; set; }
+        public int? LogoId { get; set; }
         public Image Logo { get; set; }
 
         public ICollection<Build> Builds { get; set; }

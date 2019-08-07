@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IDE.DAL.Migrations
 {
     [DbContext(typeof(IdeContext))]
-    [Migration("20190806234411_init")]
-    partial class init
+    [Migration("20190807115958_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,11 +23,11 @@ namespace IDE.DAL.Migrations
 
             modelBuilder.Entity("IDE.DAL.Entities.Build", b =>
                 {
-                    b.Property<int>("ProjectId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("UserId");
-
-                    b.Property<DateTime>("BuildFinished");
+                    b.Property<DateTime?>("BuildFinished");
 
                     b.Property<string>("BuildMessage");
 
@@ -35,9 +35,13 @@ namespace IDE.DAL.Migrations
 
                     b.Property<int>("BuildStatus");
 
-                    b.Property<int>("Id");
+                    b.Property<int>("ProjectId");
 
-                    b.HasKey("ProjectId", "UserId");
+                    b.Property<int?>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
 
                     b.HasIndex("UserId");
 
@@ -102,7 +106,7 @@ namespace IDE.DAL.Migrations
 
                     b.Property<int>("Language");
 
-                    b.Property<int>("LogoId");
+                    b.Property<int?>("LogoId");
 
                     b.Property<string>("Name");
 
@@ -126,8 +130,6 @@ namespace IDE.DAL.Migrations
                     b.Property<int>("ProjectId");
 
                     b.Property<int>("UserId");
-
-                    b.Property<int>("Id");
 
                     b.Property<int>("UserAccess");
 
@@ -199,8 +201,7 @@ namespace IDE.DAL.Migrations
 
                     b.HasOne("IDE.DAL.Entities.User", "User")
                         .WithMany("Builds")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.Project", b =>
@@ -217,8 +218,7 @@ namespace IDE.DAL.Migrations
 
                     b.HasOne("IDE.DAL.Entities.Image", "Logo")
                         .WithMany()
-                        .HasForeignKey("LogoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("LogoId");
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.ProjectMember", b =>
@@ -230,8 +230,7 @@ namespace IDE.DAL.Migrations
 
                     b.HasOne("IDE.DAL.Entities.User", "User")
                         .WithMany("ProjectMembers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.RefreshToken", b =>
