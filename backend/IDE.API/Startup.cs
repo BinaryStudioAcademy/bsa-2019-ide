@@ -34,6 +34,8 @@ namespace IDE.API
                 .AddFluentValidation()
                 .AddAuthorization()
                 .AddJsonFormatters();
+
+            services.AddCors();
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -47,6 +49,12 @@ namespace IDE.API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseCors(builder => builder
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .AllowAnyOrigin());
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

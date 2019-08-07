@@ -1,3 +1,5 @@
 <p-menubar [model]="items">
-  <button pButton label="Login"></button>
+  <button pButton (click)="openAuthDialog(dialogType.SignIn)" label="Login"></button>
+  <button pButton (click)="openAuthDialog(dialogType.SignUp)" label="SingUp"></button>
+  <button pButton (click)="LogOut()" label="LogOut"></button>
 </p-menubar>
