@@ -1,6 +1,6 @@
 ﻿namespace IDE.Common.Enums
 {
-    public enum CompilerTypes
+    public enum CompilerType
     {
         NetCore = 0
     }

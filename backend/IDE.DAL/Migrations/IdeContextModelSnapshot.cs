@@ -21,11 +21,11 @@ namespace IDE.DAL.Migrations
 
             modelBuilder.Entity("IDE.DAL.Entities.Build", b =>
                 {
-                    b.Property<int>("ProjectId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("UserId");
-
-                    b.Property<DateTime>("BuildFinished");
+                    b.Property<DateTime?>("BuildFinished");
 
                     b.Property<string>("BuildMessage");
 
@@ -33,9 +33,13 @@ namespace IDE.DAL.Migrations
 
                     b.Property<int>("BuildStatus");
 
-                    b.Property<int>("Id");
+                    b.Property<int>("ProjectId");
 
-                    b.HasKey("ProjectId", "UserId");
+                    b.Property<int?>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
 
                     b.HasIndex("UserId");
 
@@ -100,7 +104,7 @@ namespace IDE.DAL.Migrations
 
                     b.Property<int>("Language");
 
-                    b.Property<int>("LogoId");
+                    b.Property<int?>("LogoId");
 
                     b.Property<string>("Name");
 
@@ -124,8 +128,6 @@ namespace IDE.DAL.Migrations
                     b.Property<int>("ProjectId");
 
                     b.Property<int>("UserId");
-
-                    b.Property<int>("Id");
 
                     b.Property<int>("UserAccess");
 

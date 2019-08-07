@@ -1,7 +1,7 @@
 ﻿
 namespace IDE.Common.Enums
 {
-    public enum Languages
+    public enum Language
     {
         CSharp = 0,
         TypeScript = 1
