@@ -1,5 +1,6 @@
 import { HttpClientWrapperService } from './../../../../services/http-client-wrapper.service';
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-landing-root',
@@ -8,10 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LandingRootComponent implements OnInit {
   values: string[];
-  constructor(private http: HttpClientWrapperService) { }
+  constructor( private tr: ToastrService) { }
 
   ngOnInit() {
-    this.http.getRequest<string[]>('values').subscribe(r => this.values = r.body);
+  }
+
+  hello(message: string) {
+    this.tr.success(message, 'Success');
   }
 
 }
