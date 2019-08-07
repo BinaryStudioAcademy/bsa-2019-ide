@@ -25,7 +25,8 @@ export class ProjectDetailsInfoComponent implements OnInit {
         countOfSaveBuilds: '5',
         countOfBuildAttempts: '10',
         author: 'username',
-        gitCredential:{},
+        gitCredentials:[{provider:'provider', url:'https://github.com/BinaryStudioAcademy/bsa-2019-ide.git'},
+                        {provider:'provider', url:'https://github.com/BinaryStudioAcademy/bsa-2019-ide.git'}],
         logo:'https://miro.medium.com/max/1200/1*u9Rw2zT1kQl0I0Oa-9vc_g.png'
     }
   }

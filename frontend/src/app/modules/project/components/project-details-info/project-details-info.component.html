@@ -25,6 +25,12 @@
                 <p>CountOfBuildAttempts : {{project.countOfBuildAttempts}}</p>
             </p-card> 
         </div>
+        <div *ngFor="let credential of project?.gitCredentials" class="project-description">
+            <p-card header="Credentials">
+                <p>Provider: {{credential?.provider}} </p>
+                <p>Url: {{credential?.url}}</p>
+            </p-card>
+        </div>
         <!--here will be check(only author can edit project)-->
         <div *ngIf="false"class="project-description">
             <button pButton label="Edit"></button>
