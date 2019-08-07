@@ -34,7 +34,7 @@ namespace IDE.API.Extensions
         {
             services.AddAutoMapper(cfg =>
             {
-                // add here DTO-entity profiles cfg.AddProfile<ProjectProfile>();
+                // add here DTO-entity profiles
             });
         }
 
