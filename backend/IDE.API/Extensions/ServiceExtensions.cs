@@ -1,7 +1,11 @@
 ﻿using FluentValidation;
 using IDE.API.Validators;
+using IDE.BLL.Factories;
+using IDE.BLL.Factories.Abstractions;
 using IDE.BLL.JWT;
 using IDE.BLL.Services;
+using IDE.BLL.Services.Abstract;
+using IDE.BLL.Services.BlobServices;
 using IDE.Common.Authentification;
 using IDE.Common.DTO.Authentification;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,12 +27,21 @@ namespace IDE.API.Extensions
             services.AddScoped<JwtIssuerOptions>();
             services.AddScoped<JWTFactory>();
             services.AddScoped<AuthService>();
+            services.AddScoped<IBlobService, ArchivesBlobService>();
+
         }
+
+        public static void RegisterServicesWithIConfiguration(this IServiceCollection services, IConfiguration conf)
+        {
+            services.AddSingleton<IAzureBlobConnectionFactory>(new AzureBlobConnectionFactory(conf));
+        }
+
         public static void RegisterCustomValidators(this IServiceCollection services)
         {
             services.AddSingleton<IValidator<RevokeRefreshTokenDTO>, RevokeRefreshTokenDTOValidator>();
             services.AddSingleton<IValidator<RefreshTokenDTO>, RefreshTokenDTOValidator>();
         }
+
         public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
         {
             var secretKey = configuration["SecretJWTKey"];

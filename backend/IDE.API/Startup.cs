@@ -26,6 +26,7 @@ namespace IDE.API
                 option.UseSqlServer(Configuration.GetConnectionString("IdeDBConnection")));
 
             services.RegisterCustomServices();
+            services.RegisterServicesWithIConfiguration(Configuration);
             services.RegisterCustomValidators();
             services.ConfigureJwt(Configuration);
 
