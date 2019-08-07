@@ -14,12 +14,15 @@ import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
+import { HttpClientModule } from '@angular/common/http';
+import {ToastrModule} from 'ngx-toastr';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavMenuComponent
+    NavMenuComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -32,7 +35,9 @@ import { ButtonModule } from 'primeng/button';
     WorkspaceModule,
     AppRoutingModule,
     MenubarModule,
-    ButtonModule
+    ButtonModule,
+    HttpClientModule,
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

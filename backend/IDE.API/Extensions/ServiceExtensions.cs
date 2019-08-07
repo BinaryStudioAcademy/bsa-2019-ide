@@ -40,7 +40,6 @@ namespace IDE.API.Extensions
             services.AddSingleton<IValidator<RefreshTokenDTO>, RefreshTokenDTOValidator>();
         }
 
-
         public static void RegisterAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(cfg =>

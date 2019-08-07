@@ -32,6 +32,7 @@ namespace IDE.API
             services.RegisterAutoMapper();
             services.AddCors();
 
+          
             services.AddMvcCore()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation()

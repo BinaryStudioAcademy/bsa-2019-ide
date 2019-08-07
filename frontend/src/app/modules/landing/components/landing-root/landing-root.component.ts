@@ -1,4 +1,6 @@
+import { HttpClientWrapperService } from './../../../../services/http-client-wrapper.service';
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-landing-root',
@@ -6,10 +8,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./landing-root.component.sass']
 })
 export class LandingRootComponent implements OnInit {
-
-  constructor() { }
+  values: string[];
+  constructor( private tr: ToastrService) { }
 
   ngOnInit() {
+  }
+
+  hello(message: string) {
+    this.tr.success(message, 'Success');
   }
 
 }

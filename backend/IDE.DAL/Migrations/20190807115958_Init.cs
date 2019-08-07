@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IDE.DAL.Migrations
 {
-    public partial class updateentities : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -49,10 +49,10 @@ namespace IDE.DAL.Migrations
                     Email = table.Column<string>(nullable: true),
                     PasswordHash = table.Column<string>(nullable: true),
                     PasswordSalt = table.Column<string>(nullable: true),
+                    GitHubUrl = table.Column<string>(nullable: true),
                     Birthday = table.Column<DateTime>(nullable: false),
                     RegisteredAt = table.Column<DateTime>(nullable: false),
                     LastActive = table.Column<DateTime>(nullable: false),
-                    GitHubUrl = table.Column<string>(nullable: true),
                     AvatarId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
@@ -67,29 +67,6 @@ namespace IDE.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FileHistories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: false),
-                    UpdaredBy = table.Column<int>(nullable: false),
-                    UpdaterId = table.Column<int>(nullable: true),
-                    Content = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FileHistories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FileHistories_Users_UpdaterId",
-                        column: x => x.UpdaterId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Projects",
                 columns: table => new
                 {
@@ -98,17 +75,16 @@ namespace IDE.DAL.Migrations
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
+                    ProjectLink = table.Column<string>(nullable: true),
+                    CountOfSaveBuilds = table.Column<int>(nullable: false),
+                    CountOfBuildAttempts = table.Column<int>(nullable: false),
                     Language = table.Column<int>(nullable: false),
                     ProjectType = table.Column<int>(nullable: false),
                     CompilerType = table.Column<int>(nullable: false),
                     AccessModifier = table.Column<int>(nullable: false),
-                    ProjectLink = table.Column<string>(nullable: true),
-                    CountOfSaveBuilds = table.Column<int>(nullable: false),
-                    CountOfBuildAttempts = table.Column<int>(nullable: false),
                     AuthorId = table.Column<int>(nullable: false),
                     GitCredentialId = table.Column<int>(nullable: false),
-                    LogoId = table.Column<string>(nullable: true),
-                    LogoId1 = table.Column<int>(nullable: true)
+                    LogoId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -126,8 +102,8 @@ namespace IDE.DAL.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Projects_Images_LogoId1",
-                        column: x => x.LogoId1,
+                        name: "FK_Projects_Images_LogoId",
+                        column: x => x.LogoId,
                         principalTable: "Images",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -158,17 +134,18 @@ namespace IDE.DAL.Migrations
                 name: "Builds",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
-                    ProjectId = table.Column<int>(nullable: false),
-                    Id = table.Column<int>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    BuildMessage = table.Column<string>(nullable: true),
                     BuildStarted = table.Column<DateTime>(nullable: false),
-                    BuildFinished = table.Column<DateTime>(nullable: false),
+                    BuildFinished = table.Column<DateTime>(nullable: true),
                     BuildStatus = table.Column<int>(nullable: false),
-                    BuildMessage = table.Column<string>(nullable: true)
+                    ProjectId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Builds", x => new { x.ProjectId, x.UserId });
+                    table.PrimaryKey("PK_Builds", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Builds_Projects_ProjectId",
                         column: x => x.ProjectId,
@@ -184,42 +161,11 @@ namespace IDE.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Files",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Content = table.Column<string>(nullable: true),
-                    Folder = table.Column<string>(nullable: true),
-                    ProjectId = table.Column<int>(nullable: false),
-                    CreateAt = table.Column<DateTime>(nullable: false),
-                    FIleHistoryId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Files", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Files_FileHistories_FIleHistoryId",
-                        column: x => x.FIleHistoryId,
-                        principalTable: "FileHistories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Files_Projects_ProjectId",
-                        column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProjectMembers",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(nullable: false),
                     ProjectId = table.Column<int>(nullable: false),
-                    Id = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
                     UserAccess = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -240,24 +186,14 @@ namespace IDE.DAL.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Builds_ProjectId",
+                table: "Builds",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Builds_UserId",
                 table: "Builds",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FileHistories_UpdaterId",
-                table: "FileHistories",
-                column: "UpdaterId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Files_FIleHistoryId",
-                table: "Files",
-                column: "FIleHistoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Files_ProjectId",
-                table: "Files",
-                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProjectMembers_UserId",
@@ -275,9 +211,9 @@ namespace IDE.DAL.Migrations
                 column: "GitCredentialId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_LogoId1",
+                name: "IX_Projects_LogoId",
                 table: "Projects",
-                column: "LogoId1");
+                column: "LogoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_UserId",
@@ -296,16 +232,10 @@ namespace IDE.DAL.Migrations
                 name: "Builds");
 
             migrationBuilder.DropTable(
-                name: "Files");
-
-            migrationBuilder.DropTable(
                 name: "ProjectMembers");
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
-
-            migrationBuilder.DropTable(
-                name: "FileHistories");
 
             migrationBuilder.DropTable(
                 name: "Projects");
