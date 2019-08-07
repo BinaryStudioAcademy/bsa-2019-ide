@@ -11,13 +11,12 @@ namespace IDE.BLL.Services
 {
     public class ImgurUploaderService : IImageUploader
     {
-        private readonly string _imgurClientId;
         private readonly string _imgurApiUrl;
         private readonly HttpClient _client = new HttpClient();
 
         public ImgurUploaderService(IConfiguration configuration)
         {
-            _imgurClientId = configuration["BsaIdeImgurClientId"];
+            var _imgurClientId = configuration["BsaIdeImgurClientId"];
             _imgurApiUrl = configuration.GetSection("ImgurApiUrl").Value;
             _client.DefaultRequestHeaders.Add("Authorization", $"Client-ID {_imgurClientId}");
         }
