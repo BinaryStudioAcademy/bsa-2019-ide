@@ -9,9 +9,10 @@ import { ProjectDetailsUserStatisticsComponent } from './components/project-deta
 import { ButtonModule } from 'primeng/button';
 import {CardModule} from 'primeng/card';
 import {TableModule} from 'primeng/table';
+import { ProjectsListComponent } from './components/projects-list/projects-list.component';
 
 @NgModule({
-  declarations: [ProjectRootComponent, ProjectSettingsComponent, ProjectDetailsComponent, ProjectDetailsInfoComponent, ProjectDetailsUserStatisticsComponent],
+  declarations: [ProjectRootComponent, ProjectSettingsComponent, ProjectDetailsComponent, ProjectDetailsInfoComponent, ProjectDetailsUserStatisticsComponent, ProjectsListComponent],
   imports: [
     CommonModule,
     ProjectRoutingModule,
