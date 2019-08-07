@@ -29,7 +29,8 @@ namespace IDE.API
             services.RegisterCustomValidators();
             services.ConfigureJwt(Configuration);
             services.RegisterAutoMapper();
-
+            services.AddCors();
+          
             services.AddMvcCore()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation()
@@ -48,6 +49,12 @@ namespace IDE.API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseCors(builder => builder
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithExposedHeaders("Token-Expired")
+            .AllowCredentials()
+            .WithOrigins("http://localhost:4200"));
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
