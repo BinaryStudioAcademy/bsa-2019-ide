@@ -5,7 +5,9 @@
     <form name="authForm" #authForm="ngForm" class="main-content">
       <div *ngIf="data.dialogType === dialogType.SignUp">
         <label class="modal-label">Your name</label>
-        <input name="authUserName" [(ngModel)]="userName" #upNickname="ngModel" matInput placeholder="Your full name">
+        <input name="authUFirstName" [(ngModel)]="firstName" #upNickname="ngModel" matInput placeholder="Your first name">
+        <label class="modal-label">Your name</label>
+        <input name="authLastName" [(ngModel)]="lastName" #upNickname="ngModel" matInput placeholder="Your last name">
       </div>
       <div>
         <label class="modal-label">Your E-mail</label>

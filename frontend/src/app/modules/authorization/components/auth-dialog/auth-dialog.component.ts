@@ -14,7 +14,8 @@ import { SnackBarService } from 'src/app/services/snack.service/snack-bar.servic
 export class AuthDialogComponent implements OnInit {
 
   public dialogType = DialogType;
-  public userName: string;
+  public firstName: string;
+  public lastName: string;
   public password: string;
   public avatar: string;
   public email: string;
@@ -52,7 +53,7 @@ export class AuthDialogComponent implements OnInit {
 
   public signUp() {
       this.authService
-          .register({ userName: this.userName, password: this.password, email: this.email })
+          .register({ firstName: this.firstName,lastName:this.lastName, password: this.password, email: this.email })
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe((response) => this.dialogRef.close(response), (error) => this.snackBarService.showErrorMessage(error));
   }

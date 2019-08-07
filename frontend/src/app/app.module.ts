@@ -37,7 +37,9 @@ import { MatDialogModule, MatSnackBarModule } from '@angular/material';
     AppRoutingModule,
     MenubarModule,
     ButtonModule,
-    HttpClientModule
+    HttpClientModule,
+    MatSnackBarModule,
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

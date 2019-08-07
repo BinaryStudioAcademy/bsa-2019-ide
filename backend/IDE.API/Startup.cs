@@ -56,7 +56,7 @@ namespace IDE.API
             .AllowAnyHeader()
             .WithExposedHeaders("Token-Expired")
             .AllowCredentials()
-            .WithOrigins("http://localhost:4200"));
+            .AllowAnyOrigin());
 
             app.UseCors(builder => builder
             .AllowAnyMethod()

@@ -2,6 +2,7 @@
 using FluentValidation;
 using IDE.API.Validators;
 using IDE.BLL.JWT;
+using IDE.BLL.MappingProfiles;
 using IDE.BLL.Services;
 using IDE.Common.Authentification;
 using IDE.Common.DTO.Authentification;
@@ -22,6 +23,7 @@ namespace IDE.API.Extensions
             services.AddScoped<JwtIssuerOptions>();
             services.AddScoped<JWTFactory>();
             services.AddScoped<AuthService>();
+            services.AddScoped<UserService>();
         }
 
         public static void RegisterCustomValidators(this IServiceCollection services)
@@ -34,7 +36,7 @@ namespace IDE.API.Extensions
         {
             services.AddAutoMapper(cfg =>
             {
-                // add here DTO-entity profiles
+                cfg.AddProfile<UserProfile>();
             });
         }
 

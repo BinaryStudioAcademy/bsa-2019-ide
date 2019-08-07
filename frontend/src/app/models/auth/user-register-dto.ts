@@ -1,5 +1,6 @@
 export interface UserRegisterDto {
-  userName: string;
+  firstName: string;
+  lastName: string;
   password: string;
   email: string;
 }
