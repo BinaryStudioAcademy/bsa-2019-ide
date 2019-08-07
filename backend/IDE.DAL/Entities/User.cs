@@ -18,10 +18,10 @@ namespace IDE.DAL.Entities
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
+        public string GitHubUrl { get; set; }
         public DateTime Birthday { get; set; }
         public DateTime RegisteredAt { get; set; }
         public DateTime LastActive { get; set; }
-        public string GitHubUrl { get; set; }
 
         public int? AvatarId { get; set; }
         public Image Avatar { get; set; }

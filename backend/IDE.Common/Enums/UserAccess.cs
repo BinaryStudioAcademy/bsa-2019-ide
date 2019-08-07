@@ -1,6 +1,6 @@
 ﻿namespace IDE.Common.Enums
 {
-    public enum UserAccesses
+    public enum UserAccess
     {
         CanRead = 0,
         CanWrite = 1,
