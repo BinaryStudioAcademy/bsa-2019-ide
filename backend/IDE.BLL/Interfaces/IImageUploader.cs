@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IDE.BLL.Interfaces
+﻿namespace IDE.BLL.Interfaces
 {
     interface IImageUploader
     {
