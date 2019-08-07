@@ -3,18 +3,17 @@ import { Routes, RouterModule } from '@angular/router';
 import { ProjectRootComponent } from './components/project-root/project-root.component';
 import { ProjectSettingsComponent } from './components/project-settings/project-settings.component';
 import { ProjectDetailsComponent } from './components/project-details/project-details.component';
-import { ProjectsListComponent } from './components/projects-list/projects-list.component';
 
 const projectRoutes: Routes = [
-  /*{path: 'project/:id', component: ProjectRootComponent,
+  {path: 'project/:id', component: ProjectRootComponent,
     children: [
       {path: '', component: ProjectDetailsComponent},
       {path: 'settings', component: ProjectSettingsComponent}
        ]
-  }*/
+  }/*
       {path:'projects', component: ProjectsListComponent},
       {path:'projects/:id', component:ProjectDetailsComponent},
-      {path:'projects/:id/settings', component:ProjectSettingsComponent}
+      {path:'projects/:id/settings', component:ProjectSettingsComponent}*/
 ];
 
 @NgModule({
