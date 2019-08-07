@@ -14,14 +14,15 @@ import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
-import { MatDialogModule, MatSnackBarModule } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
+import { MatDialogModule, MatSnackBarModule } from '@angular/material';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    NavMenuComponent
+    NavMenuComponent,
+
   ],
   imports: [
     BrowserModule,

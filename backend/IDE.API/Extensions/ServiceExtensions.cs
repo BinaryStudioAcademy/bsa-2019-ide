@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using IDE.API.Validators;
 using IDE.BLL.JWT;
 using IDE.BLL.Services;
@@ -9,8 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,11 +23,21 @@ namespace IDE.API.Extensions
             services.AddScoped<JWTFactory>();
             services.AddScoped<AuthService>();
         }
+
         public static void RegisterCustomValidators(this IServiceCollection services)
         {
             services.AddSingleton<IValidator<RevokeRefreshTokenDTO>, RevokeRefreshTokenDTOValidator>();
             services.AddSingleton<IValidator<RefreshTokenDTO>, RefreshTokenDTOValidator>();
         }
+
+        public static void RegisterAutoMapper(this IServiceCollection services)
+        {
+            services.AddAutoMapper(cfg =>
+            {
+                // add here DTO-entity profiles
+            });
+        }
+
         public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
         {
             var secretKey = configuration["SecretJWTKey"];

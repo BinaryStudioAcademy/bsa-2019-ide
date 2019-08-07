@@ -1,3 +1,4 @@
+import { HttpClientWrapperService } from './../../../../services/http-client-wrapper.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -6,10 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./landing-root.component.sass']
 })
 export class LandingRootComponent implements OnInit {
-
-  constructor() { }
+  values: string[];
+  constructor(private http: HttpClientWrapperService) { }
 
   ngOnInit() {
+    this.http.getRequest<string[]>('values').subscribe(r => this.values = r.body);
   }
 
 }
