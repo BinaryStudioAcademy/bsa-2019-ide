@@ -1,11 +1,6 @@
-
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using FluentValidation.AspNetCore;
 using IDE.API.Extensions;
-﻿using IDE.DAL.Context;
+using IDE.DAL.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -27,24 +22,21 @@ namespace IDE.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<IdeContext>(option =>
+                option.UseSqlServer(Configuration.GetConnectionString("IdeDBConnection")));
 
             services.RegisterCustomServices();
             services.RegisterCustomValidators();
             services.ConfigureJwt(Configuration);
-
+            services.RegisterAutoMapper();
+            services.AddCors();
+          
             services.AddMvcCore()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation()
                 .AddAuthorization()
                 .AddJsonFormatters();
-
-            services.AddDbContext<IdeContext>(option =>
-                option.UseSqlServer(Configuration.GetConnectionString("IdeDBConnection")));
         }
-
-
-            
-        
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
@@ -57,6 +49,12 @@ namespace IDE.API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseCors(builder => builder
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithExposedHeaders("Token-Expired")
+            .AllowCredentials()
+            .WithOrigins("http://localhost:4200"));
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

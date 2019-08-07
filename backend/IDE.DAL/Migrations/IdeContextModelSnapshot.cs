@@ -42,56 +42,6 @@ namespace IDE.DAL.Migrations
                     b.ToTable("Builds");
                 });
 
-            modelBuilder.Entity("IDE.DAL.Entities.FileHistories", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Content");
-
-                    b.Property<DateTime>("CreatedAt");
-
-                    b.Property<int>("UpdaredBy");
-
-                    b.Property<DateTime>("UpdatedAt");
-
-                    b.Property<int?>("UpdaterId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UpdaterId");
-
-                    b.ToTable("FileHistories");
-                });
-
-            modelBuilder.Entity("IDE.DAL.Entities.Files", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Content");
-
-                    b.Property<DateTime>("CreateAt");
-
-                    b.Property<int>("FIleHistoryId");
-
-                    b.Property<string>("Folder");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int>("ProjectId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FIleHistoryId");
-
-                    b.HasIndex("ProjectId");
-
-                    b.ToTable("Files");
-                });
-
             modelBuilder.Entity("IDE.DAL.Entities.GitCredential", b =>
                 {
                     b.Property<int>("Id")
@@ -150,9 +100,7 @@ namespace IDE.DAL.Migrations
 
                     b.Property<int>("Language");
 
-                    b.Property<string>("LogoId");
-
-                    b.Property<int?>("LogoId1");
+                    b.Property<int>("LogoId");
 
                     b.Property<string>("Name");
 
@@ -166,7 +114,7 @@ namespace IDE.DAL.Migrations
 
                     b.HasIndex("GitCredentialId");
 
-                    b.HasIndex("LogoId1");
+                    b.HasIndex("LogoId");
 
                     b.ToTable("Projects");
                 });
@@ -253,26 +201,6 @@ namespace IDE.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("IDE.DAL.Entities.FileHistories", b =>
-                {
-                    b.HasOne("IDE.DAL.Entities.User", "Updater")
-                        .WithMany()
-                        .HasForeignKey("UpdaterId");
-                });
-
-            modelBuilder.Entity("IDE.DAL.Entities.Files", b =>
-                {
-                    b.HasOne("IDE.DAL.Entities.FileHistories", "FileHistory")
-                        .WithMany()
-                        .HasForeignKey("FIleHistoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("IDE.DAL.Entities.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("IDE.DAL.Entities.Project", b =>
                 {
                     b.HasOne("IDE.DAL.Entities.User", "Author")
@@ -287,7 +215,8 @@ namespace IDE.DAL.Migrations
 
                     b.HasOne("IDE.DAL.Entities.Image", "Logo")
                         .WithMany()
-                        .HasForeignKey("LogoId1");
+                        .HasForeignKey("LogoId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.ProjectMember", b =>

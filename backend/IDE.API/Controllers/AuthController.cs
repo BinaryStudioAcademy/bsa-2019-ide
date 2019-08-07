@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using IDE.BLL.Services;
+﻿using IDE.BLL.Services;
 using IDE.Common.DTO.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [AllowAnonymous]
     [ApiController]
     public class AuthController : Controller
