@@ -1,0 +1,32 @@
+<p-card [style]="{width:'100%'}">
+    <p-header>
+        <img class="project-logo" src={{project.logo}}>
+    </p-header>
+        <div class="project-description">
+            <p-card header="Main">
+                 <p>Name: {{project.name}}</p>
+                 <p>Author : {{project.author}}</p>
+                 <p>Description: {{project.description}}</p>
+                 <p>CreatedAt : {{project.createdAt}}</p><!-- <p>CreatedAt : {{project.createdAt | Datapipe}}-->
+            </p-card>
+        </div>
+        <div class="project-description">
+            <p-card header="Secondary">
+                <p>Language : {{project.language}}</p>
+                <p>ProjectType : {{project.projectType}}</p>
+                <p>CompilerType : {{project.compilerType}}</p>
+                <!--here will be check(if project access modifier - public)-->
+                <p *ngIf="false">ProjectLink : {{project.projectLink}}</p>
+            </p-card>
+        </div>
+        <div class="project-description">
+            <p-card header="Additional">
+                <p>CountOfSaveBuilds : {{project.countOfSaveBuilds}}</p>
+                <p>CountOfBuildAttempts : {{project.countOfBuildAttempts}}</p>
+            </p-card> 
+        </div>
+        <!--here will be check(only author can edit project)-->
+        <div *ngIf="false"class="project-description">
+            <button pButton label="Edit"></button>
+        </div>
+</p-card>
