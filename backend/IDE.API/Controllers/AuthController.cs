@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [AllowAnonymous]
     [ApiController]
     public class AuthController : Controller

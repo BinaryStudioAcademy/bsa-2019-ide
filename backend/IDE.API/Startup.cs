@@ -28,6 +28,7 @@ namespace IDE.API
             services.RegisterCustomServices();
             services.RegisterCustomValidators();
             services.ConfigureJwt(Configuration);
+            services.RegisterAutoMapper();
 
             services.AddMvcCore()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
