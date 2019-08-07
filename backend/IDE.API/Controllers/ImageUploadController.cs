@@ -25,5 +25,13 @@ namespace IDE.API.Controllers
             uploadedimageDto.Url = await _imageUploadService.UploadFromBase64Async(imageBase64Dto.Base64);
             return Created(uploadedimageDto.Url, uploadedimageDto);
         }
+
+        [HttpPost("byteArray")]
+        public async Task<IActionResult> UploadbyteArrayAsync([FromBody] byte[] imageByteArray)
+        {
+            var uploadedimageDto = new ImageDTO();
+            uploadedimageDto.Url = await _imageUploadService.UploadFromByteArrayAsync(imageByteArray);
+            return Created(uploadedimageDto.Url, uploadedimageDto);
+        }
     }
 }
