@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using IDE.BLL.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using IDE.Common.DTO.Image;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
-    // [Authorize]
+    // [Authorize] // use in prod
     [ApiController]
     public class ImageUploadController : ControllerBase
     {
@@ -21,19 +18,12 @@ namespace IDE.API.Controllers
             _imageUploadService = imageUploadService;
         }
 
-        [HttpGet("base64")]
-        public ActionResult<IEnumerable<string>> GetBase64()
-        {
-            return new string[] { "GetBase64", "works" };
-        }
-
         [HttpPost("base64")]
-        public async Task<IActionResult> UploadBase64Async(string imageBase64, string imageTitle)
+        public async Task<IActionResult> UploadBase64Async([FromBody] ImageUploadBase64DTO imageBase64Dto)
         {
-            var result = await _imageUploadService.UploadFromBase64Async(imageBase64, imageTitle);
-            return Created(result, null);
+            var uploadedimageDto = new ImageDTO();
+            uploadedimageDto.Url = await _imageUploadService.UploadFromBase64Async(imageBase64Dto.Base64);
+            return Created(uploadedimageDto.Url, uploadedimageDto);
         }
-
-
     }
 }

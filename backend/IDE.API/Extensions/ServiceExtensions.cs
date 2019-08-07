@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using IDE.API.Validators;
+using IDE.BLL.Interfaces;
 using IDE.BLL.JWT;
 using IDE.BLL.Services;
 using IDE.Common.Authentification;
@@ -22,6 +23,7 @@ namespace IDE.API.Extensions
             services.AddScoped<JwtIssuerOptions>();
             services.AddScoped<JWTFactory>();
             services.AddScoped<AuthService>();
+            services.AddSingleton<IImageUploader, ImgurUploaderService>();
         }
 
         public static void RegisterCustomValidators(this IServiceCollection services)
