@@ -1,9 +1,11 @@
-﻿namespace IDE.BLL.Interfaces
+﻿using System.Threading.Tasks;
+
+namespace IDE.BLL.Interfaces
 {
-    interface IImageUploader
+    public interface IImageUploader
     {
-        string UploadFromBase64(string base64);
-        string UploadFromByteArray(byte[] byteArray);
-        string UploadFromUrl(string url);
+        Task<string> UploadFromBase64Async(string imageBase64, string imageTitle);
+        Task<string> UploadFromByteArrayAsync(byte[] byteArray);
+        Task<string> UploadFromUrlAsync(string url);
     }
 }

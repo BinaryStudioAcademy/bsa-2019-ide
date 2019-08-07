@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
 {
-    class ImgurUploaderService : IImageUploader
+    public class ImgurUploaderService : IImageUploader
     {
         private readonly string _imgurClientId;
         private readonly string _imgurClientSecret;
@@ -39,17 +39,15 @@ namespace IDE.BLL.Services
 
             var imageUploadResult = await _client.PostAsync($"{_imgurApiUrl}/image", body);
 
-
-
             return "";
         }
 
-        public string UploadFromByteArray(byte[] byteArray)
+        public async Task<string> UploadFromByteArrayAsync(byte[] byteArray)
         {
             return "";
         }
 
-        public string UploadFromUrl(string url)
+        public async Task<string> UploadFromUrlAsync(string url)
         {
             return "";
         }
