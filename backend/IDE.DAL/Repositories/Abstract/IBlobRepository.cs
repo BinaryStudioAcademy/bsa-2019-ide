@@ -6,9 +6,9 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IDE.BLL.Services.Abstract
+namespace IDE.DAL.Repositories.Abstract
 {
-    public interface IBlobService
+    public interface IBlobRepository
     {
         Task<Uri> UploadAsync(IFormFile file, int projectId, int buildId);
         Task<IEnumerable<Uri>> ListAsync(int projectId);

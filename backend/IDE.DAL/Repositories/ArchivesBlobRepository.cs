@@ -1,5 +1,5 @@
-﻿using IDE.BLL.Factories.Abstractions;
-using IDE.BLL.Services.Abstract;
+﻿using IDE.DAL.Factories.Abstractions;
+using IDE.DAL.Repositories.Abstract;
 using IDE.Common.Enums;
 using IDE.DAL.Entities;
 using Microsoft.AspNetCore.Http;
@@ -10,14 +10,14 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IDE.BLL.Services.BlobServices
+namespace IDE.DAL.Repositories
 {
-    public class ArchivesBlobService : IBlobService
+    public class ArchivesBlobRepository : IBlobRepository
     {
         private const int URL_PARTS_COUNT = 3; //In Azure it's 4, local it's 5
         private readonly IAzureBlobConnectionFactory _connectionFactory;
 
-        public ArchivesBlobService(IAzureBlobConnectionFactory connectionFactory)
+        public ArchivesBlobRepository(IAzureBlobConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory;
         }
@@ -36,11 +36,10 @@ namespace IDE.BLL.Services.BlobServices
             var blobContainer = await _connectionFactory.GetArchiveArtifactsBlobContainer();
 
             var blob = blobContainer.GetBlobReference(GetSubstring(fileUri, '/', URL_PARTS_COUNT));
-            using (MemoryStream memStream = new MemoryStream())
-            {
-                await blob.DownloadToStreamAsync(memStream);
-                return memStream;
-            }
+
+            MemoryStream memStream = new MemoryStream();
+            await blob.DownloadToStreamAsync(memStream);
+            return memStream;
         }
         
         //Use it to upload files to get list of files urls from folder with name 'pr_{projectId}'
@@ -54,7 +53,7 @@ namespace IDE.BLL.Services.BlobServices
             {
                 var response = await directory.ListBlobsSegmentedAsync(blobContinuationToken);
 
-                await AddFilesUrlsToList(allBlobs, response);
+                await AddFilesUrlsToList(allBlobs, response).ConfigureAwait(false);
 
                 blobContinuationToken = response.ContinuationToken;
             } while (blobContinuationToken != null);
@@ -83,7 +82,9 @@ namespace IDE.BLL.Services.BlobServices
         {
             int startingPos = 0;
             for (int i = 0; i < charsCount; i++)
+            {
                 startingPos = stringForSubstring.IndexOf(desiredChar, startingPos) + 1;
+            }
             return stringForSubstring.Substring(startingPos);
         }
         
@@ -102,9 +103,13 @@ namespace IDE.BLL.Services.BlobServices
                 foreach (IListBlobItem blob in response.Results)
                 {
                     if (blob.GetType() == typeof(CloudBlockBlob))
+                    {
                         uris.Add(blob.Uri);
+                    }
                     else if (blob is CloudBlobDirectory dir)
-                        await AddFilesUrlsToList(uris, await dir.ListBlobsSegmentedAsync(blobContinuationToken));
+                    {
+                        await AddFilesUrlsToList(uris, await dir.ListBlobsSegmentedAsync(blobContinuationToken)).ConfigureAwait(false);
+                    }   
                 }
                 blobContinuationToken = response.ContinuationToken;
             } while (blobContinuationToken != null);

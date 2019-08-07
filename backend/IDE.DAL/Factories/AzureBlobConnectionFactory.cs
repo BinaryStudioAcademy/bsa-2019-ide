@@ -1,4 +1,4 @@
-﻿using IDE.BLL.Factories.Abstractions;
+﻿using IDE.DAL.Factories.Abstractions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IDE.BLL.Factories
+namespace IDE.DAL.Factories
 {
     public class AzureBlobConnectionFactory : IAzureBlobConnectionFactory
     {
@@ -22,13 +22,15 @@ namespace IDE.BLL.Factories
 
         public async Task<CloudBlobContainer> GetArchiveArtifactsBlobContainer()
         {
-            return await GetBlobContainer("ArchiveArtifactsContainerName");
+            return await GetBlobContainer("ArchiveArtifactsContainerName").ConfigureAwait(false);
         }
 
         public async Task<CloudBlobContainer> GetBlobContainer(string containerNameKey)
         {
             if (_blobContainer != null)
+            {
                 return _blobContainer;
+            }
 
             var containerName = _configuration.GetValue<string>(containerNameKey);
 
@@ -45,7 +47,9 @@ namespace IDE.BLL.Factories
         private CloudBlobClient GetBlobClient()
         {
             if (_blobClient != null)
+            {
                 return _blobClient;
+            }
 
             var storageConnectionString = _configuration.GetValue<string>("StorageConnectionString");
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IDE.BLL.Factories.Abstractions
+namespace IDE.DAL.Factories.Abstractions
 {
     public interface IAzureBlobConnectionFactory
     {

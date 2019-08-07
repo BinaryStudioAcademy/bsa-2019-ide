@@ -1,4 +1,5 @@
 ﻿using IDE.BLL.Services.Abstract;
+using IDE.DAL.Repositories.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +15,9 @@ namespace IDE.API.Controllers
     [ApiController]
     public class ArchivesBlobController : ControllerBase
     {
-        private readonly IBlobService _blobService;
+        private readonly IBlobRepository _blobService;
 
-        public ArchivesBlobController(IBlobService blobService)
+        public ArchivesBlobController(IBlobRepository blobService)
         {
             _blobService = blobService;
         }

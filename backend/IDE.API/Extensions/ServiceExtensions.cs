@@ -1,20 +1,19 @@
-﻿using FluentValidation;
+﻿using AutoMapper;
+using FluentValidation;
 using IDE.API.Validators;
-using IDE.BLL.Factories;
-using IDE.BLL.Factories.Abstractions;
 using IDE.BLL.JWT;
 using IDE.BLL.Services;
-using IDE.BLL.Services.Abstract;
-using IDE.BLL.Services.BlobServices;
 using IDE.Common.Authentification;
 using IDE.Common.DTO.Authentification;
+using IDE.DAL.Factories;
+using IDE.DAL.Factories.Abstractions;
+using IDE.DAL.Repositories;
+using IDE.DAL.Repositories.Abstract;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,8 +26,7 @@ namespace IDE.API.Extensions
             services.AddScoped<JwtIssuerOptions>();
             services.AddScoped<JWTFactory>();
             services.AddScoped<AuthService>();
-            services.AddScoped<IBlobService, ArchivesBlobService>();
-
+            services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
         }
 
         public static void RegisterServicesWithIConfiguration(this IServiceCollection services, IConfiguration conf)
@@ -40,6 +38,15 @@ namespace IDE.API.Extensions
         {
             services.AddSingleton<IValidator<RevokeRefreshTokenDTO>, RevokeRefreshTokenDTOValidator>();
             services.AddSingleton<IValidator<RefreshTokenDTO>, RefreshTokenDTOValidator>();
+        }
+
+
+        public static void RegisterAutoMapper(this IServiceCollection services)
+        {
+            services.AddAutoMapper(cfg =>
+            {
+                // add here DTO-entity profiles
+            });
         }
 
         public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
