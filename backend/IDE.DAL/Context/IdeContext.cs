@@ -15,6 +15,7 @@ namespace IDE.DAL.Context
         public DbSet<RefreshToken> RefreshTokens { get; private set; }
         public DbSet<GitCredential> GitCredentials { get; private set; }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Configure();
