@@ -30,6 +30,7 @@ namespace IDE.API.Extensions
             services.AddScoped<JWTFactory>();
             services.AddScoped<AuthService>();
             services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
+            services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<UserService>();
         }
 
