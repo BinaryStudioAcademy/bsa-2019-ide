@@ -4,7 +4,6 @@ import { FileHistoryDTO } from "./fileHistoryDTO"
 import { ProjectDTO } from "./../Common/projectDTO"
 
 export interface FileDTO {
-    id: number;
     name: string;
     folder: string;
     content: string;

@@ -4,6 +4,7 @@ import { DialogType } from 'src/app/modules/authorization/models/auth-dialog-typ
 import { AuthenticationService } from 'src/app/services/auth.service/auth.service';
 import { Subject } from 'rxjs';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
+import {UserRegisterDTO} from '../../../../models/User/userRegisterDTO';
 
 @Component({
   selector: 'app-auth-dialog',
@@ -56,8 +57,14 @@ export class AuthDialogComponent implements OnInit {
   }
 
   public signUp() {
+    let user: UserRegisterDTO;
+    user.firstName=this.firstName;
+    user.lastName=this.lastName;
+    user.nickName=this.nickName;
+    user.password=this.password;
+    user.email=this.email
        this.authService
-         .register({ id: 0, firstName: this.firstName,lastName:this.lastName, password: this.password, email: this.email, nickName: this.nickName })
+         .register(user)
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe(result=>this.ref.close());
   }

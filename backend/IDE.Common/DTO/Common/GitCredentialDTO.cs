@@ -7,7 +7,6 @@ namespace IDE.Common.DTO.Common
 {
     public class GitCredentialDTO
     {
-        public int Id { get; set; }
         public GitProvider Provider { get; set; }
         public string Url { get; set; }
         public string Login { get; set; }

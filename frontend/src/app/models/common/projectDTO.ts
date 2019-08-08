@@ -5,7 +5,6 @@ import { GitCredentialDTO } from "./gitCredentialDTO"
 import { ImageDTO } from "./../Image/imageDTO"
 
 export interface ProjectDTO {
-    id: number;
     name: string;
     description: string;
     createdAt: Date;
