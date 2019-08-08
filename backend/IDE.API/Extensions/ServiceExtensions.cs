@@ -7,6 +7,10 @@ using IDE.BLL.Services;
 using IDE.BLL.Services.Abstract;
 using IDE.Common.Authentification;
 using IDE.Common.DTO.Authentification;
+using IDE.DAL.Factories;
+using IDE.DAL.Factories.Abstractions;
+using IDE.DAL.Repositories;
+using IDE.DAL.Repositories.Abstract;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +28,13 @@ namespace IDE.API.Extensions
             services.AddScoped<JwtIssuerOptions>();
             services.AddScoped<JWTFactory>();
             services.AddScoped<AuthService>();
+            services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
             services.AddScoped<UserService>();
+        }
+
+        public static void RegisterServicesWithIConfiguration(this IServiceCollection services, IConfiguration conf)
+        {
+            services.AddSingleton<IAzureBlobConnectionFactory>(new AzureBlobConnectionFactory(conf));
         }
 
         public static void RegisterCustomValidators(this IServiceCollection services)

@@ -27,10 +27,12 @@ namespace IDE.API
             services.RegisterAutoMapper();
 
             services.RegisterCustomServices();
+            services.RegisterServicesWithIConfiguration(Configuration);
             services.RegisterCustomValidators();
 
             services.ConfigureJwt(Configuration);
             services.AddCors();
+          
 
             services.AddMvcCore()
                 .AddAuthorization()
