@@ -20,17 +20,17 @@ namespace IDE.BLL.Services
 
         public async Task<string> UploadFromBase64Async(string imageBase64)
         {
-            return await UploadImageAsync(imageBase64);         
+            return await UploadImageAsync(imageBase64).ConfigureAwait(false);         
         }
 
         public async Task<string> UploadFromUrlAsync(string url)
         {
-            return await UploadImageAsync(url);
+            return await UploadImageAsync(url).ConfigureAwait(false);
         }
 
         public async Task<string> UploadFromByteArrayAsync(byte[] byteArray)
         {
-            return await UploadImageAsync(byteArray);
+            return await UploadImageAsync(byteArray).ConfigureAwait(false);
         }
 
         private async Task<string> UploadImageAsync<T>(T source)
@@ -42,11 +42,17 @@ namespace IDE.BLL.Services
             var response = await _client.PostAsync($"image", body);
 
             if (response == null)
-                throw new Exception("Not response from Imgur"); // TODO: realize custom Exceptions and its handling
+            {
+                throw new ApplicationException("Not response from Imgur"); // TODO: realize special custom Exceptions and its handling
+            }
             if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new Exception("Response status from Imgur is NOT FOUND"); // TODO: realize custom Exceptions and its handling
+            {
+                throw new ApplicationException("Response status from Imgur is NOT FOUND"); // TODO: realize special custom Exceptions and its handling
+            }
             if (response.StatusCode != HttpStatusCode.OK)
-                throw new Exception("Bad response from Imgur"); // TODO: realize custom Exceptions and its handling
+            {
+                throw new ApplicationException("Bad response from Imgur"); // TODO: realize special custom Exceptions and its handling
+            }
 
             var responseSring = await response.Content.ReadAsStringAsync();
             JObject responseJson = JObject.Parse(responseSring);
