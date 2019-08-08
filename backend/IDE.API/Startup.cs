@@ -24,19 +24,21 @@ namespace IDE.API
         {
             services.AddDbContext<IdeContext>(option =>
                 option.UseSqlServer(Configuration.GetConnectionString("IdeDBConnection")));
+            services.RegisterAutoMapper();
 
             services.RegisterCustomServices();
+            services.RegisterServicesWithIConfiguration(Configuration);
             services.RegisterCustomValidators();
             services.ConfigureJwt(Configuration);
             services.RegisterAutoMapper();
             services.RegisterHttpClientFactories(Configuration);
-            services.AddCors();
-          
+            services.AddCors();          
+
             services.AddMvcCore()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddFluentValidation()
                 .AddAuthorization()
-                .AddJsonFormatters();
+                .AddJsonFormatters()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddFluentValidation();
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -51,11 +53,11 @@ namespace IDE.API
                 app.UseHsts();
             }
             app.UseCors(builder => builder
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .WithExposedHeaders("Token-Expired")
-            .AllowCredentials()
-            .WithOrigins("http://localhost:4200"));
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithExposedHeaders("Token-Expired")
+                .AllowCredentials()
+                .AllowAnyOrigin());
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

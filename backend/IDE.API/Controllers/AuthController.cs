@@ -19,7 +19,7 @@ namespace IDE.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AuthUserDTO>> Login(UserLoginDTO dto)
+        public async Task<ActionResult<AuthUserDTO>> Login([FromBody] UserLoginDTO dto)
         {
             return Ok(await _authService.Authorize(dto));
         }

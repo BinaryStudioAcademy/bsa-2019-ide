@@ -9,8 +9,11 @@ const projectRoutes: Routes = [
     children: [
       {path: '', component: ProjectDetailsComponent},
       {path: 'settings', component: ProjectSettingsComponent}
-    ]
-  }
+       ]
+  }/*
+      {path:'projects', component: ProjectsListComponent},
+      {path:'projects/:id', component:ProjectDetailsComponent},
+      {path:'projects/:id/settings', component:ProjectSettingsComponent}*/
 ];
 
 @NgModule({
