@@ -14,8 +14,11 @@ import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import {ToastrModule} from 'ngx-toastr';
+import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
+import { DialogService } from 'primeng/api';
+import { JwtInterceptor } from './helpers/jwt.interceptor';
 
 
 @NgModule({
@@ -37,9 +40,13 @@ import {ToastrModule} from 'ngx-toastr';
     MenubarModule,
     ButtonModule,
     HttpClientModule,
+    DynamicDialogModule,
     ToastrModule.forRoot()
   ],
-  providers: [],
+  providers: 
+  
+    [DialogService,
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

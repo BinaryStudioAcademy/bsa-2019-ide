@@ -6,10 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./project-details.component.sass']
 })
 export class ProjectDetailsComponent implements OnInit {
-
+  
   constructor() { }
 
   ngOnInit() {
+    
   }
 
 }

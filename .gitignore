@@ -397,3 +397,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# dev configuration
+backend/IDE.API/appsettings.Development.json
+frontend/src/environments/environment.ts

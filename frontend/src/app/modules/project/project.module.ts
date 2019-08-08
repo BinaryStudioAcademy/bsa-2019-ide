@@ -5,6 +5,8 @@ import { ProjectSettingsComponent } from './components/project-settings/project-
 import { ProjectDetailsComponent } from './components/project-details/project-details.component';
 import { ProjectRoutingModule } from './project-routing.module';
 import { CreateProjectComponent } from './components/create-project/create-project.component';
+import { ProjectDetailsInfoComponent } from './components/project-details-info/project-details-info.component';
+import { ProjectDetailsUserStatisticsComponent } from './components/project-details-user-statistics/project-details-user-statistics.component';
 
 import { ButtonModule } from 'primeng/button';
 import {CardModule} from 'primeng/card';
@@ -20,6 +22,8 @@ import {KeyFilterModule} from 'primeng/keyfilter';
     ProjectRootComponent,
     ProjectSettingsComponent,
     ProjectDetailsComponent,
+    ProjectDetailsInfoComponent,
+    ProjectDetailsUserStatisticsComponent,
     CreateProjectComponent
   ],
   imports: [

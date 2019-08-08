@@ -1,10 +1,17 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using IDE.API.Validators;
+using IDE.BLL.Interfaces;
 using IDE.BLL.JWT;
+using IDE.BLL.MappingProfiles;
 using IDE.BLL.Services;
+using IDE.BLL.Services.Abstract;
 using IDE.Common.Authentification;
 using IDE.Common.DTO.Authentification;
+using IDE.DAL.Factories;
+using IDE.DAL.Factories.Abstractions;
+using IDE.DAL.Repositories;
+using IDE.DAL.Repositories.Abstract;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +29,13 @@ namespace IDE.API.Extensions
             services.AddScoped<JwtIssuerOptions>();
             services.AddScoped<JWTFactory>();
             services.AddScoped<AuthService>();
+            services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
+            services.AddScoped<UserService>();
+        }
+
+        public static void RegisterServicesWithIConfiguration(this IServiceCollection services, IConfiguration conf)
+        {
+            services.AddSingleton<IAzureBlobConnectionFactory>(new AzureBlobConnectionFactory(conf));
         }
 
         public static void RegisterCustomValidators(this IServiceCollection services)
@@ -34,7 +48,23 @@ namespace IDE.API.Extensions
         {
             services.AddAutoMapper(cfg =>
             {
-                // add here DTO-entity profiles
+                cfg.AddProfile<UserProfile>();
+                cfg.AddProfile<ProjectProfile>();
+                cfg.AddProfile<ImageProfile>();
+                cfg.AddProfile<BuildProfile>();
+                cfg.AddProfile<GitCredentiaProfile>();
+            });
+        }
+
+        public static void RegisterHttpClientFactories(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHttpClient<IImageUploader, ImgurUploaderService>(client =>
+            {
+                var imgurClientId = configuration["BsaIdeImgurClientId"];
+                var imgurApiUrl = configuration.GetSection("ImgurApiUrl").Value;
+
+                client.BaseAddress = new Uri(imgurApiUrl);
+                client.DefaultRequestHeaders.Add("Authorization", $"Client-ID {imgurClientId}");
             });
         }
 
