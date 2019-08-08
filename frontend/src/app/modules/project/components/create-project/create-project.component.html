@@ -1,1 +1,115 @@
-<p>create-project works!</p>
+<div class="container">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <div class="title">Create project</div>
+            <hr>
+        </div>
+    </div>
+    <div class="ui-g">
+        <div class="ui-g-12">
+            <form class="projectForm" [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+                
+                <!-- Project Name -->
+                <div class="label">Project Name</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="ui-inputgroup">
+                            <input type="text" pInputText  formControlName="name"   placeholder="name">
+                        </div>
+                    </div>
+                </div>
+                <div class="invalid" *ngIf="projectForm.get('name').errors && projectForm.get('name').dirty">
+                    Name is required.
+                </div>
+    
+                <!-- Project Description -->
+                <div class="label">Description</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="ui-inputgroup">
+                            <textarea [rows]="3" pInputTextarea  formControlName="description" placeholder="description"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="invalid" *ngIf="projectForm.get('description').errors && projectForm.get('description').dirty">
+                    Description is required.
+                </div>
+    
+                <!-- Project  Language -->
+                <div class="label">Language</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="">
+                           <p-dropdown [options]="languages" placeholder="Select a project language"  formControlName="language"></p-dropdown>
+                             <!--<select required type="text"  placeholder="language" formControlName="language">
+                                <option value="0">C#</option>
+                            </select>-->
+                        </div>
+                    </div>
+                </div>
+    
+                 <!-- Project  type -->
+                <div class="label">Project type</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="">
+                            <p-dropdown [options]="projectTypes" placeholder="Select a project type"  formControlName="projectType"></p-dropdown>
+                            <!--<select required type="text"  placeholder="project type" formControlName="projectType">
+                                <option value="0">Console App</option>
+                                <option value="1">Web App</option>
+                                <option value="2">Library</option>
+                            </select>-->
+                        </div>
+                    </div>
+                </div>
+    
+                 <!-- Project Compiler type -->
+                <div class="label">Compiler Type</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="">
+                            <p-dropdown [options]="compilerTypes" placeholder="Select a compiler type"  formControlName="compilerType"></p-dropdown>
+                            <!--<select required type="text" placeholder="compiler type" formControlName="compilerType">
+                                <option value="0">NetCore</option>
+                            </select>-->
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Number of saved builds -->
+                <div class="label">Number of saved builds</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="ui-inputgroup">
+                            <input type="text" pInputText pKeyFilter="int"  formControlName="countOfSavedBuilds"   placeholder="builds">
+                        </div>
+                    </div>
+                </div>
+                <div class="invalid" *ngIf="projectForm.get('countOfSavedBuilds').errors && projectForm.get('countOfSavedBuilds').dirty">
+                    required.
+                </div>
+    
+                <!-- Number of saved builds -->
+                <div class="label">Number of build attempts for user</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="ui-inputgroup">
+                            <input type="text" pInputText pKeyFilter="int" formControlName="countOfbuildAttempts"   placeholder="build attempts">
+                        </div>
+                    </div>
+                </div>
+                <div class="invalid" *ngIf="projectForm.get('countOfbuildAttempts').errors && projectForm.get('countOfbuildAttempts').dirty">
+                    required.
+                </div>
+    
+                <!-- Submit -->
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <button type="submit" [disabled]="!projectForm.valid" pButton label="Create"></button>
+                    </div>
+                </div>
+    
+            </form>
+        </div>
+    </div>
+</div>

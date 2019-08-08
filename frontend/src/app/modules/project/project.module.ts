@@ -6,6 +6,15 @@ import { ProjectDetailsComponent } from './components/project-details/project-de
 import { ProjectRoutingModule } from './project-routing.module';
 import { CreateProjectComponent } from './components/create-project/create-project.component';
 
+import { ButtonModule } from 'primeng/button';
+import {CardModule} from 'primeng/card';
+import {TableModule} from 'primeng/table';
+import {ReactiveFormsModule} from '@angular/forms';
+import {DropdownModule} from 'primeng/dropdown';
+import {InputTextareaModule} from 'primeng/inputtextarea';
+import {InputTextModule} from 'primeng/inputtext';
+import {KeyFilterModule} from 'primeng/keyfilter';
+
 @NgModule({
   declarations: [
     ProjectRootComponent,
@@ -15,7 +24,15 @@ import { CreateProjectComponent } from './components/create-project/create-proje
   ],
   imports: [
     CommonModule,
-    ProjectRoutingModule
+    ProjectRoutingModule,
+    ButtonModule,
+    CardModule,
+    TableModule,
+    ReactiveFormsModule,
+    DropdownModule,
+    InputTextareaModule,
+    InputTextModule,
+    KeyFilterModule
   ]
 })
 export class ProjectModule { }
