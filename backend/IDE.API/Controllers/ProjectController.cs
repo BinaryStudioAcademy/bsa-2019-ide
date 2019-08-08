@@ -13,7 +13,7 @@ namespace IDE.API.Controllers
     [AllowAnonymous]
     //[Authorize]
     [ApiController]
-    public class ProjectController : Controller
+    public class ProjectController : ControllerBase
     {
         IProjectService _projectService;
 
@@ -25,18 +25,21 @@ namespace IDE.API.Controllers
         [HttpGet("all/{userId}")]
         public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects(int userId)
         {
+            //Need to get userId from token
             return Ok(await _projectService.GetAllProjects(userId));
         }
 
         [HttpGet("my/{userId}")]
         public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetCreatedByUserProjects(int userId)
         {
+            //Need to get userId from token
             return Ok(await _projectService.GetUserProjects(userId));
         }
 
         [HttpGet("assigned/{userId}")]
         public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAssignedToUserProjects(int userId)
         {
+            //Need to get userId from token
             return Ok(await _projectService.GetAssignedUserProjects(userId));
         }
 
