@@ -29,18 +29,16 @@ namespace IDE.API
             services.RegisterCustomServices();
             services.RegisterServicesWithIConfiguration(Configuration);
             services.RegisterCustomValidators();
-
             services.ConfigureJwt(Configuration);
-            services.AddCors();
-          
+            services.RegisterAutoMapper();
+            services.RegisterHttpClientFactories(Configuration);
+            services.AddCors();          
 
             services.AddMvcCore()
                 .AddAuthorization()
                 .AddJsonFormatters()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation();
-
-            services.AddCors();
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -55,11 +53,11 @@ namespace IDE.API
                 app.UseHsts();
             }
             app.UseCors(builder => builder
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .WithExposedHeaders("Token-Expired")
-            .AllowCredentials()
-            .AllowAnyOrigin());
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithExposedHeaders("Token-Expired")
+                .AllowCredentials()
+                .AllowAnyOrigin());
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

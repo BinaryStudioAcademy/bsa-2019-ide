@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using IDE.API.Validators;
+using IDE.BLL.Interfaces;
 using IDE.BLL.JWT;
 using IDE.BLL.MappingProfiles;
 using IDE.BLL.Services;
@@ -52,6 +53,18 @@ namespace IDE.API.Extensions
                 cfg.AddProfile<ImageProfile>();
                 cfg.AddProfile<BuildProfile>();
                 cfg.AddProfile<GitCredentiaProfile>();
+            });
+        }
+
+        public static void RegisterHttpClientFactories(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHttpClient<IImageUploader, ImgurUploaderService>(client =>
+            {
+                var imgurClientId = configuration["BsaIdeImgurClientId"];
+                var imgurApiUrl = configuration.GetSection("ImgurApiUrl").Value;
+
+                client.BaseAddress = new Uri(imgurApiUrl);
+                client.DefaultRequestHeaders.Add("Authorization", $"Client-ID {imgurClientId}");
             });
         }
 
