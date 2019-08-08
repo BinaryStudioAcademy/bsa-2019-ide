@@ -44,7 +44,7 @@ namespace IDE.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> PostUser(ProjectCreateDTO project)
+        public async Task<ActionResult> AddProject(ProjectCreateDTO project)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace IDE.API.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest($"Invalid data {e.InnerException}");
+                return BadRequest($"Invalid data {e.Message}");
             }
         }
     }

@@ -12,5 +12,5 @@ export interface Project {
     compilerType: CompilerType;
     countOfSaveBuilds: number;
     countOfBuildAttempts: number;
-    gitCredentialsId: number;
+    gitCredentialId: number;
 }

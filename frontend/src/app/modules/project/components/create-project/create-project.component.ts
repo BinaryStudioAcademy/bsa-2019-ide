@@ -38,7 +38,7 @@ export class CreateProjectComponent implements OnInit {
       compilerType: this.projectForm.get('compilerType').value,
       countOfSaveBuilds: this.projectForm.get('countOfSavedBuilds').value,
       countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value,
-      gitCredentialsId: 222, // Set smth here
+      gitCredentialId: 222, // Set smth here
     };
     console.log(project);
     // this.projectService.addProject(project)

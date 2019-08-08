@@ -10,6 +10,6 @@ export class ProjectService {
   constructor(private httpClient: HttpClientWrapperService) { }
 
   addProject(project: Project) {
-    return this.httpClient.postRequest('/project', project);
+    return this.httpClient.postRequest('project', project);
   }
 }
