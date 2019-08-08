@@ -1,9 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
-import { DialogType } from 'src/app/models/common/auth-dialog-type';
+import { DialogType } from 'src/app/modules/authorization/models/auth-dialog-type';
 import { AuthenticationService } from 'src/app/services/auth.service/auth.service';
 import { Subject } from 'rxjs';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
+import {UserRegisterDTO} from '../../../../models/DTO/User/userRegisterDTO';
 
 @Component({
   selector: 'app-auth-dialog',
@@ -18,6 +19,7 @@ export class AuthDialogComponent implements OnInit {
   public password: string;
   public avatar: string;
   public email: string;
+  public nickName: string;
 
   public display: boolean=false;
   public hidePass = true;
@@ -55,8 +57,14 @@ export class AuthDialogComponent implements OnInit {
   }
 
   public signUp() {
+    let user: UserRegisterDTO;
+    user.firstName=this.firstName;
+    user.lastName=this.lastName;
+    user.nickName=this.nickName;
+    user.password=this.password;
+    user.email=this.email
        this.authService
-         .register({ firstName: this.firstName,lastName:this.lastName, password: this.password, email: this.email })
+         .register(user)
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe(result=>this.ref.close());
   }
