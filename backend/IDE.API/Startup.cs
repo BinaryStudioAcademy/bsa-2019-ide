@@ -26,10 +26,12 @@ namespace IDE.API
                 option.UseSqlServer(Configuration.GetConnectionString("IdeDBConnection")));
 
             services.RegisterCustomServices();
+            services.RegisterServicesWithIConfiguration(Configuration);
             services.RegisterCustomValidators();
             services.ConfigureJwt(Configuration);
             services.RegisterAutoMapper();
             services.AddCors();
+
           
             services.AddMvcCore()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
