@@ -1,7 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { DashboardRootComponent } from './components/dashboard-root/dashboard-root.component';
-import { AllProjectsListComponent } from './components/all-projects-list/all-projects-list.component';
+import { ProjectsListComponent } from './components/projects-list/projects-list.component';
+import { AllProjectsComponent } from './components/all-projects/all-projects.component';
+import { MyProjectsComponent } from './components/my-projects/my-projects.component';
+import { AssignedProjectsComponent } from './components/assigned-projects/assigned-projects.component';
 
 const dashboardRoutes: Routes = [
   {
@@ -11,7 +14,15 @@ const dashboardRoutes: Routes = [
     [
       {
         path: '',
-        component: AllProjectsListComponent
+        component: AllProjectsComponent
+      },
+      {
+        path: 'myProjects',
+        component: MyProjectsComponent
+      },
+      {
+        path: 'assignedProjects',
+        component: AssignedProjectsComponent
       }
     ]
   }

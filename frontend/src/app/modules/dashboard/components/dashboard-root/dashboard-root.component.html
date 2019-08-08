@@ -1,2 +1,15 @@
 <!-- <p-menu [model]="items"></p-menu> -->
-<router-outlet></router-outlet>
+
+<div class="container">
+    <div class="menu">
+        <ul>
+            <li *ngFor="let item of items, let i = index"
+            (click)="redirect(i)" 
+            [class.active]="isActive[i]" >{{item[0]}}</li>
+        </ul>
+    </div>
+    <div class="secondMenu">
+        <button icon="pi pi-plus" pButton type="button" class="ui-button-raised" [routerLink]="['/project/add']" label="Add"></button>
+    </div>
+    <router-outlet></router-outlet>
+</div>
