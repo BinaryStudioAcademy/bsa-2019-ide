@@ -1,3 +1,5 @@
-<p>all-projects-list works!</p>
+<a [routerLink]="['/project/add']">Create project</a>
 
-<a [routerLink]="['/dashboard/add']">Create project</a>
+<div class="projectCard" *ngFor="let project of projects">
+    <app-project-card project="{{project}}"></app-project-card>
+</div>

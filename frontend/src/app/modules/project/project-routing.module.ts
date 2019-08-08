@@ -3,12 +3,25 @@ import { Routes, RouterModule } from '@angular/router';
 import { ProjectRootComponent } from './components/project-root/project-root.component';
 import { ProjectSettingsComponent } from './components/project-settings/project-settings.component';
 import { ProjectDetailsComponent } from './components/project-details/project-details.component';
+import { CreateProjectComponent } from './components/create-project/create-project.component';
 
 const projectRoutes: Routes = [
-  {path: 'project/:id', component: ProjectRootComponent,
+  {
+    path: 'project/add',
+    component: CreateProjectComponent
+  },
+  {
+    path: 'project/:id',
+    component: ProjectRootComponent,
     children: [
-      {path: '', component: ProjectDetailsComponent},
-      {path: 'settings', component: ProjectSettingsComponent}
+      {
+        path: '',
+        component: ProjectDetailsComponent
+      },
+      {
+        path: 'settings',
+        component: ProjectSettingsComponent
+      }
     ]
   }
 ];
