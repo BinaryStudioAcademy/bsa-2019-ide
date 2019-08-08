@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { UserDTO } from 'src/app/models/User/userDTO';
+import { UserDTO } from 'src/app/models/DTO/User/userDTO';
 
 @Injectable({
   providedIn: 'root'

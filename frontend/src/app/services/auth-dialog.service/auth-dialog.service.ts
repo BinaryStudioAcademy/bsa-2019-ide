@@ -3,7 +3,7 @@ import { DialogType } from 'src/app/modules/authorization/models/auth-dialog-typ
 import { AuthenticationService } from '../auth.service/auth.service';
 import { AuthDialogComponent } from 'src/app/modules/authorization/components/auth-dialog/auth-dialog.component';
 import { takeUntil } from 'rxjs/operators';
-import { UserDTO } from 'src/app/models/User/userDTO';
+import { UserDTO } from 'src/app/models/DTO/User/userDTO';
 import { Subject } from 'rxjs';
 import { DialogService } from 'primeng/components/common/api';
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
-import { UserDTO } from 'src/app/models/User/userDTO';
+import { UserDTO } from 'src/app/models/DTO/User/userDTO';
 
 @Injectable({
   providedIn: 'root'

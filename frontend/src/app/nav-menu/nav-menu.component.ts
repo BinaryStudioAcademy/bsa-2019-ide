@@ -3,7 +3,7 @@ import { MenuItem } from 'primeng/api';
 import { AuthDialogService } from '../services/auth-dialog.service/auth-dialog.service'
 import { DialogType } from '../modules/authorization/models/auth-dialog-type';
 import { AuthenticationService } from '../services/auth.service/auth.service';
-import { UserDTO } from '../models/User/userDTO';
+import { UserDTO } from '../models/DTO/User/userDTO';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service/user.service';
 import { Subject } from 'rxjs';

@@ -4,7 +4,7 @@ import { DialogType } from 'src/app/modules/authorization/models/auth-dialog-typ
 import { AuthenticationService } from 'src/app/services/auth.service/auth.service';
 import { Subject } from 'rxjs';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
-import {UserRegisterDTO} from '../../../../models/User/userRegisterDTO';
+import {UserRegisterDTO} from '../../../../models/DTO/User/userRegisterDTO';
 
 @Component({
   selector: 'app-auth-dialog',

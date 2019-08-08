@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { AccessTokenDTO } from 'src/app/models/Authentification/accessTokenDTO';
+import { AccessTokenDTO } from 'src/app/models/DTO/Authentification/accessTokenDTO';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpResponse } from '@angular/common/http';
-import { UserRegisterDTO } from 'src/app/models/User/userRegisterDTO';
-import { UserLoginDTO } from 'src/app/models/User/userLoginDTO';
-import { AuthUserDTO } from 'src/app/models/User/authUserDTO';
+import { UserRegisterDTO } from 'src/app/models/DTO/User/userRegisterDTO';
+import { UserLoginDTO } from 'src/app/models/DTO/User/userLoginDTO';
+import { AuthUserDTO } from 'src/app/models/DTO/User/authUserDTO';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
-import { UserDTO } from 'src/app/models/User/userDTO';
+import { UserDTO } from 'src/app/models/DTO/User/userDTO';
 import { UserService } from '../user.service/user.service';
 import { EventService } from '../event.service/event.service';
 

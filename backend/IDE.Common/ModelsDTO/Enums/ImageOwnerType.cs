@@ -4,7 +4,7 @@ using System.Text;
 
 namespace IDE.Common.Enums
 {
-    public enum ImageOwnerType
+    public enum ImageOwnerType:int
     {
         User,
         Project

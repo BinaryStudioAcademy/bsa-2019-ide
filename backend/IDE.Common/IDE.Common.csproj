@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <Target Name="Convert" BeforeTargets="PrepareForBuild">
-    <ConvertMain WorkingDirectory="DTO/" ConvertDirectory="../../frontend/src/app/models/"/>
+    <ConvertMain WorkingDirectory="ModelsDTO/" ConvertDirectory="../../frontend/src/app/models/" />
   </Target>
 
 </Project>
