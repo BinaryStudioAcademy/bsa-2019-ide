@@ -15,12 +15,13 @@ export class UserService {
     return this.httpService.getRequest<UserDTO>(`${this.routePrefix}/fromToken`);
   }
 
-  public copyUser({email, firstName, lastName, id }: UserDTO) {
+  public copyUser({email, firstName, lastName, id,nickName }: UserDTO) {
     return {
         firstName,
         email,
         lastName,
-        id
+        id,
+        nickName
     };
 }
 }

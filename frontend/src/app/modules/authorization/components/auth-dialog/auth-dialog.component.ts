@@ -18,6 +18,7 @@ export class AuthDialogComponent implements OnInit {
   public password: string;
   public avatar: string;
   public email: string;
+  public nickName: string;
 
   public display: boolean=false;
   public hidePass = true;
@@ -56,7 +57,7 @@ export class AuthDialogComponent implements OnInit {
 
   public signUp() {
        this.authService
-         .register({ id: 0, firstName: this.firstName,lastName:this.lastName, password: this.password, email: this.email })
+         .register({ id: 0, firstName: this.firstName,lastName:this.lastName, password: this.password, email: this.email, nickName: this.nickName })
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe(result=>this.ref.close());
   }
