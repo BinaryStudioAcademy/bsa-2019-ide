@@ -1,4 +1,5 @@
-﻿using IDE.Common.DTO.User;
+﻿using IDE.Common.DTO.Image;
+using IDE.Common.DTO.User;
 using IDE.Common.Enums;
 using System;
 using System.Collections.Generic;
@@ -23,10 +24,9 @@ namespace IDE.Common.DTO.Common
         public ProjectType ProjectType { get; set; }
         public CompilerType CompilerType { get; set; }
         public AccessModifier AccessModifier { get; set; }
-        public int AuthorId { get; set; }
-        public int GitCredentialId { get; set; }
-        public int? LogoId { get; set; }
-
+        public UserDTO Author { get; set; }
+        public GitCredentialDTO GitCredential { get; set; }
+        public ImageDTO Logo { get; set; }
         public ICollection<BuildDTO> Builds { get; set; }
     }
 }

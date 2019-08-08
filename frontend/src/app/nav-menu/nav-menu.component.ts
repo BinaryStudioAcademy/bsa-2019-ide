@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { AuthDialogService } from '../services/auth-dialog.service/auth-dialog.service'
-import { DialogType } from '../models/common/auth-dialog-type';
+import { DialogType } from '../modules/authorization/models/auth-dialog-type';
 import { AuthenticationService } from '../services/auth.service/auth.service';
-import { User } from '../models/user';
+import { UserDTO } from '../models/User/userDTO';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service/user.service';
 import { Subject } from 'rxjs';
@@ -19,7 +19,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   items: MenuItem[];
 
   public dialogType = DialogType;
-  public authorizedUser: User;
+  public authorizedUser: UserDTO;
   private unsubscribe$ = new Subject<void>();
 
   constructor(

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using IDE.Common.DTO.Common;
+using IDE.Common.DTO.Image;
 using IDE.DAL.Entities;
 
 namespace IDE.BLL.MappingProfiles

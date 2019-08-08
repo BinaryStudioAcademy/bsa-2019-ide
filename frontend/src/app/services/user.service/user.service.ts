@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
-import { User } from 'src/app/models/user';
+import { UserDTO } from 'src/app/models/User/userDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +12,10 @@ export class UserService {
   constructor(private httpService: HttpClientWrapperService) { }
 
   public getUserFromToken() {
-    return this.httpService.getRequest<User>(`${this.routePrefix}/fromToken`);
+    return this.httpService.getRequest<UserDTO>(`${this.routePrefix}/fromToken`);
   }
 
-  public copyUser({email, firstName, lastName, id }: User) {
+  public copyUser({email, firstName, lastName, id }: UserDTO) {
     return {
         firstName,
         email,

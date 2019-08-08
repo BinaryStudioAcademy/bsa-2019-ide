@@ -1,9 +1,9 @@
 import { Injectable, OnDestroy } from '@angular/core';
-import { DialogType } from 'src/app/models/common/auth-dialog-type';
+import { DialogType } from 'src/app/modules/authorization/models/auth-dialog-type';
 import { AuthenticationService } from '../auth.service/auth.service';
 import { AuthDialogComponent } from 'src/app/modules/authorization/components/auth-dialog/auth-dialog.component';
 import { takeUntil } from 'rxjs/operators';
-import { User } from 'src/app/models/user';
+import { UserDTO } from 'src/app/models/User/userDTO';
 import { Subject } from 'rxjs';
 import { DialogService } from 'primeng/components/common/api';
 
@@ -33,7 +33,7 @@ export class AuthDialogService implements OnDestroy {
         dialog
         .onClose
         .pipe(takeUntil(this.unsubscribe$))
-        .subscribe((result: User) => {
+        .subscribe((result: UserDTO) => {
           if (result) {
               this.authService.setUser(result);
           }

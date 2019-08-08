@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
-import { DialogType } from 'src/app/models/common/auth-dialog-type';
+import { DialogType } from 'src/app/modules/authorization/models/auth-dialog-type';
 import { AuthenticationService } from 'src/app/services/auth.service/auth.service';
 import { Subject } from 'rxjs';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
@@ -56,7 +56,7 @@ export class AuthDialogComponent implements OnInit {
 
   public signUp() {
        this.authService
-         .register({ firstName: this.firstName,lastName:this.lastName, password: this.password, email: this.email })
+         .register({ id: 0, firstName: this.firstName,lastName:this.lastName, password: this.password, email: this.email })
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe(result=>this.ref.close());
   }
