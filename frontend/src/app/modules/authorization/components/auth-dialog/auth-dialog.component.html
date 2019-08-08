@@ -4,19 +4,18 @@
   <div *ngIf="config.data.dialogType === dialogType.SignUp">
     <div>
       <label for="float-firstName-input">Your first name</label>
-      <input id="float-firstName-input" type="text" size="30" [(ngModel)]="firstName" name="authFirstName" #upFirstname="ngModel"
-        pInputText>
+      <input id="float-firstName-input" type="text" size="30" [(ngModel)]="firstName" name="authFirstName"
+        #upFirstname="ngModel" pInputText>
     </div>
     <div>
-        <label for="float-lastName-input">Your last name</label>
-      <input id="float-lastName-input" type="text" size="30" [(ngModel)]="lastName" name="authLastName" #upLastname="ngModel"
-        pInputText>
+      <label for="float-lastName-input">Your last name</label>
+      <input id="float-lastName-input" type="text" size="30" [(ngModel)]="lastName" name="authLastName"
+        #upLastname="ngModel" pInputText>
     </div>
   </div>
   <div>
-      <label for="float-email-input">Your E-mail</label>
-    <input id="float-email-input" type="text" size="30" [(ngModel)]="email" name="email"
-      #inEmail="ngModel" pInputText>
+    <label for="float-email-input">Your E-mail</label>
+    <input id="float-email-input" type="text" size="30" [(ngModel)]="email" name="email" #inEmail="ngModel" pInputText>
   </div>
   <div>
     <label>Your password</label>
@@ -26,7 +25,8 @@
 <p class="auth-or">OR</p>
 <div>
   <button type="submit" class="google-btn">Sing up with Google</button>
-  <button type="submit" pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignUp" (click)="signUp()">CREATE
+  <button type="submit" pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignUp"
+    (click)="signUp()">CREATE
     ACCOUNT</button>
   <button pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignIn" (click)="signIn()">LOG IN
     ACCOUNT</button>
