@@ -29,6 +29,7 @@ namespace IDE.API
             services.RegisterCustomValidators();
             services.ConfigureJwt(Configuration);
             services.RegisterAutoMapper();
+            services.RegisterHttpClientFactories(Configuration);
             services.AddCors();
           
             services.AddMvcCore()

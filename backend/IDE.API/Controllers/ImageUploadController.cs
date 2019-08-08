@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using IDE.BLL.Interfaces;
 using IDE.Common.DTO.Image;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
-    // [Authorize] // use in prod
+    // [Authorize] // TODO: use after authorization launch
     [ApiController]
     public class ImageUploadController : ControllerBase
     {
@@ -21,17 +20,25 @@ namespace IDE.API.Controllers
         [HttpPost("base64")]
         public async Task<IActionResult> UploadBase64Async([FromBody] ImageUploadBase64DTO imageBase64Dto)
         {
-            var uploadedimageDto = new ImageDTO();
-            uploadedimageDto.Url = await _imageUploadService.UploadFromBase64Async(imageBase64Dto.Base64);
-            return Created(uploadedimageDto.Url, uploadedimageDto);
+            var uploadedImageDto = new ImageDTO();
+            uploadedImageDto.Url = await _imageUploadService.UploadFromBase64Async(imageBase64Dto.Base64);
+            return Created(uploadedImageDto.Url, uploadedImageDto);
+        }
+
+        [HttpPost("fromUrl")]
+        public async Task<IActionResult> UploadFromUrlAsync([FromBody] ImageUploadFromUrlDTO imageFromUrl)
+        {
+            var uploadedImageDto = new ImageDTO();
+            uploadedImageDto.Url = await _imageUploadService.UploadFromUrlAsync(imageFromUrl.Url);
+            return Created(uploadedImageDto.Url, uploadedImageDto);
         }
 
         [HttpPost("byteArray")]
-        public async Task<IActionResult> UploadbyteArrayAsync([FromBody] byte[] imageByteArray)
+        public async Task<IActionResult> UploadByteArrayAsync([FromBody] ImageUploadByteArrayDTO imageByteArray)
         {
-            var uploadedimageDto = new ImageDTO();
-            uploadedimageDto.Url = await _imageUploadService.UploadFromByteArrayAsync(imageByteArray);
-            return Created(uploadedimageDto.Url, uploadedimageDto);
+            var uploadedImageDto = new ImageDTO();
+            uploadedImageDto.Url = await _imageUploadService.UploadFromByteArrayAsync(imageByteArray.ByteArray);
+            return Created(uploadedImageDto.Url, uploadedImageDto);
         }
     }
 }

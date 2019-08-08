@@ -1,5 +1,4 @@
 ﻿using IDE.BLL.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -12,52 +11,42 @@ namespace IDE.BLL.Services
 {
     public class ImgurUploaderService : IImageUploader
     {
-        private readonly string _imgurApiUrl;
-        private readonly HttpClient _client = new HttpClient();
+        private readonly HttpClient _client;
 
-        public ImgurUploaderService(IConfiguration configuration)
+        public ImgurUploaderService(HttpClient client)
         {
-            var _imgurClientId = configuration["BsaIdeImgurClientId"];
-            _imgurApiUrl = configuration.GetSection("ImgurApiUrl").Value;
-            _client.DefaultRequestHeaders.Add("Authorization", $"Client-ID {_imgurClientId}");
+            _client = client;
         }
 
         public async Task<string> UploadFromBase64Async(string imageBase64)
         {
-            var product = new { image = imageBase64 };
-            string json = JsonConvert.SerializeObject(product);
-            var body = new StringContent(json, Encoding.UTF8, "application/json");
+            return await UploadImageAsync(imageBase64);         
+        }
 
-            var response = await _client.PostAsync($"{_imgurApiUrl}/image", body);
-
-            if (response == null)
-                throw new Exception("Not response from Imgur");
-            if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new Exception("Response status from Imgur is NOT FOUND");
-            if (response.StatusCode != HttpStatusCode.OK)
-                throw new Exception("Bad response from Imgur");
-
-            var responseSring = await response.Content.ReadAsStringAsync();
-            JObject responseJson = JObject.Parse(responseSring);
-            var uploadedImageUrl = (string)responseJson["data"]["link"];
-
-            return uploadedImageUrl;            
+        public async Task<string> UploadFromUrlAsync(string url)
+        {
+            return await UploadImageAsync(url);
         }
 
         public async Task<string> UploadFromByteArrayAsync(byte[] byteArray)
         {
-            var product = new { image = byteArray };
-            string json = JsonConvert.SerializeObject(product);
+            return await UploadImageAsync(byteArray);
+        }
+
+        private async Task<string> UploadImageAsync<T>(T source)
+        {
+            var content = new { image = source };
+            string json = JsonConvert.SerializeObject(content);
             var body = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _client.PostAsync($"{_imgurApiUrl}/image", body);
+            var response = await _client.PostAsync($"image", body);
 
             if (response == null)
-                throw new Exception("Not response from Imgur");
+                throw new Exception("Not response from Imgur"); // TODO: realize custom Exceptions and its handling
             if (response.StatusCode == HttpStatusCode.NotFound)
-                throw new Exception("Response status from Imgur is NOT FOUND");
+                throw new Exception("Response status from Imgur is NOT FOUND"); // TODO: realize custom Exceptions and its handling
             if (response.StatusCode != HttpStatusCode.OK)
-                throw new Exception("Bad response from Imgur");
+                throw new Exception("Bad response from Imgur"); // TODO: realize custom Exceptions and its handling
 
             var responseSring = await response.Content.ReadAsStringAsync();
             JObject responseJson = JObject.Parse(responseSring);
@@ -66,9 +55,5 @@ namespace IDE.BLL.Services
             return uploadedImageUrl;
         }
 
-        public async Task<string> UploadFromUrlAsync(string url)
-        {
-            return "";
-        }
     }
 }

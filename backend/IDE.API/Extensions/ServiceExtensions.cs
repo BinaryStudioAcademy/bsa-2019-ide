@@ -23,7 +23,6 @@ namespace IDE.API.Extensions
             services.AddScoped<JwtIssuerOptions>();
             services.AddScoped<JWTFactory>();
             services.AddScoped<AuthService>();
-            services.AddSingleton<IImageUploader, ImgurUploaderService>();
         }
 
         public static void RegisterCustomValidators(this IServiceCollection services)
@@ -37,6 +36,18 @@ namespace IDE.API.Extensions
             services.AddAutoMapper(cfg =>
             {
                 // add here DTO-entity profiles
+            });
+        }
+
+        public static void RegisterHttpClientFactories(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHttpClient<IImageUploader, ImgurUploaderService>(client =>
+            {
+                var imgurClientId = configuration["BsaIdeImgurClientId"];
+                var imgurApiUrl = configuration.GetSection("ImgurApiUrl").Value;
+
+                client.BaseAddress = new Uri(imgurApiUrl);
+                client.DefaultRequestHeaders.Add("Authorization", $"Client-ID {imgurClientId}");
             });
         }
 
