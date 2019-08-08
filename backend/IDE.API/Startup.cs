@@ -24,20 +24,23 @@ namespace IDE.API
         {
             services.AddDbContext<IdeContext>(option =>
                 option.UseSqlServer(Configuration.GetConnectionString("IdeDBConnection")));
+            services.RegisterAutoMapper();
 
             services.RegisterCustomServices();
             services.RegisterServicesWithIConfiguration(Configuration);
             services.RegisterCustomValidators();
-            services.ConfigureJwt(Configuration);
-            services.RegisterAutoMapper();
-            services.AddCors();
 
+            services.ConfigureJwt(Configuration);
+            services.AddCors();
           
+
             services.AddMvcCore()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddFluentValidation()
                 .AddAuthorization()
-                .AddJsonFormatters();
+                .AddJsonFormatters()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddFluentValidation();
+
+            services.AddCors();
         }
         
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -56,7 +59,7 @@ namespace IDE.API
             .AllowAnyHeader()
             .WithExposedHeaders("Token-Expired")
             .AllowCredentials()
-            .WithOrigins("http://localhost:4200"));
+            .AllowAnyOrigin());
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
