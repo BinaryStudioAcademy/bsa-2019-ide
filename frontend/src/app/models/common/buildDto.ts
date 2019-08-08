@@ -1,7 +1,7 @@
 ﻿/* Auto Generated */
 
-import { ProjectDTO } from "./projectDTO"
-import { UserDTO } from "./../User/userDTO"
+import { ProjectDTO } from "./projectDTO";
+import { UserDTO } from "./../User/userDTO";
 
 export interface BuildDto {
     buildMessage: string;

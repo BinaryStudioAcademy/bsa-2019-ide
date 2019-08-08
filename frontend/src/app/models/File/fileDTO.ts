@@ -1,7 +1,7 @@
 ﻿/* Auto Generated */
 
-import { FileHistoryDTO } from "./fileHistoryDTO"
-import { ProjectDTO } from "./../Common/projectDTO"
+import { FileHistoryDTO } from "./fileHistoryDTO";
+import { ProjectDTO } from '../Common/projectDTO';
 
 export interface FileDTO {
     name: string;

@@ -1,6 +1,6 @@
 ﻿/* Auto Generated */
 
-import { UserDTO } from "./../User/userDTO"
+import { UserDTO } from "./../User/userDTO";
 
 export interface FileHistoryDTO {
     content: string;
