@@ -1,11 +1,11 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { DialogType } from 'src/app/models/common/auth-dialog-type';
-import { MatDialog } from '@angular/material';
 import { AuthenticationService } from '../auth.service/auth.service';
 import { AuthDialogComponent } from 'src/app/modules/authorization/components/auth-dialog/auth-dialog.component';
 import { takeUntil } from 'rxjs/operators';
 import { User } from 'src/app/models/user';
 import { Subject } from 'rxjs';
+import { DialogService } from 'primeng/components/common/api';
 
 @Injectable({
   providedIn: 'root'
@@ -14,28 +14,30 @@ export class AuthDialogService implements OnDestroy {
 
   private unsubscribe$ = new Subject<void>();
 
-  public constructor(private dialog: MatDialog, private authService: AuthenticationService) {}
+
+  public constructor( private authService: AuthenticationService,
+    private dialogService: DialogService)
+    {}
 
     public openAuthDialog(type: DialogType) {
-        const dialog = this.dialog.open(AuthDialogComponent, {
+        const dialog = this.dialogService.open(AuthDialogComponent, {
             data: { dialogType: type },
-            panelClass:'mypanelclass',
-            minWidth: 300,
-            autoFocus: true,
-            backdropClass: 'dialog-backdrop',
-            position: {
-                top: '0'
-            }
+            width: '40%',
+            contentStyle: {
+              "border-radius" : "5px",
+              "padding": "2%"
+            },
+            showHeader : false          
         });
 
         dialog
-            .afterClosed()
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe((result: User) => {
-                if (result) {
-                    this.authService.setUser(result);
-                }
-            });
+        .onClose
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe((result: User) => {
+          if (result) {
+              this.authService.setUser(result);
+          }
+      });
     }
 
     public ngOnDestroy() {

@@ -1,29 +1,33 @@
-<div class="auth-modal">
-  <div mat-dialog-content class="auth-content">
-    <span class="modal-close-btn" (click)="close()">&times;</span>
-    <h2 mat-dialog-title class="title">{{title}}</h2>
-    <form name="authForm" #authForm="ngForm" class="main-content">
-      <div *ngIf="data.dialogType === dialogType.SignUp">
-        <label class="modal-label">Your name</label>
-        <input name="authUFirstName" [(ngModel)]="firstName" #upNickname="ngModel" matInput placeholder="Your first name">
-        <label class="modal-label">Your name</label>
-        <input name="authLastName" [(ngModel)]="lastName" #upNickname="ngModel" matInput placeholder="Your last name">
-      </div>
-      <div>
-        <label class="modal-label">Your E-mail</label>
-        <input name="authEmail" [(ngModel)]="email" #inEmail="ngModel" matInput placeholder="Email">
-      </div>
-      <div>
-        <label class="modal-label">Your password</label>
-        <input name="authPassword" [(ngModel)]="password" #upPassword="ngModel" matInput
-          [type]="hidePass ? 'password' : 'text'" placeholder="Password (at least 6 characters)">
-      </div>
-    </form>
-    <p class="auth-or">OR</p>
+<span class="modal-close-btn" (click)="close()">&times;</span>
+<h2 class="title">{{title}}</h2>
+<form name="authForm" #authForm="ngForm" (ngSubmit)="close()">
+  <div *ngIf="config.data.dialogType === dialogType.SignUp">
     <div>
-      <button class="google-btn">Sing up with Google</button>
-      <button class="auth-btn" *ngIf="data.dialogType === dialogType.SignUp" (click)="signUp()">CREATE ACCOUNT</button>
-      <button class="auth-btn" *ngIf="data.dialogType === dialogType.SignIn" (click)="signIn()">LOG IN ACCOUNT</button>
+      <label for="float-firstName-input">Your first name</label>
+      <input id="float-firstName-input" type="text" size="30" [(ngModel)]="firstName" name="authFirstName" #upFirstname="ngModel"
+        pInputText>
+    </div>
+    <div>
+        <label for="float-lastName-input">Your last name</label>
+      <input id="float-lastName-input" type="text" size="30" [(ngModel)]="lastName" name="authLastName" #upLastname="ngModel"
+        pInputText>
     </div>
   </div>
+  <div>
+      <label for="float-email-input">Your E-mail</label>
+    <input id="float-email-input" type="text" size="30" [(ngModel)]="email" name="email"
+      #inEmail="ngModel" pInputText>
+  </div>
+  <div>
+    <label>Your password</label>
+    <input pPassword [(ngModel)]="password" name="password" type="password" />
+  </div>
+</form>
+<p class="auth-or">OR</p>
+<div>
+  <button type="submit" class="google-btn">Sing up with Google</button>
+  <button type="submit" pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignUp" (click)="signUp()">CREATE
+    ACCOUNT</button>
+  <button pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignIn" (click)="signIn()">LOG IN
+    ACCOUNT</button>
 </div>

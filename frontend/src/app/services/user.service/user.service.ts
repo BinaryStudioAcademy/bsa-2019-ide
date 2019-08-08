@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpService } from 'src/app/services/http.service/http.service';
+import { HttpClientWrapperService } from '../http-client-wrapper.service';
 import { User } from 'src/app/models/user';
 
 @Injectable({
@@ -9,10 +9,10 @@ export class UserService {
 
   public routePrefix = 'users';
 
-  constructor(private httpService: HttpService) { }
+  constructor(private httpService: HttpClientWrapperService) { }
 
   public getUserFromToken() {
-    return this.httpService.getFullRequest<User>(`${this.routePrefix}/fromToken`);
+    return this.httpService.getRequest<User>(`${this.routePrefix}/fromToken`);
   }
 
   public copyUser({email, firstName, lastName, id }: User) {

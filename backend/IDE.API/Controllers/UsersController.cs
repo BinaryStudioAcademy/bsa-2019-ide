@@ -24,5 +24,12 @@ namespace IDE.API.Controllers
         {
             return Ok(await _userService.GetUserById(this.GetUserIdFromToken()));
         }
+
+        [HttpGet("{id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<UserDTO>> GetById(int id)
+        {
+            return Ok(await _userService.GetUserById(id));
+        }
     }
 }

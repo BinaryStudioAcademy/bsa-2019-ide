@@ -4,6 +4,7 @@ using IDE.API.Validators;
 using IDE.BLL.JWT;
 using IDE.BLL.MappingProfiles;
 using IDE.BLL.Services;
+using IDE.BLL.Services.Abstract;
 using IDE.Common.Authentification;
 using IDE.Common.DTO.Authentification;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -37,6 +38,10 @@ namespace IDE.API.Extensions
             services.AddAutoMapper(cfg =>
             {
                 cfg.AddProfile<UserProfile>();
+                cfg.AddProfile<ProjectProfile>();
+                cfg.AddProfile<ImageProfile>();
+                cfg.AddProfile<BuildProfile>();
+                cfg.AddProfile<GitCredentiaProfile>();
             });
         }
 

@@ -16,7 +16,8 @@ import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { HttpClientModule } from '@angular/common/http';
 import {ToastrModule} from 'ngx-toastr';
-import { MatDialogModule, MatSnackBarModule } from '@angular/material';
+import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
+import { DialogService } from 'primeng/api';
 
 
 @NgModule({
@@ -38,10 +39,10 @@ import { MatDialogModule, MatSnackBarModule } from '@angular/material';
     MenubarModule,
     ButtonModule,
     HttpClientModule,
-    MatSnackBarModule,
+    DynamicDialogModule,
     ToastrModule.forRoot()
   ],
-  providers: [],
+  providers: [DialogService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

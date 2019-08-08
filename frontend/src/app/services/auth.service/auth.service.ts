@@ -6,7 +6,7 @@ import { HttpResponse } from '@angular/common/http';
 import { UserRegisterDto } from 'src/app/models/auth/user-register-dto';
 import { UserLoginDto } from 'src/app/models/auth/user-login-dto';
 import { AuthUser } from 'src/app/models/auth/auth-user';
-import { HttpService } from '../http.service/http.service';
+import { HttpClientWrapperService } from '../http-client-wrapper.service';
 import { User } from 'src/app/models/user';
 import { UserService } from '../user.service/user.service';
 import { EventService } from '../event.service/event.service';
@@ -18,12 +18,12 @@ export class AuthenticationService {
 
     private user: User;
 
-    constructor(private httpService: HttpService,
+    constructor(private httpService: HttpClientWrapperService,
         private userService: UserService,
         private eventService: EventService ) { }
 
     public register(user: UserRegisterDto) {
-        return this._handleAuthResponse(this.httpService.postFullRequest<AuthUser>(`register`, user));
+        return this._handleAuthResponse(this.httpService.postRequest<AuthUser>(`register`, user));
     }
 
     public setUser(user: User) {
@@ -32,7 +32,7 @@ export class AuthenticationService {
     }
 
     public login(user: UserLoginDto) {
-        return this._handleAuthResponse(this.httpService.postFullRequest<AuthUser>(`auth/login`, user));
+        return this._handleAuthResponse(this.httpService.postRequest<AuthUser>(`auth/login`, user));
     }
 
     public logout() {
@@ -47,7 +47,7 @@ export class AuthenticationService {
     }
 
     public revokeRefreshToken() {
-        return this.httpService.postFullRequest<AccessTokenDto>(`token/revoke`, {
+        return this.httpService.postRequest<AccessTokenDto>(`token/revoke`, {
             refreshToken: localStorage.getItem('refreshToken')
         });
     }
@@ -59,7 +59,7 @@ export class AuthenticationService {
 
     public refreshTokens() {
         return this.httpService
-            .postFullRequest<AccessTokenDto>(`token/refresh`, {
+            .postRequest<AccessTokenDto>(`token/refresh`, {
                 accessToken: JSON.parse(localStorage.getItem('accessToken')),
                 refreshToken: JSON.parse(localStorage.getItem('refreshToken'))
             })

@@ -1,10 +1,9 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { DialogType } from 'src/app/models/common/auth-dialog-type';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 import { AuthenticationService } from 'src/app/services/auth.service/auth.service';
 import { Subject } from 'rxjs';
-import { SnackBarService } from 'src/app/services/snack.service/snack-bar.service';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-auth-dialog',
@@ -20,42 +19,45 @@ export class AuthDialogComponent implements OnInit {
   public avatar: string;
   public email: string;
 
+  public display: boolean=false;
   public hidePass = true;
   public title: string;
   private unsubscribe$ = new Subject<void>();
+  providers: [AuthenticationService];
 
   constructor(
-      private dialogRef: MatDialogRef<AuthDialogComponent>,
-      @Inject(MAT_DIALOG_DATA) public data: any,
       private authService: AuthenticationService,
-      private snackBarService: SnackBarService
+      public ref: DynamicDialogRef, 
+      public config: DynamicDialogConfig
   ) {}
 
   public ngOnInit() {
-      this.title = this.data.dialogType === DialogType.SignIn ? 'Lon in your account' : 'Create your account';
+      this.title = this.config.data.dialogType === DialogType.SignIn ? 'Lon in your account' : 'Create your account';         
   }
+  
 
   public ngOnDestroy() {
       this.unsubscribe$.next();
       this.unsubscribe$.complete();
   }
 
-  public close() {
-      this.dialogRef.close(false);
+  public close()
+  {
+      this.ref.close();
   }
+
 
   public signIn() {
       this.authService
           .login({ email: this.email, password: this.password })
           .pipe(takeUntil(this.unsubscribe$))
-          .subscribe((response) => this.dialogRef.close(response), (error) => console.log(this.snackBarService.showErrorMessage(error)));
+          .subscribe(result=>this.ref.close());
   }
 
   public signUp() {
-      this.authService
-          .register({ firstName: this.firstName,lastName:this.lastName, password: this.password, email: this.email })
+       this.authService
+         .register({ firstName: this.firstName,lastName:this.lastName, password: this.password, email: this.email })
           .pipe(takeUntil(this.unsubscribe$))
-          .subscribe((response) => this.dialogRef.close(response), (error) => this.snackBarService.showErrorMessage(error));
+          .subscribe(result=>this.ref.close());
   }
-
 }
