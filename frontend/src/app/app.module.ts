@@ -43,10 +43,15 @@ import { JwtInterceptor } from './helpers/jwt.interceptor';
     DynamicDialogModule,
     ToastrModule.forRoot()
   ],
-  providers: 
-  
-    [DialogService,
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }],
+  providers:
+    [
+      DialogService,
+      {
+        provide: HTTP_INTERCEPTORS,
+        useClass: JwtInterceptor,
+        multi: true
+      }
+    ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

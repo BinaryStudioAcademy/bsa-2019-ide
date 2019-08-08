@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ProjectDescription } from 'src/app/model/project';
+import { ProjectDescription } from 'src/app/models/project/project-description';
 
 @Component({
   selector: 'app-projects-list',
@@ -12,8 +12,6 @@ export class ProjectsListComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-    
-  }
+  ngOnInit() { }
 
 }
