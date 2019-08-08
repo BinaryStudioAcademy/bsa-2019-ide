@@ -51,9 +51,9 @@ namespace IDE.API.Controllers
                 await _projectService.CreateProject(project);
                 return Created("/project", project);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Exception("Invalid data");
+                return BadRequest($"Invalid data {e.InnerException}");
             }
         }
     }

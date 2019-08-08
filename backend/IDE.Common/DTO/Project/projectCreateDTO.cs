@@ -13,5 +13,6 @@ namespace IDE.Common.DTO.Project
         public CompilerType CompilerType { get; set; }
         public int CountOfSaveBuilds { get; set; }
         public int CountOfBuildAttempts { get; set; }
+        public int GitCredentialId { get; set; }
     }
 }
