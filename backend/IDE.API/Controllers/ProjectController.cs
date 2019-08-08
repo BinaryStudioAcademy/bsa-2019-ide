@@ -39,5 +39,19 @@ namespace IDE.API.Controllers
         {
             return Ok(await _projectService.GetAssignedUserProjects(userId));
         }
+
+        [HttpPost]
+        public async Task<ActionResult> PostUser(ProjectCreateDTO project)
+        {
+            try
+            {
+                await _projectService.CreateProject(project);
+                return Created("/project", project);
+            }
+            catch (Exception)
+            {
+                throw new Exception("Invalid data");
+            }
+        }
     }
 }

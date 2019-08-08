@@ -11,7 +11,9 @@ namespace IDE.BLL.MappingProfiles
         {
             CreateMap<Project, ProjectDTO>();
             CreateMap<ProjectDTO, Project>();
-            
+
+            CreateMap<ProjectCreateDTO, Project>();
+
             CreateMap<Project, ProjectDescriptionDTO>()
                 .ForMember(x => x.Created, y => y.MapFrom(z => z.CreatedAt))
                 .ForMember(x => x.Title, y => y.MapFrom(z => z.Name))

@@ -82,5 +82,18 @@ namespace IDE.BLL.Services
                                                 ?.BuildFinished);
             return projectsDescriptions;
         }
+
+        public async Task CreateProject(ProjectCreateDTO projectCreateDTO)
+        {
+
+            if (_context.Users.SingleOrDefault(u => u.Id == projectCreateDTO.AuthorId) == null)
+                throw new Exception("Invalid AuthorId");
+
+            var project = _mapper.Map<Project>(projectCreateDTO);
+            project.CreatedAt = DateTime.Now;
+
+            await _context.Projects.AddAsync(project);
+            await _context.SaveChangesAsync();
+        }
     }
 }
