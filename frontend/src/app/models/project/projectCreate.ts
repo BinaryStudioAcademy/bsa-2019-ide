@@ -2,8 +2,7 @@ import { Language } from '../common/project-language';
 import { ProjectType } from '../common/project-type';
 import { CompilerType } from '../common/compiler-type';
 
-export interface Project {
-    id: number;
+export interface ProjectCreate {
     name: string;
     description: string;
     authorId: number;
@@ -12,5 +11,4 @@ export interface Project {
     compilerType: CompilerType;
     countOfSaveBuilds: number;
     countOfBuildAttempts: number;
-    gitCredentialId: number;
 }

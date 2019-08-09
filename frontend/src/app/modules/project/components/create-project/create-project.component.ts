@@ -1,19 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Project } from 'src/app/models/project/project';
 import { ProjectService } from 'src/app/services/project.service/project.service';
+import { ProjectCreate } from 'src/app/models/project/projectCreate';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-project',
   templateUrl: './create-project.component.html',
   styleUrls: ['./create-project.component.sass']
 })
-export class CreateProjectComponent implements OnInit {
-
-  constructor(private fb: FormBuilder, private projectService: ProjectService) { }
+export class CreateProjectComponent implements OnInit, OnDestroy {
+  
+  constructor(
+    private fb: FormBuilder,
+    private projectService: ProjectService,
+    private toastrService:ToastrService,
+    private router:Router) { }
+  
   private languages: any;
   private projectTypes: any;
   private compilerTypes: any;
+  private project:ProjectCreate;
 
   public projectForm = this.fb.group({
     name: ['', Validators.required],
@@ -26,23 +34,29 @@ export class CreateProjectComponent implements OnInit {
   });
 
   onSubmit() {
-    console.log(this.projectForm.value);
 
-    const project: Project = {
-      id: 0,
+    this.project = {
       name: this.projectForm.get('name').value,
       description: this.projectForm.get('description').value,
-      authorId: 222, //get current author Id
+      authorId: 1, //you need to path here id of your existing user
       language: this.projectForm.get('language').value,
       projectType: this.projectForm.get('projectType').value,
       compilerType: this.projectForm.get('compilerType').value,
       countOfSaveBuilds: this.projectForm.get('countOfSavedBuilds').value,
-      countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value,
-      gitCredentialId: 222, // Set smth here
+      countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value
     };
-    console.log(project);
-    // this.projectService.addProject(project)
-    //   .subscribe(x => console.log(x));
+
+   
+     this.projectService.addProject(this.project)
+       .subscribe(res=>{
+        this.toastrService.success("Project created");
+         console.log(res);
+         //{project.id}" server will return Id prop 
+         this.router.navigate([`/project/5`]);
+       },
+       error=>{
+         this.toastrService.error('error');
+       })
   }
 
   ngOnInit(): void { //Maybe choose initializing
@@ -61,5 +75,8 @@ export class CreateProjectComponent implements OnInit {
       {label: 'Library', value: 2}
     ];
   }
-}
 
+  ngOnDestroy(): void {
+    this.projectForm = null;
+  }
+}
