@@ -13,6 +13,7 @@ namespace IDE.DAL.Context
     {
         private const int ENTITY_COUNT = 20;
         private const int USER_COUNT = 2;
+        private static DateTime DATE_TIME = new DateTime(2018, 1, 1);
 
         public static void Configure(this ModelBuilder modelBuilder)
         {
@@ -91,9 +92,9 @@ namespace IDE.DAL.Context
 
             var testBuildsFake = new Faker<Build>()
                 .RuleFor(u => u.Id, f => buildId++)
-                .RuleFor(p => p.BuildFinished, f => DateTime.Now)
+                .RuleFor(p => p.BuildFinished, f => f.Date.Between(DATE_TIME.AddMonths(9), DATE_TIME.AddMonths(10)))
                 .RuleFor(p => p.BuildMessage, f => f.Lorem.Sentence(10))
-                .RuleFor(p => p.BuildStarted, f => DateTime.Now)
+                .RuleFor(p => p.BuildStarted, f => f.Date.Between(DATE_TIME.AddMonths(8), DATE_TIME.AddMonths(9)))
                 .RuleFor(p => p.BuildStatus, f => f.PickRandom<BuildStatus>())
                 .RuleFor(p => p.ProjectId, f => f.PickRandom(projects).Id)
                 .RuleFor(p => p.UserId, f => f.PickRandom(users).Id);
@@ -110,11 +111,11 @@ namespace IDE.DAL.Context
 
             var testUsersFake = new Faker<User>()
                 .RuleFor(u => u.Id, f => userId++)
-                .RuleFor(u => u.Birthday, f => f.Date.Past(15))
+                .RuleFor(u => u.Birthday, f => f.Date.Between(DATE_TIME.AddYears(-20), DATE_TIME.AddYears(-16)))
                 .RuleFor(u => u.FirstName, f => f.Name.FirstName())
                 .RuleFor(u => u.LastName, f => f.Name.LastName())
-                .RuleFor(u => u.RegisteredAt, f => DateTime.Now)
-                .RuleFor(u => u.LastActive, f => DateTime.Now)
+                .RuleFor(u => u.RegisteredAt, f => f.Date.Between(DATE_TIME.AddDays(1), DATE_TIME.AddDays(180)))
+                .RuleFor(u => u.LastActive, f => f.Date.Between(DATE_TIME.AddDays(180), DATE_TIME.AddDays(190)))
                 .RuleFor(u => u.GitHubUrl, f => f.Internet.Url())
                 .RuleFor(u => u.PasswordSalt, f => Convert.ToBase64String(SecurityHelper.GetRandomBytes()))
                 .RuleFor(u => u.PasswordHash, (f, u) => SecurityHelper.HashPassword(f.Internet.Password(12), Convert.FromBase64String(u.PasswordSalt)))
@@ -135,6 +136,7 @@ namespace IDE.DAL.Context
                 PasswordSalt = salt,
                 FirstName = "testUser",
                 LastName = "testUser",
+                NickName = "TheBestUser",
                 AvatarId = 1,
                 Birthday = DateTime.Now.AddYears(-14),
                 LastActive = DateTime.Now,
@@ -157,7 +159,7 @@ namespace IDE.DAL.Context
                 .RuleFor(i => i.CompilerType, f => f.PickRandom<CompilerType>())
                 .RuleFor(i => i.CountOfBuildAttempts, f => f.Random.Number(5, 10))
                 .RuleFor(i => i.CountOfSaveBuilds, f => f.Random.Number(5, 10))
-                .RuleFor(i => i.CreatedAt, f => DateTime.Now)
+                .RuleFor(i => i.CreatedAt, f => f.Date.Between(DATE_TIME, DATE_TIME.AddDays(180)))
                 .RuleFor(i => i.Description, f => f.Lorem.Sentence(5))
                 .RuleFor(i => i.GitCredentialId, f => f.PickRandom(gits).Id)
                 .RuleFor(i => i.Language, f => f.PickRandom<Language>())
