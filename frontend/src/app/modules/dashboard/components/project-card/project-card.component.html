@@ -1,0 +1,17 @@
+<p-card routerLink="/project/{{project.id}}" subheader="{{project.creator}}">
+    <p-header>
+        <div class="imgContainer" [style.background-image]="'url(' + project.photoLink + ')'">
+            <h1>
+                {{project.title}}
+            </h1>
+        </div>
+    </p-header>
+    <div>
+        <p>
+            <span class="highlighted">Created:</span> {{project.created | date:'d MMMM yyyy'}}
+        </p>
+        <p>
+            <span class="highlighted">Last build:</span> {{lastTimeBuild()}}
+        </p>
+    </div>
+</p-card>

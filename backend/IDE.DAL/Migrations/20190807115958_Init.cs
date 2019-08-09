@@ -83,7 +83,7 @@ namespace IDE.DAL.Migrations
                     CompilerType = table.Column<int>(nullable: false),
                     AccessModifier = table.Column<int>(nullable: false),
                     AuthorId = table.Column<int>(nullable: false),
-                    GitCredentialId = table.Column<int>(nullable: false),
+                    GitCredentialId = table.Column<int>(nullable: true),
                     LogoId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>

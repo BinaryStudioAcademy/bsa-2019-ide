@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {MenuItem} from 'primeng/api';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-root',
@@ -7,24 +8,24 @@ import {MenuItem} from 'primeng/api';
   styleUrls: ['./dashboard-root.component.sass']
 })
 export class DashboardRootComponent implements OnInit {
-  items: MenuItem[];
+  items: string[][];
+  isActive: Array<boolean> = [];
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
-    this.items = [{
-      label: 'Projects',
-      items: [
-          {label: 'Project 1', routerLink: ['/project/1']},
-          {label: 'Project 2', routerLink: ['/project/2']}
-      ]
-    },
-    {
-      label: 'Workspaces',
-      items: [
-          {label: 'Workspace 1', routerLink: ['/workspace/1']},
-          {label: 'Workspaces 2', routerLink: ['/workspace/2']}
-      ]
-    }];
+    this.items = [
+      ['All projects', '/dashboard/'],
+      ['My projects', '/dashboard/myProjects'],
+      ['Assigned projects', '/dashboard/assignedProjects']
+    ];
+
+    this.isActive[0] = true;
+  }
+
+  redirect(i: number) {
+    this.isActive = [];
+    this.isActive[i] = true;
+    this.router.navigate([this.items[i][1]]);
   }
 }
