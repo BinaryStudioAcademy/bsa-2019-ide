@@ -39,14 +39,13 @@ namespace IDE.API
 
             // TODO IN THIS TASK remove to extentions
 
-            services.Configure<FileStorageDbSettings>(
-                Configuration.GetSection(nameof(FileStorageDbSettings)));
+            services.Configure<FileStorageNoSqlDbSettings>(
+                Configuration.GetSection(nameof(FileStorageNoSqlDbSettings)));
 
-            services.AddSingleton<IFileStorageDbSettings>(sp =>
-                sp.GetRequiredService<IOptions<FileStorageDbSettings>>().Value);
+            services.AddSingleton<IFileStorageNoSqlDbSettings>(sp =>
+               sp.GetRequiredService<IOptions<FileStorageNoSqlDbSettings>>().Value);
 
             //_______________________________________________________
-
 
             services.AddMvcCore()
                 .AddAuthorization()

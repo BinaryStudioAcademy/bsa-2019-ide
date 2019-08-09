@@ -2,7 +2,7 @@
 
 namespace IDE.DAL.Settings
 {
-    public class FileStorageDbSettings : IFileStorageDbSettings
+    public class FileStorageNoSqlDbSettings : IFileStorageNoSqlDbSettings
     {
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }

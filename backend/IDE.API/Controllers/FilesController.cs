@@ -25,7 +25,7 @@ namespace IDE.API.Controllers
             return Ok(await _fileService.GetAllAsync());
         }
 
-        [HttpGet("{id: length(24)}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<FileDTO>> GetByIdAsync(string id)
         {
             return Ok(await _fileService.GetByIdAsync(id));

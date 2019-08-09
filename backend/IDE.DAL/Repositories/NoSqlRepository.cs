@@ -11,7 +11,7 @@ namespace IDE.DAL.Repositories
     {
         private readonly IMongoCollection<T> _items;
 
-        public NoSqlRepository(IFileStorageDbSettings settings)
+        public NoSqlRepository(IFileStorageNoSqlDbSettings settings)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);

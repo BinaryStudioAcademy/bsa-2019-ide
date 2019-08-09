@@ -1,6 +1,6 @@
 ﻿namespace IDE.DAL.Interfaces
 {
-    public interface IFileStorageDbSettings
+    public interface IFileStorageNoSqlDbSettings
     {
         string ConnectionString { get; set; }
         string DatabaseName { get; set; }

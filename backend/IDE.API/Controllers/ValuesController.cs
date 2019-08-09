@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace IDE.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [AllowAnonymous]
     [ApiController]
     public class ValuesController : ControllerBase

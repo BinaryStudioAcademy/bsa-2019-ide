@@ -9,6 +9,7 @@ using IDE.Common.Authentification;
 using IDE.Common.DTO.Authentification;
 using IDE.Common.DTO.Common;
 using IDE.Common.DTO.User;
+using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Factories;
 using IDE.DAL.Factories.Abstractions;
 using IDE.DAL.Interfaces;
@@ -32,6 +33,8 @@ namespace IDE.API.Extensions
             services.AddScoped<AuthService>();
             services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
             services.AddScoped<UserService>();
+
+            services.AddSingleton<INoSqlRepository<File>, NoSqlRepository<File>>();
             services.AddSingleton<FileService>();
         }
 
