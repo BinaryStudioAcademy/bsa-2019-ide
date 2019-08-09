@@ -15,38 +15,44 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import {ToastrModule} from 'ngx-toastr';
+import { ToastrModule } from 'ngx-toastr';
 import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
-import { DialogService } from 'primeng/api';
+import { DialogService, TreeNode } from 'primeng/api';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
+import { GeneralModule } from './general/general.module';
+import { TreeModule } from 'primeng/tree';
+
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    NavMenuComponent,
+    declarations: [
+        AppComponent,
+        NavMenuComponent,
 
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AuthorizationModule,
-    DashboardModule,
-    LandingModule,
-    ProjectModule,
-    UserModule,
-    WorkspaceModule,
-    AppRoutingModule,
-    MenubarModule,
-    ButtonModule,
-    HttpClientModule,
-    DynamicDialogModule,
-    ToastrModule.forRoot()
-  ],
-  providers: 
-  
-    [DialogService,
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }],
-  bootstrap: [AppComponent]
+    ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        AuthorizationModule,
+        DashboardModule,
+        LandingModule,
+        ProjectModule,
+        UserModule,
+        WorkspaceModule,
+        AppRoutingModule,
+        MenubarModule,
+        ButtonModule,
+        HttpClientModule,
+        DynamicDialogModule,
+        ToastrModule.forRoot(),
+        GeneralModule,
+        TreeModule
+        
+    ],
+    providers:
+
+        [DialogService,
+            { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
