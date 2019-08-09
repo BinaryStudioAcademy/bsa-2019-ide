@@ -23,7 +23,7 @@ namespace IDE.API.Validators
 
             RuleFor(u=>u.Password)
                 .Length(8, 16).WithMessage("Email length should have 8-16 symbol")
-                .Matches("[а-яА-Яa-zA-Z0-9]");
+                .Matches("[а-яА-Яa-zA-Z0-9]{8,16}");
 
 
 
