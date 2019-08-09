@@ -3,12 +3,12 @@ import { ProjectDescriptionDTO } from 'src/app/models/dto/project/projectDescrip
 import { ProjectService } from 'src/app/services/project.service/project.service';
 
 @Component({
-  selector: 'app-all-projects',
-  templateUrl: './all-projects.component.html',
-  styleUrls: ['./all-projects.component.sass']
+    selector: 'app-all-projects',
+    templateUrl: './all-projects.component.html',
+    styleUrls: ['./all-projects.component.sass']
 })
 export class AllProjectsComponent implements OnInit {
-  projects: ProjectDescriptionDTO[];
+    projects: ProjectDescriptionDTO[];
 
   constructor(private projectService: ProjectService) { }
 

@@ -6,25 +6,25 @@ import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class ProjectService {
 
-  constructor(private httpClient: HttpClientWrapperService) { }
+    constructor(private httpClient: HttpClientWrapperService) { }
 
-  addProject(project: ProjectCreateDTO) {
-    return this.httpClient.postRequest('project', project);
-  }
+    addProject(project: ProjectCreateDTO) {
+        return this.httpClient.postRequest('project', project);
+    }
 
-  getMyProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
-    return this.httpClient.getRequest('project/my');
-  }
+    getMyProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
+        return this.httpClient.getRequest('project/my');
+    }
 
-  getAssignedProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>>  {
-    return this.httpClient.getRequest('project/assigned');
-  }
+    getAssignedProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>>  {
+        return this.httpClient.getRequest('project/assigned');
+    }
 
-  getAllProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>>  {
-    return this.httpClient.getRequest('project/all');
-  }
+    getAllProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>>  {
+        return this.httpClient.getRequest('project/all');
+    }
 }
