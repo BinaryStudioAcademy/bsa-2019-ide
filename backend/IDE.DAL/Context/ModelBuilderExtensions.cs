@@ -12,6 +12,7 @@ namespace IDE.DAL.Context
     public static class ModelBuilderExtensions
     {
         private const int ENTITY_COUNT = 20;
+        private const int USER_COUNT = 2;
 
         public static void Configure(this ModelBuilder modelBuilder)
         {
@@ -53,15 +54,16 @@ namespace IDE.DAL.Context
         {
             Randomizer.Seed = new Random(2048);
 
-            var avatars = GenerateRandomImages();
+            var avatars = GenerateRandomAvatars(out int imageId);
+            var images = GenerateRandomImages(imageId);
 
             var users = GenerateRandomUsers(avatars);
             var gits = GenerateRandomGitCredentials();
-            var projects = GenerateRandomProjects(users, gits, avatars);
+            var projects = GenerateRandomProjects(users, gits, images);
             var builds = GenerateRandomBuilds(users, projects);
             var projectMembers = GenerateRandomProjectMembers(users, projects).GroupBy(x => x.ProjectId + " " + x.UserId).Select(x => x.First());
 
-            modelBuilder.Entity<Image>().HasData(avatars);
+            modelBuilder.Entity<Image>().HasData(avatars.Concat(images));
             modelBuilder.Entity<User>().HasData(users);
             modelBuilder.Entity<GitCredential>().HasData(gits);
             modelBuilder.Entity<Project>().HasData(projects);
@@ -78,7 +80,7 @@ namespace IDE.DAL.Context
                 .RuleFor(p => p.UserId, f => f.PickRandom(users).Id)
                 .RuleFor(p => p.UserAccess, f => f.PickRandom<UserAccess>());
 
-            var generatedProjectMembers = testProjectMembersFake.Generate(ENTITY_COUNT * 2);
+            var generatedProjectMembers = testProjectMembersFake.Generate(ENTITY_COUNT);
 
             return generatedProjectMembers;
         }
@@ -117,9 +119,10 @@ namespace IDE.DAL.Context
                 .RuleFor(u => u.PasswordSalt, f => Convert.ToBase64String(SecurityHelper.GetRandomBytes()))
                 .RuleFor(u => u.PasswordHash, (f, u) => SecurityHelper.HashPassword(f.Internet.Password(12), Convert.FromBase64String(u.PasswordSalt)))
                 .RuleFor(u => u.Email, f => f.Internet.Email())
-                .RuleFor(u => u.AvatarId, f => f.PickRandom(avatars).Id);
+                .RuleFor(u => u.AvatarId, f => f.PickRandom(avatars).Id)
+                .RuleFor(u => u.NickName, f => f.Internet.UserName());
 
-            var generatedUsers = testUsersFake.Generate(2);
+            var generatedUsers = testUsersFake.Generate(USER_COUNT);
 
             var salt = Convert.ToBase64String(SecurityHelper.GetRandomBytes());
             var hashedPassword = SecurityHelper.HashPassword("12345", Convert.FromBase64String(salt));
@@ -184,14 +187,26 @@ namespace IDE.DAL.Context
 
             return generatedGits;
         }
-
-        public static ICollection<Image> GenerateRandomImages()
+        
+        public static ICollection<Image> GenerateRandomAvatars(out int lastimageId)
         {
             int imageId = 1;
 
             var testImageFake = new Faker<Image>()
                 .RuleFor(i => i.Id, f => imageId++)
-                .RuleFor(i => i.Url, f => f.Image.PicsumUrl());
+                .RuleFor(i => i.Url, f => f.Internet.Avatar());
+
+            var generatedImages = testImageFake.Generate(USER_COUNT + 1);
+            lastimageId = imageId;
+
+            return generatedImages;
+        }
+
+        public static ICollection<Image> GenerateRandomImages(int imageId)
+        {
+            var testImageFake = new Faker<Image>()
+                .RuleFor(i => i.Id, f => imageId++)
+                .RuleFor(i => i.Url, f => f.Image.LoremFlickrUrl(640, 480));
 
             var generatedImages = testImageFake.Generate(ENTITY_COUNT);
 
