@@ -1,17 +1,17 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ProjectDescriptionDTO } from 'src/app/models/dto/project/projectDescriptionDTO';
+import { ProjectDescriptionDTO } from '../../../../models/DTO/Project/projectDescriptionDTO';
 
 @Component({
-  selector: 'app-projects-list',
-  templateUrl: './projects-list.component.html',
-  styleUrls: ['./projects-list.component.sass']
+    selector: 'app-projects-list',
+    templateUrl: './projects-list.component.html',
+    styleUrls: ['./projects-list.component.sass']
 })
 export class ProjectsListComponent implements OnInit {
-  @Input() header: string;
-  @Input() projects: ProjectDescriptionDTO[];
+    @Input() header: string;
+    @Input() projects: ProjectDescriptionDTO[];
 
-  constructor() { }
+    constructor() { }
 
-  ngOnInit() { }
+    ngOnInit() { }
 
 }
