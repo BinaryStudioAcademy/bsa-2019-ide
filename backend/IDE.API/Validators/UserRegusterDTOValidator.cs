@@ -10,12 +10,12 @@ namespace IDE.API.Validators
             RuleFor(u => u.FirstName)
                 .NotEmpty().WithMessage("User first name can not be empty")
                 .Length(2, 32).WithMessage("User last name length should have 2-32 symbol")
-                .Matches("[а-яА-Яa-zA-Z]{2,32}");
+                .Matches("[а-яА-Яa-zA-Z^0-9]{2,32}");
 
             RuleFor(u => u.LastName)
                 .NotEmpty().WithMessage("User last name can not be empty")
                 .Length(2, 32).WithMessage("User last name length should have 2-32 symbol")
-                .Matches("[а-яА-Яa-zA-Z]{2,32}");
+                .Matches("[а-яА-Яa-zA-Z^0-9]{2,32}");
 
             RuleFor(u => u.Email)
                 .Length(2, 32).WithMessage("Email length should have 2-32 symbol")
@@ -23,7 +23,7 @@ namespace IDE.API.Validators
 
             RuleFor(u=>u.Password)
                 .Length(8, 16).WithMessage("Email length should have 8-16 symbol")
-                .Matches("[а-яА-Яa-zA-Z]");
+                .Matches("[а-яА-Яa-zA-Z0-9]");
 
 
 
