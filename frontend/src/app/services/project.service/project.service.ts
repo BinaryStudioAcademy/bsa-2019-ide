@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
-import { ProjectCreate } from 'src/app/models/dto/project/projectCreate';
+import { ProjectCreateDTO } from 'src/app/models/dto/project/projectCreateDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +9,7 @@ export class ProjectService {
 
   constructor(private httpClient: HttpClientWrapperService) { }
 
-  addProject(project: ProjectCreate) {
+  addProject(project: ProjectCreateDTO) {
     return this.httpClient.postRequest('project', project);
   }
 }

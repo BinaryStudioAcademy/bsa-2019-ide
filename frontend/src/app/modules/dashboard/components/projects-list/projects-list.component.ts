@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ProjectDescription } from 'src/app/models/dto/project/project-description';
+import { ProjectDescriptionDTO } from 'src/app/models/dto/project/projectDescriptionDTO';
 
 @Component({
   selector: 'app-projects-list',
@@ -8,7 +8,7 @@ import { ProjectDescription } from 'src/app/models/dto/project/project-descripti
 })
 export class ProjectsListComponent implements OnInit {
   @Input() header: string;
-  @Input() projects: ProjectDescription[];
+  @Input() projects: ProjectDescriptionDTO[];
 
   constructor() { }
 

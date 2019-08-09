@@ -4,7 +4,6 @@ namespace IDE.Common.DTO.Project
 {
     public class ProjectCreateDTO
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public int AuthorId { get; set; }
@@ -13,6 +12,5 @@ namespace IDE.Common.DTO.Project
         public CompilerType CompilerType { get; set; }
         public int CountOfSaveBuilds { get; set; }
         public int CountOfBuildAttempts { get; set; }
-        public int GitCredentialId { get; set; }
     }
 }

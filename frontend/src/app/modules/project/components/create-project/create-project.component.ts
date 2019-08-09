@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ProjectService } from 'src/app/services/project.service/project.service';
-import { ProjectCreate } from 'src/app/models/dto/project/projectCreate';
+import { ProjectCreateDTO } from 'src/app/models/dto/project/projectCreateDTO';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 
@@ -21,7 +21,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
   private languages: any;
   private projectTypes: any;
   private compilerTypes: any;
-  private project:ProjectCreate;
+  private project:ProjectCreateDTO;
 
   public projectForm = this.fb.group({
     name: ['', Validators.required],

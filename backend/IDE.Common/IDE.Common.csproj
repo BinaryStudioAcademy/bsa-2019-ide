@@ -11,6 +11,10 @@
     <PackageReference Include="MTT" Version="0.6.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTO\" />
+  </ItemGroup>
+
   <Target Name="Convert" BeforeTargets="PrepareForBuild">
     <ConvertMain WorkingDirectory="ModelsDTO/" ConvertDirectory="../../frontend/src/app/models/" />
   </Target>

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ProjectDescription } from 'src/app/models/dto/project/project-description';
+import { ProjectDescriptionDTO } from 'src/app/models/dto/project/projectDescriptionDTO';
 
 @Component({
   selector: 'app-project-card',
@@ -8,14 +8,14 @@ import { ProjectDescription } from 'src/app/models/dto/project/project-descripti
 })
 export class ProjectCardComponent implements OnInit {
   DATE = new Date();
-  @Input() project: ProjectDescription;
+  @Input() project: ProjectDescriptionDTO;
 
   constructor() { }
 
   ngOnInit() { }
 
   lastTimeBuild(): string {
-    const daysCount = this.getDaysCountFromCurrentDate(this.project.lastBuildDate);
+    const daysCount = this.getDaysCountFromCurrentDate(this.project.lastBuild);
     if (daysCount > 365) {
       return Math.floor(daysCount / 365) + ' year ago';
     } else if (daysCount > 31) {
