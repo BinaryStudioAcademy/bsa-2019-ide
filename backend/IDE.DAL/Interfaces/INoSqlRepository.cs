@@ -9,8 +9,7 @@ namespace IDE.DAL.Interfaces
         Task<List<T>> GetAllAsync();
         Task<T> GetByIdAsync(string id);
         Task<T> CreateAsync(T item);
-        Task UpdateAsync(string id, T itemIn);
-        Task RemoveAsync(T itemIn);
-        Task RemoveAtAsync(string id);
+        Task UpdateAsync(T item);
+        Task DeleteAsync(string id);
     }
 }

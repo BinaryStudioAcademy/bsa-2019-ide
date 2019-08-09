@@ -14,9 +14,11 @@ using IDE.DAL.Factories;
 using IDE.DAL.Factories.Abstractions;
 using IDE.DAL.Interfaces;
 using IDE.DAL.Repositories;
+using IDE.DAL.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
@@ -77,6 +79,15 @@ namespace IDE.API.Extensions
                 client.BaseAddress = new Uri(imgurApiUrl);
                 client.DefaultRequestHeaders.Add("Authorization", $"Client-ID {imgurClientId}");
             });
+        }
+
+        public static void ConfigureNoSqlDb(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<FileStorageNoSqlDbSettings>(
+                configuration.GetSection(nameof(FileStorageNoSqlDbSettings)));
+
+            services.AddSingleton<IFileStorageNoSqlDbSettings>(sp =>
+               sp.GetRequiredService<IOptions<FileStorageNoSqlDbSettings>>().Value);
         }
 
         public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)

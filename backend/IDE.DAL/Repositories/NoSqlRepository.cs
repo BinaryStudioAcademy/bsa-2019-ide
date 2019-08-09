@@ -3,6 +3,7 @@ using IDE.DAL.Entities.NoSql.Abstract;
 using IDE.DAL.Interfaces;
 using MongoDB.Driver;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace IDE.DAL.Repositories
@@ -31,18 +32,15 @@ namespace IDE.DAL.Repositories
             return item;
         }
 
-        public async Task UpdateAsync(string id, T itemIn) =>
-            await _items.ReplaceOneAsync(item => item.Id == id, itemIn);
+        public async Task UpdateAsync(T itemIn) =>
+            await _items.ReplaceOneAsync(item => item.Id == itemIn.Id, itemIn);
 
-        public async Task RemoveAsync(T itemIn) =>
-            await _items.DeleteOneAsync(item => item.Id == itemIn.Id);
-
-        public async Task RemoveAtAsync(string id) =>
+        public async Task DeleteAsync(string id) =>
             await _items.DeleteOneAsync(item => item.Id == id);
 
         private string GetItemsCollectionName()
         {
-            var itemClassName = nameof(T);
+            var itemClassName = typeof(T).ToString().Split('.').Last();
             var itemsCollectionName = itemClassName.Pluralize();
             return itemsCollectionName;
         }

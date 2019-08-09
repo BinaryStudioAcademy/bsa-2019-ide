@@ -33,19 +33,10 @@ namespace IDE.API
             services.RegisterServicesWithIConfiguration(Configuration);
             services.RegisterCustomValidators();
             services.ConfigureJwt(Configuration);
+            services.ConfigureNoSqlDb(Configuration);
             services.RegisterAutoMapper();
             services.RegisterHttpClientFactories(Configuration);
-            services.AddCors();
-
-            // TODO IN THIS TASK remove to extentions
-
-            services.Configure<FileStorageNoSqlDbSettings>(
-                Configuration.GetSection(nameof(FileStorageNoSqlDbSettings)));
-
-            services.AddSingleton<IFileStorageNoSqlDbSettings>(sp =>
-               sp.GetRequiredService<IOptions<FileStorageNoSqlDbSettings>>().Value);
-
-            //_______________________________________________________
+            services.AddCors();       
 
             services.AddMvcCore()
                 .AddAuthorization()

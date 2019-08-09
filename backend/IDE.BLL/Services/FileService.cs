@@ -32,26 +32,24 @@ namespace IDE.BLL.Services
             return _mapper.Map<FileDTO>(file);
         }
 
-        public async Task<FileDTO> CreateAsync(File item)
+        public async Task<FileDTO> CreateAsync(FileDTO item)
         {
-            var file = await _repository.CreateAsync(item);
+            var createdItem = _mapper.Map<File>(item);
+            var file = await _repository.CreateAsync(createdItem);
 
             return _mapper.Map<FileDTO>(file);
         }
 
-        public async Task UpdateAsync(string id, File itemIn)
+        public async Task UpdateAsync(FileDTO item)
         {
-            await _repository.UpdateAsync(id, itemIn);
+            var updatedItem = _mapper.Map<File>(item);
+
+            await _repository.UpdateAsync(updatedItem);
         }
 
-        public async Task RemoveAsync(File itemIn)
+        public async Task DeleteAsync(string id)
         {
-            await _repository.RemoveAsync(itemIn);
-        }
-
-        public async Task RemoveAsync(string id)
-        {
-            await _repository.RemoveAtAsync(id);
+            await _repository.DeleteAsync(id);
         }
     }
 }

@@ -34,21 +34,21 @@ namespace IDE.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] FileDTO fileDto)
         {
-            // var createdUser = await _fileService.CreateAsync(fileDto);
-            return Ok(); //CreatedAtAction(nameof(GetByIdAsync), new { id = createdUser.Id }, createdUser);
+            var createdFile = await _fileService.CreateAsync(fileDto);
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = createdFile.Id }, createdFile);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] FileDTO fileDto)
         {
-            // await _fileService.UpdateAsync(fileDto);
+            await _fileService.UpdateAsync(fileDto);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(string id)
         {
-            await _fileService.RemoveAsync(id);
+            await _fileService.DeleteAsync(id);
             return NoContent();
         }
     }
