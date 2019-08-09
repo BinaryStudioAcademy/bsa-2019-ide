@@ -3,6 +3,7 @@ using IDE.DAL.Entities.NoSql.Abstract;
 using IDE.DAL.Interfaces;
 using MongoDB.Driver;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace IDE.DAL.Repositories
 {
@@ -18,26 +19,26 @@ namespace IDE.DAL.Repositories
             _items = database.GetCollection<T>(itemsCollectionName);
         }
 
-        public List<T> Get() =>
-            _items.Find(item => true).ToList();
+        public async Task<List<T>> GetAllAsync() =>
+            await _items.Find(item => true).ToListAsync();
 
-        public T Get(string id) =>
-            _items.Find<T>(item => item.Id == id).FirstOrDefault();
+        public async Task<T> GetByIdAsync(string id) =>
+            await _items.Find(item => item.Id == id).FirstOrDefaultAsync();
 
-        public T Create(T item)
+        public async Task<T> CreateAsync(T item)
         {
-            _items.InsertOne(item);
+            await _items.InsertOneAsync(item);
             return item;
         }
 
-        public void Update(string id, T itemIn) =>
-            _items.ReplaceOne(item => item.Id == id, itemIn);
+        public async Task UpdateAsync(string id, T itemIn) =>
+            await _items.ReplaceOneAsync(item => item.Id == id, itemIn);
 
-        public void Remove(T itemIn) =>
-            _items.DeleteOne(item => item.Id == itemIn.Id);
+        public async Task RemoveAsync(T itemIn) =>
+            await _items.DeleteOneAsync(item => item.Id == itemIn.Id);
 
-        public void Remove(string id) =>
-            _items.DeleteOne(item => item.Id == id);
+        public async Task RemoveAtAsync(string id) =>
+            await _items.DeleteOneAsync(item => item.Id == id);
 
         private string GetItemsCollectionName()
         {
