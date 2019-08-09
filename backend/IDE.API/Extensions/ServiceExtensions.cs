@@ -52,6 +52,8 @@ namespace IDE.API.Extensions
                 cfg.AddProfile<ImageProfile>();
                 cfg.AddProfile<BuildProfile>();
                 cfg.AddProfile<GitCredentiaProfile>();
+                cfg.AddProfile<FileProfile>();
+                cfg.AddProfile<FileHistoryProfile>();
             });
         }
 
