@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProjectDescriptionDTO } from 'src/app/models/dto/project/projectDescriptionDTO';
+import { ProjectDescriptionDTO } from '../../../../models/DTO/Project/projectDescriptionDTO';
 
 @Component({
   selector: 'app-my-projects',
