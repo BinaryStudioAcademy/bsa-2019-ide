@@ -30,6 +30,7 @@ namespace IDE.API.Extensions
             services.AddScoped<AuthService>();
             services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
             services.AddScoped<UserService>();
+            services.AddSingleton<FileService>();
         }
 
         public static void RegisterServicesWithIConfiguration(this IServiceCollection services, IConfiguration conf)
