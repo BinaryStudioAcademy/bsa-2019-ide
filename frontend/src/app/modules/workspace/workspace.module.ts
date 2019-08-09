@@ -9,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import {TreeModule} from 'primeng/tree';
 import {MonacoEditorModule} from '@materia-ui/ngx-monaco-editor';
 import { FormsModule } from '@angular/forms';
+import {TabMenuModule} from 'primeng/tabmenu';
 
 @NgModule({
   declarations: [WorkspaceRootComponent, FileBrowserSectionComponent, EditorSectionComponent],
@@ -19,7 +20,8 @@ import { FormsModule } from '@angular/forms';
     ButtonModule,
     TreeModule,
     MonacoEditorModule,
-    FormsModule 
+    FormsModule,
+    TabMenuModule,
   ]
 })
 export class WorkspaceModule { }
