@@ -1,31 +1,4 @@
-import { HttpClientWrapperService } from './../../../services/http-client-wrapper.service';
-import { Component, OnInit } from '@angular/core';
-import { TreeNode } from 'primeng/components/common/treenode';
-
-@Component({
-  selector: 'app-file-browser-section',
-  templateUrl: './file-browser-section.component.html',
-  styleUrls: ['./file-browser-section.component.sass']
-})
-export class FileBrowserSectionComponent implements OnInit {
-
-    
-    files: TreeNode[];
-  
-    constructor(private http: HttpClientWrapperService) {
-    }
-  
-    ngOnInit() {
-      this.files = [];
-      this.files = JSON.parse(this.jsonStr).data as TreeNode[]
-    }
-  
-    nodeSelect(evt: any): void {
-      console.log(evt.node);
-    }
-
- jsonStr = `
- {
+{
     "data": 
     [
         {
@@ -75,7 +48,4 @@ export class FileBrowserSectionComponent implements OnInit {
                 }]
         }
     ]
-}
- `
-
 }

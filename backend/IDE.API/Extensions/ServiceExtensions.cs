@@ -7,6 +7,8 @@ using IDE.BLL.MappingProfiles;
 using IDE.BLL.Services;
 using IDE.Common.Authentification;
 using IDE.Common.DTO.Authentification;
+using IDE.Common.DTO.Common;
+using IDE.Common.DTO.User;
 using IDE.DAL.Factories;
 using IDE.DAL.Factories.Abstractions;
 using IDE.DAL.Interfaces;
@@ -42,6 +44,10 @@ namespace IDE.API.Extensions
         {
             services.AddSingleton<IValidator<RevokeRefreshTokenDTO>, RevokeRefreshTokenDTOValidator>();
             services.AddSingleton<IValidator<RefreshTokenDTO>, RefreshTokenDTOValidator>();
+
+            services.AddSingleton<IValidator<UserRegisterDTO>, UserRegusterDTOValidator>();
+            services.AddSingleton<IValidator<ProjectDTO>, ProjectDTOValidation>();
+            services.AddSingleton<IValidator<UserLoginDTO>, UserLogInDTOValidator>();
         }
 
         public static void RegisterAutoMapper(this IServiceCollection services)
