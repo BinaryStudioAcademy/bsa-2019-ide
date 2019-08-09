@@ -1,10 +1,10 @@
-﻿using System;
+﻿using IDE.DAL.Entities.NoSql.Abstract;
+using System;
 
-namespace IDE.DAL.Entities
+namespace IDE.DAL.Entities.NoSql
 {
-    public class File
+    public class File : BaseNoSqlModel
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Folder { get; set; }
         public string Content { get; set; }

@@ -1,16 +1,15 @@
-﻿using System;
+﻿using IDE.DAL.Entities.NoSql.Abstract;
+using System;
 
-namespace IDE.DAL.Entities
+namespace IDE.DAL.Entities.NoSql
 {
-    public class FileHistory
+    public class FileHistory : BaseNoSqlModel
     {
-        public int Id { get; set; }
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
         public int UpdaterId { get; set; }
         public User Updater { get; set; }
-
     }
 }

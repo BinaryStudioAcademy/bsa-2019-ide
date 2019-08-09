@@ -1,12 +1,15 @@
 using FluentValidation.AspNetCore;
 using IDE.API.Extensions;
 using IDE.DAL.Context;
+using IDE.DAL.Interfaces;
+using IDE.DAL.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace IDE.API
 {
@@ -32,7 +35,18 @@ namespace IDE.API
             services.ConfigureJwt(Configuration);
             services.RegisterAutoMapper();
             services.RegisterHttpClientFactories(Configuration);
-            services.AddCors();          
+            services.AddCors();
+
+            // TODO IN THIS TASK remove to extentions
+
+            services.Configure<FileStorageDbSettings>(
+                Configuration.GetSection(nameof(FileStorageDbSettings)));
+
+            services.AddSingleton<IFileStorageDbSettings>(sp =>
+                sp.GetRequiredService<IOptions<FileStorageDbSettings>>().Value);
+
+            //_______________________________________________________
+
 
             services.AddMvcCore()
                 .AddAuthorization()
