@@ -8,6 +8,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="2.2.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.5.0" />
+    <PackageReference Include="MTT" Version="0.6.1" />
   </ItemGroup>
+
+  <Target Name="Convert" BeforeTargets="PrepareForBuild">
+    <ConvertMain WorkingDirectory="ModelsDTO/" ConvertDirectory="../../frontend/src/app/models/" />
+  </Target>
 
 </Project>
