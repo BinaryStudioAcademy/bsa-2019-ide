@@ -10,7 +10,7 @@ namespace IDE.DAL.Entities.NoSql
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public int FileHistoryId { get; set; }
+        public string FileHistoryId { get; set; }
         public FileHistory FileHistory { get; set; }
 
         public int ProjectId { get; set; }
