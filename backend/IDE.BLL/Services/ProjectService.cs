@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
 using IDE.Common.DTO.Project;
 using IDE.DAL.Context;
@@ -14,7 +15,7 @@ namespace IDE.BLL.Services
 {
     public class ProjectService : IProjectService
     {
-        private protected readonly IdeContext _context;
+        private readonly IdeContext _context;
         private readonly IMapper _mapper;
 
         public ProjectService(IdeContext context, IMapper mapper)
@@ -41,7 +42,7 @@ namespace IDE.BLL.Services
                 .Include(x => x.Logo)
                 .ToListAsync());
 
-            return await MapAndGetLastBuildFinishedDate(projects);
+            return await MapAndGetLastBuildFinishedDate(projects).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId)
@@ -54,7 +55,7 @@ namespace IDE.BLL.Services
                 .Include(x => x.Author)
                 .Include(x => x.Logo);
 
-            return await MapAndGetLastBuildFinishedDate(await projects.ToListAsync());
+            return await MapAndGetLastBuildFinishedDate(await projects.ToListAsync()).ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<ProjectDescriptionDTO>> GetUserProjects(int userId)
@@ -65,7 +66,7 @@ namespace IDE.BLL.Services
                 .Include(x => x.Author)
                 .Include(x => x.Logo);
             
-            return await MapAndGetLastBuildFinishedDate(await projects.ToListAsync());
+            return await MapAndGetLastBuildFinishedDate(await projects.ToListAsync()).ConfigureAwait(false);
         }
 
         private async Task<IEnumerable<ProjectDescriptionDTO>> MapAndGetLastBuildFinishedDate(List<Project> projects)
@@ -87,7 +88,9 @@ namespace IDE.BLL.Services
         {
 
             if (_context.Users.SingleOrDefault(u => u.Id == projectCreateDTO.AuthorId) == null)
-                throw new Exception("Invalid AuthorId");
+            {
+                throw new InvalidAuthorException();
+            }
 
             var project = _mapper.Map<Project>(projectCreateDTO);
             project.CreatedAt = DateTime.Now;

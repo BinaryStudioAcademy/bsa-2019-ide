@@ -15,7 +15,7 @@ namespace IDE.API.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
-        IProjectService _projectService;
+        private readonly IProjectService _projectService;
 
         public ProjectController(IProjectService projectService)
         {
@@ -46,15 +46,8 @@ namespace IDE.API.Controllers
         [HttpPost]
         public async Task<ActionResult> AddProject(ProjectCreateDTO project)
         {
-            try
-            {
-                await _projectService.CreateProject(project);
-                return Created("/project", project);
-            }
-            catch (Exception e)
-            {
-                return BadRequest($"Invalid data {e.Message}");
-            }
+            await _projectService.CreateProject(project);
+            return Created("/project", project);
         }
     }
 }
