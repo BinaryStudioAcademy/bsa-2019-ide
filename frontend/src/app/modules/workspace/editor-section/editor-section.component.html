@@ -1,1 +1,4 @@
-<p>editor-section works!</p>
+<p-tabMenu [model]="items">
+</p-tabMenu>
+<ngx-monaco-editor class="my-code-editor" [options]="editorOptions" [(ngModel)]="code">
+</ngx-monaco-editor>
