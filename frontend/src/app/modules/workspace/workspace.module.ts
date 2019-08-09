@@ -7,6 +7,8 @@ import { EditorSectionComponent } from './editor-section/editor-section.componen
 import { GeneralModule } from 'src/app/general/general.module';
 import { ButtonModule } from 'primeng/button';
 import {TreeModule} from 'primeng/tree';
+import {MonacoEditorModule} from '@materia-ui/ngx-monaco-editor';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [WorkspaceRootComponent, FileBrowserSectionComponent, EditorSectionComponent],
@@ -15,7 +17,9 @@ import {TreeModule} from 'primeng/tree';
     WorkspaceRoutingModule,
     GeneralModule,
     ButtonModule,
-    TreeModule
+    TreeModule,
+    MonacoEditorModule,
+    FormsModule 
   ]
 })
 export class WorkspaceModule { }
