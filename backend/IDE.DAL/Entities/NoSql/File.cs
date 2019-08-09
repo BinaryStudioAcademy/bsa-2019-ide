@@ -8,7 +8,7 @@ namespace IDE.DAL.Entities.NoSql
         public string Name { get; set; }
         public string Folder { get; set; }
         public string Content { get; set; }
-        public DateTime CreateAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public int FileHistoryId { get; set; }
         public FileHistory FileHistory { get; set; }

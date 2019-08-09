@@ -33,11 +33,13 @@ namespace IDE.API.Extensions
             services.AddScoped<JwtIssuerOptions>();
             services.AddScoped<JWTFactory>();
             services.AddScoped<AuthService>();
-            services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
             services.AddScoped<UserService>();
+            services.AddScoped<FileService>();
+            services.AddScoped<FileHistoryService>();
 
-            services.AddSingleton<INoSqlRepository<File>, NoSqlRepository<File>>();
-            services.AddSingleton<FileService>();
+            services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
+            services.AddScoped<INoSqlRepository<File>, NoSqlRepository<File>>();
+            services.AddScoped<INoSqlRepository<FileHistory>, NoSqlRepository<FileHistory>>();
         }
 
         public static void RegisterServicesWithIConfiguration(this IServiceCollection services, IConfiguration conf)
@@ -49,7 +51,6 @@ namespace IDE.API.Extensions
         {
             services.AddSingleton<IValidator<RevokeRefreshTokenDTO>, RevokeRefreshTokenDTOValidator>();
             services.AddSingleton<IValidator<RefreshTokenDTO>, RefreshTokenDTOValidator>();
-
             services.AddSingleton<IValidator<UserRegisterDTO>, UserRegusterDTOValidator>();
             services.AddSingleton<IValidator<ProjectDTO>, ProjectDTOValidation>();
             services.AddSingleton<IValidator<UserLoginDTO>, UserLogInDTOValidator>();

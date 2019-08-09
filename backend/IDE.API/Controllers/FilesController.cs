@@ -18,7 +18,6 @@ namespace IDE.API.Controllers
             _fileService = fileService;
         }
 
-
         [HttpGet]
         public async Task<ActionResult<ICollection<FileDTO>>> GetAllAsync()
         {

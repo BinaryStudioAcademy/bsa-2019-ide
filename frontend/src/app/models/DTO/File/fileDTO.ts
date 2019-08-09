@@ -8,7 +8,7 @@ export interface FileDTO {
     name: string;
     folder: string;
     content: string;
-    createAt: Date;
+    createdAt: Date;
     fileHistoryId: number;
     fileHistory: FileHistoryDTO;
     projectId: number;

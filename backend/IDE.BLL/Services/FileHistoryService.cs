@@ -8,43 +8,44 @@ using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
 {
-    public class FileService
+    public class FileHistoryService
     {
-        private readonly INoSqlRepository<File> _repository;
+        private readonly INoSqlRepository<FileHistory> _repository;
         private readonly IMapper _mapper;
 
-        public FileService(INoSqlRepository<File> repository, IMapper mapper)
+        public FileHistoryService(INoSqlRepository<FileHistory> repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
 
-        public async Task<ICollection<FileDTO>> GetAllAsync()
+        public async Task<ICollection<FileHistoryDTO>> GetAllAsync()
         {
             var files = await _repository.GetAllAsync();
 
-            return _mapper.Map<ICollection<FileDTO>>(files);
+            return _mapper.Map<ICollection<FileHistoryDTO>>(files);
         }
 
-        public async Task<FileDTO> GetByIdAsync(string id)
+        public async Task<FileHistoryDTO> GetByIdAsync(string id)
         {
             var file = await _repository.GetByIdAsync(id);
 
-            return _mapper.Map<FileDTO>(file);
+            return _mapper.Map<FileHistoryDTO>(file);
         }
 
-        public async Task<FileDTO> CreateAsync(FileDTO item)
+        public async Task<FileHistoryDTO> CreateAsync(FileHistoryDTO item)
         {
-            var createdItem = _mapper.Map<File>(item);
+            var createdItem = _mapper.Map<FileHistory>(item);
             createdItem.CreatedAt = DateTime.Now;
             var file = await _repository.CreateAsync(createdItem);
 
-            return _mapper.Map<FileDTO>(file);
+            return _mapper.Map<FileHistoryDTO>(file);
         }
 
-        public async Task UpdateAsync(FileDTO item)
+        public async Task UpdateAsync(FileHistoryDTO item)
         {
-            var updatedItem = _mapper.Map<File>(item);
+            var updatedItem = _mapper.Map<FileHistory>(item);
+            updatedItem.UpdatedAt = DateTime.Now;
 
             await _repository.UpdateAsync(updatedItem);
         }

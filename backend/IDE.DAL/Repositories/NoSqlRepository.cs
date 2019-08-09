@@ -20,11 +20,15 @@ namespace IDE.DAL.Repositories
             _items = database.GetCollection<T>(itemsCollectionName);
         }
 
-        public async Task<List<T>> GetAllAsync() =>
-            await _items.Find(item => true).ToListAsync();
+        public async Task<List<T>> GetAllAsync()
+        {
+            return await _items.Find(item => true).ToListAsync();
+        }
 
-        public async Task<T> GetByIdAsync(string id) =>
-            await _items.Find(item => item.Id == id).FirstOrDefaultAsync();
+        public async Task<T> GetByIdAsync(string id)
+        {
+            return await _items.Find(item => item.Id == id).FirstOrDefaultAsync();
+        }
 
         public async Task<T> CreateAsync(T item)
         {
@@ -32,11 +36,15 @@ namespace IDE.DAL.Repositories
             return item;
         }
 
-        public async Task UpdateAsync(T itemIn) =>
+        public async Task UpdateAsync(T itemIn)
+        {
             await _items.ReplaceOneAsync(item => item.Id == itemIn.Id, itemIn);
+        }
 
-        public async Task DeleteAsync(string id) =>
+        public async Task DeleteAsync(string id)
+        {
             await _items.DeleteOneAsync(item => item.Id == id);
+        }
 
         private string GetItemsCollectionName()
         {

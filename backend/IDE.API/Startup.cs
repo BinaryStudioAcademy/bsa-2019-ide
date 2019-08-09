@@ -1,15 +1,12 @@
 using FluentValidation.AspNetCore;
 using IDE.API.Extensions;
 using IDE.DAL.Context;
-using IDE.DAL.Interfaces;
-using IDE.DAL.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace IDE.API
 {
@@ -20,8 +17,7 @@ namespace IDE.API
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-        
+        public IConfiguration Configuration { get; }        
 
         public void ConfigureServices(IServiceCollection services)
         {
