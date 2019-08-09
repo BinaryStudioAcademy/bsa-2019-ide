@@ -2,7 +2,7 @@ using FluentValidation.AspNetCore;
 using IDE.API.Extensions;
 using IDE.DAL.Context;
 using IDE.DAL.Interfaces;
-using IDE.DAL.Repositories;
+using IDE.DAL.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;

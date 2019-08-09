@@ -1,6 +1,6 @@
 ﻿using IDE.DAL.Interfaces;
 
-namespace IDE.DAL.Repositories
+namespace IDE.DAL.Settings
 {
     public class FileStorageDbSettings : IFileStorageDbSettings
     {
