@@ -4,12 +4,14 @@ import { WorkspaceRootComponent } from './workspace-root/workspace-root.componen
 import { WorkspaceRoutingModule } from './workspace-routing.module';
 import { FileBrowserSectionComponent } from './file-browser-section/file-browser-section.component';
 import { EditorSectionComponent } from './editor-section/editor-section.component';
+import { GeneralModule } from 'src/app/general/general.module';
 
 @NgModule({
   declarations: [WorkspaceRootComponent, FileBrowserSectionComponent, EditorSectionComponent],
   imports: [
     CommonModule,
-    WorkspaceRoutingModule
+    WorkspaceRoutingModule,
+    GeneralModule
   ]
 })
 export class WorkspaceModule { }

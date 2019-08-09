@@ -1,8 +1,35 @@
-<div class="wks-wrapper p-grid ">
-  <div class="file-browser-content p-col-12 p-md-4 p-align-stretch ">
-    <app-file-browser-section></app-file-browser-section>
-  </div>
-  <div class="editor-content p-col-12 p-md-8 p-align-stretch ">
-    <app-editor-section></app-editor-section>
+<div class="top-panel p-grid p-nogutter">
+  <div class="p-col-12">top panel</div>
+</div>
+<div class="wks-wrapper p-grid p-nogutter">
+  <div  class="left-panel p-col-fixed" style="width:2rem;" class="resize-rect ">left panel</div>
+  <div class="p-col">
+    <div class="inner-wrapper p-grid p-nogutter ">
+      <div class="file-browser-content p-col-12 p-md-4 p-align-stretch ">
+        <app-file-browser-section></app-file-browser-section>
+      </div>
+      <div class="editor-content p-col-12 p-md-8 p-align-stretch ">
+        <app-editor-section></app-editor-section>
+      </div>
+    </div>
   </div>
 </div>
+<!-- <div
+    class="resize-rect "
+    [ngStyle]="style"
+    mwlResizable
+    [validateResize]="validate"
+    [enableGhostResize]="true"
+    [resizeSnapGrid]="{ left: 1, right: 1 }"
+    (resizeEnd)="onResizeEnd($event)"
+    style="background-color: green;"
+  >
+    Angular Resizable Element
+    
+    <div
+      class="resize-handle-right"
+      mwlResizeHandle
+      [resizeEdges]="{ right: true }"
+    ></div>
+    
+  </div> -->
