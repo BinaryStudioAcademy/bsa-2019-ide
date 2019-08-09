@@ -1,6 +1,6 @@
 <p-card routerLink="/project/{{project.id}}" subheader="{{project.creator}}">
     <p-header>
-        <div class="imgContainer" [style.background-image]="'url(' + project.logoLink + ')'">
+        <div class="imgContainer" [style.background-image]="'url(' + project.photoLink + ')'">
             <h1>
                 {{project.title}}
             </h1>
@@ -8,7 +8,7 @@
     </p-header>
     <div>
         <p>
-            <span class="highlighted">Created:</span> {{project.createDate | date:'d MMMM yyyy'}}
+            <span class="highlighted">Created:</span> {{project.created | date:'d MMMM yyyy'}}
         </p>
         <p>
             <span class="highlighted">Last build:</span> {{lastTimeBuild()}}

@@ -1,1 +1,3 @@
-<app-projects-list [projects]="projects" header="All projects"></app-projects-list>
+<div class="container" *ngIf="projects">
+    <app-projects-list [projects]="projects" header="All projects"></app-projects-list>
+</div>

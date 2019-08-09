@@ -46,17 +46,16 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
       countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value
     };
 
-   
-     this.projectService.addProject(this.project)
-       .subscribe(res=>{
-        this.toastrService.success("Project created");
-         console.log(res);
-         //{project.id}" server will return Id prop 
-         this.router.navigate([`/project/5`]);
+    this.projectService.addProject(this.project)
+       .subscribe(res => {
+        this.toastrService.success('Project created');
+        console.log(res);
+         // {project.id}" server will return Id prop
+        this.router.navigate([`/project/5`]);
        },
-       error=>{
+       error => {
          this.toastrService.error('error');
-       })
+       });
   }
 
   ngOnInit(): void { //Maybe choose initializing
