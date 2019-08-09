@@ -177,6 +177,8 @@ namespace IDE.DAL.Migrations
 
                     b.Property<string>("LastName");
 
+                    b.Property<string>("NickName");
+
                     b.Property<string>("PasswordHash");
 
                     b.Property<string>("PasswordSalt");
@@ -199,8 +201,7 @@ namespace IDE.DAL.Migrations
 
                     b.HasOne("IDE.DAL.Entities.User", "User")
                         .WithMany("Builds")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.Project", b =>
@@ -217,8 +218,7 @@ namespace IDE.DAL.Migrations
 
                     b.HasOne("IDE.DAL.Entities.Image", "Logo")
                         .WithMany()
-                        .HasForeignKey("LogoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("LogoId");
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.ProjectMember", b =>
@@ -230,8 +230,7 @@ namespace IDE.DAL.Migrations
 
                     b.HasOne("IDE.DAL.Entities.User", "User")
                         .WithMany("ProjectMembers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.RefreshToken", b =>

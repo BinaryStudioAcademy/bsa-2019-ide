@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { AccessTokenDto } from 'src/app/models/token/access-token-dto';
+import { AccessTokenDTO } from 'src/app/models/DTO/Authentification/accessTokenDTO';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpResponse } from '@angular/common/http';
-import { UserRegisterDto } from 'src/app/models/auth/user-register-dto';
-import { UserLoginDto } from 'src/app/models/auth/user-login-dto';
-import { AuthUser } from 'src/app/models/auth/auth-user';
+import { UserRegisterDTO } from 'src/app/models/DTO/User/userRegisterDTO';
+import { UserLoginDTO } from 'src/app/models/DTO/User/userLoginDTO';
+import { AuthUserDTO } from 'src/app/models/DTO/User/authUserDTO';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
-import { User } from 'src/app/models/user';
+import { UserDTO } from 'src/app/models/DTO/User/userDTO';
 import { UserService } from '../user.service/user.service';
 import { EventService } from '../event.service/event.service';
 
@@ -16,23 +16,23 @@ import { EventService } from '../event.service/event.service';
 })
 export class AuthenticationService {
 
-    private user: User;
+    private user: UserDTO;
 
     constructor(private httpService: HttpClientWrapperService,
                 private userService: UserService,
                 private eventService: EventService ) { }
 
-    public register(user: UserRegisterDto) {
-        return this._handleAuthResponse(this.httpService.postRequest<AuthUser>(`register`, user));
+    public register(user: UserRegisterDTO) {
+        return this._handleAuthResponse(this.httpService.postRequest<AuthUserDTO>(`register`, user));
     }
 
-    public setUser(user: User) {
+    public setUser(user: UserDTO) {
         this.user = user;
         this.eventService.userChanged(user);
     }
 
-    public login(user: UserLoginDto) {
-        return this._handleAuthResponse(this.httpService.postRequest<AuthUser>(`auth/login`, user));
+    public login(user: UserLoginDTO) {
+        return this._handleAuthResponse(this.httpService.postRequest<AuthUserDTO>(`auth/login`, user));
     }
 
     public logout() {
@@ -47,7 +47,7 @@ export class AuthenticationService {
     }
 
     public revokeRefreshToken() {
-        return this.httpService.postRequest<AccessTokenDto>(`token/revoke`, {
+        return this.httpService.postRequest<AccessTokenDTO>(`token/revoke`, {
             refreshToken: localStorage.getItem('refreshToken')
         });
     }
@@ -59,7 +59,7 @@ export class AuthenticationService {
 
     public refreshTokens() {
         return this.httpService
-            .postRequest<AccessTokenDto>(`token/refresh`, {
+            .postRequest<AccessTokenDTO>(`token/refresh`, {
                 accessToken: JSON.parse(localStorage.getItem('accessToken')),
                 refreshToken: JSON.parse(localStorage.getItem('refreshToken'))
             })
@@ -71,7 +71,7 @@ export class AuthenticationService {
             );
     }
 
-    private _handleAuthResponse(observable: Observable<HttpResponse<AuthUser>>) {
+    private _handleAuthResponse(observable: Observable<HttpResponse<AuthUserDTO>>) {
         return observable.pipe(
             map((resp) => {
                 this._setTokens(resp.body.token);
@@ -82,7 +82,7 @@ export class AuthenticationService {
         );
     }
 
-    private _setTokens(tokens: AccessTokenDto) {
+    private _setTokens(tokens: AccessTokenDTO) {
         if (tokens && tokens.accessToken && tokens.refreshToken) {
             localStorage.setItem('accessToken', JSON.stringify(tokens.accessToken.token));
             localStorage.setItem('refreshToken', JSON.stringify(tokens.refreshToken));
