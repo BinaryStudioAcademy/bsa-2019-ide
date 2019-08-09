@@ -17,9 +17,10 @@ import { ButtonModule } from 'primeng/button';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
-import { DialogService } from 'primeng/api';
+import { DialogService, TreeNode } from 'primeng/api';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { GeneralModule } from './general/general.module';
+import { TreeModule } from 'primeng/tree';
 
 
 
@@ -44,7 +45,9 @@ import { GeneralModule } from './general/general.module';
         HttpClientModule,
         DynamicDialogModule,
         ToastrModule.forRoot(),
-        GeneralModule
+        GeneralModule,
+        TreeModule
+        
     ],
     providers:
 
