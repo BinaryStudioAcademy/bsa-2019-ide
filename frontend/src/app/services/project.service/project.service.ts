@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
-import { ProjectCreate } from 'src/app/models/project/projectCreate';
+import { ProjectCreate } from 'src/app/models/dto/project/projectCreate';
 
 @Injectable({
   providedIn: 'root'

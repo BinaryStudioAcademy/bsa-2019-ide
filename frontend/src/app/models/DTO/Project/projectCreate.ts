@@ -1,6 +1,6 @@
-import { Language } from '../common/project-language';
-import { ProjectType } from '../common/project-type';
-import { CompilerType } from '../common/compiler-type';
+import { Language } from 'src/app/models/Enums/Language'
+import { ProjectType } from 'src/app/models/Enums/projectType'
+import { CompilerType } from 'src/app/models/Enums/compilerType'
 
 export interface ProjectCreate {
     name: string;

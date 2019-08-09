@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ProjectService } from 'src/app/services/project.service/project.service';
-import { ProjectCreate } from 'src/app/models/project/projectCreate';
+import { ProjectCreate } from 'src/app/models/dto/project/projectCreate';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 
