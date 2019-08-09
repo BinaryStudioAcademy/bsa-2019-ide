@@ -9,7 +9,7 @@ export interface FileDTO {
     folder: string;
     content: string;
     createdAt: Date;
-    fileHistoryId: number;
+    fileHistoryId: string;
     fileHistory: FileHistoryDTO;
     projectId: number;
     project: ProjectDTO;
