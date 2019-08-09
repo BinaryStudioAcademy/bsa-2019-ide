@@ -4,14 +4,16 @@ using IDE.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IDE.DAL.Migrations
 {
     [DbContext(typeof(IdeContext))]
-    partial class IdeContextModelSnapshot : ModelSnapshot
+    [Migration("20190809115233_Seeding")]
+    partial class Seeding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1386,8 +1388,6 @@ namespace IDE.DAL.Migrations
                     b.Property<DateTime>("LastActive");
 
                     b.Property<string>("LastName");
-
-                    b.Property<string>("NickName");
 
                     b.Property<string>("PasswordHash");
 
