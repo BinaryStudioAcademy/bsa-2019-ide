@@ -22,7 +22,7 @@ namespace IDE.API.Validators
                 .Length(24).WithMessage("FileHistoryId length should have 24 symbols.");
 
             RuleFor(f => f.ProjectId)
-               .NotEmpty().WithMessage("ProjectId is mandatory.");
+                .NotEmpty().WithMessage("ProjectId is mandatory.");
         }
     }
 }

@@ -24,7 +24,7 @@ namespace IDE.API.Controllers
             return Ok(await _fileHistoryService.GetAllAsync());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<FileDTO>> GetByIdAsync(string id)
         {
             return Ok(await _fileHistoryService.GetByIdAsync(id));
@@ -44,7 +44,7 @@ namespace IDE.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:length(24)}")]
         public async Task<IActionResult> DeleteAsync(string id)
         {
             await _fileHistoryService.DeleteAsync(id);

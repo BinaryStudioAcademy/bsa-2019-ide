@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using IDE.BLL.Services;
 using IDE.Common.DTO.File;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing.Constraints;
 
 namespace IDE.API.Controllers
 {
@@ -24,7 +25,7 @@ namespace IDE.API.Controllers
             return Ok(await _fileService.GetAllAsync());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<FileDTO>> GetByIdAsync(string id)
         {
             return Ok(await _fileService.GetByIdAsync(id));
@@ -44,7 +45,7 @@ namespace IDE.API.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:length(24)}")]
         public async Task<IActionResult> DeleteAsync(string id)
         {
             await _fileService.DeleteAsync(id);
