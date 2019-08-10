@@ -8,6 +8,7 @@ using IDE.BLL.Services;
 using IDE.Common.Authentification;
 using IDE.Common.DTO.Authentification;
 using IDE.Common.DTO.Common;
+using IDE.Common.DTO.File;
 using IDE.Common.DTO.User;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Factories;
@@ -54,6 +55,8 @@ namespace IDE.API.Extensions
             services.AddSingleton<IValidator<UserRegisterDTO>, UserRegusterDTOValidator>();
             services.AddSingleton<IValidator<ProjectDTO>, ProjectDTOValidation>();
             services.AddSingleton<IValidator<UserLoginDTO>, UserLogInDTOValidator>();
+            services.AddSingleton<IValidator<FileDTO>, FileDTOValidator>();
+            services.AddSingleton<IValidator<FileHistoryDTO>, FileHistoryDTOValidator>();
         }
 
         public static void RegisterAutoMapper(this IServiceCollection services)
