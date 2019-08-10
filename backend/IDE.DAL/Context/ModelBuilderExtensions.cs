@@ -126,7 +126,7 @@ namespace IDE.DAL.Context
             var generatedUsers = testUsersFake.Generate(USER_COUNT);
 
             var salt = Convert.ToBase64String(SecurityHelper.GetRandomBytes());
-            var hashedPassword = SecurityHelper.HashPassword("12345", Convert.FromBase64String(salt));
+            var hashedPassword = SecurityHelper.HashPassword("12345678", Convert.FromBase64String(salt));
 
             var myUser = new User
             {

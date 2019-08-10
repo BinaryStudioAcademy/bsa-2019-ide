@@ -12,26 +12,26 @@ namespace IDE.DAL.Migrations
                 columns: new[] { "Id", "Login", "PasswordHash", "PasswordSalt", "Provider", "Url" },
                 values: new object[,]
                 {
-                    { 1, "Tamara34", "bUM6xpJX25fksg4prFNNDXnwp5nWUH8akw18CA66p4w=", "vXwTYTF5Pq8xtZbhDaA9DjlTbHzDKqW03oIO7TJ/R1Y=", 2, "https://jayda.net" },
-                    { 20, "Emmett_McClure", "AgyZ8nBlyiiSJqFEnLSUSzfWGf3+UjTPutDD9r2msm0=", "PPCG9SjPH1zkN2wfmPAys2UMPJXR75X7YX5Zm7uPuIw=", 1, "https://juanita.biz" },
-                    { 19, "Rosa_Haley", "bmBmR0AU7bXNqpnZis2Y49iLDC6uSL4jyy9Ab66q+co=", "A1sW/J9GcWIEAndIAxq7P/m/euerJ9QBAe68xBDXles=", 0, "https://vivianne.net" },
-                    { 18, "Leann_Jerde71", "W7RVxhm/uYCINVVkB6FUsl45VGZwbaYu0NFka7KtMkQ=", "sGQDPb0tkW5COGvfAeIIB0lf1ksRbNLvqjVzzXNxZ6o=", 0, "http://scot.com" },
-                    { 17, "Kassandra_Kemmer", "xotaTQme8a9RnX8kiSr9q5ISEZQjn5PFJatPMZ2XQ+A=", "wVU6QEfzK0bCQ2zghgbEODRTlmyUYt7DMd4tT2uiVBc=", 1, "http://destiny.com" },
-                    { 16, "Titus91", "aLY9cfnPkNo7O28Yn3ch6Ca1IqShZScEUwczM/jIqVU=", "bCg2/a8HXZFxqeZabJNvNcmH/QJJ7vpaEsKimKFgNro=", 0, "http://dwight.org" },
-                    { 14, "Aylin61", "MG9kadDUz1QNISTXFGa2Av3ncl/+RwjJP8l5ce39n6I=", "+D86qQqbpgvMYSWc8ocMB+bRGJ2MYLddxpnxfcVTtqo=", 0, "https://briana.com" },
-                    { 13, "Willis_Romaguera", "SNp77UT2/wwnL8Ou1b8YBgjvsVHVkWKdPwfyHU3WmOU=", "jrkpPCzH5Jw+/o6slEmh2FvsifFx6MO+AHa2bLCg/Hw=", 0, "https://bobbie.info" },
-                    { 12, "Cassie34", "YRJVtNOAaAwavDlhVptTFLABTmRLA+70hgty4bXFiEc=", "fiiwu/YSggTz8FGMetUgm+LDBHvRpcmPxKwO1Tf3bAs=", 1, "https://schuyler.org" },
-                    { 11, "Jannie.Goldner", "nrkNDiMLWlRMhjkFrVOJ0BzAQ+z7IwFASC4j+4e4A+4=", "y3uNfVqiiT/zdBN0k9DueiD5baeAxthrCQQa9YveZIY=", 0, "http://marcelina.org" },
-                    { 15, "Edna.Hahn77", "3AxEVnm8Tm9JGF6IQeakxrb4o07m5nsOnbaBdTp7CRs=", "NOCashS4D0k8WEJD5pwssG35MQkzwrKlukp99JQQPG8=", 0, "https://ashlynn.biz" },
-                    { 9, "Pearlie.Graham96", "P5PBk+y5Hj9b0kxMokiM6Xzp+Fiw0klF5KCJh3WdaQs=", "V8mEIA3GHKfhmWx04179//IZegin0XBcASlCTAeqTUU=", 2, "http://neil.name" },
-                    { 8, "Niko.Crooks", "Q7JmAnq+ImWJoENnEiIzLTgiYcapJom4bN6IoT/NzdU=", "RUooedUNHTWxDT7q1IYbu3+/4GzvVaXJoc1GGDJODlM=", 1, "https://ambrose.com" },
-                    { 7, "John.Carroll8", "30LZhGovpk52Ere5W9/e6s0l5PEeLPTpvl59wp+NIes=", "Wv5s5EtDnlSx2+i3P++jMclGzBm3FtbK0jaB3dH7o+E=", 2, "http://arnoldo.org" },
-                    { 6, "Chauncey_Nitzsche33", "pTd+t5Qns467n0mfWqzHV1xn08i6+6fGkWb9pRwJtbI=", "FR0sbHEluOEYkFZlX35BaSPZ+EfTVvJV/EYSdTnTZb8=", 2, "http://roosevelt.net" },
-                    { 5, "Maeve.Stroman", "WhrzV0D3LzbEkKE3ne4A3cfKaFfzPiSI6/Me6qsmEBw=", "OFeYhWP8HzP8LNOXjqy/0ec/9m5d/nCmLjcovmbhcBU=", 1, "https://annamarie.com" },
-                    { 4, "Destini.Conroy", "agFWzNzQX4xqBLC29SYaR3BMGSMaVOyIOp3VK8Sd0NU=", "ANAco/F6xSwBWeicosSyBvGRazJ9yFXL5+UWxPEHazA=", 0, "http://felix.info" },
-                    { 3, "Connie42", "8Dq+N7LlaNgC1NT/yLrov0C1EjppL8KWl9fRKZmkqU0=", "VWGfovN+hHtNI1VsgDJseZc995kheYCb4RV1UxAU66w=", 2, "https://gunnar.net" },
-                    { 2, "Maximillia.Donnelly", "jdcs/24yuD08fHz3vM7IcY0ABSImi5/so9um2L3INqk=", "/QYuFoWkMFl+GLZLZTexBlqQ/1LmeHpVWYWOZvsw5Q4=", 0, "https://mazie.com" },
-                    { 10, "Sonny_McLaughlin23", "v34CsmmTk960ezqtrKi/D6jAzjVH4o1bMNtJ6Qw9k2E=", "KClb20jGU8bGV3DEY1LAqLuSG9EA5lDuv3lxXGM/hHs=", 0, "https://rhoda.info" }
+                    { 1, "Tamara34", "ePzYL+IhCHJMEY9L2FEaVcmJXo6t2R4Rk/eElUKQQx0=", "mLVE0foaF3oayRqP5PM4Z5RgBWpVhPc/kmKvoKrQ2NE=", 2, "https://jayda.net" },
+                    { 20, "Emmett_McClure", "VKWSrpP7skuB6OOkL0jlvuoGQUtcyXA0hg83FLQP9iY=", "wrt+ejXippJadfHS9LHYqSRZkHFZOkrO4Ql3skKw8Lw=", 1, "https://juanita.biz" },
+                    { 19, "Rosa_Haley", "ojGhC3uq438DXLJVGLppyunYSLS+srXoXri0OnwZrRA=", "dMTE/VlNcvCI+EPAeZzWhJhPOZKO9O+SfRXWxS+gNx8=", 0, "https://vivianne.net" },
+                    { 18, "Leann_Jerde71", "0iVuSXRID4lzoB+SmjUnQsA4FZNFXlKlUtSfHw+Xj+o=", "W3nb1sZIlIaoQOGo2+iO7AKGRswtW8ITmL8L45cqs2g=", 0, "http://scot.com" },
+                    { 17, "Kassandra_Kemmer", "0z0TR5h5WZRCatJyzzK0l2Tv6zYA9bESyeChDp8OWrg=", "QTuOhHKvURnuq/+9yiLFalEr4lnrK0Gk9g67H57D2XE=", 1, "http://destiny.com" },
+                    { 16, "Titus91", "GtFhOG0KxeW1cjU9AGHent3QU/ykJb3cxVJorVDFN1c=", "i8QRBE/MQRYp3VvjLc+u8fvpvyswM3QTbjXwpZR/HBY=", 0, "http://dwight.org" },
+                    { 14, "Aylin61", "1sVPjZWszR0KIJ5sI554rCbrYOFyKXV40IPgY1ntH8A=", "FluHzvwfHtq27lMD9zp3OMpheF+Vc0aV0GddPAWdIhI=", 0, "https://briana.com" },
+                    { 13, "Willis_Romaguera", "751E/zh6vqDqKcfyb3poJb9rgSEo6dazWB/yIgx+VIo=", "fYmSLX0Y6arp9ghDLF9B161AijXmtV/gb+q2cjTh+ro=", 0, "https://bobbie.info" },
+                    { 12, "Cassie34", "rRf/tSz2mX7BA5BczVlVgOQhSoDZHoigo1ASJsMyXZw=", "QtmpDeb7D9ZQ/ulpAJgLd8Cgz0JIT9mwolWYsjsgBak=", 1, "https://schuyler.org" },
+                    { 11, "Jannie.Goldner", "ujzhxyvQwf6cyXaalLdIipKpvZlVkLszMVtc57TB918=", "4pMXFZLt//fZPHgLC/iRxvfuK08ovMmquKgZMGmau4I=", 0, "http://marcelina.org" },
+                    { 15, "Edna.Hahn77", "wacWwAJvWwpbw2D4zSyeRKGl5qdPy86/CRvZh8x+4g0=", "I6MBSUCmj7rHkNv08eR2Dw/CTHFLDrKCCuuTFRsMM0s=", 0, "https://ashlynn.biz" },
+                    { 9, "Pearlie.Graham96", "vW7ukGM6s0GrPSDZPzgkJlmsn3PwA78ODiXdnvbKwaI=", "AKnIT8pt8IjWwWLuTYpla5pPTurKc1DtkiKrzOiLjro=", 2, "http://neil.name" },
+                    { 8, "Niko.Crooks", "MoGnYwqE5CzfjDb6T5z/viXoxAVzL+3H3Kajxo3w0vw=", "d/deHr+5Aon4L72Y6vd3e1R7ZgO89UJUzoTvv4CPw2E=", 1, "https://ambrose.com" },
+                    { 7, "John.Carroll8", "xTaFbzMFcFu1/d8NrV1dA3jK7AxmBBF8TlwAI/zMTQU=", "9hYaCJJKQsa0ipxc0AvXa2/L0VyDJFqmNmJ/ZRthxlI=", 2, "http://arnoldo.org" },
+                    { 6, "Chauncey_Nitzsche33", "mbQh2YyMuQDMzNGg5VLwGbZamy3CPfo4/9DXqshcJHA=", "xcPqAuTKF5NubbalzRz4udtXuK8SjEJpT/P92m6WUog=", 2, "http://roosevelt.net" },
+                    { 5, "Maeve.Stroman", "oNZuRutg4qKkILP84stbKGzlqSx4DoTcx0prNNxxsEI=", "ih9UIJ51pZW65BTdguhtREEeCQscuCfhpPueTl/IMEA=", 1, "https://annamarie.com" },
+                    { 4, "Destini.Conroy", "Z/L7ZiFW4ePV7PjsUhGUAsRViHbeF1GmA2jtkXc74EU=", "4TTwsE0OecoZkFJA32NZC4UIDdQmBPsdDOcy5E3/LBU=", 0, "http://felix.info" },
+                    { 3, "Connie42", "362/5hApxPktORE8aKCsDRWPBl9QFhcRSI32hiaBxR4=", "KJy4wekrcp71AqXYcbY3fUfGI8uhBiSAGfaf6iHJqoo=", 2, "https://gunnar.net" },
+                    { 2, "Maximillia.Donnelly", "yPnBn9T3Y80haqLZdpK45aQHJs6E4CN/BDmBhWAUSCo=", "u1JqD5xAc/PJOdzmPI1SGCPB6iOVfGvQC9nwkGqgkt8=", 0, "https://mazie.com" },
+                    { 10, "Sonny_McLaughlin23", "7qi74UQQp/jimhSOojDntvJBikNzsSTokV/0kuBSkLM=", "BYQRIE3XayLJ8vsCXPgw7vUmxegl4aPVqTnYzwDhgng=", 0, "https://rhoda.info" }
                 });
 
             migrationBuilder.InsertData(
@@ -67,17 +67,17 @@ namespace IDE.DAL.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "AvatarId", "Birthday", "Email", "FirstName", "GitHubUrl", "LastActive", "LastName", "NickName", "PasswordHash", "PasswordSalt", "RegisteredAt" },
-                values: new object[] { 1, 1, new DateTime(1999, 12, 22, 6, 3, 47, 369, DateTimeKind.Unspecified).AddTicks(42), "Ezekiel72@hotmail.com", "Hassan", "http://jacques.biz", new DateTime(2018, 7, 6, 10, 43, 59, 584, DateTimeKind.Unspecified).AddTicks(7620), "Runolfsdottir", "Flavie.Muller8", "3KTNxagUT3ke71D67PxqgQLQhepk+7U65TBiVkC5/Yg=", "/TrZyNW2wOdeYwM2zMO1PqL636ini+0agmtow4H8UEY=", new DateTime(2018, 5, 13, 3, 31, 36, 66, DateTimeKind.Unspecified).AddTicks(845) });
+                values: new object[] { 1, 1, new DateTime(1999, 12, 22, 6, 3, 47, 369, DateTimeKind.Unspecified).AddTicks(42), "Ezekiel72@hotmail.com", "Hassan", "http://jacques.biz", new DateTime(2018, 7, 6, 10, 43, 59, 584, DateTimeKind.Unspecified).AddTicks(7620), "Runolfsdottir", "Flavie.Muller8", "ndpGP32HpVWIDvXcv5z/IGpg7El/tQTxKJM+HhcE9fk=", "jjwwUexi++6lxsmJ12YsIZ1PEHx+GXMl3qrf6SQZWFs=", new DateTime(2018, 5, 13, 3, 31, 36, 66, DateTimeKind.Unspecified).AddTicks(845) });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "AvatarId", "Birthday", "Email", "FirstName", "GitHubUrl", "LastActive", "LastName", "NickName", "PasswordHash", "PasswordSalt", "RegisteredAt" },
-                values: new object[] { 3, 1, new DateTime(2005, 8, 9, 20, 52, 11, 531, DateTimeKind.Local).AddTicks(9521), "test@gmail.com", "testUser", null, new DateTime(2019, 8, 9, 20, 52, 11, 533, DateTimeKind.Local).AddTicks(3555), "testUser", "TheBestUser", "g9uXEdfXYXxJFZdhcbMTxsDDP3/5wnL2FSQ4j3VCiYQ=", "qbkfTGNmQpWKJRBiy2lCNVxWmlXp/iHEIW09R+wu2kw=", new DateTime(2019, 8, 9, 20, 52, 11, 533, DateTimeKind.Local).AddTicks(3560) });
+                values: new object[] { 3, 1, new DateTime(2005, 8, 10, 11, 41, 6, 744, DateTimeKind.Local).AddTicks(2122), "test@gmail.com", "testUser", null, new DateTime(2019, 8, 10, 11, 41, 6, 747, DateTimeKind.Local).AddTicks(7987), "testUser", "TheBestUser", "9uc96U2HkKj1NjgZUdhWnVu4QeAxUCOHsQqmLq8+1Is=", "2lDXocoFbjEDk5eW8BojnQpGy8tjusJCVR5qR9Oemnc=", new DateTime(2019, 8, 10, 11, 41, 6, 747, DateTimeKind.Local).AddTicks(7997) });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "AvatarId", "Birthday", "Email", "FirstName", "GitHubUrl", "LastActive", "LastName", "NickName", "PasswordHash", "PasswordSalt", "RegisteredAt" },
-                values: new object[] { 2, 3, new DateTime(2000, 4, 11, 4, 54, 17, 251, DateTimeKind.Unspecified).AddTicks(2470), "Anne_Jakubowski81@gmail.com", "Shanna", "http://juanita.biz", new DateTime(2018, 7, 2, 3, 4, 30, 418, DateTimeKind.Unspecified).AddTicks(1723), "Olson", "Delphia98", "PEgVaAHkphXoS3eLXQogOBi1Kek/jgNj0haZSDms2Jc=", "DN/XoGgIt/yTvfBMvrtM0sfdaOBiFw3akL4zSKiKrqw=", new DateTime(2018, 6, 10, 15, 10, 29, 523, DateTimeKind.Unspecified).AddTicks(7483) });
+                values: new object[] { 2, 3, new DateTime(2000, 4, 11, 4, 54, 17, 251, DateTimeKind.Unspecified).AddTicks(2470), "Anne_Jakubowski81@gmail.com", "Shanna", "http://juanita.biz", new DateTime(2018, 7, 2, 3, 4, 30, 418, DateTimeKind.Unspecified).AddTicks(1723), "Olson", "Delphia98", "tNeIIDnnichhPhQoNIID6SELudfbNzFJScIBZqsh8Go=", "r9pDsjS/TTd3uRk7MKXkHI85BetOmuq7fBNbtL1CjG4=", new DateTime(2018, 6, 10, 15, 10, 29, 523, DateTimeKind.Unspecified).AddTicks(7483) });
 
             migrationBuilder.InsertData(
                 table: "Projects",
