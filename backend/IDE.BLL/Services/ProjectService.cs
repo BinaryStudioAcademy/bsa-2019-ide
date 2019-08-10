@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
+using IDE.Common.DTO.Common;
 using IDE.Common.DTO.Project;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
@@ -43,6 +44,17 @@ namespace IDE.BLL.Services
                 .ToListAsync());
 
             return await MapAndGetLastBuildFinishedDate(projects).ConfigureAwait(false);
+        }
+
+        // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
+        public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)
+        {
+            var project = await _context.Projects                
+                .Include(p => p.Author)
+                .Include(p => p.Logo)
+                .FirstOrDefaultAsync(p => p.Id == projectId);
+
+            return _mapper.Map<ProjectDTO>(project);
         }
 
         public async Task<IEnumerable<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId)

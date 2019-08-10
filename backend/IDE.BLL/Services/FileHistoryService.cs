@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
 using IDE.Common.DTO.File;
+using IDE.DAL.Context;
+using IDE.DAL.Entities;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
@@ -12,11 +15,13 @@ namespace IDE.BLL.Services
     public class FileHistoryService
     {
         private readonly INoSqlRepository<FileHistory> _repository;
+        private readonly UserService _userService;
         private readonly IMapper _mapper;
 
-        public FileHistoryService(INoSqlRepository<FileHistory> repository, IMapper mapper)
+        public FileHistoryService(INoSqlRepository<FileHistory> repository, UserService userService, IMapper mapper)
         {
             _repository = repository;
+            _userService = userService;
             _mapper = mapper;
         }
 
@@ -24,7 +29,13 @@ namespace IDE.BLL.Services
         {
             var fileHistories = await _repository.GetAllAsync();
 
-            return _mapper.Map<ICollection<FileHistoryDTO>>(fileHistories);
+            var fileHistoriesDtos = _mapper.Map<ICollection<FileHistoryDTO>>(fileHistories);
+            foreach (var fileHistoriesDto in fileHistoriesDtos)
+            {
+                fileHistoriesDto.Updater = await _userService.GetUserById(fileHistoriesDto.UpdaterId);
+            }
+            
+            return fileHistoriesDtos;
         }
 
         public async Task<FileHistoryDTO> GetByIdAsync(string id)
@@ -35,7 +46,10 @@ namespace IDE.BLL.Services
                 throw new NotFoundException(nameof(FileHistory), id);
             }
 
-            return _mapper.Map<FileHistoryDTO>(fileHistory);
+            var fileHistoryDto = _mapper.Map<FileHistoryDTO>(fileHistory);
+            fileHistoryDto.Updater = await _userService.GetUserById(fileHistoryDto.UpdaterId);
+
+            return fileHistoryDto;
         }
 
         public async Task<FileHistoryDTO> CreateAsync(FileHistoryDTO item)

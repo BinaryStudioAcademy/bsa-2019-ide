@@ -1,7 +1,6 @@
-﻿using IDE.Common.DTO.Project;
-using System;
+﻿using IDE.Common.DTO.Common;
+using IDE.Common.DTO.Project;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Interfaces
@@ -12,5 +11,6 @@ namespace IDE.BLL.Interfaces
         Task<IEnumerable<ProjectDescriptionDTO>> GetAllProjects(int userId);
         Task<IEnumerable<ProjectDescriptionDTO>> GetUserProjects(int userId);
         Task CreateProject(ProjectCreateDTO project);
+        Task<ProjectDTO> GetProjectByIdAsync(int projectId);
     }
 }
