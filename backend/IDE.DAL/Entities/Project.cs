@@ -27,7 +27,7 @@ namespace IDE.DAL.Entities
         public int AuthorId { get; set; }
         public User Author { get; set; }
 
-        public int GitCredentialId { get; set; }
+        public int? GitCredentialId { get; set; }
         public GitCredential GitCredential { get; set; }
 
         public int? LogoId { get; set; }

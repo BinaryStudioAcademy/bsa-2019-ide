@@ -57,12 +57,18 @@ export class AuthDialogComponent implements OnInit {
   }
 
   public signUp() {
-    let user: UserRegisterDTO;
-    user.firstName=this.firstName;
-    user.lastName=this.lastName;
-    user.nickName=this.nickName;
-    user.password=this.password;
-    user.email=this.email
+    //let user: UserRegisterDTO
+    let user={
+        id:0,
+        firstName:this.firstName,
+        lastName:this.lastName,
+        nickName:this.nickName,
+        password:this.password,
+        email:this.email
+    };
+    console.log(this.firstName);
+    console.log(this.lastName);
+    console.log(this.nickName);
        this.authService
          .register(user)
           .pipe(takeUntil(this.unsubscribe$))

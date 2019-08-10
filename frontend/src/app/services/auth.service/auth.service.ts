@@ -19,8 +19,8 @@ export class AuthenticationService {
     private user: UserDTO;
 
     constructor(private httpService: HttpClientWrapperService,
-        private userService: UserService,
-        private eventService: EventService ) { }
+                private userService: UserService,
+                private eventService: EventService ) { }
 
     public register(user: UserRegisterDTO) {
         return this._handleAuthResponse(this.httpService.postRequest<AuthUserDTO>(`register`, user));
