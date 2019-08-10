@@ -26,7 +26,7 @@ namespace IDE.DAL.Context
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ProjectMember>()
-               .HasKey(pm => new { pm.ProjectId, pm.UserId });
+                .HasKey(pm => new {pm.ProjectId, pm.UserId});
 
             modelBuilder.Entity<ProjectMember>()
                 .HasOne(pm => pm.Project)
@@ -62,7 +62,8 @@ namespace IDE.DAL.Context
             var gits = GenerateRandomGitCredentials();
             var projects = GenerateRandomProjects(users, gits, images);
             var builds = GenerateRandomBuilds(users, projects);
-            var projectMembers = GenerateRandomProjectMembers(users, projects).GroupBy(x => x.ProjectId + " " + x.UserId).Select(x => x.First());
+            var projectMembers = GenerateRandomProjectMembers(users, projects)
+                .GroupBy(x => x.ProjectId + " " + x.UserId).Select(x => x.First());
 
             modelBuilder.Entity<Image>().HasData(avatars.Concat(images));
             modelBuilder.Entity<User>().HasData(users);
@@ -74,7 +75,8 @@ namespace IDE.DAL.Context
 
         //Build
         //ProjectMember
-        public static ICollection<ProjectMember> GenerateRandomProjectMembers(ICollection<User> users, ICollection<Project> projects)
+        private static ICollection<ProjectMember> GenerateRandomProjectMembers(ICollection<User> users,
+            ICollection<Project> projects)
         {
             var testProjectMembersFake = new Faker<ProjectMember>()
                 .RuleFor(p => p.ProjectId, f => f.PickRandom(projects).Id)
@@ -86,9 +88,9 @@ namespace IDE.DAL.Context
             return generatedProjectMembers;
         }
 
-        public static ICollection<Build> GenerateRandomBuilds(ICollection<User> users, ICollection<Project> projects)
+        private static ICollection<Build> GenerateRandomBuilds(ICollection<User> users, ICollection<Project> projects)
         {
-            int buildId = 1;
+            var buildId = 1;
 
             var testBuildsFake = new Faker<Build>()
                 .RuleFor(u => u.Id, f => buildId++)
@@ -105,9 +107,9 @@ namespace IDE.DAL.Context
             return generatedProjectMembers;
         }
 
-        public static ICollection<User> GenerateRandomUsers(ICollection<Image> avatars)
+        private static ICollection<User> GenerateRandomUsers(ICollection<Image> avatars)
         {
-            int userId = 1;
+            var userId = 1;
 
             var testUsersFake = new Faker<User>()
                 .RuleFor(u => u.Id, f => userId++)
@@ -118,7 +120,9 @@ namespace IDE.DAL.Context
                 .RuleFor(u => u.LastActive, f => f.Date.Between(DATE_TIME.AddDays(180), DATE_TIME.AddDays(190)))
                 .RuleFor(u => u.GitHubUrl, f => f.Internet.Url())
                 .RuleFor(u => u.PasswordSalt, f => Convert.ToBase64String(SecurityHelper.GetRandomBytes()))
-                .RuleFor(u => u.PasswordHash, (f, u) => SecurityHelper.HashPassword(f.Internet.Password(12), Convert.FromBase64String(u.PasswordSalt)))
+                .RuleFor(u => u.PasswordHash,
+                    (f, u) => SecurityHelper.HashPassword(f.Internet.Password(12),
+                        Convert.FromBase64String(u.PasswordSalt)))
                 .RuleFor(u => u.Email, f => f.Internet.Email())
                 .RuleFor(u => u.AvatarId, f => f.PickRandom(avatars).Id)
                 .RuleFor(u => u.NickName, f => f.Internet.UserName());
@@ -148,9 +152,10 @@ namespace IDE.DAL.Context
             return generatedUsers;
         }
 
-        public static ICollection<Project> GenerateRandomProjects(ICollection<User> authors, ICollection<GitCredential> gits, ICollection<Image> logos)
+        private static ICollection<Project> GenerateRandomProjects(ICollection<User> authors,
+            ICollection<GitCredential> gits, ICollection<Image> logos)
         {
-            int projectId = 1;
+            var projectId = 1;
 
             var testProjectFake = new Faker<Project>()
                 .RuleFor(i => i.Id, f => projectId++)
@@ -173,9 +178,9 @@ namespace IDE.DAL.Context
             return generatedProjects;
         }
 
-        public static ICollection<GitCredential> GenerateRandomGitCredentials()
+        private static ICollection<GitCredential> GenerateRandomGitCredentials()
         {
-            int gitId = 1;
+            var gitId = 1;
 
             var testGitFake = new Faker<GitCredential>()
                 .RuleFor(i => i.Id, f => gitId++)
@@ -183,28 +188,30 @@ namespace IDE.DAL.Context
                 .RuleFor(i => i.Login, f => f.Internet.UserName())
                 .RuleFor(i => i.Provider, f => f.PickRandom<GitProvider>())
                 .RuleFor(u => u.PasswordSalt, f => Convert.ToBase64String(SecurityHelper.GetRandomBytes()))
-                .RuleFor(u => u.PasswordHash, (f, u) => SecurityHelper.HashPassword(f.Internet.Password(12), Convert.FromBase64String(u.PasswordSalt)));
+                .RuleFor(u => u.PasswordHash,
+                    (f, u) => SecurityHelper.HashPassword(f.Internet.Password(12),
+                        Convert.FromBase64String(u.PasswordSalt)));
 
             var generatedGits = testGitFake.Generate(ENTITY_COUNT);
 
             return generatedGits;
         }
-        
-        public static ICollection<Image> GenerateRandomAvatars(out int lastimageId)
+
+        private static ICollection<Image> GenerateRandomAvatars(out int lastImageId)
         {
-            int imageId = 1;
+            var imageId = 1;
 
             var testImageFake = new Faker<Image>()
                 .RuleFor(i => i.Id, f => imageId++)
                 .RuleFor(i => i.Url, f => f.Internet.Avatar());
 
             var generatedImages = testImageFake.Generate(USER_COUNT + 1);
-            lastimageId = imageId;
+            lastImageId = imageId;
 
             return generatedImages;
         }
 
-        public static ICollection<Image> GenerateRandomImages(int imageId)
+        private static ICollection<Image> GenerateRandomImages(int imageId)
         {
             var testImageFake = new Faker<Image>()
                 .RuleFor(i => i.Id, f => imageId++)

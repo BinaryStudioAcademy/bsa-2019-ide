@@ -17,9 +17,8 @@ namespace IDE.API
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
         
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<IdeContext>(option =>
@@ -65,7 +64,7 @@ namespace IDE.API
             app.UseMvc();
         }
 
-        private void UpdateDatabase(IApplicationBuilder app)
+        private static void UpdateDatabase(IApplicationBuilder app)
         {
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {

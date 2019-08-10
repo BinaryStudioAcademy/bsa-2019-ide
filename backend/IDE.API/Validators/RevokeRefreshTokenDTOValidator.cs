@@ -1,9 +1,5 @@
 ﻿using FluentValidation;
-using IDE.Common.DTO.Authentification;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using IDE.Common.ModelsDTO.DTO.Authentification;
 
 namespace IDE.API.Validators
 {

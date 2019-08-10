@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace IDE.Common.Security
 {
-    public class SecurityHelper
+    public static class SecurityHelper
     {
         public static string HashPassword(string password, byte[] salt)
             => Convert.ToBase64String(

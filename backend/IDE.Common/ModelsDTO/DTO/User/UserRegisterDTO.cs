@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IDE.Common.DTO.User
+﻿namespace IDE.Common.DTO.User
 {
     public class UserRegisterDTO: UserDTO
     {
