@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using IDE.BLL.ExceptionsCustom;
 using IDE.Common.DTO.File;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
@@ -29,6 +30,8 @@ namespace IDE.BLL.Services
         public async Task<FileDTO> GetByIdAsync(string id)
         {
             var file = await _repository.GetByIdAsync(id);
+            if (file == null)
+                throw new NotFoundException(nameof(File), id);
 
             return _mapper.Map<FileDTO>(file);
         }
@@ -51,6 +54,10 @@ namespace IDE.BLL.Services
 
         public async Task DeleteAsync(string id)
         {
+            var file = await _repository.GetByIdAsync(id);
+            if (file == null)
+                throw new NotFoundException(nameof(File), id);
+
             await _repository.DeleteAsync(id);
         }
     }

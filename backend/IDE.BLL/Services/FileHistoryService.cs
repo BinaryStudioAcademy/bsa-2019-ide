@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using IDE.BLL.ExceptionsCustom;
 using IDE.Common.DTO.File;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
@@ -21,25 +22,27 @@ namespace IDE.BLL.Services
 
         public async Task<ICollection<FileHistoryDTO>> GetAllAsync()
         {
-            var files = await _repository.GetAllAsync();
+            var fileHistories = await _repository.GetAllAsync();
 
-            return _mapper.Map<ICollection<FileHistoryDTO>>(files);
+            return _mapper.Map<ICollection<FileHistoryDTO>>(fileHistories);
         }
 
         public async Task<FileHistoryDTO> GetByIdAsync(string id)
         {
-            var file = await _repository.GetByIdAsync(id);
+            var fileHistory = await _repository.GetByIdAsync(id);            
+            if (fileHistory == null)
+                throw new NotFoundException(nameof(FileHistory), id);
 
-            return _mapper.Map<FileHistoryDTO>(file);
+            return _mapper.Map<FileHistoryDTO>(fileHistory);
         }
 
         public async Task<FileHistoryDTO> CreateAsync(FileHistoryDTO item)
         {
             var createdItem = _mapper.Map<FileHistory>(item);
             createdItem.CreatedAt = DateTime.Now;
-            var file = await _repository.CreateAsync(createdItem);
+            var fileHistory = await _repository.CreateAsync(createdItem);
 
-            return _mapper.Map<FileHistoryDTO>(file);
+            return _mapper.Map<FileHistoryDTO>(fileHistory);
         }
 
         public async Task UpdateAsync(FileHistoryDTO item)
@@ -52,6 +55,10 @@ namespace IDE.BLL.Services
 
         public async Task DeleteAsync(string id)
         {
+            var fileHistory = await _repository.GetByIdAsync(id);
+            if (fileHistory == null)
+                throw new NotFoundException(nameof(FileHistory), id);
+
             await _repository.DeleteAsync(id);
         }
     }
