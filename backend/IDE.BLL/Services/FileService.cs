@@ -31,7 +31,9 @@ namespace IDE.BLL.Services
         {
             var file = await _repository.GetByIdAsync(id);
             if (file == null)
+            {
                 throw new NotFoundException(nameof(File), id);
+            }
 
             return _mapper.Map<FileDTO>(file);
         }
@@ -56,7 +58,9 @@ namespace IDE.BLL.Services
         {
             var file = await _repository.GetByIdAsync(id);
             if (file == null)
+            {
                 throw new NotFoundException(nameof(File), id);
+            }
 
             await _repository.DeleteAsync(id);
         }
