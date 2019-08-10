@@ -44,6 +44,408 @@ namespace IDE.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Builds");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            BuildFinished = new DateTime(2018, 10, 23, 15, 47, 9, 179, DateTimeKind.Unspecified).AddTicks(79),
+                            BuildMessage = "Atque nemo repellat consequatur qui sit sint enim quis consequatur.",
+                            BuildStarted = new DateTime(2018, 9, 16, 17, 23, 11, 478, DateTimeKind.Unspecified).AddTicks(8761),
+                            BuildStatus = 0,
+                            ProjectId = 20,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            BuildFinished = new DateTime(2018, 10, 6, 2, 19, 39, 968, DateTimeKind.Unspecified).AddTicks(3908),
+                            BuildMessage = "Eaque illo est numquam aut numquam et vel sed magnam.",
+                            BuildStarted = new DateTime(2018, 9, 8, 5, 50, 22, 25, DateTimeKind.Unspecified).AddTicks(2329),
+                            BuildStatus = 1,
+                            ProjectId = 20,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            BuildFinished = new DateTime(2018, 10, 9, 17, 40, 33, 977, DateTimeKind.Unspecified).AddTicks(5471),
+                            BuildMessage = "Non dolorem ipsam perspiciatis aperiam et perferendis modi ullam dicta.",
+                            BuildStarted = new DateTime(2018, 9, 28, 14, 35, 0, 717, DateTimeKind.Unspecified).AddTicks(9132),
+                            BuildStatus = 1,
+                            ProjectId = 4,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            BuildFinished = new DateTime(2018, 10, 26, 5, 27, 56, 310, DateTimeKind.Unspecified).AddTicks(611),
+                            BuildMessage = "Sint dolore itaque architecto et ipsum doloribus pariatur est sint.",
+                            BuildStarted = new DateTime(2018, 9, 19, 14, 28, 45, 467, DateTimeKind.Unspecified).AddTicks(2025),
+                            BuildStatus = 1,
+                            ProjectId = 18,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 5,
+                            BuildFinished = new DateTime(2018, 10, 16, 1, 23, 13, 476, DateTimeKind.Unspecified).AddTicks(7597),
+                            BuildMessage = "In sint omnis consequatur beatae ex dolorem molestiae sed minus.",
+                            BuildStarted = new DateTime(2018, 9, 1, 17, 8, 44, 496, DateTimeKind.Unspecified).AddTicks(8553),
+                            BuildStatus = 1,
+                            ProjectId = 7,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            BuildFinished = new DateTime(2018, 10, 28, 9, 42, 48, 485, DateTimeKind.Unspecified).AddTicks(2599),
+                            BuildMessage = "Error nam labore nemo id asperiores nobis molestiae aperiam aut.",
+                            BuildStarted = new DateTime(2018, 9, 29, 5, 11, 32, 829, DateTimeKind.Unspecified).AddTicks(7786),
+                            BuildStatus = 0,
+                            ProjectId = 13,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            BuildFinished = new DateTime(2018, 10, 13, 20, 25, 37, 632, DateTimeKind.Unspecified).AddTicks(3029),
+                            BuildMessage = "Molestias dolores rem vel est ea officiis consectetur et praesentium.",
+                            BuildStarted = new DateTime(2018, 9, 11, 10, 58, 19, 255, DateTimeKind.Unspecified).AddTicks(4968),
+                            BuildStatus = 1,
+                            ProjectId = 17,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 8,
+                            BuildFinished = new DateTime(2018, 10, 15, 18, 46, 2, 848, DateTimeKind.Unspecified).AddTicks(9764),
+                            BuildMessage = "Laboriosam soluta est aut hic tenetur est similique sit quos.",
+                            BuildStarted = new DateTime(2018, 9, 22, 10, 25, 51, 131, DateTimeKind.Unspecified).AddTicks(4016),
+                            BuildStatus = 1,
+                            ProjectId = 15,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 9,
+                            BuildFinished = new DateTime(2018, 10, 5, 5, 3, 2, 944, DateTimeKind.Unspecified).AddTicks(6743),
+                            BuildMessage = "Eaque ut in nihil tempora necessitatibus ea quos iusto deleniti.",
+                            BuildStarted = new DateTime(2018, 9, 21, 16, 31, 18, 437, DateTimeKind.Unspecified).AddTicks(193),
+                            BuildStatus = 0,
+                            ProjectId = 4,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 10,
+                            BuildFinished = new DateTime(2018, 10, 13, 0, 18, 44, 750, DateTimeKind.Unspecified).AddTicks(2466),
+                            BuildMessage = "Dolor et qui natus assumenda quaerat deserunt qui beatae praesentium.",
+                            BuildStarted = new DateTime(2018, 9, 25, 13, 4, 34, 389, DateTimeKind.Unspecified).AddTicks(7091),
+                            BuildStatus = 1,
+                            ProjectId = 10,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            BuildFinished = new DateTime(2018, 10, 31, 5, 22, 48, 912, DateTimeKind.Unspecified).AddTicks(100),
+                            BuildMessage = "Consequatur dolores exercitationem non quam consequatur esse fugit sed officia.",
+                            BuildStarted = new DateTime(2018, 9, 30, 9, 57, 47, 39, DateTimeKind.Unspecified).AddTicks(3083),
+                            BuildStatus = 0,
+                            ProjectId = 6,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            BuildFinished = new DateTime(2018, 10, 9, 2, 53, 11, 978, DateTimeKind.Unspecified).AddTicks(9631),
+                            BuildMessage = "Voluptatum sint quisquam harum ipsam pariatur aut sit consequuntur debitis.",
+                            BuildStarted = new DateTime(2018, 9, 14, 8, 53, 31, 38, DateTimeKind.Unspecified).AddTicks(1737),
+                            BuildStatus = 1,
+                            ProjectId = 7,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            BuildFinished = new DateTime(2018, 10, 13, 14, 55, 14, 971, DateTimeKind.Unspecified).AddTicks(5972),
+                            BuildMessage = "Voluptatem voluptates ipsum praesentium tempore iste sit et molestiae culpa.",
+                            BuildStarted = new DateTime(2018, 9, 23, 19, 12, 4, 443, DateTimeKind.Unspecified).AddTicks(2831),
+                            BuildStatus = 1,
+                            ProjectId = 10,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 14,
+                            BuildFinished = new DateTime(2018, 10, 25, 11, 59, 45, 319, DateTimeKind.Unspecified).AddTicks(1502),
+                            BuildMessage = "Quasi corporis et illum voluptatibus corporis nulla qui aut consequuntur.",
+                            BuildStarted = new DateTime(2018, 9, 24, 23, 52, 5, 625, DateTimeKind.Unspecified).AddTicks(2644),
+                            BuildStatus = 1,
+                            ProjectId = 4,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            BuildFinished = new DateTime(2018, 10, 31, 4, 26, 25, 391, DateTimeKind.Unspecified).AddTicks(6764),
+                            BuildMessage = "Sunt explicabo accusamus impedit ut architecto sit dolorem et nihil.",
+                            BuildStarted = new DateTime(2018, 9, 9, 21, 30, 53, 735, DateTimeKind.Unspecified).AddTicks(7870),
+                            BuildStatus = 0,
+                            ProjectId = 6,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 16,
+                            BuildFinished = new DateTime(2018, 10, 18, 4, 15, 26, 882, DateTimeKind.Unspecified).AddTicks(4336),
+                            BuildMessage = "Explicabo perspiciatis numquam suscipit consequatur qui eius molestias quaerat aut.",
+                            BuildStarted = new DateTime(2018, 9, 15, 6, 44, 19, 923, DateTimeKind.Unspecified).AddTicks(6244),
+                            BuildStatus = 0,
+                            ProjectId = 4,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 17,
+                            BuildFinished = new DateTime(2018, 10, 28, 0, 32, 7, 869, DateTimeKind.Unspecified).AddTicks(1658),
+                            BuildMessage = "Id aut consectetur blanditiis corrupti nam rerum possimus cumque porro.",
+                            BuildStarted = new DateTime(2018, 9, 2, 11, 47, 36, 719, DateTimeKind.Unspecified).AddTicks(3602),
+                            BuildStatus = 0,
+                            ProjectId = 17,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 18,
+                            BuildFinished = new DateTime(2018, 10, 22, 6, 55, 34, 427, DateTimeKind.Unspecified).AddTicks(9927),
+                            BuildMessage = "Doloremque omnis assumenda blanditiis aperiam aliquam id fugiat et fugiat.",
+                            BuildStarted = new DateTime(2018, 9, 27, 5, 19, 44, 682, DateTimeKind.Unspecified).AddTicks(8341),
+                            BuildStatus = 1,
+                            ProjectId = 13,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 19,
+                            BuildFinished = new DateTime(2018, 10, 25, 13, 9, 31, 780, DateTimeKind.Unspecified).AddTicks(6530),
+                            BuildMessage = "Maiores vero quos dolor aut veniam vitae quo error necessitatibus.",
+                            BuildStarted = new DateTime(2018, 9, 7, 5, 57, 41, 936, DateTimeKind.Unspecified).AddTicks(2246),
+                            BuildStatus = 1,
+                            ProjectId = 11,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 20,
+                            BuildFinished = new DateTime(2018, 10, 24, 12, 20, 38, 358, DateTimeKind.Unspecified).AddTicks(4617),
+                            BuildMessage = "Nam quis in sunt architecto et voluptatem nihil corporis et.",
+                            BuildStarted = new DateTime(2018, 9, 27, 0, 51, 14, 724, DateTimeKind.Unspecified).AddTicks(3419),
+                            BuildStatus = 0,
+                            ProjectId = 19,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 21,
+                            BuildFinished = new DateTime(2018, 10, 20, 0, 27, 23, 948, DateTimeKind.Unspecified).AddTicks(1952),
+                            BuildMessage = "Beatae minima voluptatem voluptates minus consectetur maiores et aut ea.",
+                            BuildStarted = new DateTime(2018, 9, 29, 10, 23, 54, 950, DateTimeKind.Unspecified).AddTicks(2172),
+                            BuildStatus = 1,
+                            ProjectId = 5,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 22,
+                            BuildFinished = new DateTime(2018, 10, 26, 13, 34, 0, 756, DateTimeKind.Unspecified).AddTicks(695),
+                            BuildMessage = "Totam modi eius corrupti ipsum quas amet aperiam provident accusamus.",
+                            BuildStarted = new DateTime(2018, 9, 20, 23, 26, 17, 398, DateTimeKind.Unspecified).AddTicks(2158),
+                            BuildStatus = 0,
+                            ProjectId = 4,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 23,
+                            BuildFinished = new DateTime(2018, 10, 8, 5, 20, 22, 700, DateTimeKind.Unspecified).AddTicks(4916),
+                            BuildMessage = "Aut eos numquam hic consequatur non quidem id aut similique.",
+                            BuildStarted = new DateTime(2018, 9, 21, 7, 30, 41, 232, DateTimeKind.Unspecified).AddTicks(1366),
+                            BuildStatus = 0,
+                            ProjectId = 8,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 24,
+                            BuildFinished = new DateTime(2018, 10, 4, 21, 34, 52, 137, DateTimeKind.Unspecified).AddTicks(7127),
+                            BuildMessage = "Quia fugit eos voluptatum ratione facilis a praesentium qui aut.",
+                            BuildStarted = new DateTime(2018, 9, 27, 17, 54, 1, 190, DateTimeKind.Unspecified).AddTicks(5499),
+                            BuildStatus = 0,
+                            ProjectId = 13,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 25,
+                            BuildFinished = new DateTime(2018, 10, 3, 2, 8, 34, 208, DateTimeKind.Unspecified).AddTicks(6139),
+                            BuildMessage = "Aperiam quibusdam ut omnis nostrum consequatur quas aliquam possimus saepe.",
+                            BuildStarted = new DateTime(2018, 9, 26, 0, 24, 5, 580, DateTimeKind.Unspecified).AddTicks(7737),
+                            BuildStatus = 1,
+                            ProjectId = 7,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 26,
+                            BuildFinished = new DateTime(2018, 10, 16, 6, 22, 33, 99, DateTimeKind.Unspecified).AddTicks(3300),
+                            BuildMessage = "Sed quibusdam eos voluptate nam omnis sit quo sit officia.",
+                            BuildStarted = new DateTime(2018, 9, 5, 12, 13, 39, 151, DateTimeKind.Unspecified).AddTicks(8035),
+                            BuildStatus = 1,
+                            ProjectId = 16,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 27,
+                            BuildFinished = new DateTime(2018, 10, 29, 10, 9, 16, 171, DateTimeKind.Unspecified).AddTicks(7606),
+                            BuildMessage = "Nobis perferendis error illum provident aut in laborum debitis ipsam.",
+                            BuildStarted = new DateTime(2018, 9, 22, 1, 29, 16, 616, DateTimeKind.Unspecified).AddTicks(8139),
+                            BuildStatus = 1,
+                            ProjectId = 8,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 28,
+                            BuildFinished = new DateTime(2018, 10, 10, 16, 30, 14, 334, DateTimeKind.Unspecified).AddTicks(7719),
+                            BuildMessage = "Voluptatem fuga ut sapiente et explicabo eum numquam autem sint.",
+                            BuildStarted = new DateTime(2018, 9, 1, 13, 33, 52, 569, DateTimeKind.Unspecified).AddTicks(1898),
+                            BuildStatus = 0,
+                            ProjectId = 18,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 29,
+                            BuildFinished = new DateTime(2018, 10, 5, 10, 11, 17, 4, DateTimeKind.Unspecified).AddTicks(966),
+                            BuildMessage = "Magni maxime velit voluptas non illum inventore occaecati eum laborum.",
+                            BuildStarted = new DateTime(2018, 9, 25, 1, 36, 15, 960, DateTimeKind.Unspecified).AddTicks(7074),
+                            BuildStatus = 0,
+                            ProjectId = 20,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 30,
+                            BuildFinished = new DateTime(2018, 10, 30, 19, 21, 35, 117, DateTimeKind.Unspecified).AddTicks(9591),
+                            BuildMessage = "Est quidem magni nihil similique non eos quibusdam recusandae dolorem.",
+                            BuildStarted = new DateTime(2018, 9, 10, 0, 24, 32, 726, DateTimeKind.Unspecified).AddTicks(9552),
+                            BuildStatus = 1,
+                            ProjectId = 4,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 31,
+                            BuildFinished = new DateTime(2018, 10, 16, 22, 5, 53, 78, DateTimeKind.Unspecified).AddTicks(7764),
+                            BuildMessage = "Et sint molestiae id sit a ducimus sed quis dolores.",
+                            BuildStarted = new DateTime(2018, 9, 29, 20, 58, 55, 531, DateTimeKind.Unspecified).AddTicks(7468),
+                            BuildStatus = 0,
+                            ProjectId = 4,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 32,
+                            BuildFinished = new DateTime(2018, 10, 4, 6, 8, 50, 126, DateTimeKind.Unspecified).AddTicks(9277),
+                            BuildMessage = "Voluptates ea quia esse dolorem vel hic dolor et et.",
+                            BuildStarted = new DateTime(2018, 9, 30, 20, 19, 4, 61, DateTimeKind.Unspecified).AddTicks(317),
+                            BuildStatus = 1,
+                            ProjectId = 10,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 33,
+                            BuildFinished = new DateTime(2018, 10, 29, 4, 28, 20, 672, DateTimeKind.Unspecified).AddTicks(9663),
+                            BuildMessage = "Sit officiis eius officiis vel quis possimus et et alias.",
+                            BuildStarted = new DateTime(2018, 9, 8, 5, 18, 22, 892, DateTimeKind.Unspecified).AddTicks(6119),
+                            BuildStatus = 0,
+                            ProjectId = 16,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 34,
+                            BuildFinished = new DateTime(2018, 10, 19, 19, 2, 54, 8, DateTimeKind.Unspecified).AddTicks(3284),
+                            BuildMessage = "Nihil voluptatibus ducimus eum sint eveniet cum est voluptatum dolores.",
+                            BuildStarted = new DateTime(2018, 9, 26, 10, 44, 54, 104, DateTimeKind.Unspecified).AddTicks(1605),
+                            BuildStatus = 0,
+                            ProjectId = 17,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 35,
+                            BuildFinished = new DateTime(2018, 10, 6, 20, 26, 54, 239, DateTimeKind.Unspecified).AddTicks(7732),
+                            BuildMessage = "Perferendis aut occaecati laudantium voluptatum sunt rerum veniam ut illum.",
+                            BuildStarted = new DateTime(2018, 9, 5, 13, 8, 46, 801, DateTimeKind.Unspecified).AddTicks(9390),
+                            BuildStatus = 0,
+                            ProjectId = 5,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 36,
+                            BuildFinished = new DateTime(2018, 10, 19, 3, 24, 38, 43, DateTimeKind.Unspecified).AddTicks(46),
+                            BuildMessage = "Minima consectetur delectus aut adipisci perferendis dolores est aut aut.",
+                            BuildStarted = new DateTime(2018, 9, 11, 3, 32, 43, 908, DateTimeKind.Unspecified).AddTicks(6455),
+                            BuildStatus = 0,
+                            ProjectId = 15,
+                            UserId = 3
+                        },
+                        new
+                        {
+                            Id = 37,
+                            BuildFinished = new DateTime(2018, 10, 30, 20, 47, 10, 926, DateTimeKind.Unspecified).AddTicks(3950),
+                            BuildMessage = "Hic rerum quia porro doloribus ut qui exercitationem minus sint.",
+                            BuildStarted = new DateTime(2018, 9, 17, 2, 4, 19, 619, DateTimeKind.Unspecified).AddTicks(4898),
+                            BuildStatus = 1,
+                            ProjectId = 19,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 38,
+                            BuildFinished = new DateTime(2018, 10, 24, 16, 35, 14, 470, DateTimeKind.Unspecified).AddTicks(7019),
+                            BuildMessage = "Id praesentium ea necessitatibus at expedita quis et molestiae quia.",
+                            BuildStarted = new DateTime(2018, 9, 16, 13, 39, 50, 442, DateTimeKind.Unspecified).AddTicks(3242),
+                            BuildStatus = 0,
+                            ProjectId = 9,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 39,
+                            BuildFinished = new DateTime(2018, 10, 5, 7, 36, 54, 904, DateTimeKind.Unspecified).AddTicks(1393),
+                            BuildMessage = "Doloribus qui perspiciatis in accusamus quia aperiam et nihil ipsam.",
+                            BuildStarted = new DateTime(2018, 9, 21, 21, 46, 0, 845, DateTimeKind.Unspecified).AddTicks(1702),
+                            BuildStatus = 1,
+                            ProjectId = 5,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 40,
+                            BuildFinished = new DateTime(2018, 10, 21, 9, 13, 9, 903, DateTimeKind.Unspecified).AddTicks(3954),
+                            BuildMessage = "Ipsam qui quidem laboriosam enim debitis quod vero rerum nemo.",
+                            BuildStarted = new DateTime(2018, 9, 18, 10, 1, 32, 631, DateTimeKind.Unspecified).AddTicks(841),
+                            BuildStatus = 0,
+                            ProjectId = 4,
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.GitCredential", b =>
@@ -65,6 +467,188 @@ namespace IDE.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("GitCredentials");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Login = "Tamara34",
+                            PasswordHash = "ePzYL+IhCHJMEY9L2FEaVcmJXo6t2R4Rk/eElUKQQx0=",
+                            PasswordSalt = "mLVE0foaF3oayRqP5PM4Z5RgBWpVhPc/kmKvoKrQ2NE=",
+                            Provider = 2,
+                            Url = "https://jayda.net"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Login = "Maximillia.Donnelly",
+                            PasswordHash = "yPnBn9T3Y80haqLZdpK45aQHJs6E4CN/BDmBhWAUSCo=",
+                            PasswordSalt = "u1JqD5xAc/PJOdzmPI1SGCPB6iOVfGvQC9nwkGqgkt8=",
+                            Provider = 0,
+                            Url = "https://mazie.com"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Login = "Connie42",
+                            PasswordHash = "362/5hApxPktORE8aKCsDRWPBl9QFhcRSI32hiaBxR4=",
+                            PasswordSalt = "KJy4wekrcp71AqXYcbY3fUfGI8uhBiSAGfaf6iHJqoo=",
+                            Provider = 2,
+                            Url = "https://gunnar.net"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Login = "Destini.Conroy",
+                            PasswordHash = "Z/L7ZiFW4ePV7PjsUhGUAsRViHbeF1GmA2jtkXc74EU=",
+                            PasswordSalt = "4TTwsE0OecoZkFJA32NZC4UIDdQmBPsdDOcy5E3/LBU=",
+                            Provider = 0,
+                            Url = "http://felix.info"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Login = "Maeve.Stroman",
+                            PasswordHash = "oNZuRutg4qKkILP84stbKGzlqSx4DoTcx0prNNxxsEI=",
+                            PasswordSalt = "ih9UIJ51pZW65BTdguhtREEeCQscuCfhpPueTl/IMEA=",
+                            Provider = 1,
+                            Url = "https://annamarie.com"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Login = "Chauncey_Nitzsche33",
+                            PasswordHash = "mbQh2YyMuQDMzNGg5VLwGbZamy3CPfo4/9DXqshcJHA=",
+                            PasswordSalt = "xcPqAuTKF5NubbalzRz4udtXuK8SjEJpT/P92m6WUog=",
+                            Provider = 2,
+                            Url = "http://roosevelt.net"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Login = "John.Carroll8",
+                            PasswordHash = "xTaFbzMFcFu1/d8NrV1dA3jK7AxmBBF8TlwAI/zMTQU=",
+                            PasswordSalt = "9hYaCJJKQsa0ipxc0AvXa2/L0VyDJFqmNmJ/ZRthxlI=",
+                            Provider = 2,
+                            Url = "http://arnoldo.org"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Login = "Niko.Crooks",
+                            PasswordHash = "MoGnYwqE5CzfjDb6T5z/viXoxAVzL+3H3Kajxo3w0vw=",
+                            PasswordSalt = "d/deHr+5Aon4L72Y6vd3e1R7ZgO89UJUzoTvv4CPw2E=",
+                            Provider = 1,
+                            Url = "https://ambrose.com"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Login = "Pearlie.Graham96",
+                            PasswordHash = "vW7ukGM6s0GrPSDZPzgkJlmsn3PwA78ODiXdnvbKwaI=",
+                            PasswordSalt = "AKnIT8pt8IjWwWLuTYpla5pPTurKc1DtkiKrzOiLjro=",
+                            Provider = 2,
+                            Url = "http://neil.name"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Login = "Sonny_McLaughlin23",
+                            PasswordHash = "7qi74UQQp/jimhSOojDntvJBikNzsSTokV/0kuBSkLM=",
+                            PasswordSalt = "BYQRIE3XayLJ8vsCXPgw7vUmxegl4aPVqTnYzwDhgng=",
+                            Provider = 0,
+                            Url = "https://rhoda.info"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Login = "Jannie.Goldner",
+                            PasswordHash = "ujzhxyvQwf6cyXaalLdIipKpvZlVkLszMVtc57TB918=",
+                            PasswordSalt = "4pMXFZLt//fZPHgLC/iRxvfuK08ovMmquKgZMGmau4I=",
+                            Provider = 0,
+                            Url = "http://marcelina.org"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Login = "Cassie34",
+                            PasswordHash = "rRf/tSz2mX7BA5BczVlVgOQhSoDZHoigo1ASJsMyXZw=",
+                            PasswordSalt = "QtmpDeb7D9ZQ/ulpAJgLd8Cgz0JIT9mwolWYsjsgBak=",
+                            Provider = 1,
+                            Url = "https://schuyler.org"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Login = "Willis_Romaguera",
+                            PasswordHash = "751E/zh6vqDqKcfyb3poJb9rgSEo6dazWB/yIgx+VIo=",
+                            PasswordSalt = "fYmSLX0Y6arp9ghDLF9B161AijXmtV/gb+q2cjTh+ro=",
+                            Provider = 0,
+                            Url = "https://bobbie.info"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Login = "Aylin61",
+                            PasswordHash = "1sVPjZWszR0KIJ5sI554rCbrYOFyKXV40IPgY1ntH8A=",
+                            PasswordSalt = "FluHzvwfHtq27lMD9zp3OMpheF+Vc0aV0GddPAWdIhI=",
+                            Provider = 0,
+                            Url = "https://briana.com"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Login = "Edna.Hahn77",
+                            PasswordHash = "wacWwAJvWwpbw2D4zSyeRKGl5qdPy86/CRvZh8x+4g0=",
+                            PasswordSalt = "I6MBSUCmj7rHkNv08eR2Dw/CTHFLDrKCCuuTFRsMM0s=",
+                            Provider = 0,
+                            Url = "https://ashlynn.biz"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Login = "Titus91",
+                            PasswordHash = "GtFhOG0KxeW1cjU9AGHent3QU/ykJb3cxVJorVDFN1c=",
+                            PasswordSalt = "i8QRBE/MQRYp3VvjLc+u8fvpvyswM3QTbjXwpZR/HBY=",
+                            Provider = 0,
+                            Url = "http://dwight.org"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Login = "Kassandra_Kemmer",
+                            PasswordHash = "0z0TR5h5WZRCatJyzzK0l2Tv6zYA9bESyeChDp8OWrg=",
+                            PasswordSalt = "QTuOhHKvURnuq/+9yiLFalEr4lnrK0Gk9g67H57D2XE=",
+                            Provider = 1,
+                            Url = "http://destiny.com"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Login = "Leann_Jerde71",
+                            PasswordHash = "0iVuSXRID4lzoB+SmjUnQsA4FZNFXlKlUtSfHw+Xj+o=",
+                            PasswordSalt = "W3nb1sZIlIaoQOGo2+iO7AKGRswtW8ITmL8L45cqs2g=",
+                            Provider = 0,
+                            Url = "http://scot.com"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Login = "Rosa_Haley",
+                            PasswordHash = "ojGhC3uq438DXLJVGLppyunYSLS+srXoXri0OnwZrRA=",
+                            PasswordSalt = "dMTE/VlNcvCI+EPAeZzWhJhPOZKO9O+SfRXWxS+gNx8=",
+                            Provider = 0,
+                            Url = "https://vivianne.net"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Login = "Emmett_McClure",
+                            PasswordHash = "VKWSrpP7skuB6OOkL0jlvuoGQUtcyXA0hg83FLQP9iY=",
+                            PasswordSalt = "wrt+ejXippJadfHS9LHYqSRZkHFZOkrO4Ql3skKw8Lw=",
+                            Provider = 1,
+                            Url = "https://juanita.biz"
+                        });
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.Image", b =>
@@ -78,6 +662,123 @@ namespace IDE.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Images");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Url = "https://s3.amazonaws.com/uifaces/faces/twitter/imammuht/128.jpg"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Url = "https://s3.amazonaws.com/uifaces/faces/twitter/normanbox/128.jpg"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Url = "https://s3.amazonaws.com/uifaces/faces/twitter/digitalmaverick/128.jpg"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Url = "https://loremflickr.com/640/480?lock=1480224036"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Url = "https://loremflickr.com/640/480?lock=1822844665"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Url = "https://loremflickr.com/640/480?lock=647665779"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Url = "https://loremflickr.com/640/480?lock=1129885050"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Url = "https://loremflickr.com/640/480?lock=1915200731"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Url = "https://loremflickr.com/640/480?lock=750228139"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Url = "https://loremflickr.com/640/480?lock=1022100058"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            Url = "https://loremflickr.com/640/480?lock=249167178"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Url = "https://loremflickr.com/640/480?lock=795639316"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Url = "https://loremflickr.com/640/480?lock=1143379573"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            Url = "https://loremflickr.com/640/480?lock=2045055810"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            Url = "https://loremflickr.com/640/480?lock=1126424437"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            Url = "https://loremflickr.com/640/480?lock=105575879"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            Url = "https://loremflickr.com/640/480?lock=1627246728"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            Url = "https://loremflickr.com/640/480?lock=1619135858"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            Url = "https://loremflickr.com/640/480?lock=251969388"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            Url = "https://loremflickr.com/640/480?lock=666130004"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            Url = "https://loremflickr.com/640/480?lock=2009551175"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            Url = "https://loremflickr.com/640/480?lock=639109103"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            Url = "https://loremflickr.com/640/480?lock=245164000"
+                        });
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.Project", b =>
@@ -121,6 +822,348 @@ namespace IDE.DAL.Migrations
                     b.HasIndex("LogoId");
 
                     b.ToTable("Projects");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessModifier = 0,
+                            AuthorId = 3,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 10,
+                            CountOfSaveBuilds = 6,
+                            CreatedAt = new DateTime(2018, 1, 21, 1, 18, 19, 295, DateTimeKind.Unspecified).AddTicks(3740),
+                            Description = "Voluptas fuga soluta officiis temporibus.",
+                            GitCredentialId = 1,
+                            Language = 1,
+                            LogoId = 11,
+                            Name = "dicta",
+                            ProjectLink = "http://fabian.biz",
+                            ProjectType = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccessModifier = 1,
+                            AuthorId = 3,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 5,
+                            CountOfSaveBuilds = 6,
+                            CreatedAt = new DateTime(2018, 6, 9, 18, 2, 26, 825, DateTimeKind.Unspecified).AddTicks(6672),
+                            Description = "Repellendus eligendi ad vel officia.",
+                            GitCredentialId = 9,
+                            Language = 0,
+                            LogoId = 19,
+                            Name = "animi",
+                            ProjectLink = "http://lucie.org",
+                            ProjectType = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AccessModifier = 0,
+                            AuthorId = 1,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 10,
+                            CountOfSaveBuilds = 7,
+                            CreatedAt = new DateTime(2018, 1, 10, 7, 38, 41, 938, DateTimeKind.Unspecified).AddTicks(7227),
+                            Description = "Iste rerum doloremque laudantium rerum.",
+                            GitCredentialId = 20,
+                            Language = 1,
+                            LogoId = 4,
+                            Name = "cum",
+                            ProjectLink = "https://talia.net",
+                            ProjectType = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AccessModifier = 0,
+                            AuthorId = 3,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 7,
+                            CountOfSaveBuilds = 8,
+                            CreatedAt = new DateTime(2018, 2, 14, 5, 7, 25, 717, DateTimeKind.Unspecified).AddTicks(3791),
+                            Description = "Explicabo blanditiis corporis voluptatem tempora.",
+                            GitCredentialId = 3,
+                            Language = 0,
+                            LogoId = 10,
+                            Name = "laborum",
+                            ProjectLink = "https://everett.org",
+                            ProjectType = 2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AccessModifier = 0,
+                            AuthorId = 1,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 5,
+                            CountOfSaveBuilds = 9,
+                            CreatedAt = new DateTime(2018, 2, 11, 18, 36, 16, 185, DateTimeKind.Unspecified).AddTicks(2502),
+                            Description = "Quidem vel nobis vel vel.",
+                            GitCredentialId = 4,
+                            Language = 1,
+                            LogoId = 15,
+                            Name = "assumenda",
+                            ProjectLink = "https://nicklaus.org",
+                            ProjectType = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AccessModifier = 0,
+                            AuthorId = 3,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 8,
+                            CountOfSaveBuilds = 6,
+                            CreatedAt = new DateTime(2018, 4, 23, 9, 19, 52, 199, DateTimeKind.Unspecified).AddTicks(611),
+                            Description = "Et voluptas consectetur nam nostrum.",
+                            GitCredentialId = 4,
+                            Language = 0,
+                            LogoId = 16,
+                            Name = "eaque",
+                            ProjectLink = "https://rocky.info",
+                            ProjectType = 2
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AccessModifier = 1,
+                            AuthorId = 1,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 10,
+                            CountOfSaveBuilds = 7,
+                            CreatedAt = new DateTime(2018, 1, 14, 6, 41, 21, 239, DateTimeKind.Unspecified).AddTicks(2988),
+                            Description = "Quos et sed omnis soluta.",
+                            GitCredentialId = 12,
+                            Language = 1,
+                            LogoId = 4,
+                            Name = "maxime",
+                            ProjectLink = "https://christelle.net",
+                            ProjectType = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            AccessModifier = 1,
+                            AuthorId = 2,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 10,
+                            CountOfSaveBuilds = 7,
+                            CreatedAt = new DateTime(2018, 5, 9, 19, 46, 19, 882, DateTimeKind.Unspecified).AddTicks(648),
+                            Description = "Qui adipisci deleniti culpa et.",
+                            GitCredentialId = 2,
+                            Language = 1,
+                            LogoId = 11,
+                            Name = "omnis",
+                            ProjectLink = "http://hardy.info",
+                            ProjectType = 2
+                        },
+                        new
+                        {
+                            Id = 9,
+                            AccessModifier = 1,
+                            AuthorId = 2,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 8,
+                            CountOfSaveBuilds = 6,
+                            CreatedAt = new DateTime(2018, 5, 20, 10, 58, 40, 94, DateTimeKind.Unspecified).AddTicks(1285),
+                            Description = "Excepturi odit et dolorem officia.",
+                            GitCredentialId = 2,
+                            Language = 1,
+                            LogoId = 19,
+                            Name = "qui",
+                            ProjectLink = "https://leda.net",
+                            ProjectType = 0
+                        },
+                        new
+                        {
+                            Id = 10,
+                            AccessModifier = 0,
+                            AuthorId = 1,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 10,
+                            CountOfSaveBuilds = 5,
+                            CreatedAt = new DateTime(2018, 3, 29, 10, 40, 16, 430, DateTimeKind.Unspecified).AddTicks(9934),
+                            Description = "Rerum dolores placeat sed vitae.",
+                            GitCredentialId = 20,
+                            Language = 0,
+                            LogoId = 4,
+                            Name = "ea",
+                            ProjectLink = "https://taylor.net",
+                            ProjectType = 2
+                        },
+                        new
+                        {
+                            Id = 11,
+                            AccessModifier = 1,
+                            AuthorId = 1,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 8,
+                            CountOfSaveBuilds = 10,
+                            CreatedAt = new DateTime(2018, 1, 5, 21, 33, 57, 552, DateTimeKind.Unspecified).AddTicks(4525),
+                            Description = "Necessitatibus quas et ullam provident.",
+                            GitCredentialId = 10,
+                            Language = 0,
+                            LogoId = 8,
+                            Name = "dolores",
+                            ProjectLink = "http://marguerite.org",
+                            ProjectType = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            AccessModifier = 1,
+                            AuthorId = 1,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 6,
+                            CountOfSaveBuilds = 9,
+                            CreatedAt = new DateTime(2018, 6, 12, 22, 50, 26, 607, DateTimeKind.Unspecified).AddTicks(9898),
+                            Description = "Ut sed aliquam aperiam dolores.",
+                            GitCredentialId = 20,
+                            Language = 0,
+                            LogoId = 6,
+                            Name = "repellendus",
+                            ProjectLink = "http://callie.name",
+                            ProjectType = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            AccessModifier = 0,
+                            AuthorId = 3,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 10,
+                            CountOfSaveBuilds = 5,
+                            CreatedAt = new DateTime(2018, 2, 4, 18, 40, 56, 195, DateTimeKind.Unspecified).AddTicks(3590),
+                            Description = "Numquam maxime repudiandae minus velit.",
+                            GitCredentialId = 1,
+                            Language = 1,
+                            LogoId = 20,
+                            Name = "enim",
+                            ProjectLink = "http://nathaniel.biz",
+                            ProjectType = 2
+                        },
+                        new
+                        {
+                            Id = 14,
+                            AccessModifier = 0,
+                            AuthorId = 3,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 9,
+                            CountOfSaveBuilds = 8,
+                            CreatedAt = new DateTime(2018, 3, 26, 22, 22, 44, 164, DateTimeKind.Unspecified).AddTicks(6224),
+                            Description = "Corporis laboriosam ab voluptatem iure.",
+                            GitCredentialId = 2,
+                            Language = 1,
+                            LogoId = 13,
+                            Name = "dolores",
+                            ProjectLink = "https://pearlie.name",
+                            ProjectType = 0
+                        },
+                        new
+                        {
+                            Id = 15,
+                            AccessModifier = 0,
+                            AuthorId = 1,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 5,
+                            CountOfSaveBuilds = 7,
+                            CreatedAt = new DateTime(2018, 3, 26, 12, 1, 51, 384, DateTimeKind.Unspecified).AddTicks(1676),
+                            Description = "Illo aut consequatur quia non.",
+                            GitCredentialId = 3,
+                            Language = 0,
+                            LogoId = 20,
+                            Name = "ullam",
+                            ProjectLink = "http://rodolfo.info",
+                            ProjectType = 0
+                        },
+                        new
+                        {
+                            Id = 16,
+                            AccessModifier = 0,
+                            AuthorId = 2,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 10,
+                            CountOfSaveBuilds = 5,
+                            CreatedAt = new DateTime(2018, 3, 18, 21, 40, 33, 377, DateTimeKind.Unspecified).AddTicks(9460),
+                            Description = "Cupiditate harum numquam omnis unde.",
+                            GitCredentialId = 19,
+                            Language = 0,
+                            LogoId = 11,
+                            Name = "expedita",
+                            ProjectLink = "http://norbert.name",
+                            ProjectType = 1
+                        },
+                        new
+                        {
+                            Id = 17,
+                            AccessModifier = 0,
+                            AuthorId = 2,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 7,
+                            CountOfSaveBuilds = 7,
+                            CreatedAt = new DateTime(2018, 2, 9, 2, 30, 22, 730, DateTimeKind.Unspecified).AddTicks(6661),
+                            Description = "Voluptas amet ut veniam nobis.",
+                            GitCredentialId = 2,
+                            Language = 0,
+                            LogoId = 13,
+                            Name = "voluptas",
+                            ProjectLink = "http://kristina.name",
+                            ProjectType = 0
+                        },
+                        new
+                        {
+                            Id = 18,
+                            AccessModifier = 0,
+                            AuthorId = 3,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 10,
+                            CountOfSaveBuilds = 10,
+                            CreatedAt = new DateTime(2018, 3, 23, 20, 43, 12, 521, DateTimeKind.Unspecified).AddTicks(3312),
+                            Description = "Voluptatem consectetur minus facere eum.",
+                            GitCredentialId = 16,
+                            Language = 1,
+                            LogoId = 19,
+                            Name = "exercitationem",
+                            ProjectLink = "http://margarita.org",
+                            ProjectType = 0
+                        },
+                        new
+                        {
+                            Id = 19,
+                            AccessModifier = 0,
+                            AuthorId = 2,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 6,
+                            CountOfSaveBuilds = 6,
+                            CreatedAt = new DateTime(2018, 3, 5, 4, 14, 28, 816, DateTimeKind.Unspecified).AddTicks(7658),
+                            Description = "Provident praesentium aliquam laudantium quo.",
+                            GitCredentialId = 5,
+                            Language = 0,
+                            LogoId = 14,
+                            Name = "non",
+                            ProjectLink = "http://ralph.biz",
+                            ProjectType = 1
+                        },
+                        new
+                        {
+                            Id = 20,
+                            AccessModifier = 1,
+                            AuthorId = 1,
+                            CompilerType = 0,
+                            CountOfBuildAttempts = 5,
+                            CountOfSaveBuilds = 5,
+                            CreatedAt = new DateTime(2018, 3, 20, 10, 47, 29, 908, DateTimeKind.Unspecified).AddTicks(5458),
+                            Description = "Sapiente corrupti voluptatem laboriosam alias.",
+                            GitCredentialId = 5,
+                            Language = 0,
+                            LogoId = 8,
+                            Name = "sed",
+                            ProjectLink = "http://lavina.com",
+                            ProjectType = 1
+                        });
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.ProjectMember", b =>
@@ -136,6 +1179,122 @@ namespace IDE.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("ProjectMembers");
+
+                    b.HasData(
+                        new
+                        {
+                            ProjectId = 10,
+                            UserId = 3,
+                            UserAccess = 0
+                        },
+                        new
+                        {
+                            ProjectId = 17,
+                            UserId = 2,
+                            UserAccess = 2
+                        },
+                        new
+                        {
+                            ProjectId = 8,
+                            UserId = 1,
+                            UserAccess = 1
+                        },
+                        new
+                        {
+                            ProjectId = 3,
+                            UserId = 2,
+                            UserAccess = 2
+                        },
+                        new
+                        {
+                            ProjectId = 20,
+                            UserId = 3,
+                            UserAccess = 2
+                        },
+                        new
+                        {
+                            ProjectId = 4,
+                            UserId = 3,
+                            UserAccess = 0
+                        },
+                        new
+                        {
+                            ProjectId = 7,
+                            UserId = 1,
+                            UserAccess = 3
+                        },
+                        new
+                        {
+                            ProjectId = 19,
+                            UserId = 3,
+                            UserAccess = 0
+                        },
+                        new
+                        {
+                            ProjectId = 4,
+                            UserId = 1,
+                            UserAccess = 0
+                        },
+                        new
+                        {
+                            ProjectId = 6,
+                            UserId = 2,
+                            UserAccess = 1
+                        },
+                        new
+                        {
+                            ProjectId = 6,
+                            UserId = 1,
+                            UserAccess = 3
+                        },
+                        new
+                        {
+                            ProjectId = 11,
+                            UserId = 1,
+                            UserAccess = 2
+                        },
+                        new
+                        {
+                            ProjectId = 20,
+                            UserId = 1,
+                            UserAccess = 0
+                        },
+                        new
+                        {
+                            ProjectId = 5,
+                            UserId = 2,
+                            UserAccess = 3
+                        },
+                        new
+                        {
+                            ProjectId = 12,
+                            UserId = 3,
+                            UserAccess = 3
+                        },
+                        new
+                        {
+                            ProjectId = 6,
+                            UserId = 3,
+                            UserAccess = 2
+                        },
+                        new
+                        {
+                            ProjectId = 9,
+                            UserId = 3,
+                            UserAccess = 3
+                        },
+                        new
+                        {
+                            ProjectId = 14,
+                            UserId = 2,
+                            UserAccess = 1
+                        },
+                        new
+                        {
+                            ProjectId = 2,
+                            UserId = 2,
+                            UserAccess = 1
+                        });
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.RefreshToken", b =>
@@ -190,6 +1349,52 @@ namespace IDE.DAL.Migrations
                     b.HasIndex("AvatarId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AvatarId = 1,
+                            Birthday = new DateTime(1999, 12, 22, 6, 3, 47, 369, DateTimeKind.Unspecified).AddTicks(42),
+                            Email = "Ezekiel72@hotmail.com",
+                            FirstName = "Hassan",
+                            GitHubUrl = "http://jacques.biz",
+                            LastActive = new DateTime(2018, 7, 6, 10, 43, 59, 584, DateTimeKind.Unspecified).AddTicks(7620),
+                            LastName = "Runolfsdottir",
+                            NickName = "Flavie.Muller8",
+                            PasswordHash = "ndpGP32HpVWIDvXcv5z/IGpg7El/tQTxKJM+HhcE9fk=",
+                            PasswordSalt = "jjwwUexi++6lxsmJ12YsIZ1PEHx+GXMl3qrf6SQZWFs=",
+                            RegisteredAt = new DateTime(2018, 5, 13, 3, 31, 36, 66, DateTimeKind.Unspecified).AddTicks(845)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AvatarId = 3,
+                            Birthday = new DateTime(2000, 4, 11, 4, 54, 17, 251, DateTimeKind.Unspecified).AddTicks(2470),
+                            Email = "Anne_Jakubowski81@gmail.com",
+                            FirstName = "Shanna",
+                            GitHubUrl = "http://juanita.biz",
+                            LastActive = new DateTime(2018, 7, 2, 3, 4, 30, 418, DateTimeKind.Unspecified).AddTicks(1723),
+                            LastName = "Olson",
+                            NickName = "Delphia98",
+                            PasswordHash = "tNeIIDnnichhPhQoNIID6SELudfbNzFJScIBZqsh8Go=",
+                            PasswordSalt = "r9pDsjS/TTd3uRk7MKXkHI85BetOmuq7fBNbtL1CjG4=",
+                            RegisteredAt = new DateTime(2018, 6, 10, 15, 10, 29, 523, DateTimeKind.Unspecified).AddTicks(7483)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AvatarId = 1,
+                            Birthday = new DateTime(2005, 8, 10, 11, 41, 6, 744, DateTimeKind.Local).AddTicks(2122),
+                            Email = "test@gmail.com",
+                            FirstName = "testUser",
+                            LastActive = new DateTime(2019, 8, 10, 11, 41, 6, 747, DateTimeKind.Local).AddTicks(7987),
+                            LastName = "testUser",
+                            NickName = "TheBestUser",
+                            PasswordHash = "9uc96U2HkKj1NjgZUdhWnVu4QeAxUCOHsQqmLq8+1Is=",
+                            PasswordSalt = "2lDXocoFbjEDk5eW8BojnQpGy8tjusJCVR5qR9Oemnc=",
+                            RegisteredAt = new DateTime(2019, 8, 10, 11, 41, 6, 747, DateTimeKind.Local).AddTicks(7997)
+                        });
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.Build", b =>

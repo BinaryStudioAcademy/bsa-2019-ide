@@ -45,6 +45,7 @@ namespace IDE.API
         {
             if (env.IsDevelopment())
             {
+                UpdateDatabase(app);
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -62,6 +63,17 @@ namespace IDE.API
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMvc();
+        }
+
+        private void UpdateDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<IdeContext>())
+                {
+                    context.InitializeDatabase();
+                }
+            }
         }
     }
 }

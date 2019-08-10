@@ -21,6 +21,7 @@ import { DialogService, TreeNode } from 'primeng/api';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { GeneralModule } from './general/general.module';
 import { TreeModule } from 'primeng/tree';
+import {MonacoEditorModule } from '@materia-ui/ngx-monaco-editor'
 
 
 
@@ -46,7 +47,8 @@ import { TreeModule } from 'primeng/tree';
         DynamicDialogModule,
         ToastrModule.forRoot(),
         GeneralModule,
-        TreeModule
+        TreeModule,
+        MonacoEditorModule
         
     ],
     providers:
