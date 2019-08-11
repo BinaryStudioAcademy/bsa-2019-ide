@@ -20,24 +20,27 @@ namespace IDE.API.Controllers
         [HttpPost("base64")]
         public async Task<IActionResult> UploadBase64Async([FromBody] ImageUploadBase64DTO imageBase64Dto)
         {
-            var uploadedImageDto = new ImageDTO();
-            uploadedImageDto.Url = await _imageUploadService.UploadFromBase64Async(imageBase64Dto.Base64);
+            var imgSrc = await _imageUploadService.UploadAsync(imageBase64Dto.Base64);
+            var uploadedImageDto = new ImageDTO {Url = imgSrc};
+
             return Created(uploadedImageDto.Url, uploadedImageDto);
         }
 
         [HttpPost("fromUrl")]
         public async Task<IActionResult> UploadFromUrlAsync([FromBody] ImageUploadFromUrlDTO imageFromUrl)
         {
-            var uploadedImageDto = new ImageDTO();
-            uploadedImageDto.Url = await _imageUploadService.UploadFromUrlAsync(imageFromUrl.Url);
+            var imgSrc = await _imageUploadService.UploadAsync(imageFromUrl.Url);
+            var uploadedImageDto = new ImageDTO {Url = imgSrc};
+
             return Created(uploadedImageDto.Url, uploadedImageDto);
         }
 
         [HttpPost("byteArray")]
         public async Task<IActionResult> UploadByteArrayAsync([FromBody] ImageUploadByteArrayDTO imageByteArray)
         {
-            var uploadedImageDto = new ImageDTO();
-            uploadedImageDto.Url = await _imageUploadService.UploadFromByteArrayAsync(imageByteArray.ByteArray);
+            var imgSrc = await _imageUploadService.UploadAsync(imageByteArray.ByteArray);
+            var uploadedImageDto = new ImageDTO {Url = imgSrc};
+
             return Created(uploadedImageDto.Url, uploadedImageDto);
         }
     }

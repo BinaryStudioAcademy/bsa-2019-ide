@@ -1,10 +1,9 @@
 ﻿using IDE.BLL.ExceptionsCustom;
-using IDE.Common.Authentification;
+using IDE.Common.Authentication;
 using IDE.Common.Security;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -58,7 +57,7 @@ namespace IDE.BLL.JWT
             return Convert.ToBase64String(SecurityHelper.GetRandomBytes());
         }
 
-        public ClaimsPrincipal GetPrincipalFromToken(string token, string signingKey)
+        private ClaimsPrincipal GetPrincipalFromToken(string token, string signingKey)
         {
             return ValidateToken(token, new TokenValidationParameters
             {

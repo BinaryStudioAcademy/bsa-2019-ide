@@ -17,9 +17,8 @@ namespace IDE.API
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
         
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<IdeContext>(option =>
@@ -45,6 +44,7 @@ namespace IDE.API
         {
             if (env.IsDevelopment())
             {
+                UpdateDatabase(app);
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -62,6 +62,17 @@ namespace IDE.API
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseMvc();
+        }
+
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                using (var context = serviceScope.ServiceProvider.GetService<IdeContext>())
+                {
+                    context.InitializeDatabase();
+                }
+            }
         }
     }
 }

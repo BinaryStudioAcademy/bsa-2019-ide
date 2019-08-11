@@ -1,7 +1,5 @@
 ﻿using IDE.Common.DTO.User;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IDE.Common.DTO.File
 {

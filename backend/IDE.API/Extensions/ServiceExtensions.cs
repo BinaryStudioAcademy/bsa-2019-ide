@@ -5,9 +5,6 @@ using IDE.BLL.Interfaces;
 using IDE.BLL.JWT;
 using IDE.BLL.MappingProfiles;
 using IDE.BLL.Services;
-using IDE.BLL.Services.Abstract;
-using IDE.Common.Authentification;
-using IDE.Common.DTO.Authentification;
 using IDE.Common.DTO.Common;
 using IDE.Common.DTO.User;
 using IDE.DAL.Factories;
@@ -21,6 +18,8 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using IDE.Common.Authentication;
+using IDE.Common.ModelsDTO.DTO.Authentification;
 
 namespace IDE.API.Extensions
 {
@@ -46,7 +45,7 @@ namespace IDE.API.Extensions
             services.AddSingleton<IValidator<RevokeRefreshTokenDTO>, RevokeRefreshTokenDTOValidator>();
             services.AddSingleton<IValidator<RefreshTokenDTO>, RefreshTokenDTOValidator>();
 
-            services.AddSingleton<IValidator<UserRegisterDTO>, UserRegusterDTOValidator>();
+            services.AddSingleton<IValidator<UserRegisterDTO>, UserRegisterDTOValidator>();
             services.AddSingleton<IValidator<ProjectDTO>, ProjectDTOValidation>();
             services.AddSingleton<IValidator<UserLoginDTO>, UserLogInDTOValidator>();
         }
@@ -59,7 +58,7 @@ namespace IDE.API.Extensions
                 cfg.AddProfile<ProjectProfile>();
                 cfg.AddProfile<ImageProfile>();
                 cfg.AddProfile<BuildProfile>();
-                cfg.AddProfile<GitCredentiaProfile>();
+                cfg.AddProfile<GitCredentialProfile>();
             });
         }
 
@@ -81,13 +80,15 @@ namespace IDE.API.Extensions
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
             var jwtAppSettingOptions = configuration.GetSection(nameof(JwtIssuerOptions));
 
-            services.Configure<JwtIssuerOptions>(options => {
+            services.Configure<JwtIssuerOptions>(options =>
+            {
                 options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
                 options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
                 options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
             });
 
-            var tokenValidationParameters = new TokenValidationParameters {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
                 ValidateIssuer = true,
                 ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
 
@@ -106,9 +107,8 @@ namespace IDE.API.Extensions
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(configureOptions => {
-
+            }).AddJwtBearer(configureOptions =>
+            {
                 configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
                 configureOptions.TokenValidationParameters = tokenValidationParameters;
                 configureOptions.SaveToken = true;
@@ -121,11 +121,11 @@ namespace IDE.API.Extensions
                         {
                             context.Response.Headers.Add("Token-Expired", "true");
                         }
+
                         return Task.CompletedTask;
                     }
                 };
             });
         }
-
     }
 }
