@@ -12,5 +12,6 @@ namespace IDE.BLL.Interfaces
         Task<IEnumerable<ProjectDescriptionDTO>> GetUserProjects(int userId);
         Task CreateProject(ProjectCreateDTO project);
         Task<ProjectDTO> GetProjectByIdAsync(int projectId);
+        Task DeleteProjectAsync(int id);
     }
 }

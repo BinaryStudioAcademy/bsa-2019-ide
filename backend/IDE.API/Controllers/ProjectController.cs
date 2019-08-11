@@ -49,5 +49,12 @@ namespace IDE.API.Controllers
             await _projectService.CreateProject(project);
             return Created("/project", project);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteProject(int id)
+        {
+            await _projectService.DeleteProjectAsync(id);
+            return NoContent();
+        }
     }
 }

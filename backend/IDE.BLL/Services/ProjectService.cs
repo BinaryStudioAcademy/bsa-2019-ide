@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
@@ -18,11 +17,13 @@ namespace IDE.BLL.Services
     {
         private readonly IdeContext _context;
         private readonly IMapper _mapper;
+        private readonly FileService _fileService;
 
-        public ProjectService(IdeContext context, IMapper mapper)
+        public ProjectService(IdeContext context, IMapper mapper, FileService fileService)
         {
             _context = context;
             _mapper = mapper;
+            _fileService = fileService;
         }
 
         public async Task<IEnumerable<ProjectDescriptionDTO>> GetAllProjects(int userId)
@@ -108,6 +109,23 @@ namespace IDE.BLL.Services
             project.CreatedAt = DateTime.Now;
 
             await _context.Projects.AddAsync(project);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteProjectAsync(int id)
+        {
+            var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id);
+            if (project == null)
+                throw new NotFoundException(nameof(Project), id);
+
+            var files = await _fileService.GetAllAsync();
+            var deleteFiles = files.Where(f => f.ProjectId == id);
+            foreach (var file in deleteFiles)
+            {
+                await _fileService.DeleteAsync(file.Id);
+            }
+
+            _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
         }
     }
