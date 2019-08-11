@@ -58,7 +58,7 @@ namespace IDE.BLL.Services
             createdItem.CreatedAt = DateTime.Now;
             var fileHistory = await _repository.CreateAsync(createdItem);
 
-            return _mapper.Map<FileHistoryDTO>(fileHistory);
+            return await GetByIdAsync(fileHistory.Id);
         }
 
         public async Task UpdateAsync(FileHistoryDTO item)

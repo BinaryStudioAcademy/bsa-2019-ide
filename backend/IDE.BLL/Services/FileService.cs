@@ -61,9 +61,9 @@ namespace IDE.BLL.Services
         {
             var createdItem = _mapper.Map<File>(item);
             createdItem.CreatedAt = DateTime.Now;
-            var file = await _fileRepository.CreateAsync(createdItem); // TODO maybe applicate GetByIdAsync(id)
+            var file = await _fileRepository.CreateAsync(createdItem);
 
-            return _mapper.Map<FileDTO>(file);
+            return await GetByIdAsync(file.Id);
         }
 
         public async Task UpdateAsync(FileDTO item)
