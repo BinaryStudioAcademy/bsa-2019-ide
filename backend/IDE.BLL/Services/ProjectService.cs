@@ -2,6 +2,7 @@
 using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
 using IDE.Common.DTO.Project;
+using IDE.Common.Enums;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -84,7 +85,7 @@ namespace IDE.BLL.Services
             return projectsDescriptions;
         }
 
-        public async Task CreateProject(ProjectCreateDTO projectCreateDTO)
+        public async Task<int> CreateProject(ProjectCreateDTO projectCreateDTO)
         {
 
             if (_context.Users.SingleOrDefault(u => u.Id == projectCreateDTO.AuthorId) == null)
@@ -94,8 +95,39 @@ namespace IDE.BLL.Services
 
             var project = _mapper.Map<Project>(projectCreateDTO);
             project.CreatedAt = DateTime.Now;
+            project.AccessModifier = AccessModifier.Private;
 
             await _context.Projects.AddAsync(project);
+            await _context.SaveChangesAsync();
+
+            //maybe it`s bad code, but i need to get projectId for redirection to project-details dage
+            var projectForId = await _context.Projects.LastAsync();
+            return projectForId.Id;
+        }
+
+        public async Task<ProjectInfoDTO> GetProjectById(int projectId)
+        {
+            var project = await _context.Projects
+                .Include(x => x.Author)
+                .SingleOrDefaultAsync(p => p.Id == projectId);
+
+            return _mapper.Map<ProjectInfoDTO>(project);
+        }
+
+        public async Task UpdateProject(ProjectEditDTO projectDTO, int id)
+        {
+            var targetProject = await _context.Projects.SingleOrDefaultAsync(p => p.Id == id);
+
+            if (targetProject == null)
+            {
+                throw new NotFoundException(nameof(targetProject), id);
+            }
+
+            targetProject.Name = projectDTO.Name;
+            targetProject.Description = projectDTO.Description;
+            targetProject.AccessModifier = projectDTO.AccessModifier;
+
+            _context.Projects.Update(targetProject);
             await _context.SaveChangesAsync();
         }
     }
