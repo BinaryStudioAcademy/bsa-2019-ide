@@ -2,13 +2,10 @@
 using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
 using IDE.Common.DTO.File;
-using IDE.DAL.Context;
-using IDE.DAL.Entities;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
