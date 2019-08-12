@@ -20,25 +20,25 @@ namespace IDE.API.Controllers
             _projectService = projectService;
         }
 
-        [HttpGet("all/{userId}")]
-        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects(int userId)
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects()
         {
             //Need to get userId from token
-            return Ok(await _projectService.GetAllProjects(userId));
+            return Ok(await _projectService.GetAllProjects(3));
         }
 
-        [HttpGet("my/{userId}")]
-        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetCreatedByUserProjects(int userId)
+        [HttpGet("my")]
+        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetCreatedByUserProjects()
         {
             //Need to get userId from token
-            return Ok(await _projectService.GetUserProjects(userId));
+            return Ok(await _projectService.GetUserProjects(3));
         }
 
-        [HttpGet("assigned/{userId}")]
-        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAssignedToUserProjects(int userId)
+        [HttpGet("assigned")]
+        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAssignedToUserProjects()
         {
             //Need to get userId from token
-            return Ok(await _projectService.GetAssignedUserProjects(userId));
+            return Ok(await _projectService.GetAssignedUserProjects(3));
         }
 
         [HttpPost]
