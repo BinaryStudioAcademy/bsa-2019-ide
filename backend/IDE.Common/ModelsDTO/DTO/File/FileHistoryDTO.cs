@@ -9,10 +9,10 @@ namespace IDE.Common.DTO.File
         public string FileId { get; set; }
 
         public string Name { get; set; }
-        public string Folder { get; set; }
         public string Content { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public string Folder { get; set; }
 
+        public DateTime CreatedAt { get; set; }
         public int CreatorId { get; set; }
     }
 }

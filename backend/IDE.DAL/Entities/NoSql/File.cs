@@ -6,8 +6,8 @@ namespace IDE.DAL.Entities.NoSql
     public class File : BaseNoSqlModel
     {
         public string Name { get; set; }
-        public string Folder { get; set; }
         public string Content { get; set; }
+        public string Folder { get; set; }
         public int ProjectId { get; set; }
 
         public DateTime CreatedAt { get; set; }
