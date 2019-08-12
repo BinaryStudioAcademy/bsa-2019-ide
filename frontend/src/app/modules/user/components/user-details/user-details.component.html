@@ -12,13 +12,11 @@
         <p class="property-value p-col-align-center">{{user.registredAt}}</p>
         <p class="property-name">Registred At:</p>
         <p class="property-value p-col-align-center">{{user.lastActiveAt}}</p>
-        <div class="buttons" p-grid>
-
-        </div>
+        <p-slideMenu #menu [model]="actions" [popup]="true" [viewportHeight]="200"></p-slideMenu>
+        <button #btn type="button" pButton icon="pi pi-pencil" label="Edit Profile" (click)="menu.toggle($event)"></button>
     </div>
     <div class="panel p-col-10 p-md-7 p-lg-7  p-dir-col">
-        
-        
+        More information about user: projects, builds, ets..
     </div>
 </div>
 <p-dialog [(visible)]="isImageExpended" [style]="{'box-shadow': 'none'}" [showHeader]="fasle" [draggable]="false" [modal]="true"

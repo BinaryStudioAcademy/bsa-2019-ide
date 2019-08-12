@@ -5,13 +5,17 @@ import { UserDetailsComponent } from './components/user-details/user-details.com
 import { UserSettingsComponent } from './components/user-settings/user-settings.component';
 import { UserRoutingModule } from './user-routing.module';
 import {DialogModule} from 'primeng/dialog';
+import {SlideMenuModule} from 'primeng/slidemenu';
+import {ButtonModule} from 'primeng/button';
 
 @NgModule({
   declarations: [UserRootComponent, UserDetailsComponent, UserSettingsComponent],
   imports: [
     CommonModule,
     UserRoutingModule,
-    DialogModule
+    DialogModule,
+    SlideMenuModule,
+    ButtonModule
   ]
 })
 export class UserModule { }
