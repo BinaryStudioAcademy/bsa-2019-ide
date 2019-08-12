@@ -1,30 +1,43 @@
+import { FileBrowserService } from './../../../services/file-browser.service';
 import { HttpClientWrapperService } from './../../../services/http-client-wrapper.service';
 import { Component, OnInit } from '@angular/core';
 import { TreeNode } from 'primeng/components/common/treenode';
 
 @Component({
-  selector: 'app-file-browser-section',
-  templateUrl: './file-browser-section.component.html',
-  styleUrls: ['./file-browser-section.component.sass']
+    selector: 'app-file-browser-section',
+    templateUrl: './file-browser-section.component.html',
+    styleUrls: ['./file-browser-section.component.sass']
 })
 export class FileBrowserSectionComponent implements OnInit {
 
-    
+
     files: TreeNode[];
-  
-    constructor(private http: HttpClientWrapperService) {
-    }
-  
-    ngOnInit() {
-      this.files = [];
-      this.files = JSON.parse(this.jsonStr).data as TreeNode[]
-    }
-  
-    nodeSelect(evt: any): void {
-      console.log(evt.node);
+
+    constructor(private fbs: FileBrowserService) {
     }
 
- jsonStr = `
+    ngOnInit() {
+        this.files = [];
+        this.files = JSON.parse(this.jsonStr).data as TreeNode[];
+        // let testTree = Object.assign({}, this.folderNode);
+        // testTree.children = Array.from(new Array(5), (item, index) => { let f = Object.assign({}, this.fileNode); f.label = f.label.concat((index + 1).toString()); return f });
+        // this.files = [testTree];
+        // let temp = Object.assign({}, testTree);
+        // temp.children = [Object.assign({}, testTree), Object.assign({}, testTree)];
+        // this.files.push(temp);
+        // this.files.push(Object.assign({}, temp));
+    }
+
+    nodeSelect(evt: any): void {
+        console.log(evt.node);
+        //this.h.setHeader('Content-type', 'application/json');
+        this.fbs.getPrimeTree().then(x => this.files = x);
+
+
+    }
+
+
+    jsonStr = `
  {
     "data": 
     [
