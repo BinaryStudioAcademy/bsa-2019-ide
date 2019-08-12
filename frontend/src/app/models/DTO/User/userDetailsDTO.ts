@@ -1,10 +1,12 @@
-export interface UserDetailsDTO{
+export interface UserDetailsDTO {
+    id: number;
     firstName: string;
     lastName: string;
-    nickname: string;
-    imageUrl: string;
-    githubUrl: string;
-    birthday: string;
-    registredAt: string;
-    lastActiveAt: string;
+    nickName: string;
+    email: string;
+    gitHubUrl?: string;
+    birthday: Date;
+    registeredAt: Date;
+    lastActive: Date;
+    url: string;
 }
