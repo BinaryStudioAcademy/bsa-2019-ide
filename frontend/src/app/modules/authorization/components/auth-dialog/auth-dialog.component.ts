@@ -5,6 +5,8 @@ import { AuthenticationService } from 'src/app/services/auth.service/auth.servic
 import { Subject } from 'rxjs';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
 import {UserRegisterDTO} from '../../../../models/DTO/User/userRegisterDTO';
+import { NavMenuComponent } from 'src/app/nav-menu/nav-menu.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auth-dialog',
@@ -20,6 +22,7 @@ export class AuthDialogComponent implements OnInit {
   public avatar: string;
   public email: string;
   public nickName: string;
+  private nav: NavMenuComponent;
 
   public display: boolean=false;
   public hidePass = true;
@@ -30,7 +33,8 @@ export class AuthDialogComponent implements OnInit {
   constructor(
       private authService: AuthenticationService,
       public ref: DynamicDialogRef, 
-      public config: DynamicDialogConfig
+      public config: DynamicDialogConfig,
+      private router: Router
   ) {}
 
   public ngOnInit() {
@@ -54,10 +58,10 @@ export class AuthDialogComponent implements OnInit {
           .login({ email: this.email, password: this.password })
           .pipe(takeUntil(this.unsubscribe$))
           .subscribe(result=>this.ref.close());
+    this.router.navigate(['/']);
   }
 
   public signUp() {
-    //let user: UserRegisterDTO
     let user={
         id:0,
         firstName:this.firstName,
@@ -66,9 +70,6 @@ export class AuthDialogComponent implements OnInit {
         password:this.password,
         email:this.email
     };
-    console.log(this.firstName);
-    console.log(this.lastName);
-    console.log(this.nickName);
        this.authService
          .register(user)
           .pipe(takeUntil(this.unsubscribe$))

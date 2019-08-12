@@ -1,9 +1,9 @@
-<p-menubar [model]="items">
-  <div *ngIf="authorizedUser">
-    <button pButton (click)="LogOut()" label="LogOut"></button>
-  </div>
-  <div *ngIf="!authorizedUser">
-    <button pButton (click)="openAuthDialog(dialogType.SignIn)" label="Login"></button>
-    <button pButton (click)="openAuthDialog(dialogType.SignUp)" label="SingUp"></button>
-  </div>
+<p-menubar [model]="getMenuItems()">
+    <div *ngIf="authorizedUser">
+        <button pButton (click)="LogOut()" label="LogOut"></button>
+    </div>
+    <div *ngIf="!authorizedUser">
+        <button pButton (click)="openAuthDialog(dialogType.SignIn)" label="Login"></button>
+        <button pButton (click)="openAuthDialog(dialogType.SignUp)" label="SingUp"></button>
+    </div>
 </p-menubar>

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
+using IDE.Common.DTO.Common;
 using IDE.Common.DTO.Project;
+using IDE.Common.Enums;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +18,13 @@ namespace IDE.BLL.Services
     {
         private readonly IdeContext _context;
         private readonly IMapper _mapper;
+        private readonly FileService _fileService;
 
-        public ProjectService(IdeContext context, IMapper mapper)
+        public ProjectService(IdeContext context, IMapper mapper, FileService fileService)
         {
             _context = context;
             _mapper = mapper;
+            _fileService = fileService;
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId)
@@ -42,6 +46,17 @@ namespace IDE.BLL.Services
                     .ToListAsync());
 
             return MapAndGetLastBuildFinishedDate(projects);
+        }
+
+        // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
+        public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)
+        {
+            var project = await _context.Projects                
+                .Include(p => p.Author)
+                .Include(p => p.Logo)
+                .FirstOrDefaultAsync(p => p.Id == projectId);
+
+            return _mapper.Map<ProjectDTO>(project);
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId)
@@ -87,7 +102,7 @@ namespace IDE.BLL.Services
             return projectsDescriptions;
         }
 
-        public async Task CreateProject(ProjectCreateDTO projectCreateDto)
+        public async Task<int> CreateProject(ProjectCreateDTO projectCreateDto)
         {
             if (_context.Users.SingleOrDefault(u => u.Id == projectCreateDto.AuthorId) == null)
             {
@@ -96,8 +111,55 @@ namespace IDE.BLL.Services
 
             var project = _mapper.Map<Project>(projectCreateDto);
             project.CreatedAt = DateTime.Now;
+            project.AccessModifier = AccessModifier.Private;
 
             await _context.Projects.AddAsync(project);
+            await _context.SaveChangesAsync();
+
+            //maybe it`s bad code, but i need to get projectId for redirection to project-details dage
+            var projectForId = await _context.Projects.LastAsync();
+            return projectForId.Id;
+        }
+
+        public async Task<ProjectInfoDTO> GetProjectById(int projectId)
+        {
+            var project = await _context.Projects
+                .Include(x => x.Author)
+                .SingleOrDefaultAsync(p => p.Id == projectId);
+
+            return _mapper.Map<ProjectInfoDTO>(project);
+        }
+
+        public async Task UpdateProject(ProjectEditDTO projectEditDto, int id)
+        {
+            var targetProject = await _context.Projects.SingleOrDefaultAsync(p => p.Id == id);
+
+            if (targetProject == null)
+            {
+                throw new NotFoundException(nameof(targetProject), id);
+            }
+
+            targetProject.Name = projectEditDto.Name;
+            targetProject.Description = projectEditDto.Description;
+            targetProject.AccessModifier = projectEditDto.AccessModifier;
+
+            _context.Projects.Update(targetProject);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteProjectAsync(int id)
+        {
+            var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id);
+            if (project == null)
+                throw new NotFoundException(nameof(Project), id);
+
+            var filesDelete = await _fileService.GetAllForProjectAsync(id);
+            foreach (var file in filesDelete)
+            {
+                await _fileService.DeleteAsync(file.Id);
+            }
+
+            _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
         }
     }

@@ -21,8 +21,14 @@ namespace IDE.API.Controllers
             _projectService = projectService;
         }
 
+        [HttpGet("{projectId}")]
+        public async Task<ActionResult<ProjectDescriptionDTO>> GetProjectById(int projectId)
+        {
+            return Ok(await _projectService.GetProjectById(projectId));
+        }
+
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects()
+        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects(int userId)
         {
             //Need to get userId from token
             return Ok(await _projectService.GetAllProjects(this.GetUserIdFromToken()));
@@ -45,8 +51,22 @@ namespace IDE.API.Controllers
         [HttpPost]
         public async Task<ActionResult> AddProject(ProjectCreateDTO project)
         {
-            await _projectService.CreateProject(project);
-            return Created("/project", project);
+            var id = await _projectService.CreateProject(project);
+            return Created("/project", id);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> EditProject(ProjectEditDTO project, int id)
+        {
+            await _projectService.UpdateProject(project, id);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteProject(int id)
+        {
+            await _projectService.DeleteProjectAsync(id);
+            return NoContent();
         }
     }
 }

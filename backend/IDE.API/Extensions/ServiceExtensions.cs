@@ -6,14 +6,18 @@ using IDE.BLL.JWT;
 using IDE.BLL.MappingProfiles;
 using IDE.BLL.Services;
 using IDE.Common.DTO.Common;
+using IDE.Common.DTO.File;
 using IDE.Common.DTO.User;
+using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Factories;
 using IDE.DAL.Factories.Abstractions;
+using IDE.DAL.Interfaces;
 using IDE.DAL.Repositories;
-using IDE.DAL.Repositories.Abstract;
+using IDE.DAL.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
@@ -29,11 +33,18 @@ namespace IDE.API.Extensions
         {
             services.AddScoped<JwtIssuerOptions>();
             services.AddScoped<JWTFactory>();
+            
             services.AddScoped<AuthService>();
-            services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
-            services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<UserService>();
+            services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ITokenService, TokenService>();
+
+            services.AddScoped<FileService>();
+            services.AddScoped<FileHistoryService>();
+
+            services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
+            services.AddScoped<INoSqlRepository<File>, NoSqlRepository<File>>();
+            services.AddScoped<INoSqlRepository<FileHistory>, NoSqlRepository<FileHistory>>();
         }
 
         public static void RegisterServicesWithIConfiguration(this IServiceCollection services, IConfiguration conf)
@@ -45,10 +56,11 @@ namespace IDE.API.Extensions
         {
             services.AddSingleton<IValidator<RevokeRefreshTokenDTO>, RevokeRefreshTokenDTOValidator>();
             services.AddSingleton<IValidator<RefreshTokenDTO>, RefreshTokenDTOValidator>();
-
             services.AddSingleton<IValidator<UserRegisterDTO>, UserRegisterDTOValidator>();
             services.AddSingleton<IValidator<ProjectDTO>, ProjectDTOValidation>();
             services.AddSingleton<IValidator<UserLoginDTO>, UserLogInDTOValidator>();
+            services.AddSingleton<IValidator<FileCreateDTO>, FileCreateDTOValidator>();
+            services.AddSingleton<IValidator<FileUpdateDTO>, FileUpdateDTOValidator>();
         }
 
         public static void RegisterAutoMapper(this IServiceCollection services)
@@ -59,6 +71,8 @@ namespace IDE.API.Extensions
                 cfg.AddProfile<ProjectProfile>();
                 cfg.AddProfile<ImageProfile>();
                 cfg.AddProfile<BuildProfile>();
+                cfg.AddProfile<FileProfile>();
+                cfg.AddProfile<FileHistoryProfile>();
                 cfg.AddProfile<GitCredentialProfile>();
             });
         }
@@ -73,6 +87,15 @@ namespace IDE.API.Extensions
                 client.BaseAddress = new Uri(imgurApiUrl);
                 client.DefaultRequestHeaders.Add("Authorization", $"Client-ID {imgurClientId}");
             });
+        }
+
+        public static void ConfigureNoSqlDb(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<FileStorageNoSqlDbSettings>(
+                configuration.GetSection(nameof(FileStorageNoSqlDbSettings)));
+
+            services.AddSingleton<IFileStorageNoSqlDbSettings>(sp =>
+               sp.GetRequiredService<IOptions<FileStorageNoSqlDbSettings>>().Value);
         }
 
         public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)

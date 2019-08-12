@@ -3,25 +3,33 @@ import { HttpClientWrapperService } from '../http-client-wrapper.service';
 import { UserDTO } from 'src/app/models/DTO/User/userDTO';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class UserService {
 
-  public routePrefix = 'users';
+    public routePrefix = 'users';
 
-  constructor(private httpService: HttpClientWrapperService) { }
+    constructor(private httpService: HttpClientWrapperService) { }
 
-  public getUserFromToken() {
-    return this.httpService.getRequest<UserDTO>(`${this.routePrefix}/fromToken`);
-  }
+    public getUserFromToken() {
+        return this.httpService.getRequest<UserDTO>(`${this.routePrefix}/fromToken`);
+    }
 
-  public copyUser({email, firstName, lastName, id,nickName }: UserDTO) {
-    return {
-        firstName,
-        email,
-        lastName,
-        id,
-        nickName
-    };
-}
+    public getUserById(id: number) {
+        return this.httpService.getRequest<UserDTO>(`${this.routePrefix}`, { id });
+    }
+
+    public updateUser(user: UserDTO) {
+        return this.httpService.putRequest<UserDTO>(`${this.routePrefix}`, user);
+    }
+
+    public copyUser({ email, firstName, lastName, id, nickName }: UserDTO) {
+        return {
+            firstName,
+            email,
+            lastName,
+            id,
+            nickName
+        };
+    }
 }
