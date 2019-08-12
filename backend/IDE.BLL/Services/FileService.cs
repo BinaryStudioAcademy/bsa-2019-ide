@@ -32,8 +32,7 @@ namespace IDE.BLL.Services
 
         public async Task<ICollection<FileDTO>> GetAllForProjectAsync(int projectId)
         {
-            var files = await _fileRepository.GetAllAsync();
-            var filesForProject = files.Where(f => f.ProjectId == projectId);
+            var filesForProject = await _fileRepository.GetAllAsync(f => f.ProjectId == projectId);
 
             var fileForProjectDtos = _mapper.Map<ICollection<FileDTO>>(filesForProject);
             foreach (var fileForProjectDto in fileForProjectDtos)

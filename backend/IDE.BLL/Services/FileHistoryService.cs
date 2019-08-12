@@ -6,6 +6,7 @@ using IDE.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
@@ -37,8 +38,7 @@ namespace IDE.BLL.Services
                 throw new NotFoundException(nameof(File), fileId);
             }
 
-            var fileHistories = await _fileHistoryRepository.GetAllAsync();
-            var fileHistoriesForFile = fileHistories.Where(fh => fh.FileId == file.Id);
+            var fileHistoriesForFile = await _fileHistoryRepository.GetAllAsync(fh => fh.FileId == file.Id);
 
             return _mapper.Map<ICollection<FileHistoryDTO>>(fileHistoriesForFile);
         }

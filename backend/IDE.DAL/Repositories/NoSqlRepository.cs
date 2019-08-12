@@ -2,8 +2,10 @@
 using IDE.DAL.Entities.NoSql.Abstract;
 using IDE.DAL.Interfaces;
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace IDE.DAL.Repositories
@@ -20,9 +22,9 @@ namespace IDE.DAL.Repositories
             _items = database.GetCollection<T>(itemsCollectionName);
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> findExpression)
         {
-            return await _items.Find(item => true).ToListAsync();
+            return await _items.Find(findExpression).ToListAsync();
         }
         
         public async Task<T> GetByIdAsync(string id)
