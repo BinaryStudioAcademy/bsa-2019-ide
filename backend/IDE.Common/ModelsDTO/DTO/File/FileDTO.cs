@@ -10,16 +10,14 @@ namespace IDE.Common.DTO.File
         public string Name { get; set; }
         public string Folder { get; set; }
         public string Content { get; set; }
-        public DateTime CreatedAt { get; set; }
         public int ProjectId { get; set; }
 
+        public DateTime CreatedAt { get; set; }
         public int CreatorId { get; set; }
         public UserDTO Creator { get; set; }
 
+        public DateTime? UpdatedAt { get; set; }
         public int? UpdaterId { get; set; }
         public UserDTO Updater { get; set; }
-
-        public string LastFileHistoryId { get; set; }
-        public FileHistoryDTO LastFileHistory { get; set; }
     }
 }

@@ -62,32 +62,44 @@ namespace IDE.BLL.Services
         {
             var fileCreate = _mapper.Map<File>(fileCreateDto);
             fileCreate.CreatedAt = DateTime.Now;
-
             var createdFile = await _fileRepository.CreateAsync(fileCreate);
+
+            var fileHistory = new FileHistoryDTO
+            {
+                FileId = createdFile.Id,
+                Name = createdFile.Name,
+                Folder = createdFile.Folder,
+                Content = createdFile.Content,
+                CreatorId = createdFile.CreatorId,
+                CreatedAt = createdFile.CreatedAt
+            };
+            await _fileHistoryService.CreateAsync(fileHistory);
+
             return await GetByIdAsync(createdFile.Id);
         }
 
         public async Task UpdateAsync(FileUpdateDTO fileUpdateDTO)
         {
+            var currentFileDto = await GetByIdAsync(fileUpdateDTO.Id);
+            currentFileDto.Name = fileUpdateDTO.Name;
+            currentFileDto.Folder = fileUpdateDTO.Folder;
+            currentFileDto.Content = fileUpdateDTO.Content;
+            currentFileDto.UpdaterId = fileUpdateDTO.UpdaterId;
+            currentFileDto.UpdatedAt = DateTime.Now;
+
+            var fileUpdate = _mapper.Map<File>(currentFileDto);
+            await _fileRepository.UpdateAsync(fileUpdate);
+                                 
             var fileHistory = new FileHistoryDTO
             {
                 FileId = fileUpdateDTO.Id,
                 Name = fileUpdateDTO.Name,
                 Folder = fileUpdateDTO.Folder,
                 Content = fileUpdateDTO.Content,
-                CreatorId = fileUpdateDTO.UpdaterId
+                CreatorId = fileUpdateDTO.UpdaterId,
+                CreatedAt = currentFileDto.UpdatedAt.Value
             };
-            var fileHistoryCreated = await _fileHistoryService.CreateAsync(fileHistory);
-
-            var currentFileDto = await GetByIdAsync(fileUpdateDTO.Id);
-            currentFileDto.Name = fileUpdateDTO.Name;
-            currentFileDto.Folder = fileUpdateDTO.Folder;
-            currentFileDto.Content = fileUpdateDTO.Content;
-            currentFileDto.UpdaterId = fileUpdateDTO.UpdaterId;
-            currentFileDto.LastFileHistoryId = fileHistoryCreated.Id;
-
-            var fileUpdate = _mapper.Map<File>(currentFileDto);
-            await _fileRepository.UpdateAsync(fileUpdate);
+            await _fileHistoryService.CreateAsync(fileHistory);           
         }
 
         public async Task DeleteAsync(string id)
@@ -111,8 +123,6 @@ namespace IDE.BLL.Services
         {
             file.Creator = await _userService.GetUserById(file.CreatorId);
             file.Updater = file.UpdaterId.HasValue ? await _userService.GetUserById(file.UpdaterId.Value) : null;
-            file.LastFileHistory = string.IsNullOrEmpty(file.LastFileHistoryId) ? null : await _fileHistoryService.GetByIdAsync(file.LastFileHistoryId);
-
         }
     }
 }
