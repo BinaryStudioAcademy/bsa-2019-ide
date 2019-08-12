@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace IDE.DAL.Repositories.Abstract
+namespace IDE.DAL.Interfaces
 {
     public interface IBlobRepository
     {

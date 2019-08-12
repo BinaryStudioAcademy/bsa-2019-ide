@@ -17,8 +17,8 @@ namespace IDE.API
             Configuration = configuration;
         }
 
-        private IConfiguration Configuration { get; }
-        
+        public IConfiguration Configuration { get; }        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<IdeContext>(option =>
@@ -29,9 +29,10 @@ namespace IDE.API
             services.RegisterServicesWithIConfiguration(Configuration);
             services.RegisterCustomValidators();
             services.ConfigureJwt(Configuration);
+            services.ConfigureNoSqlDb(Configuration);
             services.RegisterAutoMapper();
             services.RegisterHttpClientFactories(Configuration);
-            services.AddCors();          
+            services.AddCors();       
 
             services.AddMvcCore()
                 .AddAuthorization()
@@ -44,7 +45,6 @@ namespace IDE.API
         {
             if (env.IsDevelopment())
             {
-                UpdateDatabase(app);
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -52,6 +52,9 @@ namespace IDE.API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            
+            UpdateDatabase(app);
+            
             app.UseCors(builder => builder
                 .AllowAnyMethod()
                 .AllowAnyHeader()

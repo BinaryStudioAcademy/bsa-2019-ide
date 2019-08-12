@@ -1,18 +1,19 @@
-﻿using IDE.Common.DTO.User;
+﻿using IDE.DAL.Entities.NoSql.Abstract;
 using System;
 
-namespace IDE.Common.DTO.File
+namespace IDE.DAL.Entities.NoSql
 {
-    public class FileHistoryDTO
+    public class File : BaseNoSqlModel
     {
-        public string Id { get; set; }
-        public string FileId { get; set; }
-
         public string Name { get; set; }
         public string Content { get; set; }
         public string Folder { get; set; }
+        public int ProjectId { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public int CreatorId { get; set; }
+
+        public DateTime? UpdatedAt { get; set; }
+        public int? UpdaterId { get; set; }
     }
 }
