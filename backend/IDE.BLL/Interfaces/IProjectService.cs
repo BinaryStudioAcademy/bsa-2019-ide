@@ -6,9 +6,11 @@ namespace IDE.BLL.Interfaces
 {
     public interface IProjectService
     {
+        Task<ProjectInfoDTO> GetProjectById(int projectId);
         Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId);
         Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId);
         Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId);
-        Task CreateProject(ProjectCreateDTO project);
+        Task<int> CreateProject(ProjectCreateDTO project);
+        Task UpdateProject(ProjectEditDTO project, int id);
     }
 }
