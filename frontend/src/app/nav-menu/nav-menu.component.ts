@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, OnChanges } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { AuthDialogService } from '../services/auth-dialog.service/auth-dialog.service'
 import { DialogType } from '../modules/authorization/models/auth-dialog-type';
@@ -15,12 +15,13 @@ import { EventService } from '../services/event.service/event.service';
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.sass']
 })
-export class NavMenuComponent implements OnInit, OnDestroy {
+export class NavMenuComponent implements OnInit, OnDestroy, OnChanges {
   items: MenuItem[];
 
   public dialogType = DialogType;
   public authorizedUser: UserDTO;
   private unsubscribe$ = new Subject<void>();
+  private userMenuBarItem=false;
 
   constructor(
     private authDialogService: AuthDialogService,
@@ -31,17 +32,28 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.items = [
-      { label: 'Home', routerLink: [''] },
-      { label: 'Dashboard', routerLink: ['/dashboard'] },
-      { label: 'User', routerLink: ['/user'] }
-    ];
-
     this.getUser();
 
     this.eventService.userChangedEvent$
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((user) => (this.authorizedUser = user ? this.userService.copyUser(user) : undefined));
+      console.log("init");
+
+      if (this.authorizedUser)
+      {
+          this.userMenuBarItem=true;
+      }
+
+      this.items = [
+        { label: 'Home', routerLink: [''] },
+        { label: 'Dashboard', routerLink: ['/dashboard'] },
+        { label: 'User', routerLink: ['/user'],visible: this.userMenuBarItem }
+      ];
+  }
+
+  ngOnChanges()
+  {
+      console.log("change");
   }
 
   public ngOnDestroy() {
@@ -55,7 +67,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   public LogOut() {
     this.authService.logout();
     this.authorizedUser = undefined;
-    //this.router.navigate(['/']);
+    this.router.navigate(['/']);
   }
 
   private getUser() {
