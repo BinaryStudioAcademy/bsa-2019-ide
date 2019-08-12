@@ -1,10 +1,8 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace IDE.Common.Authentification
+namespace IDE.Common.Authentication
 {
     public class JwtIssuerOptions
     {

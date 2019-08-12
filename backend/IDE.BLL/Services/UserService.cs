@@ -12,8 +12,8 @@ namespace IDE.BLL.Services
 {
     public class UserService
     {
-        private protected readonly IdeContext _context;
-        private protected readonly IMapper _mapper;
+        private readonly IdeContext _context;
+        private readonly IMapper _mapper;
         public UserService(IdeContext context, IMapper mapper)
         {
             _context = context;

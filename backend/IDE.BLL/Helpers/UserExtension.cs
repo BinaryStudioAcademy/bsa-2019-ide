@@ -2,7 +2,7 @@
 
 namespace IDE.BLL.Helpers
 {
-    public static class UserExtention
+    public static class UserExtension
     {
         public static string GetUserName(this User user)
         {

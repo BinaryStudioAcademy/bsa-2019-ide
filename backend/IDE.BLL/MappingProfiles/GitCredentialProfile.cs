@@ -6,9 +6,9 @@ using IDE.DAL.Entities;
 
 namespace IDE.BLL.MappingProfiles
 {
-    public class GitCredentiaProfile:Profile
+    public class GitCredentialProfile:Profile
     {
-        public GitCredentiaProfile()
+        public GitCredentialProfile()
         {
             CreateMap<GitCredential, GitCredentialDTO>();
             CreateMap<GitCredentialDTO, GitCredential>();

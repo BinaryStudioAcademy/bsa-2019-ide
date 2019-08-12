@@ -3,8 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IDE.DAL.Factories
@@ -25,7 +23,7 @@ namespace IDE.DAL.Factories
             return await GetBlobContainer("ArchiveArtifactsContainerName").ConfigureAwait(false);
         }
 
-        public async Task<CloudBlobContainer> GetBlobContainer(string containerNameKey)
+        private async Task<CloudBlobContainer> GetBlobContainer(string containerNameKey)
         {
             if (_blobContainer != null)
             {
@@ -33,14 +31,16 @@ namespace IDE.DAL.Factories
             }
 
             var containerName = _configuration.GetValue<string>(containerNameKey);
-
             var blobClient = GetBlobClient();
 
             _blobContainer = blobClient.GetContainerReference(containerName);
+
             if (await _blobContainer.CreateIfNotExistsAsync())
             {
-                await _blobContainer.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
+                await _blobContainer.SetPermissionsAsync(new BlobContainerPermissions
+                    {PublicAccess = BlobContainerPublicAccessType.Blob});
             }
+
             return _blobContainer;
         }
 
@@ -53,7 +53,7 @@ namespace IDE.DAL.Factories
 
             var storageConnectionString = _configuration.GetValue<string>("StorageConnectionString");
 
-            if (!CloudStorageAccount.TryParse(storageConnectionString, out CloudStorageAccount storageAccount))
+            if (!CloudStorageAccount.TryParse(storageConnectionString, out var storageAccount))
             {
                 throw new Exception("Could not create storage account with StorageConnectionString configuration");
             }

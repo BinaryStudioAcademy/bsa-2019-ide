@@ -8,8 +8,8 @@ import { ProjectService } from 'src/app/services/project.service/project.service
     styleUrls: ['./all-projects.component.sass']
 })
 export class AllProjectsComponent implements OnInit {
-    projects: ProjectDescriptionDTO[];
-
+  projects: ProjectDescriptionDTO[];
+  
   constructor(private projectService: ProjectService) { }
 
   ngOnInit() {
