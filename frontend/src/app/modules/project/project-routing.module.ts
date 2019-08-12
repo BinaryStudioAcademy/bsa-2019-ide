@@ -4,6 +4,7 @@ import { ProjectRootComponent } from './components/project-root/project-root.com
 import { ProjectSettingsComponent } from './components/project-settings/project-settings.component';
 import { ProjectDetailsComponent } from './components/project-details/project-details.component';
 import { CreateProjectComponent } from './components/create-project/create-project.component';
+import { ProjectInfoResolver } from 'src/app/resolvers/project-info.resolver';
 
 const projectRoutes: Routes = [
   {
@@ -16,7 +17,8 @@ const projectRoutes: Routes = [
     children: [
       {
         path: '',
-        component: ProjectDetailsComponent
+        component: ProjectDetailsComponent,
+        resolve: { project: ProjectInfoResolver }
       },
       {
         path: 'settings',
