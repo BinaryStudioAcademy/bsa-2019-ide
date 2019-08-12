@@ -19,10 +19,6 @@ export class ProjectService {
         return this.httpClient.postRequest(this.address, project);
     }
 
-    getProject(projectId: number){
-        return this.httpClient.getRequest<ProjectInfoDTO>(this.address+ `/${projectId}`);
-    }
-
     getMyProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
         return this.httpClient.getRequest('project/my');
     }
