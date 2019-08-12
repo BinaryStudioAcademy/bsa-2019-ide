@@ -1,39 +1,76 @@
 <!--<p-card [style]="{width:'100%'}">
     <p-header>
         <img class="project-logo" src={{project.logo}}>
-    </p-header>-->
-<img class="project-logo" src={{project.logo}}>
+    </p-header>
+<img class="project-logo" src={{project.logo}}>-->
     <div class="project-description">
         <p-card header="Main">
-            <p>Name: {{project.name}}</p>
-            <p>Author : {{project.author}}</p>
-            <p>Description: {{project.description}}</p>
-            <p>CreatedAt : {{project.createdAt}}</p><!-- <p>CreatedAt : {{project.createdAt | Datapipe}}-->
+            <p>
+                <span class="highlighted">Name: </span>
+                <span>{{project.name}}</span>
+            </p>
+            <p>
+                <span class="highlighted">Description: </span>
+                <span>{{project.description}}</span>
+            </p>
+            <p>
+                <span class="highlighted">Created: </span>
+                <span>{{project.createdAt |  date:'d MMMM yyyy'}}</span>
+            </p>
+            <p>
+                <span class="highlighted">Author: </span>
+                <span>{{project.authorName}}</span>
+            </p>
         </p-card>
     </div>
     <div class="project-description">
         <p-card header="Secondary">
-            <p>Language : {{project.language}}</p>
-            <p>ProjectType : {{project.projectType}}</p>
-            <p>CompilerType : {{project.compilerType}}</p>
+             <p>
+                <span class="highlighted">Language: </span>
+                <span>{{project.language}}</span>
+            </p>
+             <p>
+                <span class="highlighted">ProjectType: </span>
+                <span>{{project.projectType}}</span>
+            </p>
+             <p>
+                <span class="highlighted">CompilerType: </span>
+                <span>{{project.compilerType}}</span>
+            </p>
             <!--here will be check(if project access modifier - public)-->
-            <p *ngIf="false">ProjectLink : {{project.projectLink}}</p>
+            <p *ngIf="IsPublic()">
+                <span class="highlighted">ProjectLink: </span>
+                <span>{{project.projectLink}}</span>
+            </p>
         </p-card>
     </div>
     <div class="project-description">
         <p-card header="Additional">
-            <p>CountOfSaveBuilds : {{project.countOfSaveBuilds}}</p>
-            <p>CountOfBuildAttempts : {{project.countOfBuildAttempts}}</p>
+             <p>
+                <span class="highlighted">CountOfSaveBuilds: </span>
+                <span>{{project.countOfSaveBuilds}}</span>
+            </p>
+             <p>
+                <span class="highlighted">CountOfBuildAttempts: </span>
+                <span>{{project.countOfBuildAttempts}}</span>
+            </p>
         </p-card> 
     </div>
+    <!--
     <div *ngFor="let credential of project?.gitCredentials" class="project-description">
         <p-card header="Credentials">
-            <p>Provider: {{credential?.provider}} </p>
-            <p>Url: {{credential?.url}}</p>
+             <p>
+                <span class="highlighted">Provider: </span>
+                <span>{{project?.provider}}</span>
+            </p>
+             <p>
+                <span class="highlighted">Url: </span>
+                <span>{{project?.credential?.url}}</span>
+            </p>
         </p-card>
     </div>
-        <!--here will be check(only author can edit project)-->
-    <div *ngIf="false"class="project-description">
-        <button pButton label="Edit"></button>
+    -->
+    <div *ngIf="IsAuthor()"class="project-description">
+        <button pButton routerLink="/project/{{project.id}}/settings" label="Edit"></button>
     </div>
 <!--</p-card>-->
