@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ProjectService } from 'src/app/services/project.service/project.service';
-import { ProjectCreateDTO } from '../../../../models/dto/project/projectCreateDTO';
+import { ProjectCreateDTO } from '../../../../models/DTO/Project/projectCreateDTO';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/auth.service/auth.service';
