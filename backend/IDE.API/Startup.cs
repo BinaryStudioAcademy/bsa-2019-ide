@@ -17,8 +17,8 @@ namespace IDE.API
             Configuration = configuration;
         }
 
-        private IConfiguration Configuration { get; }
-        
+        public IConfiguration Configuration { get; }        
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<IdeContext>(option =>
@@ -29,9 +29,10 @@ namespace IDE.API
             services.RegisterServicesWithIConfiguration(Configuration);
             services.RegisterCustomValidators();
             services.ConfigureJwt(Configuration);
+            services.ConfigureNoSqlDb(Configuration);
             services.RegisterAutoMapper();
             services.RegisterHttpClientFactories(Configuration);
-            services.AddCors();          
+            services.AddCors();       
 
             services.AddMvcCore()
                 .AddAuthorization()

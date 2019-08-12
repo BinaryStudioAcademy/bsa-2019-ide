@@ -1,17 +1,17 @@
 ﻿using IDE.DAL.Factories.Abstractions;
-using IDE.DAL.Repositories.Abstract;
 using Microsoft.AspNetCore.Http;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using IDE.DAL.Interfaces;
 
 namespace IDE.DAL.Repositories
 {
     public class ArchivesBlobRepository : IBlobRepository
     {
-        private const int URL_PARTS_COUNT = 3; //In Azure it's 4, local it's 5
+        private const int URL_PARTS_COUNT = 3; // In Azure it's 4, local it's 5
         private readonly IAzureBlobConnectionFactory _connectionFactory;
 
         public ArchivesBlobRepository(IAzureBlobConnectionFactory connectionFactory)
@@ -27,7 +27,7 @@ namespace IDE.DAL.Repositories
             await blob.DeleteIfExistsAsync();
         }
 
-        //Download file from full Uri
+        // Download file from full Uri
         public async Task<MemoryStream> DownloadFileAsync(string fileUri)
         {
             var blobContainer = await _connectionFactory.GetArchiveArtifactsBlobContainer();
@@ -37,8 +37,9 @@ namespace IDE.DAL.Repositories
             await blob.DownloadToStreamAsync(memStream);
             return memStream;
         }
+        
+        // Use it to upload files to get list of files urls from folder with name 'pr_{projectId}'
 
-        //Use it to upload files to get list of files urls from folder with name 'pr_{projectId}'
         public async Task<IEnumerable<Uri>> ListAsync(int projectId)
         {
             var blobContainer = await _connectionFactory.GetArchiveArtifactsBlobContainer();
@@ -57,12 +58,14 @@ namespace IDE.DAL.Repositories
 
             return allBlobs;
         }
+        
+        // Use it to upload files to folder with name 'pr_{projectId}'
 
-        //Use it to upload files to folder with name 'pr_{projectId}'
         public async Task<Uri> UploadAsync(IFormFile file, int projectId, int buildId)
         {
             var blobContainer = await _connectionFactory.GetArchiveArtifactsBlobContainer();
             var dir = blobContainer.GetDirectoryReference($"pr_{projectId}");
+
             var blob = dir.GetBlockBlobReference(GetRandomBlobName(file.FileName, buildId));
 
             using (var stream = file.OpenReadStream())
@@ -74,6 +77,7 @@ namespace IDE.DAL.Repositories
 
             return blob.Uri;
         }
+
 
         private static string GetSubstring(string stringForSubstring, char desiredChar, int charsCount)
         {

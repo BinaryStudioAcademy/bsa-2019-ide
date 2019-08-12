@@ -1,19 +1,23 @@
-﻿using IDE.Common.DTO.Common;
+﻿using IDE.Common.DTO.User;
 using System;
 
 namespace IDE.Common.DTO.File
 {
     public class FileDTO
     {
+        public string Id { get; set; }
+
         public string Name { get; set; }
-        public string Folder { get; set; }
         public string Content { get; set; }
-        public DateTime CreateAt { get; set; }
-
-        public int FileHistoryId { get; set; }
-        public FileHistoryDTO FileHistory { get; set; }
-
+        public string Folder { get; set; }
         public int ProjectId { get; set; }
-        public ProjectDTO Project { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public int CreatorId { get; set; }
+        public UserDTO Creator { get; set; }
+
+        public DateTime? UpdatedAt { get; set; }
+        public int? UpdaterId { get; set; }
+        public UserDTO Updater { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using IDE.Common.DTO.Project;
+using IDE.Common.DTO.Common;
+using IDE.Common.DTO.Project;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,6 +12,8 @@ namespace IDE.BLL.Interfaces
         Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId);
         Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId);
         Task<int> CreateProject(ProjectCreateDTO project);
-        Task UpdateProject(ProjectEditDTO project, int id);
+        Task UpdateProject(ProjectEditDTO project, int id);       
+        Task<ProjectDTO> GetProjectByIdAsync(int projectId);
+        Task DeleteProjectAsync(int id);
     }
 }

@@ -1,11 +1,10 @@
-﻿using IDE.Common.DTO.User;
+﻿using IDE.DAL.Entities.NoSql.Abstract;
 using System;
 
-namespace IDE.Common.DTO.File
+namespace IDE.DAL.Entities.NoSql
 {
-    public class FileHistoryDTO
+    public class FileHistory : BaseNoSqlModel
     {
-        public string Id { get; set; }
         public string FileId { get; set; }
 
         public string Name { get; set; }
