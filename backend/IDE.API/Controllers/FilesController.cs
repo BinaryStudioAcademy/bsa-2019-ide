@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using IDE.BLL.Services;
 using IDE.Common.DTO.File;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing.Constraints;
 
 namespace IDE.API.Controllers
 {
@@ -19,10 +18,10 @@ namespace IDE.API.Controllers
             _fileService = fileService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<ICollection<FileDTO>>> GetAllAsync()
+        [HttpGet("forProject/{projectId}")]
+        public async Task<ActionResult<ICollection<FileDTO>>> GetAllForProjectAsync(int projectId)
         {
-            return Ok(await _fileService.GetAllAsync());
+            return Ok(await _fileService.GetAllForProjectAsync(projectId));
         }
 
         [HttpGet("{id:length(24)}")]
@@ -32,16 +31,16 @@ namespace IDE.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] FileDTO fileDto)
+        public async Task<IActionResult> CreateAsync([FromBody] FileCreateDTO fileCreateDTO)
         {
-            var createdFile = await _fileService.CreateAsync(fileDto);
+            var createdFile = await _fileService.CreateAsync(fileCreateDTO);
             return CreatedAtAction(nameof(GetByIdAsync), new { id = createdFile.Id }, createdFile);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] FileDTO fileDto)
+        public async Task<IActionResult> UpdateAsync([FromBody] FileUpdateDTO fileUpdateDTO)
         {
-            await _fileService.UpdateAsync(fileDto);
+            await _fileService.UpdateAsync(fileUpdateDTO);
             return NoContent();
         }
 

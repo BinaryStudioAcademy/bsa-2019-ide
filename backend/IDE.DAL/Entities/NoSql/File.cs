@@ -9,11 +9,15 @@ namespace IDE.DAL.Entities.NoSql
         public string Folder { get; set; }
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
-
-        public string FileHistoryId { get; set; }
-        public FileHistory FileHistory { get; set; }
-
         public int ProjectId { get; set; }
-        public Project Project { get; set; }
+
+        public int CreatorId { get; set; }
+        // public User Creator { get; set; } // need only for DTO
+
+        public int? UpdaterId { get; set; }
+        // public User Updater { get; set; } // need only for DTO
+
+        public string LastFileHistoryId { get; set; }
+        // public FileHistory LastFileHistory { get; set; } // need only for DTO
     }
 }

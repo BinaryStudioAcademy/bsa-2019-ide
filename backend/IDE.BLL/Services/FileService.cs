@@ -6,6 +6,7 @@ using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
@@ -14,29 +15,33 @@ namespace IDE.BLL.Services
     {
         private readonly INoSqlRepository<File> _fileRepository;
         private readonly FileHistoryService _fileHistoryService;
-        private readonly IProjectService _projectService;
+        private readonly UserService _userService;
         private readonly IMapper _mapper;
 
-        public FileService(INoSqlRepository<File> fileRepository, FileHistoryService fileHistoryService, IProjectService projectService, IMapper mapper)
+        public FileService(
+            INoSqlRepository<File> fileRepository, 
+            FileHistoryService fileHistoryService, 
+            UserService userService,
+            IMapper mapper)
         {
             _fileRepository = fileRepository;
             _fileHistoryService = fileHistoryService;
-            _projectService = projectService;
+            _userService = userService;
             _mapper = mapper;
         }
 
-        public async Task<ICollection<FileDTO>> GetAllAsync()
+        public async Task<ICollection<FileDTO>> GetAllForProjectAsync(int projectId)
         {
             var files = await _fileRepository.GetAllAsync();
+            var filesForProject = files.Where(f => f.ProjectId == projectId);
 
-            var fileDtos = _mapper.Map<ICollection<FileDTO>>(files);
-            foreach (var fileDto in fileDtos)
+            var fileForProjectDtos = _mapper.Map<ICollection<FileDTO>>(filesForProject);
+            foreach (var fileForProjectDto in fileForProjectDtos)
             {
-                fileDto.Project = await _projectService.GetProjectByIdAsync(fileDto.ProjectId);
-                fileDto.FileHistory = await _fileHistoryService.GetByIdAsync(fileDto.FileHistoryId);
+                await AddToFileLinkedItems(fileForProjectDto);
             }
 
-            return fileDtos;
+            return fileForProjectDtos;
         }
 
         public async Task<FileDTO> GetByIdAsync(string id)
@@ -48,26 +53,41 @@ namespace IDE.BLL.Services
             }
 
             var fileDto = _mapper.Map<FileDTO>(file);
-            fileDto.Project = await _projectService.GetProjectByIdAsync(fileDto.ProjectId);
-            fileDto.FileHistory = await _fileHistoryService.GetByIdAsync(fileDto.FileHistoryId);
+            await AddToFileLinkedItems(fileDto);
 
             return fileDto;
         }
 
-        public async Task<FileDTO> CreateAsync(FileDTO item)
+        public async Task<FileDTO> CreateAsync(FileCreateDTO fileCreateDto)
         {
-            var createdItem = _mapper.Map<File>(item);
-            createdItem.CreatedAt = DateTime.Now;
-            var file = await _fileRepository.CreateAsync(createdItem);
+            var fileCreate = _mapper.Map<File>(fileCreateDto);
+            fileCreate.CreatedAt = DateTime.Now;
 
-            return await GetByIdAsync(file.Id);
+            var createdFile = await _fileRepository.CreateAsync(fileCreate);
+            return await GetByIdAsync(createdFile.Id);
         }
 
-        public async Task UpdateAsync(FileDTO item)
+        public async Task UpdateAsync(FileUpdateDTO fileUpdateDTO)
         {
-            var updatedItem = _mapper.Map<File>(item);
+            var fileHistory = new FileHistoryDTO
+            {
+                FileId = fileUpdateDTO.Id,
+                Name = fileUpdateDTO.Name,
+                Folder = fileUpdateDTO.Folder,
+                Content = fileUpdateDTO.Content,
+                CreatorId = fileUpdateDTO.UpdaterId
+            };
+            var fileHistoryCreated = await _fileHistoryService.CreateAsync(fileHistory);
 
-            await _fileRepository.UpdateAsync(updatedItem);
+            var currentFileDto = await GetByIdAsync(fileUpdateDTO.Id);
+            currentFileDto.Name = fileUpdateDTO.Name;
+            currentFileDto.Folder = fileUpdateDTO.Folder;
+            currentFileDto.Content = fileUpdateDTO.Content;
+            currentFileDto.UpdaterId = fileUpdateDTO.UpdaterId;
+            currentFileDto.LastFileHistoryId = fileHistoryCreated.Id;
+
+            var fileUpdate = _mapper.Map<File>(currentFileDto);
+            await _fileRepository.UpdateAsync(fileUpdate);
         }
 
         public async Task DeleteAsync(string id)
@@ -78,7 +98,21 @@ namespace IDE.BLL.Services
                 throw new NotFoundException(nameof(File), id);
             }
 
+            var fileHistories = await _fileHistoryService.GetAllForFileAsync(id);
+            foreach (var fileHistory in fileHistories)
+            {
+                await _fileHistoryService.DeleteAsync(fileHistory.Id);
+            }
+
             await _fileRepository.DeleteAsync(id);
+        }
+
+        private async Task AddToFileLinkedItems(FileDTO file)
+        {
+            file.Creator = await _userService.GetUserById(file.CreatorId);
+            file.Updater = file.UpdaterId.HasValue ? await _userService.GetUserById(file.UpdaterId.Value) : null;
+            file.LastFileHistory = string.IsNullOrEmpty(file.LastFileHistoryId) ? null : await _fileHistoryService.GetByIdAsync(file.LastFileHistoryId);
+
         }
     }
 }

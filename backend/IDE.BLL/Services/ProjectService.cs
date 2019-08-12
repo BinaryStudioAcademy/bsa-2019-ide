@@ -118,9 +118,8 @@ namespace IDE.BLL.Services
             if (project == null)
                 throw new NotFoundException(nameof(Project), id);
 
-            var files = await _fileService.GetAllAsync();
-            var deleteFiles = files.Where(f => f.ProjectId == id);
-            foreach (var file in deleteFiles)
+            var filesDelete = await _fileService.GetAllForProjectAsync(id);
+            foreach (var file in filesDelete)
             {
                 await _fileService.DeleteAsync(file.Id);
             }

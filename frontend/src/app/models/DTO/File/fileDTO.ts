@@ -1,7 +1,7 @@
 ﻿/* Auto Generated */
 
+import { UserDTO } from "./../User/userDTO"
 import { FileHistoryDTO } from "./fileHistoryDTO"
-import { ProjectDTO } from "./../Common/projectDTO"
 
 export interface FileDTO {
     id: string;
@@ -9,8 +9,11 @@ export interface FileDTO {
     folder: string;
     content: string;
     createdAt: Date;
-    fileHistoryId: string;
-    fileHistory: FileHistoryDTO;
     projectId: number;
-    project: ProjectDTO;
+    creatorId: number;
+    creator: UserDTO;
+    updaterId?: number;
+    updater: UserDTO;
+    lastFileHistoryId: string;
+    lastFileHistory: FileHistoryDTO;
 }

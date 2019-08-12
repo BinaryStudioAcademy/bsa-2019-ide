@@ -5,11 +5,13 @@ namespace IDE.DAL.Entities.NoSql
 {
     public class FileHistory : BaseNoSqlModel
     {
+        public string FileId { get; set; }
+
+        public string Name { get; set; }
+        public string Folder { get; set; }
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
 
-        public int UpdaterId { get; set; }
-        public User Updater { get; set; }
+        public int CreatorId { get; set; }
     }
 }

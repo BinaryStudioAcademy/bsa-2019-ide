@@ -1,11 +1,9 @@
 ﻿/* Auto Generated */
 
-export interface FileHistoryDTO {
+export interface FileUpdateDTO {
     id: string;
-    fileId: string;
     name: string;
     folder: string;
     content: string;
-    createdAt: Date;
-    creatorId: number;
+    updaterId: number;
 }

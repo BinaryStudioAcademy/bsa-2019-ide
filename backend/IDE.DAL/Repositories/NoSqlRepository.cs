@@ -24,7 +24,7 @@ namespace IDE.DAL.Repositories
         {
             return await _items.Find(item => true).ToListAsync();
         }
-
+        
         public async Task<T> GetByIdAsync(string id)
         {
             return await _items.Find(item => item.Id == id).FirstOrDefaultAsync();

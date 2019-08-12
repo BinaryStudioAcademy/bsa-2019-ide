@@ -10,6 +10,8 @@ namespace IDE.BLL.MappingProfiles
         {
             CreateMap<File, FileDTO>();
             CreateMap<FileDTO, File>();
+            CreateMap<FileCreateDTO, File>();
+            CreateMap<FileUpdateDTO, File>();
         }
     }
 }

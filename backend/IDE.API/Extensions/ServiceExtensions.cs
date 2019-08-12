@@ -57,8 +57,8 @@ namespace IDE.API.Extensions
             services.AddSingleton<IValidator<UserRegisterDTO>, UserRegusterDTOValidator>();
             services.AddSingleton<IValidator<ProjectDTO>, ProjectDTOValidation>();
             services.AddSingleton<IValidator<UserLoginDTO>, UserLogInDTOValidator>();
-            services.AddSingleton<IValidator<FileDTO>, FileDTOValidator>();
-            services.AddSingleton<IValidator<FileHistoryDTO>, FileHistoryDTOValidator>();
+            services.AddSingleton<IValidator<FileCreateDTO>, FileCreateDTOValidator>();
+            services.AddSingleton<IValidator<FileUpdateDTO>, FileUpdateDTOValidator>();
         }
 
         public static void RegisterAutoMapper(this IServiceCollection services)
