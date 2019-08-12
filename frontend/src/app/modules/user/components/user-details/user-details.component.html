@@ -12,15 +12,17 @@
         <p class="property-value p-col-align-center">{{user.registredAt}}</p>
         <p class="property-name">Registred At:</p>
         <p class="property-value p-col-align-center">{{user.lastActiveAt}}</p>
+        <div class="buttons" p-grid>
+
+        </div>
     </div>
     <div class="panel p-col-10 p-md-7 p-lg-7  p-dir-col">
         
-
+        
     </div>
 </div>
-<div *ngIf="isImageExpended">
-    <div id="myModal" class="modal">
-        <span (click)="colapseImage()" class="close">&times;</span>
-        <img class="modal-content" src="{{user.imageUrl}}">
-      </div>
-</div>
+<p-dialog [(visible)]="isImageExpended" [style]="{'box-shadow': 'none'}" [showHeader]="fasle" [draggable]="false" [modal]="true"
+            [dismissableMask]="true"
+            [contentStyle]="{'overflow':'visible', 'padding': '0', 'border': 'none', 'background': 'none', 'align-content': 'center', 'display': 'flex'}">
+    <img class="big-avatar" src="{{user.imageUrl}}" alt="avatar">
+</p-dialog>
