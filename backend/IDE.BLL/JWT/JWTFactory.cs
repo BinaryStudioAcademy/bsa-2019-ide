@@ -1,9 +1,11 @@
 ﻿using IDE.BLL.ExceptionsCustom;
 using IDE.Common.Authentication;
 using IDE.Common.Security;
+using IDE.DAL.Entities;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -27,19 +29,19 @@ namespace IDE.BLL.JWT
             _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
         }
 
-        public async Task<AccessToken> GenerateAccessToken(int id, string userName, string email)
+        public async Task<AccessToken> GenerateAccessToken(User user)
         {
-            var identity = GenerateClaimsIdentity(id, userName);
-
             var claims = new[]
             {
-                 new Claim(JwtRegisteredClaimNames.Sub, userName),
-                 new Claim(JwtRegisteredClaimNames.Email, email),
+                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                  new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                  new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
-                 identity.FindFirst("id")
-             };
+                 new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
 
+                 new Claim("id", user.Id.ToString()),
+                 new Claim(ClaimTypes.Name, user.FirstName)
+             };
+                         
             // Create the JWT security token and encode it.
             var jwt = new JwtSecurityToken(
                 _jwtOptions.Issuer,

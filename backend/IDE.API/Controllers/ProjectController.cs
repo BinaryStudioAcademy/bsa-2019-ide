@@ -4,12 +4,13 @@ using IDE.BLL.Interfaces;
 using IDE.Common.DTO.Project;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using IDE.API.Extensions;
 
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
-    [AllowAnonymous]
-    //[Authorize]
+    //[AllowAnonymous]
+    [Authorize]
     [ApiController]
     public class ProjectController : ControllerBase
     {
@@ -24,21 +25,21 @@ namespace IDE.API.Controllers
         public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects()
         {
             //Need to get userId from token
-            return Ok(await _projectService.GetAllProjects(3));
+            return Ok(await _projectService.GetAllProjects(this.GetUserIdFromToken()));
         }
 
         [HttpGet("my")]
         public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetCreatedByUserProjects()
         {
             //Need to get userId from token
-            return Ok(await _projectService.GetUserProjects(3));
+            return Ok(await _projectService.GetUserProjects(this.GetUserIdFromToken()));
         }
 
         [HttpGet("assigned")]
         public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAssignedToUserProjects()
         {
             //Need to get userId from token
-            return Ok(await _projectService.GetAssignedUserProjects(3));
+            return Ok(await _projectService.GetAssignedUserProjects(this.GetUserIdFromToken()));
         }
 
         [HttpPost]
