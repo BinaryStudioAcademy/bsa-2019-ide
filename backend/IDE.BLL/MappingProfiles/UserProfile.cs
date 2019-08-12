@@ -1,9 +1,6 @@
 ﻿using AutoMapper;
 using IDE.Common.DTO.User;
 using IDE.DAL.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IDE.BLL.MappingProfiles
 {

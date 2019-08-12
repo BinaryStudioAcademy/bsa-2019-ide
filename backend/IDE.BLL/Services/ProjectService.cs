@@ -26,7 +26,7 @@ namespace IDE.BLL.Services
             _fileService = fileService;
         }
 
-        public async Task<IEnumerable<ProjectDescriptionDTO>> GetAllProjects(int userId)
+        public async Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId)
         {
             //Maybe it can be a bit easier
             var projects = await _context.ProjectMembers
@@ -39,12 +39,12 @@ namespace IDE.BLL.Services
 
             projects
                 .AddRange(await _context.Projects
-                .Where(pr => pr.AuthorId == userId)
-                .Include(x => x.Author)
-                .Include(x => x.Logo)
-                .ToListAsync());
+                    .Where(pr => pr.AuthorId == userId)
+                    .Include(x => x.Author)
+                    .Include(x => x.Logo)
+                    .ToListAsync());
 
-            return await MapAndGetLastBuildFinishedDate(projects).ConfigureAwait(false);
+            return MapAndGetLastBuildFinishedDate(projects);
         }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
@@ -58,7 +58,7 @@ namespace IDE.BLL.Services
             return _mapper.Map<ProjectDTO>(project);
         }
 
-        public async Task<IEnumerable<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId)
+        public async Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId)
         {
             //Maybe it can be a bit easier
             var projects = _context.ProjectMembers
@@ -67,45 +67,48 @@ namespace IDE.BLL.Services
                 .Select(x => x.Project)
                 .Include(x => x.Author)
                 .Include(x => x.Logo);
+            
+            var collection = await projects.ToListAsync();
 
-            return await MapAndGetLastBuildFinishedDate(await projects.ToListAsync()).ConfigureAwait(false);
+            return MapAndGetLastBuildFinishedDate(collection);
         }
 
-        public async Task<IEnumerable<ProjectDescriptionDTO>> GetUserProjects(int userId)
+        public async Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId)
         {
             //Maybe it can be a bit easier
             var projects = _context.Projects
                 .Where(pr => pr.AuthorId == userId)
                 .Include(x => x.Author)
                 .Include(x => x.Logo);
-            
-            return await MapAndGetLastBuildFinishedDate(await projects.ToListAsync()).ConfigureAwait(false);
+
+            var collection = await projects.ToListAsync();
+
+            return MapAndGetLastBuildFinishedDate(collection);
         }
 
-        private async Task<IEnumerable<ProjectDescriptionDTO>> MapAndGetLastBuildFinishedDate(List<Project> projects)
+        private ICollection<ProjectDescriptionDTO> MapAndGetLastBuildFinishedDate(List<Project> projects)
         {
-            var projectsDescriptions = _mapper.Map<IEnumerable<ProjectDescriptionDTO>>(projects);
+            var projectsDescriptions = _mapper.Map<ICollection<ProjectDescriptionDTO>>(projects);
 
-            projectsDescriptions
-                .ToList()
-                .ForEach(
-                    x => x.LastBuild = _context.Builds
-                                                .Where(y => y.ProjectId == x.Id)
-                                                .OrderByDescending(z => z.BuildFinished)
-                                                .FirstOrDefault()
-                                                ?.BuildFinished);
+            foreach (var projectDescription in projectsDescriptions)
+            {
+                projectDescription.LastBuild = _context.Builds
+                    .Where(y => y.ProjectId == projectDescription.Id)
+                    .OrderByDescending(z => z.BuildFinished)
+                    .FirstOrDefault()?.BuildFinished;
+            }
+
             return projectsDescriptions;
         }
 
-        public async Task CreateProject(ProjectCreateDTO projectCreateDTO)
+        public async Task CreateProject(ProjectCreateDTO projectCreateDto)
         {
-
-            if (_context.Users.SingleOrDefault(u => u.Id == projectCreateDTO.AuthorId) == null)
+            if (_context.Users.SingleOrDefault(u => u.Id == projectCreateDto.AuthorId) == null)
             {
                 throw new InvalidAuthorException();
             }
 
-            var project = _mapper.Map<Project>(projectCreateDTO);
+            var project = _mapper.Map<Project>(projectCreateDto);
             project.CreatedAt = DateTime.Now;
 
             await _context.Projects.AddAsync(project);

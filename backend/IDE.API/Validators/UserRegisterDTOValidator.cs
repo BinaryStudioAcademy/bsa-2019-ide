@@ -3,9 +3,9 @@ using IDE.Common.DTO.User;
 
 namespace IDE.API.Validators
 {
-    public class UserRegusterDTOValidator: AbstractValidator<UserRegisterDTO>
+    public class UserRegisterDTOValidator: AbstractValidator<UserRegisterDTO>
     {
-        public UserRegusterDTOValidator()
+        public UserRegisterDTOValidator()
         {
             RuleFor(u => u.FirstName)
                 .NotEmpty().WithMessage("User first name can not be empty")

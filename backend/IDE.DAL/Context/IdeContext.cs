@@ -7,9 +7,11 @@ namespace IDE.DAL.Context
 {
     public sealed class IdeContext : DbContext
     {
-        private static bool IsDatabaseUpdatedChecked = false;
+        private static bool _isDatabaseUpdatedChecked = false;
 
-        public IdeContext(DbContextOptions<IdeContext> options) : base(options) { }
+        public IdeContext(DbContextOptions options) : base(options)
+        {
+        }
 
         public DbSet<Build> Builds { get; private set; }
         public DbSet<Project> Projects { get; private set; }
@@ -28,8 +30,10 @@ namespace IDE.DAL.Context
 
         public void InitializeDatabase()
         {
-            if (IsDatabaseUpdatedChecked)
+            if (_isDatabaseUpdatedChecked)
+            {
                 return;
+            }
 
             try //If we need we can check if database with such connection string exists, not to create smth new by mistake
             {
@@ -40,9 +44,13 @@ namespace IDE.DAL.Context
             {
                 throw new System.Exception("Database with such connection string doesn't exist");
             }
-            if (Database.GetPendingMigrations().Count() != 0) { }
+
+            if (Database.GetPendingMigrations().Count() != 0)
+            {
                 Database.Migrate();
-            IsDatabaseUpdatedChecked = true;
+            }
+
+            _isDatabaseUpdatedChecked = true;
         }
     }
 }

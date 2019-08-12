@@ -1,4 +1,4 @@
-﻿using IDE.DAL.Interfaces;
+using IDE.DAL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

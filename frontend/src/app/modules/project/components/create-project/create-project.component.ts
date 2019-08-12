@@ -21,7 +21,6 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
         //private authService: AuthenticationService,
         private router: Router) { }
 
-    
     public languages: any;
     public projectTypes: any;
     public compilerTypes: any;

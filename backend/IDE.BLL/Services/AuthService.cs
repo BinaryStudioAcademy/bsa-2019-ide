@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using IDE.BLL.JWT;
-using IDE.Common.DTO.Authentification;
 using IDE.Common.DTO.User;
 using IDE.DAL.Entities;
 using IDE.Common.Security;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using IDE.BLL.ExceptionsCustom;
 using IDE.DAL.Context;
 using IDE.BLL.Helpers;
+using IDE.Common.ModelsDTO.DTO.Authentification;
 
 namespace IDE.BLL.Services
 {
@@ -38,7 +38,7 @@ namespace IDE.BLL.Services
 
             if (!SecurityHelper.ValidatePassword(userDto.Password, userEntity.PasswordHash, userEntity.PasswordSalt))
             {
-                throw new InvalidUsernameOrPasswordException("wrong passwork or username");
+                throw new InvalidUsernameOrPasswordException("wrong username or password");
             }
 
             var token = await GenerateAccessToken(userEntity.Id, userEntity.GetUserName(), userEntity.Email);

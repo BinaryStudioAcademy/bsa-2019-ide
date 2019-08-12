@@ -8,7 +8,7 @@ import { ResizableModule } from 'angular-resizable-element';
   imports: [
     CommonModule
   ],
-  exports:[
+  exports: [
     ResizableModule
   ]
 })
