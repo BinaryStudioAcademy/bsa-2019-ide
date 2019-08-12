@@ -18,15 +18,14 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
         private fb: FormBuilder,
         private projectService: ProjectService,
         private toastrService: ToastrService,
-        //private authService: AuthenticationService,
+        private authService: AuthenticationService,
         private router: Router) { }
 
-    
     public languages: any;
     public projectTypes: any;
     public compilerTypes: any;
     private project: ProjectCreateDTO;
-    //private authorId:number;
+    private authorId:number;
 
     public projectForm = this.fb.group({
         name: ['', Validators.required],
@@ -43,8 +42,8 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
         this.project = {
             name: this.projectForm.get('name').value,
             description: this.projectForm.get('description').value,
-            authorId: 2, //you need to path here id of your existing user
-            //authorId: this.authorId,
+            //authorId: 2, //you need to path here id of your existing user
+            authorId: this.authorId,
             language: this.projectForm.get('language').value,
             projectType: this.projectForm.get('projectType').value,
             compilerType: this.projectForm.get('compilerType').value,
@@ -56,9 +55,8 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
         this.projectService.addProject(this.project)
             .subscribe(res => {
                 this.toastrService.success("Project created");
-                console.log(res);
-                //{project.id}" server will return Id prop
-                this.router.navigate([`/project/5`]);
+                let projectId = res.body;
+                this.router.navigate([`/project/${projectId}`]);
             },
                 error => {
                     this.toastrService.error('error');
@@ -66,9 +64,9 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void { //Maybe choose initializing
-        //this.authService.getUser().subscribe((user:UserDTO)=>{
-        //    this.authorId = user.id;
-        //})
+        this.authService.getUser().subscribe((user:UserDTO)=>{
+            this.authorId = user.id;
+        });
         
         this.languages = [
             { label: 'C#', value: 0 },

@@ -1,9 +1,9 @@
 ﻿using IDE.API.Extensions;
 using IDE.BLL.Services;
-using IDE.Common.DTO.Authentification;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using IDE.Common.ModelsDTO.DTO.Authentification;
 
 namespace IDE.API.Controllers
 {

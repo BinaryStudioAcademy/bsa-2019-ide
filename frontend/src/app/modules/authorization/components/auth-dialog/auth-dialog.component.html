@@ -67,7 +67,7 @@
   <div>
     <label>Your password</label>
     <input pPassword [(ngModel)]="password" name="password" type="password" minlength="8" #Password="ngModel" maxlength="16" required
-    pattern="[а-яА-Яa-zA-Z0-9./,-()]{8,16}"/>
+    pattern="[а-яА-Яa-zA-Z0-9]{8,16}"/><!--./,-()-->
     <div *ngIf="Password.invalid && (Password.dirty || Password.touched)" class="alert-danger">
       <div *ngIf="Password.errors.pattern">
         Password can contain latin letters (upper\lowercase), digits, ",", ",", "(", ")","/","-".

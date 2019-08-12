@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IDE.Common.DTO.Authentification
+﻿namespace IDE.Common.ModelsDTO.DTO.Authentification
 {
     public class RevokeRefreshTokenDTO
     {

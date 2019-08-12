@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IDE.BLL.ExceptionsCustom
 {
@@ -11,6 +9,11 @@ namespace IDE.BLL.ExceptionsCustom
         }
 
         public NotFoundException(string name, int id)
+            : base($"Entity {name} with id ({id}) was not found.")
+        {
+        }
+
+        public NotFoundException(string name, string id)
             : base($"Entity {name} with id ({id}) was not found.")
         {
         }

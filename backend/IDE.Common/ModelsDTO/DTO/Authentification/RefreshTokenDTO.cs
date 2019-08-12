@@ -1,10 +1,7 @@
-﻿using IDE.Common.Authentification;
+﻿using System;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace IDE.Common.DTO.Authentification
+namespace IDE.Common.ModelsDTO.DTO.Authentification
 {
     public class RefreshTokenDTO
     {

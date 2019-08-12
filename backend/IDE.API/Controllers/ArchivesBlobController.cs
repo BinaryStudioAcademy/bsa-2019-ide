@@ -1,11 +1,8 @@
-﻿using IDE.BLL.Services.Abstract;
-using IDE.DAL.Repositories.Abstract;
+using IDE.DAL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace IDE.API.Controllers

@@ -5,22 +5,25 @@ using IDE.BLL.Interfaces;
 using IDE.BLL.JWT;
 using IDE.BLL.MappingProfiles;
 using IDE.BLL.Services;
-using IDE.BLL.Services.Abstract;
-using IDE.Common.Authentification;
-using IDE.Common.DTO.Authentification;
 using IDE.Common.DTO.Common;
+using IDE.Common.DTO.File;
 using IDE.Common.DTO.User;
+using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Factories;
 using IDE.DAL.Factories.Abstractions;
+using IDE.DAL.Interfaces;
 using IDE.DAL.Repositories;
-using IDE.DAL.Repositories.Abstract;
+using IDE.DAL.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using IDE.Common.Authentication;
+using IDE.Common.ModelsDTO.DTO.Authentification;
 
 namespace IDE.API.Extensions
 {
@@ -34,6 +37,12 @@ namespace IDE.API.Extensions
             services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<UserService>();
+            services.AddScoped<FileService>();
+            services.AddScoped<FileHistoryService>();
+
+            services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
+            services.AddScoped<INoSqlRepository<File>, NoSqlRepository<File>>();
+            services.AddScoped<INoSqlRepository<FileHistory>, NoSqlRepository<FileHistory>>();
         }
 
         public static void RegisterServicesWithIConfiguration(this IServiceCollection services, IConfiguration conf)
@@ -45,10 +54,11 @@ namespace IDE.API.Extensions
         {
             services.AddSingleton<IValidator<RevokeRefreshTokenDTO>, RevokeRefreshTokenDTOValidator>();
             services.AddSingleton<IValidator<RefreshTokenDTO>, RefreshTokenDTOValidator>();
-
-            services.AddSingleton<IValidator<UserRegisterDTO>, UserRegusterDTOValidator>();
+            services.AddSingleton<IValidator<UserRegisterDTO>, UserRegisterDTOValidator>();
             services.AddSingleton<IValidator<ProjectDTO>, ProjectDTOValidation>();
             services.AddSingleton<IValidator<UserLoginDTO>, UserLogInDTOValidator>();
+            services.AddSingleton<IValidator<FileCreateDTO>, FileCreateDTOValidator>();
+            services.AddSingleton<IValidator<FileUpdateDTO>, FileUpdateDTOValidator>();
         }
 
         public static void RegisterAutoMapper(this IServiceCollection services)
@@ -59,7 +69,9 @@ namespace IDE.API.Extensions
                 cfg.AddProfile<ProjectProfile>();
                 cfg.AddProfile<ImageProfile>();
                 cfg.AddProfile<BuildProfile>();
-                cfg.AddProfile<GitCredentiaProfile>();
+                cfg.AddProfile<FileProfile>();
+                cfg.AddProfile<FileHistoryProfile>();
+                cfg.AddProfile<GitCredentialProfile>();
             });
         }
 
@@ -75,19 +87,30 @@ namespace IDE.API.Extensions
             });
         }
 
+        public static void ConfigureNoSqlDb(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<FileStorageNoSqlDbSettings>(
+                configuration.GetSection(nameof(FileStorageNoSqlDbSettings)));
+
+            services.AddSingleton<IFileStorageNoSqlDbSettings>(sp =>
+               sp.GetRequiredService<IOptions<FileStorageNoSqlDbSettings>>().Value);
+        }
+
         public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
         {
             var secretKey = configuration["SecretJWTKey"];
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
             var jwtAppSettingOptions = configuration.GetSection(nameof(JwtIssuerOptions));
 
-            services.Configure<JwtIssuerOptions>(options => {
+            services.Configure<JwtIssuerOptions>(options =>
+            {
                 options.Issuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
                 options.Audience = jwtAppSettingOptions[nameof(JwtIssuerOptions.Audience)];
                 options.SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
             });
 
-            var tokenValidationParameters = new TokenValidationParameters {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
                 ValidateIssuer = true,
                 ValidIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)],
 
@@ -106,9 +129,8 @@ namespace IDE.API.Extensions
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(configureOptions => {
-
+            }).AddJwtBearer(configureOptions =>
+            {
                 configureOptions.ClaimsIssuer = jwtAppSettingOptions[nameof(JwtIssuerOptions.Issuer)];
                 configureOptions.TokenValidationParameters = tokenValidationParameters;
                 configureOptions.SaveToken = true;
@@ -121,11 +143,11 @@ namespace IDE.API.Extensions
                         {
                             context.Response.Headers.Add("Token-Expired", "true");
                         }
+
                         return Task.CompletedTask;
                     }
                 };
             });
         }
-
     }
 }

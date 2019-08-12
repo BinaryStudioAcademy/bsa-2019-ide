@@ -3,9 +3,9 @@ using IDE.Common.DTO.User;
 
 namespace IDE.API.Validators
 {
-    public class UserRegusterDTOValidator: AbstractValidator<UserRegisterDTO>
+    public class UserRegisterDTOValidator: AbstractValidator<UserRegisterDTO>
     {
-        public UserRegusterDTOValidator()
+        public UserRegisterDTOValidator()
         {
             RuleFor(u => u.FirstName)
                 .NotEmpty().WithMessage("User first name can not be empty")
@@ -28,10 +28,8 @@ namespace IDE.API.Validators
 
             RuleFor(u=>u.Password)
                 .Length(8, 16).WithMessage("Email length should have 8-16 symbol")
-                .Matches("[а-яА-Яa-zA-Z0-9./,-()]{8,16}").WithMessage("Password can contain latin letters (upper\\lowercase), digits, \",\" , \", \", \"(\", \")\",\" / \",\" - \".\"");
-
-
-
+                //.Matches("[а-яА-Яa-zA-Z0-9./,-()]{8,16}").WithMessage("Password can contain latin letters (upper\\lowercase), digits, \",\" , \", \", \"(\", \")\",\" / \",\" - \".\"");
+                .Matches("[а-яА-Яa-zA-Z0-9]{8,16}").WithMessage("Password can contain latin letters (upper\\lowercase), digits, \",\" , \", \", \"(\", \")\",\" / \",\" - \".\"");
         }
     }
 }

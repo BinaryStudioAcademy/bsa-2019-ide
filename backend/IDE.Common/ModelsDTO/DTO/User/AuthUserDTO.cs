@@ -1,7 +1,4 @@
-﻿using IDE.Common.DTO.Authentification;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using IDE.Common.ModelsDTO.DTO.Authentification;
 
 namespace IDE.Common.DTO.User
 {

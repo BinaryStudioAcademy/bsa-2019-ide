@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IDE.Common.Authentification
+﻿namespace IDE.Common.Authentication
 {
     public class AccessToken
     {
