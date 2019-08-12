@@ -1,20 +1,26 @@
 <div class="container p-grid p-justify-around p-align-start">
     <div class="panel p-col-10 p-md-4 p-lg-3 p-grid p-dir-col">
-        <img class="p-col-align-center" alt="avatar" src="http://bootdey.com/img/Content/avatar/avatar6.png">
-        <h1 class="p-col-align-center">User Name</h1>
+        <img class="p-col-align-center" alt="avatar" (click)="expandImage(user.imageUrl)" src="{{user.imageUrl}}">
+        <h1 class="p-col-align-center">{{user.firstName}} {{user.lastName}}</h1>
         <p class="property-name">Nickname:</p>
-        <p class="property-value p-col-align-center">Boos</p>
+        <p class="property-value p-col-align-center">{{user.nickname}}</p>
         <p class="property-name">Github URL:</p>
-        <a class="property-value p-col-align-center" href="https://github.com/kotsabiukmv98">github</a>
+        <a class="property-value p-col-align-center" href="{{user.githubUrl}}">github</a>
         <p class="property-name">Birthday:</p>
-        <p class="property-value p-col-align-center">September 6, 2000</p>
+        <p class="property-value p-col-align-center">{{user.birthday}}</p>
         <p class="property-name ">Last Active:</p>
-        <p class="property-value p-col-align-center">May 28, 2009, at 5:11 am</p>
+        <p class="property-value p-col-align-center">{{user.registredAt}}</p>
         <p class="property-name">Registred At:</p>
-        <p class="property-value p-col-align-center">May 28, 2009, at 5:11 am</p>
+        <p class="property-value p-col-align-center">{{user.lastActiveAt}}</p>
     </div>
     <div class="panel p-col-10 p-md-7 p-lg-7  p-dir-col">
         
 
     </div>
+</div>
+<div *ngIf="isImageExpended">
+    <div id="myModal" class="modal">
+        <span (click)="colapseImage()" class="close">&times;</span>
+        <img class="modal-content" src="{{user.imageUrl}}">
+      </div>
 </div>
