@@ -29,6 +29,7 @@ namespace IDE.BLL.Services
         public async Task<AuthUserDTO> Authorize(UserLoginDTO userDto)
         {
             var userEntity = await _context.Users
+                .Include(x => x.Avatar)
                 .FirstOrDefaultAsync(u => u.Email == userDto.Email);
 
             if (userEntity == null)
@@ -41,7 +42,7 @@ namespace IDE.BLL.Services
                 throw new InvalidUsernameOrPasswordException("wrong username or password");
             }
 
-            var token = await GenerateAccessToken(userEntity.Id, userEntity.GetUserName(), userEntity.Email);
+            var token = await GenerateAccessToken(userEntity);
             var user = _mapper.Map<UserDTO>(userEntity);
 
             return new AuthUserDTO
@@ -51,19 +52,19 @@ namespace IDE.BLL.Services
             };
         }
 
-        public async Task<AccessTokenDTO> GenerateAccessToken(int userId, string userName, string email)
+        public async Task<AccessTokenDTO> GenerateAccessToken(User user)
         {
             var refreshToken = JWTFactory.GenerateRefreshToken();
 
             _context.RefreshTokens.Add(new RefreshToken
             {
                 Token = refreshToken,
-                UserId = userId
+                UserId = user.Id
             });
 
             await _context.SaveChangesAsync();
 
-            var accessToken = await _jwtFactory.GenerateAccessToken(userId, userName, email);
+            var accessToken = await _jwtFactory.GenerateAccessToken(user);
 
             return new AccessTokenDTO(accessToken, refreshToken);
         }
@@ -90,7 +91,7 @@ namespace IDE.BLL.Services
                 throw new ExpiredRefreshTokenException();
             }
 
-            var jwtToken = await _jwtFactory.GenerateAccessToken(userEntity.Id, userEntity.GetUserName(), userEntity.Email); //generate access token
+            var jwtToken = await _jwtFactory.GenerateAccessToken(userEntity); //generate access token
             var refreshToken = JWTFactory.GenerateRefreshToken(); //generate random token 
 
             _context.RefreshTokens.Remove(rToken); // remove previous one
