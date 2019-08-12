@@ -3,7 +3,7 @@
 export interface FileUpdateDTO {
     id: string;
     name: string;
-    folder: string;
     content: string;
+    folder: string;
     updaterId: number;
 }

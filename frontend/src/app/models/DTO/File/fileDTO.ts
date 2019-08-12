@@ -5,8 +5,8 @@ import { UserDTO } from "./../User/userDTO"
 export interface FileDTO {
     id: string;
     name: string;
-    folder: string;
     content: string;
+    folder: string;
     projectId: number;
     createdAt: Date;
     creatorId: number;

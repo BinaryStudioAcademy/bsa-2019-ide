@@ -4,8 +4,8 @@ export interface FileHistoryDTO {
     id: string;
     fileId: string;
     name: string;
-    folder: string;
     content: string;
+    folder: string;
     createdAt: Date;
     creatorId: number;
 }

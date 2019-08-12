@@ -2,8 +2,8 @@
 
 export interface FileCreateDTO {
     name: string;
-    folder: string;
     content: string;
+    folder: string;
     projectId: number;
     creatorId: number;
 }
