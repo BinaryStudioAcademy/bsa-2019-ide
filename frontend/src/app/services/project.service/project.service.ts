@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
-import { ProjectCreateDTO } from 'src/app/models/dto/project/projectCreateDTO';
-import { ProjectDescriptionDTO } from 'src/app/models/dto/project/projectDescriptionDTO';
+import { ProjectCreateDTO } from '../../models/DTO/Project/projectCreateDTO';
+import { ProjectDescriptionDTO } from '../../models/DTO/Project/projectDescriptionDTO';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 
