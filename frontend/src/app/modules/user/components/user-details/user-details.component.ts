@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service/user.service';
-import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
 import { MenuItem } from 'primeng/api';
+import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
 
 @Component({
   selector: 'app-user-details',
@@ -18,7 +18,10 @@ export class UserDetailsComponent implements OnInit {
 
   constructor(private userService: UserService) { }
   ngOnInit() {
-      this.user = this.userService.getUserDetails();
+      this.userService.getUserFromToken().subscribe(response =>{
+        this.user = response.body;
+        console.log(this.user);
+      });
       this.actions = [
         {label: 'Change Image', icon: 'pi pi-cloud-upload', command: () => {
             // this.update();

@@ -13,7 +13,7 @@ export class UserService {
     constructor(private httpService: HttpClientWrapperService) { }
 
     public getUserFromToken() {
-        return this.httpService.getRequest<UserDTO>(`${this.routePrefix}/fromToken`);
+        return this.httpService.getRequest<UserDetailsDTO>(`${this.routePrefix}/fromToken`);
     }
 
     public getUserById(id: number) {
@@ -32,18 +32,5 @@ export class UserService {
             id,
             nickName
         };
-    }
-
-    public getUserDetails() : UserDetailsDTO{
-        return {
-            firstName: "Dima",
-            lastName: "Afanasiev",
-            nickname: "coolman2019",
-            imageUrl: "http://bootdey.com/img/Content/avatar/avatar6.png",
-            githubUrl: "https://github.com/kotsabiukmv98",
-            birthday:  "September 6, 2000",
-            registredAt: "May 28, 2009, at 5:11 am",
-            lastActiveAt: "Des 8, 2000, at 3:51 pm"
-        }
     }
 }

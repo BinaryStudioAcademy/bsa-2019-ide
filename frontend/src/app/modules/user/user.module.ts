@@ -7,6 +7,7 @@ import { UserRoutingModule } from './user-routing.module';
 import {DialogModule} from 'primeng/dialog';
 import {SlideMenuModule} from 'primeng/slidemenu';
 import {ButtonModule} from 'primeng/button';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
 
 @NgModule({
   declarations: [UserRootComponent, UserDetailsComponent, UserSettingsComponent],
@@ -15,7 +16,8 @@ import {ButtonModule} from 'primeng/button';
     UserRoutingModule,
     DialogModule,
     SlideMenuModule,
-    ButtonModule
+    ButtonModule,
+    ProgressSpinnerModule
   ]
 })
 export class UserModule { }
