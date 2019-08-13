@@ -9,15 +9,20 @@ import {ProjectDetailsInfoComponent} from '../project-details-info/project-detai
   styleUrls: ['./project-details.component.sass']
 })
 export class ProjectDetailsComponent implements OnInit {
-    
-    project: ProjectInfoDTO;    
+    public projectId: number;
+    public project: ProjectInfoDTO;
 
-    constructor(
-        private route: ActivatedRoute) { }
+    constructor(private route: ActivatedRoute) { }
 
     ngOnInit() {
-        this.route.data.subscribe(data => {
-            this.project = data['project'];
-        });
+      this.projectId = Number(this.route.snapshot.paramMap.get('id'));
+      if (!this.projectId) {
+        console.error('Id in URL is not a number!');
+        return;
+      }
+
+      this.route.data.subscribe(data => {
+          this.project = data['project'];
+      });
     }
 }

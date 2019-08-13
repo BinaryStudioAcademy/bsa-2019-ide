@@ -1,6 +1,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { ResizeEvent } from 'angular-resizable-element';
+import { ActivatedRoute } from '@angular/router';
 
 
 
@@ -10,17 +11,22 @@ import { ResizeEvent } from 'angular-resizable-element';
   styleUrls: ['./workspace-root.component.sass']
 })
 export class WorkspaceRootComponent implements OnInit {
-    
-  constructor() { }
+  public projectId: number;
+
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit() {
-      
+    this.projectId = Number(this.route.snapshot.paramMap.get('id'));
+    if (!this.projectId) {
+      console.error('Id in URL is not a number!');
+      return;
+    }
   }
 
 
 // *********code below for resizing blocks***************
 //   public style: object = {};
- 
+
 //   validate(event: ResizeEvent): boolean {
 //     const MIN_DIMENSIONS_PX: number = 50;
 //     if (
@@ -33,7 +39,7 @@ export class WorkspaceRootComponent implements OnInit {
 //     }
 //     return true;
 //   }
- 
+
 //   onResizeEnd(event: ResizeEvent): void {
 //     this.style = {
 //       position: 'fixed',
