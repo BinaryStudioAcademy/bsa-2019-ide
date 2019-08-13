@@ -1,5 +1,7 @@
 ﻿/* Auto Generated */
 
+import { BuildStatus } from "./../../Enums/buildStatus"
+
 export interface ProjectDescriptionDTO {
     id: number;
     title: string;
@@ -7,5 +9,6 @@ export interface ProjectDescriptionDTO {
     photoLink: string;
     created: Date;
     favourite: boolean;
+    buildStatus?: BuildStatus;
     lastBuild?: Date;
 }
