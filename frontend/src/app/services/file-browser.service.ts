@@ -13,7 +13,7 @@ export class FileBrowserService {
 
     public async getProjectStructure(): Promise<ProjectStructureDTO> {
         const psJson = await this.requests
-            .getRequest('https://localhost:44352/ProjectStructure/5d5287797404f941bcfc9e2f')
+            .getRequest('https://localhost:44352/ProjectStructure/5d52af49fdea1f3520d1d4dd')
             .toPromise();
         const ps = psJson.body as ProjectStructureDTO;
         console.log(ps);
