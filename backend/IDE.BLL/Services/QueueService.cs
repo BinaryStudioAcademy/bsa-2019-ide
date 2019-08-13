@@ -1,4 +1,5 @@
-﻿using RabbitMQ.Client;
+﻿using IDE.BLL.Interfaces;
+using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Shared.Interfaces;
 using System.Text;
@@ -40,7 +41,7 @@ namespace IDE.BLL.Services
             _messageConsumerScope.MessageConsumer.SetAcknowledge(e.DeliveryTag, true);
         }
 
-        public bool PostValue(string value)
+        public bool SendMessage(string value)
         {
             try
             {

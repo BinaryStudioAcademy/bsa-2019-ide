@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using IDE.BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RabbitMQ.Shared.Interfaces;
 
 namespace IDE.API.Controllers
 {
@@ -20,7 +20,7 @@ namespace IDE.API.Controllers
         [HttpGet]
         public ActionResult<bool> Post()
         {
-            return new ActionResult<bool>(_queue.PostValue("send to the client"));
+            return new ActionResult<bool>(_queue.SendMessage("send to the client"));
 
         }
     }
