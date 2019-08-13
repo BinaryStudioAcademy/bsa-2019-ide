@@ -10,13 +10,13 @@ import {TreeModule} from 'primeng/tree';
 import {MonacoEditorModule} from '@materia-ui/ngx-monaco-editor';
 import { FormsModule } from '@angular/forms';
 import {TabMenuModule} from 'primeng/tabmenu';
-import { MenuModule } from 'primeng/menu';
-import { ContextMenuModule } from 'primeng/components/contextmenu/contextmenu';
-
+import { ContextMenuModule, MenuModule } from 'primeng/primeng';
 
 @NgModule({
   declarations: [WorkspaceRootComponent, FileBrowserSectionComponent, EditorSectionComponent],
   imports: [
+    MenuModule,
+    ContextMenuModule,
     CommonModule,
     WorkspaceRoutingModule,
     GeneralModule,
