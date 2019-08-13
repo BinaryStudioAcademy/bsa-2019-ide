@@ -14,16 +14,16 @@ const projectRoutes: Routes = [
     canActivate: [LoginGuard]
   },
   {
-    path: 'project/:id',
+    path: 'project',
     component: ProjectRootComponent,
     children: [
       {
-        path: '',
+        path: ':id',
         component: ProjectDetailsComponent,
         resolve: { project: ProjectInfoResolver } // What is it?
       },
       {
-        path: 'settings',
+        path: ':id/settings',
         component: ProjectSettingsComponent
       }
     ],
