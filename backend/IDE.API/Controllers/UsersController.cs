@@ -28,7 +28,7 @@ namespace IDE.API.Controllers
         [HttpGet("details")]
         public async Task<ActionResult<UserDetailsDTO>> GetUserDetailsFromToken()
         {
-            return Ok(await _userService.GetUserById(this.GetUserIdFromToken()));
+            return Ok(await _userService.GetUserDetailsById(this.GetUserIdFromToken()));
         }
 
         [HttpGet("{id}")]
