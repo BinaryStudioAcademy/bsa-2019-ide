@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, OnChanges } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { AuthDialogService } from '../services/auth-dialog.service/auth-dialog.service'
+import { AuthDialogService } from '../services/auth-dialog.service/auth-dialog.service';
 import { DialogType } from '../modules/authorization/models/auth-dialog-type';
 import { AuthenticationService } from '../services/auth.service/auth.service';
 import { UserDTO } from '../models/DTO/User/userDTO';
@@ -16,12 +16,12 @@ import { EventService } from '../services/event.service/event.service';
     styleUrls: ['./nav-menu.component.sass']
 })
 export class NavMenuComponent implements OnInit, OnDestroy {
-    items: MenuItem[];
+    authUserItems: MenuItem[];
+    unAuthUserItems: MenuItem[];
 
     public dialogType = DialogType;
     public authorizedUser: UserDTO;
     private unsubscribe$ = new Subject<void>();
-    public userMenuBarItem = false;
 
     constructor(
         private authDialogService: AuthDialogService,
@@ -36,31 +36,32 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
         console.log(this.authorizedUser);
 
-        this.items = [
+        this.authUserItems = [
             { label: 'Home', routerLink: [''] },
             { label: 'Dashboard', routerLink: ['/dashboard'] },
-            { label: 'User', routerLink: ['/user'], visible: this.userMenuBarItem }
+            { label: 'User', routerLink: ['/user'] }
+        ];
+        this.unAuthUserItems = [
+            {
+                label: 'Home',
+                command: (event: any) => {
+                    this.openAuthDialog(this.dialogType.SignIn);
+                }
+            }
         ];
 
         this.eventService.userChangedEvent$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((user) => (this.authorizedUser = user ? this.userService.copyUser(user) : undefined));
-
-        if (this.authorizedUser) {
-            console.log("loooog");
-            this.items[2].visible = true;
-        }
     }
 
-    public getMenuItems()
-    {
+
+    public getMenuItems() {
         if (this.authorizedUser) {
-            this.items[2].visible = true;
+            return this.authUserItems;
+        } else {
+            return this.unAuthUserItems;
         }
-        else{
-            this.items[2].visible = false;
-        }
-        return this.items;
     }
 
 
@@ -72,6 +73,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public openAuthDialog(type: DialogType) {
         this.authDialogService.openAuthDialog(type);
     }
+
     public LogOut() {
         this.authService.logout();
         this.authorizedUser = undefined;
@@ -87,6 +89,5 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             .getUser()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((user) => (this.authorizedUser = this.userService.copyUser(user)));
-
     }
 }
