@@ -3,7 +3,7 @@
         <img class="p-col-align-center" alt="avatar" (click)="expandImage(user.url)" src="{{user.url}}">
         <h1 class="p-col-align-center">{{user.firstName}} {{user.lastName}}</h1>
         <p class="property-name">Nickname:</p>
-        <p class="property-value p-col-align-center">{{user.nickname}}</p>
+        <p class="property-value p-col-align-center">{{user.nickName}}</p>
         <p class="property-name">Email</p>
         <p class="property-value p-col-align-center">{{user.email}}</p>
         <p class="property-name">Github URL:</p>
@@ -26,7 +26,7 @@
         More information about user: projects, builds, ets..
     </div>
 </div>
-<p-dialog *ngIf="user" [(visible)]="isImageExpended" [style]="{'box-shadow': 'none'}" [showHeader]="fasle" [draggable]="false" [modal]="true"
+<p-dialog  *ngIf="user" [(visible)]="isImageExpended" [style]="{'box-shadow': 'none'}" [showHeader]="false" [draggable]="false" [modal]="true"
             [dismissableMask]="true"
             [contentStyle]="{'overflow':'visible', 'padding': '0', 'border': 'none', 'background': 'none', 'align-content': 'center', 'display': 'flex'}">
     <img class="big-avatar" src="{{user.url}}" alt="avatar">

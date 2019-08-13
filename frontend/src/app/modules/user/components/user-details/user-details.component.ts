@@ -11,9 +11,9 @@ import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
     ]
 })
 export class UserDetailsComponent implements OnInit {
-  private user : UserDetailsDTO;
-  private isImageExpended: boolean = false;
-  private actions: MenuItem[];
+  user : UserDetailsDTO;
+  isImageExpended: boolean = false;
+  actions: MenuItem[];
 
 
   constructor(private userService: UserService) { }
