@@ -31,4 +31,9 @@ export class EditorSectionComponent implements OnInit {
         this.activeItem = this.items[0];
     }
 
+    closeItem(event, index) {
+        this.items = this.items.filter((item, i) => i !== index);
+        event.preventDefault();
+    }
+
 }
