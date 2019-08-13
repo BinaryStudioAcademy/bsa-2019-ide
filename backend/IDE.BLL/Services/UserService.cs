@@ -35,6 +35,17 @@ namespace IDE.BLL.Services
             return userEntity;
         }
 
+        public async Task<UserDetailsDTO> GetUserDetailsById(int id)
+        {
+            var user = await GetUserByIdInternal(id);
+            if (user == null)
+            {
+                throw new NotFoundException(nameof(User), id);
+            }
+
+            return _mapper.Map<UserDetailsDTO>(user);
+        }
+
         public async Task<UserDTO> GetUserById(int id)
         {
             var user = await GetUserByIdInternal(id);

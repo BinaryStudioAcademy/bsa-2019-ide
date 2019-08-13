@@ -11,7 +11,7 @@ const userRoutes: Routes = [
         component: UserRootComponent,
         children: [
             {
-                path: '',
+                path: 'details',
                 component: UserDetailsComponent,
             },
             {

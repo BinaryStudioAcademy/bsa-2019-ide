@@ -1,7 +1,8 @@
 
 import { Injectable } from '@angular/core';
 import { TreeNode } from 'primeng/components/common/api';
-import { PSFileNode, PSNodeTypeEnum } from '../models/ProjectStructure/ProjectStructure';
+import { FileStructureDTO } from '../models/DTO/Workspace/fileStructureDTO';
+import {TreeNodeType} from '../models/Enums/treeNodeType';
 
 @Injectable({
     providedIn: 'root'
@@ -22,18 +23,18 @@ export class NodesPrepareToViewService {
     }
 
     constructor() { }
-    toPrimeTree(primeTree: TreeNode[], ps: PSFileNode[]) {
+    toPrimeTree(primeTree: TreeNode[], ps: FileStructureDTO[]) {
         for (const el of ps) {
-            if (el.Type == PSNodeTypeEnum.Folder) {
-                const newNode = this.makeFolderNode(el.Name, el.Id);
-                if (!el.NestedFiles || el.NestedFiles.length === 0) {
+            if (el.type == TreeNodeType.folder) {
+                const newNode = this.makeFolderNode(el.name, el.id);
+                if (!el.nestedFiles || el.nestedFiles.length === 0) {
                     primeTree.push(newNode);
                     continue;
                 }
-                newNode.children = this.toPrimeTree([], el.NestedFiles);
+                newNode.children = this.toPrimeTree([], el.nestedFiles);
                 primeTree.push(newNode);
             } else {
-                const newNode = this.makeFileNode(el.Name, el.Id);
+                const newNode = this.makeFileNode(el.name, el.id);
                 primeTree.push(newNode);
             }
         }

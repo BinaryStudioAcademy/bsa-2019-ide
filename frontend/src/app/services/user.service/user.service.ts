@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
 import { UserDTO } from 'src/app/models/DTO/User/userDTO';
+import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +14,10 @@ export class UserService {
 
     public getUserFromToken() {
         return this.httpService.getRequest<UserDTO>(`${this.routePrefix}/fromToken`);
+    }
+
+    public getUserDetailsFromToken() {
+        return this.httpService.getRequest<UserDetailsDTO>(`${this.routePrefix}/details`);
     }
 
     public getUserById(id: number) {
