@@ -6,10 +6,9 @@ namespace IDE.DAL.Entities
 {
     public class FavouriteProjects
     {
-        public int Project { get; set; }
         public int ProjectId { get; set; }
-
-        public int User { get; set; }
+        public Project Project { get; set; }
         public int UserId { get; set; }
+        public User User { get; set; }
     }
 }

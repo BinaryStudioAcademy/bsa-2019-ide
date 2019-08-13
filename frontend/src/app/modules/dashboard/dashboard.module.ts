@@ -11,6 +11,7 @@ import {TabMenuModule} from 'primeng/tabmenu';
 import { AllProjectsComponent } from './components/all-projects/all-projects.component';
 import { MyProjectsComponent } from './components/my-projects/my-projects.component';
 import { AssignedProjectsComponent } from './components/assigned-projects/assigned-projects.component';
+import { FavoriteProjectsComponent } from './components/favorite-projects/favorite-projects.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { AssignedProjectsComponent } from './components/assigned-projects/assign
     ProjectCardComponent,
     AllProjectsComponent,
     MyProjectsComponent,
-    AssignedProjectsComponent
+    AssignedProjectsComponent,
+    FavoriteProjectsComponent
   ],
   imports: [
     CommonModule,

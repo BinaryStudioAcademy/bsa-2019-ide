@@ -41,20 +41,11 @@ namespace IDE.BLL.Services
         public async Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId)
         {
             //Maybe it can be a bit easier
-            var projects = await _context.ProjectMembers
-                .Where(pr => pr.UserId == userId)
-                .Include(x => x.Project)
-                .Select(x => x.Project)
+            var projects = await _context.Projects
                 .Include(x => x.Author)
                 .Include(x => x.Logo)
                 .ToListAsync();
 
-            projects
-                .AddRange(await _context.Projects
-                    .Where(pr => pr.AuthorId == userId)
-                    .Include(x => x.Author)
-                    .Include(x => x.Logo)
-                    .ToListAsync());
 
             return MapAndGetLastBuildFinishedDate(projects, userId);
         }
@@ -81,6 +72,22 @@ namespace IDE.BLL.Services
                 .Where(pr => pr.AuthorId == userId)
                 .Include(x => x.Author)
                 .Include(x => x.Logo);
+
+            var collection = await projects.ToListAsync();
+
+            return MapAndGetLastBuildFinishedDate(collection, userId);
+        }
+
+        public async Task<ICollection<ProjectDescriptionDTO>> GetFavoriteUserProjects(int userId)
+        {
+            //Maybe it can be a bit easier
+            var projects = _context.FavouriteProjects
+               .Where(pr => pr.UserId == userId)
+               .Include(x => x.Project)
+               .Select(x => x.Project)
+               .Include(x => x.Author)
+               .Include(x => x.Logo);
+
 
             var collection = await projects.ToListAsync();
 

@@ -20,7 +20,7 @@ export class ProjectService {
     }
 
     changeFavourity(projectId: number) {
-        return this.httpClient.putRequest('project/favourite', projectId);
+        return this.httpClient.putRequest(this.address+'/favourite', projectId);
     }
 
     getProjectById(id: number): Observable<HttpResponse<ProjectInfoDTO>> {
@@ -28,14 +28,18 @@ export class ProjectService {
     }
 
     getMyProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
-        return this.httpClient.getRequest('project/my');
+        return this.httpClient.getRequest(this.address+'/my');
+    }
+
+    getFavoriteProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>>{
+        return this.httpClient.getRequest(this.address+'/getFavorite');
     }
 
     getAssignedProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>>  {
-        return this.httpClient.getRequest('project/assigned');
+        return this.httpClient.getRequest(this.address+'/assigned');
     }
 
     getAllProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>>  {
-        return this.httpClient.getRequest('project/all');
+        return this.httpClient.getRequest(this.address+'/all');
     }
 }

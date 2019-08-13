@@ -6,6 +6,7 @@ import { AllProjectsComponent } from './components/all-projects/all-projects.com
 import { MyProjectsComponent } from './components/my-projects/my-projects.component';
 import { AssignedProjectsComponent } from './components/assigned-projects/assigned-projects.component';
 import { LoginGuard } from 'src/app/guards/login.guard';
+import { FavoriteProjectsComponent } from './components/favorite-projects/favorite-projects.component';
 
 const dashboardRoutes: Routes = [
     {
@@ -24,6 +25,10 @@ const dashboardRoutes: Routes = [
         {
             path: 'assignedProjects',
             component: AssignedProjectsComponent
+        },
+        {
+            path: 'favoriteProjects',
+            component: FavoriteProjectsComponent
         }
         ],
         canActivate: [LoginGuard]

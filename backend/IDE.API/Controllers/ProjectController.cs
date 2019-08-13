@@ -50,6 +50,13 @@ namespace IDE.API.Controllers
             return Ok(await _projectService.GetAssignedUserProjects(this.GetUserIdFromToken()));
         }
 
+        [HttpGet("getFavorite")]
+        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetFavoriteUserProjects()
+        {
+            //Need to get userId from token
+            return Ok(await _projectService.GetFavoriteUserProjects(this.GetUserIdFromToken()));
+        }
+
         [HttpPost]
         public async Task<ActionResult> AddProject(ProjectCreateDTO project)
         {
