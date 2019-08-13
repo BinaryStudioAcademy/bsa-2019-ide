@@ -3,7 +3,7 @@ import { FileBrowserService } from './../../../services/file-browser.service';
 import { HttpClientWrapperService } from './../../../services/http-client-wrapper.service';
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TreeNode } from 'primeng/components/common/treenode';
-import { MenuItem } from 'primeng/api';
+
 import{ TreeNodeType} from "../../../models/Enums/treeNodeType"
 
 
