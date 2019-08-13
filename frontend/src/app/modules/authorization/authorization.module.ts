@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AuthDialogComponent } from './components/auth-dialog/auth-dialog.component';
 import { FormsModule } from '@angular/forms';
 import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
-
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
 @NgModule({
   declarations: [
     AuthDialogComponent
@@ -11,7 +11,8 @@ import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdia
   imports: [
     CommonModule,
     FormsModule,
-    DynamicDialogModule
+    DynamicDialogModule,
+    ProgressSpinnerModule
   ],
   entryComponents:[
     AuthDialogComponent
