@@ -156,7 +156,7 @@ namespace IDE.API.Extensions
 
         public static void RegisterRabbitMQ(this IServiceCollection services, string connection)
         {
-            services.AddScoped<IQueueService, QueueService>();
+            services.AddScoped<BLL.Interfaces.IQueueService, QueueService>();
 
             services.AddScoped<IMessageQueue, MessageQueue>();
             services.AddSingleton<RabbitMQ.Client.IConnectionFactory>(x => new ExtendedConnectionFactory(new Uri(connection))); //"amqp://admin:admin@localhost:5672"
