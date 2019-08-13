@@ -8,6 +8,8 @@ namespace IDE.BLL.MappingProfiles
     {
         public UserProfile()
         {
+            CreateMap<User, UserDetailsDTO>()
+                .ForMember("Url", opt => opt.MapFrom(u => u.Avatar.Url));
             CreateMap<User, UserDTO>();
             CreateMap<UserDTO, User>();
 
