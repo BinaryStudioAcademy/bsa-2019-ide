@@ -53,7 +53,12 @@ import { TokenGetter } from './services/token.service/token.service';
         ToastrModule.forRoot(),
         GeneralModule,
         TreeModule,
-        MonacoEditorModule
+        MonacoEditorModule,
+        JwtModule.forRoot({
+            config: {
+                tokenGetter: TokenGetter,
+            }
+        })
         
     ],
     providers: [
