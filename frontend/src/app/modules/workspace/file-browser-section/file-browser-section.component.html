@@ -1,4 +1,6 @@
 <div class="tree-wrapper">
-    <p-tree class="custom-tree" [value]="files" selectionMode="single" (onNodeSelect)="nodeSelect($event)">   
-    </p-tree>
+  <p-tree class="custom-tree" [value]="files" selectionMode="single" (onNodeSelect)="nodeSelect($event)"
+    [contextMenu]="cm">
+  </p-tree>
+  <p-contextMenu #cm [model]="items"></p-contextMenu>
 </div>

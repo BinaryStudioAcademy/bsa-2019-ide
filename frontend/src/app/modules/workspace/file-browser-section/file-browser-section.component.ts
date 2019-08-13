@@ -1,7 +1,9 @@
+import { ContextMenu, MenuItem } from 'primeng/primeng';
 import { FileBrowserService } from './../../../services/file-browser.service';
 import { HttpClientWrapperService } from './../../../services/http-client-wrapper.service';
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TreeNode } from 'primeng/components/common/treenode';
+
 
 
 @Component({
@@ -12,12 +14,17 @@ import { TreeNode } from 'primeng/components/common/treenode';
 export class FileBrowserSectionComponent implements OnInit {
 
     @Output() fileSelected = new EventEmitter<string>();
-
+    items: MenuItem[];
     files: TreeNode[];
     constructor(private fileBService: FileBrowserService) {
     }
 
     ngOnInit() {
+        this.items = [
+            {label: 'Add'},
+            {label: 'Delete'},
+            {label: 'Rename'}
+        ];
         this.files = [];
         this.fileBService.getPrimeTree().then(x => this.files = x);
     }

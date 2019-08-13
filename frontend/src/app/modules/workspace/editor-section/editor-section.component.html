@@ -1,7 +1,7 @@
 <div class="tab-menu-wrapper">
-  <p-tabMenu [model]="items">
+  <p-tabMenu [model]="items" [activeItem]="activeItem">
     <ng-template pTemplate="item" let-item let-i="index">
-      <div style="position: relative; background-color: #4a4a4a;">
+      <div style="position: relative; background-color: #4a4a4a;" (click)="onTabSelect($event, i)">
         <div class="ui-menuitem-icon" [ngClass]="item.icon" *ngIf="item.icon" style="font-size:0.6rem;"></div>
         <div class="ui-menuitem-text" style="font-size:0.6rem;color:#cfcfcf">
           {{item.label}}
