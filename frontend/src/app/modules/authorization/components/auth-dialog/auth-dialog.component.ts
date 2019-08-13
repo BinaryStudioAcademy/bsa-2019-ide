@@ -28,6 +28,7 @@ export class AuthDialogComponent implements OnInit {
     public display: boolean = false;
     public hidePass = true;
     public title: string;
+    public isSpinner = false;
     private unsubscribe$ = new Subject<void>();
     providers: [AuthenticationService];
 
@@ -55,11 +56,12 @@ export class AuthDialogComponent implements OnInit {
 
 
     public signIn() {
+        this.isSpinner = true;
         this.authService
             .login({ email: this.email, password: this.password })
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(result => this.ref.close(),
-                error => { this.tr.error("The email or password is incorrect", "Error Message"); },
+            .subscribe(result => {this.isSpinner = false; this.ref.close()},
+                error => { this.isSpinner = false; this.tr.error("The email or password is incorrect", "Error Message"); },
                 () => this.tr.success("You have successfully signed in!")
             );
         this.router.navigate(['/']);

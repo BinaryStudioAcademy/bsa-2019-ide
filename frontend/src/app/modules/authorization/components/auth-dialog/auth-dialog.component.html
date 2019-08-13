@@ -1,5 +1,7 @@
 <span class="modal-close-btn" (click)="close()">&times;</span>
 <h2 class="title">{{title}}</h2>
+<div class="spinner-wrapper p-grid p-justify-center" *ngIf="isSpinner"><p-progressSpinner class="p-col-4" ></p-progressSpinner></div>
+
 <form name="authForm" #authForm="ngForm" (ngSubmit)="close()">
   <div *ngIf="config.data.dialogType === dialogType.SignUp">
     <div>
