@@ -14,7 +14,7 @@
   <div class="p-col">
     <div class="inner-wrapper p-grid p-nogutter ">
       <div class="file-browser-content p-col-12 p-md-3 p-align-stretch ">
-        <app-file-browser-section></app-file-browser-section>
+        <app-file-browser-section (fileSelected) = "onFileSelected($event)"></app-file-browser-section>
       </div>
       <div class="editor-content p-col-12 p-md-9 p-align-stretch ">
         <app-editor-section></app-editor-section>

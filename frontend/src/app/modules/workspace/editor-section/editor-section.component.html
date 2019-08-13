@@ -1,4 +1,18 @@
-<p-tabMenu [model]="items">
-</p-tabMenu>
+<div class="tab-menu-wrapper">
+  <p-tabMenu [model]="items" [activeItem]="activeItem">
+    <ng-template pTemplate="item" let-item let-i="index">
+      <div style="position: relative; background-color: #4a4a4a;" (click)="onTabSelect($event, i)">
+        <div class="ui-menuitem-icon" [ngClass]="item.icon" *ngIf="item.icon" style="font-size:0.6rem;"></div>
+        <div class="ui-menuitem-text" style="font-size:0.6rem;color:#cfcfcf">
+          {{item.label}}
+        </div>
+        <a tabindex="0" class="ui-menuitem-icon" (click)="closeItem($event, i)"
+          style="position: absolute; right: -0.8em; top: -.1em; padding: 0;" *ngIf="i !== 0">
+          <span class="pi pi-times"></span>
+        </a>
+      </div>
+    </ng-template>
+  </p-tabMenu>
+</div>
 <ngx-monaco-editor class="my-code-editor" [options]="editorOptions" [(ngModel)]="code">
 </ngx-monaco-editor>
