@@ -11,7 +11,7 @@ import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 })
 export class ProjectService {
 
-    private address: string = 'project';
+    private address = 'project';
 
     constructor(private httpClient: HttpClientWrapperService) { }
 
@@ -21,6 +21,10 @@ export class ProjectService {
 
     changeFavourity(projectId: number) {
         return this.httpClient.putRequest('project/favourite', projectId);
+    }
+
+    getProjectById(id: number): Observable<HttpResponse<ProjectInfoDTO>> {
+        return this.httpClient.getRequest(this.address + `/${id}`);
     }
 
     getMyProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
