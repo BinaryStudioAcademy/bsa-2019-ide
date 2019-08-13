@@ -1,3 +1,5 @@
+﻿/* Auto Generated */
+
 export interface UserDetailsDTO {
     id: number;
     firstName: string;

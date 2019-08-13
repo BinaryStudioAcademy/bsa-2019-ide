@@ -18,7 +18,7 @@ export class UserDetailsComponent implements OnInit {
 
   constructor(private userService: UserService) { }
   ngOnInit() {
-      this.userService.getUserFromToken().subscribe(response =>{
+      this.userService.getUserDetailsFromToken().subscribe(response =>{
         this.user = response.body;
         console.log(this.user);
       });

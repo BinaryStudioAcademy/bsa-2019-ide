@@ -13,7 +13,11 @@ export class UserService {
     constructor(private httpService: HttpClientWrapperService) { }
 
     public getUserFromToken() {
-        return this.httpService.getRequest<UserDetailsDTO>(`${this.routePrefix}/fromToken`);
+        return this.httpService.getRequest<UserDTO>(`${this.routePrefix}/fromToken`);
+    }
+
+    public getUserDetailsFromToken() {
+        return this.httpService.getRequest<UserDetailsDTO>(`${this.routePrefix}/details`);
     }
 
     public getUserById(id: number) {
