@@ -57,6 +57,7 @@ export class AuthDialogComponent implements OnInit {
 
     public signIn() {
         this.isSpinner = true;
+        debugger;
         this.authService
             .login({ email: this.email, password: this.password })
             .pipe(takeUntil(this.unsubscribe$))
