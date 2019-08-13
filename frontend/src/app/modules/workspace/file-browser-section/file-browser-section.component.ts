@@ -29,23 +29,26 @@ export class FileBrowserSectionComponent implements OnInit {
         this.items = [
             {label: 'create file', icon: 'fa fa-file', command: (event) => this.create(1,this.selectedFile2)},
             {label: 'create folder', icon: 'fa fa-folder', command: (event) => this.create(0,this.selectedFile2)},
-            {label: 'delete', icon: 'fa fa-remove', command: (event) => this.delete()},
-            {label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename()}
+            {label: 'delete', icon: 'fa fa-remove', command: (event) => this.delete(this.selectedFile2)},
+            {label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedFile2)}
         ];
     }
 
     private create(type: TreeNodeType, node: TreeNode)
     {
+        //TODO add create implementation
         console.log(node);
     }
 
-    private rename()
+    private rename(node: TreeNode)
     {
+        //TODO add rename implementation
         console.log("rename");
     }
 
-    private delete()
+    private delete(node: TreeNode)
     {
+        //TODO add delete implementation
         console.log("delete");
     }
 
