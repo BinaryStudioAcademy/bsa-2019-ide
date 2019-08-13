@@ -3,7 +3,6 @@ import { FileBrowserService } from './../../../services/file-browser.service';
 import { HttpClientWrapperService } from './../../../services/http-client-wrapper.service';
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TreeNode } from 'primeng/components/common/treenode';
-
 import{ TreeNodeType} from "../../../models/Enums/treeNodeType"
 
 
@@ -27,11 +26,7 @@ export class FileBrowserSectionComponent implements OnInit {
 
 
     ngOnInit() {
-        this.items = [
-            {label: 'Add'},
-            {label: 'Delete'},
-            {label: 'Rename'}
-        ];
+        
         this.files = [];
         this.fileBService.getPrimeTree().then(x => this.files = x);
         this.items = [
