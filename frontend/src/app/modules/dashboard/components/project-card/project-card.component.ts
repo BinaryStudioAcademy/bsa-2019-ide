@@ -15,7 +15,7 @@ export class ProjectCardComponent implements OnInit {
 
     ngOnInit() { }
 
-    getPhotoLink() {
+    public getPhotoLink() {
         return this.project.photoLink ? this.project.photoLink :
             'https://as1.ftcdn.net/jpg/02/06/48/10/500_F_206481019_8BsIcISajJZxJEUBaTlhDwXaedpOEBHD.jpg';
     }
@@ -43,7 +43,7 @@ export class ProjectCardComponent implements OnInit {
         return ((currentYear - 2019) * 365 + currentMonth * 30 + currentDays) - ((year - 2019) * 365 + month * 30 + days);
     }
 
-    favourite(event: Event): void {
+    public favourite(event: Event): void {
         event.stopPropagation();
         this.project.favourite = !this.project.favourite;
 
