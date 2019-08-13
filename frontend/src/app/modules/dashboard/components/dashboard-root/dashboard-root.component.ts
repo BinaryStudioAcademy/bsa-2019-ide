@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, NavigationStart, ActivatedRouteSnapshot } from '@angular/router';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard-root',
@@ -14,10 +15,13 @@ export class DashboardRootComponent implements OnInit {
 
   ngOnInit() {
     this.items = [
-      ['All projects', '/dashboard/'],
+      ['All projects', '/dashboard'],
       ['My projects', '/dashboard/myProjects'],
       ['Assigned projects', '/dashboard/assignedProjects']
     ];
+    const route = this.router.url;
+    this.isActive = [];
+    this.isActive[this.items.findIndex(x => x[1] === route)] = true;
   }
 
   redirect(i: number) {
