@@ -2,6 +2,9 @@ import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { ActivatedRoute } from '@angular/router';
 import {ProjectDetailsInfoComponent} from '../project-details-info/project-details-info.component';
+import { ProjectService } from 'src/app/services/project.service/project.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-project-details',
@@ -12,7 +15,12 @@ export class ProjectDetailsComponent implements OnInit {
     public projectId: number;
     public project: ProjectInfoDTO;
 
-    constructor(private route: ActivatedRoute) { }
+    private unsubscribe$ = new Subject<void>();
+
+    constructor(
+      private route: ActivatedRoute,
+      private projectService: ProjectService
+      ) { }
 
     ngOnInit() {
       this.projectId = Number(this.route.snapshot.paramMap.get('id'));
@@ -21,8 +29,15 @@ export class ProjectDetailsComponent implements OnInit {
         return;
       }
 
-      this.route.data.subscribe(data => {
-          this.project = data['project'];
-      });
+      this.projectService.getProjectById(this.projectId)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(
+          (resp) => {
+            this.project = resp.body;
+          },
+          (error) => {
+            console.error(error.message);
+          }
+        );
     }
 }
