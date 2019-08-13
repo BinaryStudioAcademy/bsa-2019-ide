@@ -21,6 +21,7 @@ import { DialogService, TreeNode } from 'primeng/api';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { GeneralModule } from './general/general.module';
 import { TreeModule } from 'primeng/tree';
+import { ContextMenuModule, MenuModule } from 'primeng/primeng';
 import {MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { LoginGuard } from './guards/login.guard';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -35,6 +36,7 @@ import { TokenGetter } from './services/token.service/token.service';
 
     ],
     imports: [
+        MenuModule,
         BrowserModule,
         BrowserAnimationsModule,
         AuthorizationModule,
@@ -51,12 +53,8 @@ import { TokenGetter } from './services/token.service/token.service';
         ToastrModule.forRoot(),
         GeneralModule,
         TreeModule,
-        MonacoEditorModule,
-        JwtModule.forRoot({
-            config: {
-                tokenGetter: TokenGetter,
-            }
-        })
+        MonacoEditorModule
+        
     ],
     providers: [
         DialogService,
