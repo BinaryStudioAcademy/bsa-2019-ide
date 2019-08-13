@@ -25,6 +25,12 @@ namespace IDE.API.Controllers
             return Ok(await _userService.GetUserById(this.GetUserIdFromToken()));
         }
 
+        [HttpGet("details")]
+        public async Task<ActionResult<UserDetailsDTO>> GetUserDetailsFromToken()
+        {
+            return Ok(await _userService.GetUserDetailsById(this.GetUserIdFromToken()));
+        }
+
         [HttpGet("{id}")]
         [AllowAnonymous]
         public async Task<ActionResult<UserDTO>> GetById(int id)
