@@ -13,7 +13,7 @@ export class FavouriteProjectsComponent implements OnInit {
 
   constructor(private projectService: ProjectService) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.projectService.getFavouriteProjects()
     .subscribe(x => {
         this.projects = x.body;

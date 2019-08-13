@@ -19,7 +19,7 @@ export class ProjectService {
         return this.httpClient.postRequest(this.address, project);
     }
 
-    public changeFavourity(projectId: number) {
+    public changeFavourity(projectId: number): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
         return this.httpClient.putRequest(this.address + '/favourite', projectId);
     }
 

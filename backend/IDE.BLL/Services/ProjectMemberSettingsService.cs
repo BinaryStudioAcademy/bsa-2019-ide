@@ -24,7 +24,7 @@ namespace IDE.BLL.Services
             }
             else
             {
-                var fp = new FavouriteProjects()
+                var fp = new FavouriteProjects
                 {
                     ProjectId = projectId,
                     UserId = userId
