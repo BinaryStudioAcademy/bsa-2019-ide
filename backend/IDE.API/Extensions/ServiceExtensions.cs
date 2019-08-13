@@ -24,6 +24,8 @@ using System.Text;
 using System.Threading.Tasks;
 using IDE.Common.Authentication;
 using IDE.Common.ModelsDTO.DTO.Authentification;
+using RabbitMQ.Shared.Interfaces;
+using RabbitMQ.Shared.QueueServices;
 
 namespace IDE.API.Extensions
 {
@@ -150,6 +152,22 @@ namespace IDE.API.Extensions
                     }
                 };
             });
+        }
+
+        public static void RegisterRabbitMQ(this IServiceCollection services, string connection)
+        {
+            services.AddScoped<IQueueService, QueueService>();
+
+            services.AddScoped<IMessageQueue, MessageQueue>();
+            services.AddSingleton<RabbitMQ.Client.IConnectionFactory>(x => new ExtendedConnectionFactory(new Uri(connection))); //"amqp://admin:admin@localhost:5672"
+
+            services.AddScoped<IMessageProducer, MessageProducer>();
+            services.AddScoped<IMessageProducerScope, MessageProducerScope>();
+            services.AddScoped<IMessageProducerScopeFactory, MessageProducerScopeFactory>();
+
+            services.AddScoped<IMessageConsumer, MessageConsumer>();
+            services.AddScoped<IMessageConsumerScope, MessageConsumerScope>();
+            services.AddScoped<IMessageConsumerScopeFactory, MessageConsumerScopeFactory>();
         }
     }
 }
