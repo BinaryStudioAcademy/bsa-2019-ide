@@ -20,6 +20,7 @@
     <ProjectReference Include="..\IDE.BLL\IDE.BLL.csproj" />
     <ProjectReference Include="..\IDE.Common\IDE.Common.csproj" />
     <ProjectReference Include="..\IDE.DAL\IDE.DAL.csproj" />
+    <ProjectReference Include="..\RabbitMQ.Shared\RabbitMQ.Shared.csproj" />
 
   </ItemGroup>
 
