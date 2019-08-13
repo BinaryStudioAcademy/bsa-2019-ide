@@ -1,1 +1,74 @@
-<p>project-settings works!</p>
+<div class="container">
+  <div class="ui-g ui-fluid">
+      <div class="ui-g-12">
+          <div class="title">Edit project "{{project.name}}"</div>
+          <hr>
+      </div>
+  </div>
+  <div class="ui-g">
+      <div class="ui-g-12">
+          <form class="projectForm" [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+
+              <div class="label">Project Name</div>
+              <div class="ui-g ui-fluid">
+                  <div class="ui-g-12">
+                      <div class="ui-inputgroup">
+                          <input type="text" pInputText formControlName="name" placeholder="name" [(ngModel)]=project.name>
+                      </div>
+                  </div>
+              </div>
+              <div class="invalid" *ngIf="projectForm.get('name').errors && projectForm.get('name').dirty">
+                  Name is required.
+              </div>
+
+              <div class="label">Description</div>
+              <div class="ui-g ui-fluid">
+                  <div class="ui-g-12">
+                      <div class="ui-inputgroup">
+                          <textarea [rows]="3" pInputTextarea formControlName="description"
+                              placeholder="description" [(ngModel)]=project.description></textarea>
+                      </div>
+                  </div>
+              </div>
+              <div class="invalid"
+                  *ngIf="projectForm.get('description').errors && projectForm.get('description').dirty">
+                  Description is required.
+              </div>
+
+              <div class="label">Number of saved builds</div>
+              <div class="ui-g ui-fluid">
+                  <div class="ui-g-12">
+                      <div class="ui-inputgroup">
+                          <input type="text" pInputText pKeyFilter="int" formControlName="countOfSaveBuilds" placeholder="builds" [(ngModel)]=project.countOfSaveBuilds>
+                      </div>
+                  </div>
+              </div>
+              <div class="invalid"
+                  *ngIf="projectForm.get('countOfSaveBuilds').errors && projectForm.get('countOfSaveBuilds').dirty">
+                  required.
+              </div>
+
+              <div class="label">Number of build attempts for user</div>
+              <div class="ui-g ui-fluid">
+                  <div class="ui-g-12">
+                      <div class="ui-inputgroup">
+                          <input type="text" pInputText pKeyFilter="int" formControlName="countOfBuildAttempts"
+                              placeholder="build attempts" [(ngModel)]=project.countOfBuildAttempts>
+                      </div>
+                  </div>
+              </div>
+              <div class="invalid"
+                  *ngIf="projectForm.get('countOfBuildAttempts').errors && projectForm.get('countOfBuildAttempts').dirty">
+                  required.
+              </div>
+
+              <div class="ui-g ui-fluid">
+                  <div class="ui-g-12">
+                      <button type="submit" [disabled]="!projectForm.valid" pButton label="Save"></button>
+                  </div>
+              </div>
+
+          </form>
+      </div>
+  </div>
+</div>

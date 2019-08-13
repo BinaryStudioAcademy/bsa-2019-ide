@@ -11,7 +11,7 @@ import { UserDTO } from 'src/app/models/DTO/User/userDTO';
   styleUrls: ['./project-details-info.component.sass']
 })
 export class ProjectDetailsInfoComponent implements OnInit {
-    private authorId;
+    private authorId: number;
 
     @Input() project: ProjectInfoDTO;
 
