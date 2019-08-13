@@ -1,9 +1,9 @@
 <p-menubar [model]="getMenuItems()">
     <div *ngIf="authorizedUser">
-        <button pButton (click)="LogOut()" label="LogOut"></button>
+        <p-splitButton label="My Profile" icon="pi pi-user" (onClick)="goToUserDetails()" [model]="items"></p-splitButton>
     </div>
     <div *ngIf="!authorizedUser">
-        <button pButton (click)="openAuthDialog(dialogType.SignIn)" label="Login"></button>
-        <button pButton (click)="openAuthDialog(dialogType.SignUp)" label="SingUp"></button>
+        <button class="login-btn" pButton (click)="openAuthDialog(dialogType.SignIn)" label="Login"></button>
+        <button class="singup-btn" pButton (click)="openAuthDialog(dialogType.SignUp)" label="SingUp"></button>
     </div>
 </p-menubar>
