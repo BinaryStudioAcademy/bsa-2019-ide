@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, NavigationStart, ActivatedRouteSnapshot } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard-root',
@@ -18,7 +17,7 @@ export class DashboardRootComponent implements OnInit {
       ['All projects', '/dashboard/'],
       ['My projects', '/dashboard/myProjects'],
       ['Assigned projects', '/dashboard/assignedProjects'],
-      ['Favorite projects', '/dashboard/favoriteProjects']
+      ['Favourite projects', '/dashboard/favouriteProjects']
     ];
     const route = this.router.url;
     this.isActive = [];

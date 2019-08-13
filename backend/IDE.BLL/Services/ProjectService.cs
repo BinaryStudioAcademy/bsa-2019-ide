@@ -78,7 +78,7 @@ namespace IDE.BLL.Services
             return MapAndGetLastBuildFinishedDate(collection, userId);
         }
 
-        public async Task<ICollection<ProjectDescriptionDTO>> GetFavoriteUserProjects(int userId)
+        public async Task<ICollection<ProjectDescriptionDTO>> GetFavouriteUserProjects(int userId)
         {
             //Maybe it can be a bit easier
             var projects = _context.FavouriteProjects
