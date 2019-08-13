@@ -3,178 +3,204 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IDE.DAL.Migrations
 {
-    public partial class favoriteprokects : Migration
+    public partial class FavouriteProjects : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Project",
-                table: "FavouriteProjects");
+            migrationBuilder.DropForeignKey(
+                name: "FK_Projects_GitCredentials_GitCredentialId",
+                table: "Projects");
 
-            migrationBuilder.DropColumn(
-                name: "User",
-                table: "FavouriteProjects");
+            migrationBuilder.AlterColumn<int>(
+                name: "GitCredentialId",
+                table: "Projects",
+                nullable: true,
+                oldClrType: typeof(int));
+
+            migrationBuilder.CreateTable(
+                name: "FavouriteProjects",
+                columns: table => new
+                {
+                    ProjectId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FavouriteProjects", x => new { x.ProjectId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_FavouriteProjects_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FavouriteProjects_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 1,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "JDIhBnVdfIc9OyAhK3FROe80gMyQAYM3Zeq+hFXrX1s=", "GbN7HL49UiwKcFD90QWUQOZsAxe1Utcv449BwAP/meA=" });
+                values: new object[] { "3wzx48I7qnjXwaIoW+02/zCOnbmcMhkeCRQz8oO+kzA=", "FtA/Cv2sHAdVh+tOHw4i2uBvEvZPU4hbZRf2aIT61JM=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 2,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "A+aQLthreHdDzR/DdHEgOHBNexjZNIfRg3JtGpltdSA=", "nnUzSjdnNZwboNwfAy0FqT5Y3s7E3VKSZBo8Yd8BHnI=" });
+                values: new object[] { "SQme5Tncvc+JRCafmAUPskRjRxU3FAKooGZDNNxvskQ=", "RqGXIBZFGjpPJB1zkSu3wElmuu99woioXsUlDVshTb0=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 3,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "dTENSK+/AJGAJLsG69q5CL3QiM0QU7FKSyNm3bB/I9o=", "u3wt3+bl1+7WKBUDJlYR25nYJ2q9WEsrvRKLTf9IuTk=" });
+                values: new object[] { "IiUbUuSRdg4RtHH6I3iNVj+53BvYvPZT5QT1P2Qjnio=", "aZ3bppk0dx1abcVFlraTXSyXuKwTJAw/d9ZLssg/FFQ=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 4,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "BiXldI6tUzCg73QaXMv+eKRa36DAPz0O5wZCQB998aU=", "gw6F6XB1LCm2etZMogt8x7vem+bDkrYknkzptiEoj4c=" });
+                values: new object[] { "XcFWuZcsFs7OEe8H8gKIe8iK5hlKiVaNmSzo+oVIOJ4=", "MUVCUVETSIEBBV++jCJo1lbtXR3xAvLIsMJUPkljX8g=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 5,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "/O7B5i5pTL9Yk2cFM1pVVzvNasHzvXGgS1W4Atb+G0s=", "nMzmt4Jv4MGkYCaPfG59yBpKG5pMZv1ULJtOsg9SRB4=" });
+                values: new object[] { "8ZVUGM6edsaLbC2ar2GRXDeXU2gCMqDBCUupXI1q0Z0=", "ORd2AHI/bmZh+oH+BQocG+avWY/YofpS4mGb8z/1P6I=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 6,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "i7m/IwIE4+FNrVK5pePV/wl8lLHFFdBArlmZwOdldYg=", "CHsQZ+gii7j/5ddWofxlWy3XI9+oL5oDtUOMSwAwKGQ=" });
+                values: new object[] { "RHdx9oigR6S5bsPVgrbxHrF3lLZnXc+sFJgJFRihopI=", "CCqz3ld1WkWGkYIHDvhECd9qEIP5+MITtVXKWAndL3E=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 7,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "JUerwVy36TXHv9Vb1SODkWLjmKQRH0liDvBPITBTyBE=", "Xbeis8MeOl2wrjpKz57wWNH9mqCk33QZJfsfsFLeWUE=" });
+                values: new object[] { "JTO3v1SQWnF8PsJWy+fHo8wDaiGEJsQ7XLEOkiruvKw=", "02FcxBiUi4JR5qylTKO8Fp8BK1w84UbFWSAEgkZqWl8=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 8,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "gTSBOKzWqhFpN9UlALvKTGtF2/i6+vVeSAV/cMckHDg=", "D4/Mk/TxYPiHqj8JWGZpipM+XRWl8rr1fVigJbDFqyU=" });
+                values: new object[] { "EnwVfR4E8gq9b4JO2PxGCJ58Swk+1JTDtnZKzHq86VE=", "bIw3y9OvKlMmy8H6MoPstXDV1Ri1EU17taNxfQbU1VE=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 9,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "u/RMmwZo1syVT1DGchsUvGe5C3F+1no3FNHEXLtjbAI=", "pZemydlRVmQJ/MuG79C5lEQ6gPAXKxNnvSQFlMKRPl8=" });
+                values: new object[] { "9ha+uX29wlDAZ7KNrhOF5BZ9KVYHslTGXapb92Qs7hw=", "insHX/zgyqcP+ceVgHOM3565QMjPgLiQ7L6Bw7bUlnM=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 10,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "ACV2Afu7KnNyvdvQZEY7zt+/gLapFEQKqHXlCni+oso=", "1MJZyveAeodgzOfIqdBJrHs0OYDe9hJXphXI/teq3qI=" });
+                values: new object[] { "FrY5XhWo+Ieuu0px+HLwOKWlqigKFqF43GLHso3oZLA=", "bgoDHPEHjEyYqA0aVuI3aXjfW+I3O1C4t8ZvYgFr6Cw=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 11,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "o1fDdK0iclf7NvRUKxYpkiEmWJtMsu0FY5h9hDK7yKQ=", "96inT4hP7bPxWDKIDN94XmzZnZ6v6uwVeQVDOA6WsAE=" });
+                values: new object[] { "qzIqTbnRoZyjATHJWkiDXuzn209cBov/S70QKcuDwdU=", "2rc9CGEn8kTOLtE0xxHWVJrRFG8En9I0NpZmT7ynNps=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 12,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "mssSINGPyitA8V6BM8W3uCLRWHPWPD39UK5x3S1kda4=", "JSSI8Z32FILY9I0d5gfBU6sJLGHuAT872mGm0CUHVQ8=" });
+                values: new object[] { "rx94l4ohA70Bs+BeFJIRk9aGJ2/hqI+AcZBZyjG2Mx0=", "g9g6ps/UDSt3qNly67T8WjsptTL6Eq6ikZNov8h180o=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 13,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "f3/ZW9iyX8qON/n63ZSTylqpQcHaGc9r1zi2yPCuKxU=", "kbrgtnuTe4nYh+v34BhRH22bkS2ywJSMB9hDDqgRrag=" });
+                values: new object[] { "F8Va3SXcTDuLQ+Eux4dM+pg7sTOy2m92/z43gDkkan8=", "LYE8YKDAYqYGAh0RIcHz239CiGLKnyjfPM9auU8kWLk=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 14,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "CnjxMwFmNGa6spVredHbE6fJ1jNMZC0LcYJBF1kPYQ4=", "c8cbtHkLUmiRghz+rsHJEgLpvvVl+S2lwa0WZYnOz68=" });
+                values: new object[] { "HHdG9nqytomms/SRdX822D7OXshwWj0ep6Q7JtGXtCg=", "16zIqWirCxlA4Y+tXsB4Hgtn9dyC9OPPAWxbnEOWAp0=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 15,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "8hq6JqdtBDqALpDkeIhmKCywNYH/oudVsHUpDNW7qQM=", "1TSXmLg4ULbnnjEvRrqOWhAlcX+ndVg+Z1RO+C3MYk8=" });
+                values: new object[] { "sRr1sh4mwKlV1kimhFNAEbql6l+Mf/M6K5juXn/A1yc=", "Am2Em1pgl1YlqCoLX9POFRlreAPXczihLQ9imOx+rNs=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 16,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "GtIMYEDTjoA0Oe+sIx2PiOydoMEYlZvlzGKOqZ6waVY=", "f8PimrlwUJAkNDtNo7+70W9dRfgzNXlgppnZAfqF5A0=" });
+                values: new object[] { "tpTtNVGMGYZOBQlI469PUwMOSZXGq+rZedcGEwnEslw=", "SdsNPEpv3A5+zHVFxV1i54fnTNf/SILG+oKaYrkl3eM=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 17,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "6+GhpGhnCmcYorUna3VKg+rX5VxGqkHbEHasnYlx6xM=", "xxKjDjrP495hrxUvU9O7IRedQK2wII4MVAyXsKSrh9g=" });
+                values: new object[] { "ojn+YeoVM3pqvgAgEptXDPDzmXSHBY1qP/c86JxasAI=", "RPAsGrH0V9ZZl/zLwKhWr9cWfjlHqe1gTQ1C2tsS44o=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 18,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "JpEwGDKEvwNS3mke9l2SN0fXCx9DU+J4/oNusa2HDMQ=", "9nT+bq5cc9TEyKLiph4n69D3dpvQ3kupEAmONxFngCQ=" });
+                values: new object[] { "lXNGr1fjfUjp1bcrT3d5e/tN6OJpktl44SKsulDUUtU=", "2uOGs7ZSyNmKXFwYZ0/t1ppFigdA2qSBg4cFldvMNYo=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 19,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "2S1QiU5ZNUzguRYGpGS7005CLSQ7bXFjdxnR7F8BiPE=", "fZmbnbW/OBGu6oPN2ETDXSzFKGp/exzgb7PVGFLxo80=" });
+                values: new object[] { "rnRJeI+wqrgelvXslfkbRCDmBaOyE7se73njOq66LKg=", "vE/SgLHLf89hOnErg3pbbnn7QAXpt7StWsNFnJHuNHc=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 20,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "UKMKylIzBRz51ZPv3U5H/sLY4qJwe/ZqocRpi3WWKHo=", "f1pBpYugoZ2ZBCCrRjdCRy258tkhsh7XF/HuOxyJLyM=" });
+                values: new object[] { "7+piVP+AgJ4JFMyYDT9IeWbZZOVUrosuTUdE/1voC64=", "Q4atzTMyM0KcPhj9BXOsDeA5mMRa0u9XcAAuNG8Oiqk=" });
 
             migrationBuilder.UpdateData(
                 table: "Users",
                 keyColumn: "Id",
                 keyValue: 1,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "Hp11AlLcQ0c7LiKzFelp69IQanx8//tsc86DhjhjWsw=", "baXEvI99hl5S9uDLpqhdc8YI/vvm2olTik+1VJUjbAM=" });
+                values: new object[] { "g/wZD2+HTAmK4ZFKflq8TYBMvjEy065KwEaa0gwBtP0=", "PK+GSOrHsjiInlpJW6zHXurdqh3eI2ZqCmXkX4uaIH8=" });
 
             migrationBuilder.UpdateData(
                 table: "Users",
                 keyColumn: "Id",
                 keyValue: 2,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "TOmDpcbuCVjSCn+YK4Em7Wqm/Vk7L0SBGJaUzCTLHHs=", "z94QLf2X4vJwH883ySpwgwEApNepS07GQ+vMyyBpmjo=" });
+                values: new object[] { "QLoYYcbp91N/iM6A//10yISmiGRZTYgnbSi+MRfp3p4=", "3uy3PlgwEGpcaytaFALfezrXASwpmw4Th+Pt06mx5Gg=" });
 
             migrationBuilder.UpdateData(
                 table: "Users",
                 keyColumn: "Id",
                 keyValue: 3,
                 columns: new[] { "Birthday", "LastActive", "PasswordHash", "PasswordSalt", "RegisteredAt" },
-                values: new object[] { new DateTime(2005, 8, 13, 20, 49, 19, 223, DateTimeKind.Local).AddTicks(2273), new DateTime(2019, 8, 13, 20, 49, 19, 226, DateTimeKind.Local).AddTicks(587), "fyVh1+GcR7zREWZDpOd6u9aTtkU6b1io6tgO11kl94k=", "5z5u3yLGhbf5lZGWw61Xy+WfeTv0VnX94EPtpsElrD8=", new DateTime(2019, 8, 13, 20, 49, 19, 226, DateTimeKind.Local).AddTicks(601) });
+                values: new object[] { new DateTime(2005, 8, 13, 22, 13, 23, 745, DateTimeKind.Local).AddTicks(8552), new DateTime(2019, 8, 13, 22, 13, 23, 747, DateTimeKind.Local).AddTicks(2205), "nfvtBf3+bafnwsS//lRSnX+0XSYhqin2VP66R/ey9xs=", "d2rjrKDMC01HEMX5rCqTWyFBgWsvVhtJdoefzG/Pq1A=", new DateTime(2019, 8, 13, 22, 13, 23, 747, DateTimeKind.Local).AddTicks(2211) });
 
             migrationBuilder.CreateIndex(
                 name: "IX_FavouriteProjects_UserId",
@@ -182,18 +208,10 @@ namespace IDE.DAL.Migrations
                 column: "UserId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_FavouriteProjects_Projects_ProjectId",
-                table: "FavouriteProjects",
-                column: "ProjectId",
-                principalTable: "Projects",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_FavouriteProjects_Users_UserId",
-                table: "FavouriteProjects",
-                column: "UserId",
-                principalTable: "Users",
+                name: "FK_Projects_GitCredentials_GitCredentialId",
+                table: "Projects",
+                column: "GitCredentialId",
+                principalTable: "GitCredentials",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
         }
@@ -201,189 +219,187 @@ namespace IDE.DAL.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_FavouriteProjects_Projects_ProjectId",
-                table: "FavouriteProjects");
+                name: "FK_Projects_GitCredentials_GitCredentialId",
+                table: "Projects");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_FavouriteProjects_Users_UserId",
-                table: "FavouriteProjects");
+            migrationBuilder.DropTable(
+                name: "FavouriteProjects");
 
-            migrationBuilder.DropIndex(
-                name: "IX_FavouriteProjects_UserId",
-                table: "FavouriteProjects");
-
-            migrationBuilder.AddColumn<int>(
-                name: "Project",
-                table: "FavouriteProjects",
+            migrationBuilder.AlterColumn<int>(
+                name: "GitCredentialId",
+                table: "Projects",
                 nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<int>(
-                name: "User",
-                table: "FavouriteProjects",
-                nullable: false,
-                defaultValue: 0);
+                oldClrType: typeof(int),
+                oldNullable: true);
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 1,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "0DU4mOt9dkGOXRkG3Tbc+eYj6831cPBr0D5az50rOcI=", "HgV1nqHvXRvDNGHK713HpTjCtD3xpOqXBCc4aYX8FgQ=" });
+                values: new object[] { "ePzYL+IhCHJMEY9L2FEaVcmJXo6t2R4Rk/eElUKQQx0=", "mLVE0foaF3oayRqP5PM4Z5RgBWpVhPc/kmKvoKrQ2NE=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 2,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "Ks+tysZ7aZmXCFsfHuUhapWTJgTg52uPT/uRB+OD3Ng=", "NUyLd743d4LGQMuK1yR1sSnQi6GW32CmGngij31yng0=" });
+                values: new object[] { "yPnBn9T3Y80haqLZdpK45aQHJs6E4CN/BDmBhWAUSCo=", "u1JqD5xAc/PJOdzmPI1SGCPB6iOVfGvQC9nwkGqgkt8=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 3,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "cBCJ+t6yECuSDTOeOFSgdTCFkGvIlsOWTBbnWYRE+QM=", "E5pAQKzy7jYfS7xVXOR5NLGDAJERbCkxfpld0wrWBks=" });
+                values: new object[] { "362/5hApxPktORE8aKCsDRWPBl9QFhcRSI32hiaBxR4=", "KJy4wekrcp71AqXYcbY3fUfGI8uhBiSAGfaf6iHJqoo=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 4,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "SXLg73NGe5RPFGX6uu0Z5TI7mXI6zSvPLKNRC+HtimM=", "NAsek2QtFGtCK3wXgtr5m19k0Tt3jTBgotc78xtNvck=" });
+                values: new object[] { "Z/L7ZiFW4ePV7PjsUhGUAsRViHbeF1GmA2jtkXc74EU=", "4TTwsE0OecoZkFJA32NZC4UIDdQmBPsdDOcy5E3/LBU=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 5,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "4mR1eEZ6o1TE/Q5fJBxmBMwWnWI7JOYwPPZH6bG4/Ek=", "ylL/VIIRcOlBEYt2j5d48Qrb6PK9yy8DDlKkz3yKmQM=" });
+                values: new object[] { "oNZuRutg4qKkILP84stbKGzlqSx4DoTcx0prNNxxsEI=", "ih9UIJ51pZW65BTdguhtREEeCQscuCfhpPueTl/IMEA=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 6,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "U+lomJsA4WRMBSrEbESASpLVftGSF9xGLE6oe29cjSQ=", "eZL5qCP+Rv+mWSX1n7Nl54uK7tw03shofgg9kWfV93M=" });
+                values: new object[] { "mbQh2YyMuQDMzNGg5VLwGbZamy3CPfo4/9DXqshcJHA=", "xcPqAuTKF5NubbalzRz4udtXuK8SjEJpT/P92m6WUog=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 7,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "BO5G+3bRgFaaLbO3EVrPy16bJQnkA1yMXXiCOJ1Kb+g=", "8FtuGW/G76q5z94lr0wLBqbleSZgcFmW7QshrLVBVJI=" });
+                values: new object[] { "xTaFbzMFcFu1/d8NrV1dA3jK7AxmBBF8TlwAI/zMTQU=", "9hYaCJJKQsa0ipxc0AvXa2/L0VyDJFqmNmJ/ZRthxlI=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 8,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "/A26HJk/tv3gWQ95ThSu+xOiFkLq77LXbQAVUTpM+FY=", "JzC5KxuuQLc/nqN790yeIdp0RK7u/SGWmGxcGkVN/e0=" });
+                values: new object[] { "MoGnYwqE5CzfjDb6T5z/viXoxAVzL+3H3Kajxo3w0vw=", "d/deHr+5Aon4L72Y6vd3e1R7ZgO89UJUzoTvv4CPw2E=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 9,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "GDmeirGXsMgZ1Tt5eSkpk8X8Khqdab953rb4ABCZ4L0=", "OUYvg0BaXIEHunwFm7pBWJRzH9zi5hLC/sdt0YeXnwE=" });
+                values: new object[] { "vW7ukGM6s0GrPSDZPzgkJlmsn3PwA78ODiXdnvbKwaI=", "AKnIT8pt8IjWwWLuTYpla5pPTurKc1DtkiKrzOiLjro=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 10,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "mqcEUSBPuS24GNQDTaWKLSI5ePrcI/12FOIlJ1jJAqo=", "hjWrBVltouJUKwdj8eWyMOtUb6ZaSWsbjNNjx+fXgJM=" });
+                values: new object[] { "7qi74UQQp/jimhSOojDntvJBikNzsSTokV/0kuBSkLM=", "BYQRIE3XayLJ8vsCXPgw7vUmxegl4aPVqTnYzwDhgng=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 11,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "hXZIPOJbNmxu49c2JSZiqecOmuEyV7Szj/oBeeEw9cY=", "vNKObysYyikeaCcQziecBIGDrG6PnJzhzTDdK5TufM0=" });
+                values: new object[] { "ujzhxyvQwf6cyXaalLdIipKpvZlVkLszMVtc57TB918=", "4pMXFZLt//fZPHgLC/iRxvfuK08ovMmquKgZMGmau4I=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 12,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "xfB4RACgQcIRVqWxyH9piFe/Xky1x1pfmf1uHY1wYvg=", "Dqu8WTH7eMSrIr28NKtrFnldEIJi3f+FXv6FAwmdCOM=" });
+                values: new object[] { "rRf/tSz2mX7BA5BczVlVgOQhSoDZHoigo1ASJsMyXZw=", "QtmpDeb7D9ZQ/ulpAJgLd8Cgz0JIT9mwolWYsjsgBak=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 13,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "W2ervuA2oEQ5eJ6V5Kq5ZepnjY2hU67ulrapPjBbdUk=", "Q8PyxVJeUnuVg4AFr/g5080TPC4dyCj/PL/Pvn98yBA=" });
+                values: new object[] { "751E/zh6vqDqKcfyb3poJb9rgSEo6dazWB/yIgx+VIo=", "fYmSLX0Y6arp9ghDLF9B161AijXmtV/gb+q2cjTh+ro=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 14,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "ucbFLtX+yUU/VfRaJkyiJ8wIDfoTavz8twMnqHW9Kiw=", "ghG4MWN/WrsCcBbLiXBr0awvHOxEEdtm34CfearFQgg=" });
+                values: new object[] { "1sVPjZWszR0KIJ5sI554rCbrYOFyKXV40IPgY1ntH8A=", "FluHzvwfHtq27lMD9zp3OMpheF+Vc0aV0GddPAWdIhI=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 15,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "TKhVbFWQ2CzZgM89A4ziAI0ihQDaFpZb0gdh4xMQzTE=", "kZsE93iPJurCbL4+nFPA41FbinyySwo9KCbmnzw0U7U=" });
+                values: new object[] { "wacWwAJvWwpbw2D4zSyeRKGl5qdPy86/CRvZh8x+4g0=", "I6MBSUCmj7rHkNv08eR2Dw/CTHFLDrKCCuuTFRsMM0s=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 16,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "IOSXIoGY6+URyi5DI7zCZyFqJvbpvZ7Gqa4+TofpLFc=", "bgfCrNIFcaqQn7MO/9Cf+VtNKYfukOyHrvak/2VjDe0=" });
+                values: new object[] { "GtFhOG0KxeW1cjU9AGHent3QU/ykJb3cxVJorVDFN1c=", "i8QRBE/MQRYp3VvjLc+u8fvpvyswM3QTbjXwpZR/HBY=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 17,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "/P/JzxtBdmPnzaaUQFGTXiokl9okszNPJSn1A3ZWK4o=", "8s3e2bV/WPR1VY2Fw3IJJCLncRnvDSBSqk72zfooAs4=" });
+                values: new object[] { "0z0TR5h5WZRCatJyzzK0l2Tv6zYA9bESyeChDp8OWrg=", "QTuOhHKvURnuq/+9yiLFalEr4lnrK0Gk9g67H57D2XE=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 18,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "fnxitI2O6OIQWyygR4hIBmNm83NzdT8TdMLbRsTXZno=", "dODHOaYRJzaW2xdKIPIZXCb2KmpHpQ+qaqGxVUsMAKU=" });
+                values: new object[] { "0iVuSXRID4lzoB+SmjUnQsA4FZNFXlKlUtSfHw+Xj+o=", "W3nb1sZIlIaoQOGo2+iO7AKGRswtW8ITmL8L45cqs2g=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 19,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "ECpdXCQkiEA8kXRx9K3M8wOtPVa8erDM9WksHwNpiYU=", "1u0dTC2uhaAlcc5Ag3rXFiRu3mT7Sy/PQCBGdFHJip0=" });
+                values: new object[] { "ojGhC3uq438DXLJVGLppyunYSLS+srXoXri0OnwZrRA=", "dMTE/VlNcvCI+EPAeZzWhJhPOZKO9O+SfRXWxS+gNx8=" });
 
             migrationBuilder.UpdateData(
                 table: "GitCredentials",
                 keyColumn: "Id",
                 keyValue: 20,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "A80ineU26bdtqCdOnBRNZyXxuhPhelNaTv2kgToJZaw=", "bKPf3KTbqXfzZHxaZK96+yHxasWEd8JUsCXx9OEKgd8=" });
+                values: new object[] { "VKWSrpP7skuB6OOkL0jlvuoGQUtcyXA0hg83FLQP9iY=", "wrt+ejXippJadfHS9LHYqSRZkHFZOkrO4Ql3skKw8Lw=" });
 
             migrationBuilder.UpdateData(
                 table: "Users",
                 keyColumn: "Id",
                 keyValue: 1,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "2T9qJ4m5F4Dy44cJzT0+iq68Ys2FAoeO8cVZB9D1KPw=", "x4DDnS6JKM7vM5s0o3n69qrmTnyfZ7n3foe3Gg/9B3g=" });
+                values: new object[] { "ndpGP32HpVWIDvXcv5z/IGpg7El/tQTxKJM+HhcE9fk=", "jjwwUexi++6lxsmJ12YsIZ1PEHx+GXMl3qrf6SQZWFs=" });
 
             migrationBuilder.UpdateData(
                 table: "Users",
                 keyColumn: "Id",
                 keyValue: 2,
                 columns: new[] { "PasswordHash", "PasswordSalt" },
-                values: new object[] { "RteDRFv1VzrGn28TE3M32P0BwoBmJnAWVmKIe4QUpZA=", "douRlWvZCuikHSyacBXAFBfDxZEMhKRal6T3EMhgVTc=" });
+                values: new object[] { "tNeIIDnnichhPhQoNIID6SELudfbNzFJScIBZqsh8Go=", "r9pDsjS/TTd3uRk7MKXkHI85BetOmuq7fBNbtL1CjG4=" });
 
             migrationBuilder.UpdateData(
                 table: "Users",
                 keyColumn: "Id",
                 keyValue: 3,
                 columns: new[] { "Birthday", "LastActive", "PasswordHash", "PasswordSalt", "RegisteredAt" },
-                values: new object[] { new DateTime(2005, 8, 13, 16, 7, 5, 324, DateTimeKind.Local).AddTicks(7023), new DateTime(2019, 8, 13, 16, 7, 5, 326, DateTimeKind.Local).AddTicks(790), "4PPcOT/MT8E0fCTJSAV2Oz6ZaTuAQP3Gnw1cYlIyIVA=", "tvcRPhzCfm0tJ7KrJhrIwVgkKCufo80G6LM+tb+Alls=", new DateTime(2019, 8, 13, 16, 7, 5, 326, DateTimeKind.Local).AddTicks(790) });
+                values: new object[] { new DateTime(2005, 8, 10, 11, 41, 6, 744, DateTimeKind.Local).AddTicks(2122), new DateTime(2019, 8, 10, 11, 41, 6, 747, DateTimeKind.Local).AddTicks(7987), "9uc96U2HkKj1NjgZUdhWnVu4QeAxUCOHsQqmLq8+1Is=", "2lDXocoFbjEDk5eW8BojnQpGy8tjusJCVR5qR9Oemnc=", new DateTime(2019, 8, 10, 11, 41, 6, 747, DateTimeKind.Local).AddTicks(7997) });
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Projects_GitCredentials_GitCredentialId",
+                table: "Projects",
+                column: "GitCredentialId",
+                principalTable: "GitCredentials",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
     }
 }

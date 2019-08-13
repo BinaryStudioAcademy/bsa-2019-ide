@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IDE.DAL.Migrations
 {
     [DbContext(typeof(IdeContext))]
-    [Migration("20190813130706_FavouriteProjects")]
+    [Migration("20190813191324_FavouriteProjects")]
     partial class FavouriteProjects
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -456,11 +456,9 @@ namespace IDE.DAL.Migrations
 
                     b.Property<int>("UserId");
 
-                    b.Property<int>("Project");
-
-                    b.Property<int>("User");
-
                     b.HasKey("ProjectId", "UserId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("FavouriteProjects");
                 });
@@ -490,8 +488,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 1,
                             Login = "Tamara34",
-                            PasswordHash = "0DU4mOt9dkGOXRkG3Tbc+eYj6831cPBr0D5az50rOcI=",
-                            PasswordSalt = "HgV1nqHvXRvDNGHK713HpTjCtD3xpOqXBCc4aYX8FgQ=",
+                            PasswordHash = "3wzx48I7qnjXwaIoW+02/zCOnbmcMhkeCRQz8oO+kzA=",
+                            PasswordSalt = "FtA/Cv2sHAdVh+tOHw4i2uBvEvZPU4hbZRf2aIT61JM=",
                             Provider = 2,
                             Url = "https://jayda.net"
                         },
@@ -499,8 +497,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 2,
                             Login = "Maximillia.Donnelly",
-                            PasswordHash = "Ks+tysZ7aZmXCFsfHuUhapWTJgTg52uPT/uRB+OD3Ng=",
-                            PasswordSalt = "NUyLd743d4LGQMuK1yR1sSnQi6GW32CmGngij31yng0=",
+                            PasswordHash = "SQme5Tncvc+JRCafmAUPskRjRxU3FAKooGZDNNxvskQ=",
+                            PasswordSalt = "RqGXIBZFGjpPJB1zkSu3wElmuu99woioXsUlDVshTb0=",
                             Provider = 0,
                             Url = "https://mazie.com"
                         },
@@ -508,8 +506,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 3,
                             Login = "Connie42",
-                            PasswordHash = "cBCJ+t6yECuSDTOeOFSgdTCFkGvIlsOWTBbnWYRE+QM=",
-                            PasswordSalt = "E5pAQKzy7jYfS7xVXOR5NLGDAJERbCkxfpld0wrWBks=",
+                            PasswordHash = "IiUbUuSRdg4RtHH6I3iNVj+53BvYvPZT5QT1P2Qjnio=",
+                            PasswordSalt = "aZ3bppk0dx1abcVFlraTXSyXuKwTJAw/d9ZLssg/FFQ=",
                             Provider = 2,
                             Url = "https://gunnar.net"
                         },
@@ -517,8 +515,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 4,
                             Login = "Destini.Conroy",
-                            PasswordHash = "SXLg73NGe5RPFGX6uu0Z5TI7mXI6zSvPLKNRC+HtimM=",
-                            PasswordSalt = "NAsek2QtFGtCK3wXgtr5m19k0Tt3jTBgotc78xtNvck=",
+                            PasswordHash = "XcFWuZcsFs7OEe8H8gKIe8iK5hlKiVaNmSzo+oVIOJ4=",
+                            PasswordSalt = "MUVCUVETSIEBBV++jCJo1lbtXR3xAvLIsMJUPkljX8g=",
                             Provider = 0,
                             Url = "http://felix.info"
                         },
@@ -526,8 +524,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 5,
                             Login = "Maeve.Stroman",
-                            PasswordHash = "4mR1eEZ6o1TE/Q5fJBxmBMwWnWI7JOYwPPZH6bG4/Ek=",
-                            PasswordSalt = "ylL/VIIRcOlBEYt2j5d48Qrb6PK9yy8DDlKkz3yKmQM=",
+                            PasswordHash = "8ZVUGM6edsaLbC2ar2GRXDeXU2gCMqDBCUupXI1q0Z0=",
+                            PasswordSalt = "ORd2AHI/bmZh+oH+BQocG+avWY/YofpS4mGb8z/1P6I=",
                             Provider = 1,
                             Url = "https://annamarie.com"
                         },
@@ -535,8 +533,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 6,
                             Login = "Chauncey_Nitzsche33",
-                            PasswordHash = "U+lomJsA4WRMBSrEbESASpLVftGSF9xGLE6oe29cjSQ=",
-                            PasswordSalt = "eZL5qCP+Rv+mWSX1n7Nl54uK7tw03shofgg9kWfV93M=",
+                            PasswordHash = "RHdx9oigR6S5bsPVgrbxHrF3lLZnXc+sFJgJFRihopI=",
+                            PasswordSalt = "CCqz3ld1WkWGkYIHDvhECd9qEIP5+MITtVXKWAndL3E=",
                             Provider = 2,
                             Url = "http://roosevelt.net"
                         },
@@ -544,8 +542,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 7,
                             Login = "John.Carroll8",
-                            PasswordHash = "BO5G+3bRgFaaLbO3EVrPy16bJQnkA1yMXXiCOJ1Kb+g=",
-                            PasswordSalt = "8FtuGW/G76q5z94lr0wLBqbleSZgcFmW7QshrLVBVJI=",
+                            PasswordHash = "JTO3v1SQWnF8PsJWy+fHo8wDaiGEJsQ7XLEOkiruvKw=",
+                            PasswordSalt = "02FcxBiUi4JR5qylTKO8Fp8BK1w84UbFWSAEgkZqWl8=",
                             Provider = 2,
                             Url = "http://arnoldo.org"
                         },
@@ -553,8 +551,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 8,
                             Login = "Niko.Crooks",
-                            PasswordHash = "/A26HJk/tv3gWQ95ThSu+xOiFkLq77LXbQAVUTpM+FY=",
-                            PasswordSalt = "JzC5KxuuQLc/nqN790yeIdp0RK7u/SGWmGxcGkVN/e0=",
+                            PasswordHash = "EnwVfR4E8gq9b4JO2PxGCJ58Swk+1JTDtnZKzHq86VE=",
+                            PasswordSalt = "bIw3y9OvKlMmy8H6MoPstXDV1Ri1EU17taNxfQbU1VE=",
                             Provider = 1,
                             Url = "https://ambrose.com"
                         },
@@ -562,8 +560,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 9,
                             Login = "Pearlie.Graham96",
-                            PasswordHash = "GDmeirGXsMgZ1Tt5eSkpk8X8Khqdab953rb4ABCZ4L0=",
-                            PasswordSalt = "OUYvg0BaXIEHunwFm7pBWJRzH9zi5hLC/sdt0YeXnwE=",
+                            PasswordHash = "9ha+uX29wlDAZ7KNrhOF5BZ9KVYHslTGXapb92Qs7hw=",
+                            PasswordSalt = "insHX/zgyqcP+ceVgHOM3565QMjPgLiQ7L6Bw7bUlnM=",
                             Provider = 2,
                             Url = "http://neil.name"
                         },
@@ -571,8 +569,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 10,
                             Login = "Sonny_McLaughlin23",
-                            PasswordHash = "mqcEUSBPuS24GNQDTaWKLSI5ePrcI/12FOIlJ1jJAqo=",
-                            PasswordSalt = "hjWrBVltouJUKwdj8eWyMOtUb6ZaSWsbjNNjx+fXgJM=",
+                            PasswordHash = "FrY5XhWo+Ieuu0px+HLwOKWlqigKFqF43GLHso3oZLA=",
+                            PasswordSalt = "bgoDHPEHjEyYqA0aVuI3aXjfW+I3O1C4t8ZvYgFr6Cw=",
                             Provider = 0,
                             Url = "https://rhoda.info"
                         },
@@ -580,8 +578,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 11,
                             Login = "Jannie.Goldner",
-                            PasswordHash = "hXZIPOJbNmxu49c2JSZiqecOmuEyV7Szj/oBeeEw9cY=",
-                            PasswordSalt = "vNKObysYyikeaCcQziecBIGDrG6PnJzhzTDdK5TufM0=",
+                            PasswordHash = "qzIqTbnRoZyjATHJWkiDXuzn209cBov/S70QKcuDwdU=",
+                            PasswordSalt = "2rc9CGEn8kTOLtE0xxHWVJrRFG8En9I0NpZmT7ynNps=",
                             Provider = 0,
                             Url = "http://marcelina.org"
                         },
@@ -589,8 +587,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 12,
                             Login = "Cassie34",
-                            PasswordHash = "xfB4RACgQcIRVqWxyH9piFe/Xky1x1pfmf1uHY1wYvg=",
-                            PasswordSalt = "Dqu8WTH7eMSrIr28NKtrFnldEIJi3f+FXv6FAwmdCOM=",
+                            PasswordHash = "rx94l4ohA70Bs+BeFJIRk9aGJ2/hqI+AcZBZyjG2Mx0=",
+                            PasswordSalt = "g9g6ps/UDSt3qNly67T8WjsptTL6Eq6ikZNov8h180o=",
                             Provider = 1,
                             Url = "https://schuyler.org"
                         },
@@ -598,8 +596,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 13,
                             Login = "Willis_Romaguera",
-                            PasswordHash = "W2ervuA2oEQ5eJ6V5Kq5ZepnjY2hU67ulrapPjBbdUk=",
-                            PasswordSalt = "Q8PyxVJeUnuVg4AFr/g5080TPC4dyCj/PL/Pvn98yBA=",
+                            PasswordHash = "F8Va3SXcTDuLQ+Eux4dM+pg7sTOy2m92/z43gDkkan8=",
+                            PasswordSalt = "LYE8YKDAYqYGAh0RIcHz239CiGLKnyjfPM9auU8kWLk=",
                             Provider = 0,
                             Url = "https://bobbie.info"
                         },
@@ -607,8 +605,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 14,
                             Login = "Aylin61",
-                            PasswordHash = "ucbFLtX+yUU/VfRaJkyiJ8wIDfoTavz8twMnqHW9Kiw=",
-                            PasswordSalt = "ghG4MWN/WrsCcBbLiXBr0awvHOxEEdtm34CfearFQgg=",
+                            PasswordHash = "HHdG9nqytomms/SRdX822D7OXshwWj0ep6Q7JtGXtCg=",
+                            PasswordSalt = "16zIqWirCxlA4Y+tXsB4Hgtn9dyC9OPPAWxbnEOWAp0=",
                             Provider = 0,
                             Url = "https://briana.com"
                         },
@@ -616,8 +614,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 15,
                             Login = "Edna.Hahn77",
-                            PasswordHash = "TKhVbFWQ2CzZgM89A4ziAI0ihQDaFpZb0gdh4xMQzTE=",
-                            PasswordSalt = "kZsE93iPJurCbL4+nFPA41FbinyySwo9KCbmnzw0U7U=",
+                            PasswordHash = "sRr1sh4mwKlV1kimhFNAEbql6l+Mf/M6K5juXn/A1yc=",
+                            PasswordSalt = "Am2Em1pgl1YlqCoLX9POFRlreAPXczihLQ9imOx+rNs=",
                             Provider = 0,
                             Url = "https://ashlynn.biz"
                         },
@@ -625,8 +623,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 16,
                             Login = "Titus91",
-                            PasswordHash = "IOSXIoGY6+URyi5DI7zCZyFqJvbpvZ7Gqa4+TofpLFc=",
-                            PasswordSalt = "bgfCrNIFcaqQn7MO/9Cf+VtNKYfukOyHrvak/2VjDe0=",
+                            PasswordHash = "tpTtNVGMGYZOBQlI469PUwMOSZXGq+rZedcGEwnEslw=",
+                            PasswordSalt = "SdsNPEpv3A5+zHVFxV1i54fnTNf/SILG+oKaYrkl3eM=",
                             Provider = 0,
                             Url = "http://dwight.org"
                         },
@@ -634,8 +632,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 17,
                             Login = "Kassandra_Kemmer",
-                            PasswordHash = "/P/JzxtBdmPnzaaUQFGTXiokl9okszNPJSn1A3ZWK4o=",
-                            PasswordSalt = "8s3e2bV/WPR1VY2Fw3IJJCLncRnvDSBSqk72zfooAs4=",
+                            PasswordHash = "ojn+YeoVM3pqvgAgEptXDPDzmXSHBY1qP/c86JxasAI=",
+                            PasswordSalt = "RPAsGrH0V9ZZl/zLwKhWr9cWfjlHqe1gTQ1C2tsS44o=",
                             Provider = 1,
                             Url = "http://destiny.com"
                         },
@@ -643,8 +641,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 18,
                             Login = "Leann_Jerde71",
-                            PasswordHash = "fnxitI2O6OIQWyygR4hIBmNm83NzdT8TdMLbRsTXZno=",
-                            PasswordSalt = "dODHOaYRJzaW2xdKIPIZXCb2KmpHpQ+qaqGxVUsMAKU=",
+                            PasswordHash = "lXNGr1fjfUjp1bcrT3d5e/tN6OJpktl44SKsulDUUtU=",
+                            PasswordSalt = "2uOGs7ZSyNmKXFwYZ0/t1ppFigdA2qSBg4cFldvMNYo=",
                             Provider = 0,
                             Url = "http://scot.com"
                         },
@@ -652,8 +650,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 19,
                             Login = "Rosa_Haley",
-                            PasswordHash = "ECpdXCQkiEA8kXRx9K3M8wOtPVa8erDM9WksHwNpiYU=",
-                            PasswordSalt = "1u0dTC2uhaAlcc5Ag3rXFiRu3mT7Sy/PQCBGdFHJip0=",
+                            PasswordHash = "rnRJeI+wqrgelvXslfkbRCDmBaOyE7se73njOq66LKg=",
+                            PasswordSalt = "vE/SgLHLf89hOnErg3pbbnn7QAXpt7StWsNFnJHuNHc=",
                             Provider = 0,
                             Url = "https://vivianne.net"
                         },
@@ -661,8 +659,8 @@ namespace IDE.DAL.Migrations
                         {
                             Id = 20,
                             Login = "Emmett_McClure",
-                            PasswordHash = "A80ineU26bdtqCdOnBRNZyXxuhPhelNaTv2kgToJZaw=",
-                            PasswordSalt = "bKPf3KTbqXfzZHxaZK96+yHxasWEd8JUsCXx9OEKgd8=",
+                            PasswordHash = "7+piVP+AgJ4JFMyYDT9IeWbZZOVUrosuTUdE/1voC64=",
+                            PasswordSalt = "Q4atzTMyM0KcPhj9BXOsDeA5mMRa0u9XcAAuNG8Oiqk=",
                             Provider = 1,
                             Url = "https://juanita.biz"
                         });
@@ -1379,8 +1377,8 @@ namespace IDE.DAL.Migrations
                             LastActive = new DateTime(2018, 7, 6, 10, 43, 59, 584, DateTimeKind.Unspecified).AddTicks(7620),
                             LastName = "Runolfsdottir",
                             NickName = "Flavie.Muller8",
-                            PasswordHash = "2T9qJ4m5F4Dy44cJzT0+iq68Ys2FAoeO8cVZB9D1KPw=",
-                            PasswordSalt = "x4DDnS6JKM7vM5s0o3n69qrmTnyfZ7n3foe3Gg/9B3g=",
+                            PasswordHash = "g/wZD2+HTAmK4ZFKflq8TYBMvjEy065KwEaa0gwBtP0=",
+                            PasswordSalt = "PK+GSOrHsjiInlpJW6zHXurdqh3eI2ZqCmXkX4uaIH8=",
                             RegisteredAt = new DateTime(2018, 5, 13, 3, 31, 36, 66, DateTimeKind.Unspecified).AddTicks(845)
                         },
                         new
@@ -1394,23 +1392,23 @@ namespace IDE.DAL.Migrations
                             LastActive = new DateTime(2018, 7, 2, 3, 4, 30, 418, DateTimeKind.Unspecified).AddTicks(1723),
                             LastName = "Olson",
                             NickName = "Delphia98",
-                            PasswordHash = "RteDRFv1VzrGn28TE3M32P0BwoBmJnAWVmKIe4QUpZA=",
-                            PasswordSalt = "douRlWvZCuikHSyacBXAFBfDxZEMhKRal6T3EMhgVTc=",
+                            PasswordHash = "QLoYYcbp91N/iM6A//10yISmiGRZTYgnbSi+MRfp3p4=",
+                            PasswordSalt = "3uy3PlgwEGpcaytaFALfezrXASwpmw4Th+Pt06mx5Gg=",
                             RegisteredAt = new DateTime(2018, 6, 10, 15, 10, 29, 523, DateTimeKind.Unspecified).AddTicks(7483)
                         },
                         new
                         {
                             Id = 3,
                             AvatarId = 1,
-                            Birthday = new DateTime(2005, 8, 13, 16, 7, 5, 324, DateTimeKind.Local).AddTicks(7023),
+                            Birthday = new DateTime(2005, 8, 13, 22, 13, 23, 745, DateTimeKind.Local).AddTicks(8552),
                             Email = "test@gmail.com",
                             FirstName = "testUser",
-                            LastActive = new DateTime(2019, 8, 13, 16, 7, 5, 326, DateTimeKind.Local).AddTicks(790),
+                            LastActive = new DateTime(2019, 8, 13, 22, 13, 23, 747, DateTimeKind.Local).AddTicks(2205),
                             LastName = "testUser",
                             NickName = "TheBestUser",
-                            PasswordHash = "4PPcOT/MT8E0fCTJSAV2Oz6ZaTuAQP3Gnw1cYlIyIVA=",
-                            PasswordSalt = "tvcRPhzCfm0tJ7KrJhrIwVgkKCufo80G6LM+tb+Alls=",
-                            RegisteredAt = new DateTime(2019, 8, 13, 16, 7, 5, 326, DateTimeKind.Local).AddTicks(790)
+                            PasswordHash = "nfvtBf3+bafnwsS//lRSnX+0XSYhqin2VP66R/ey9xs=",
+                            PasswordSalt = "d2rjrKDMC01HEMX5rCqTWyFBgWsvVhtJdoefzG/Pq1A=",
+                            RegisteredAt = new DateTime(2019, 8, 13, 22, 13, 23, 747, DateTimeKind.Local).AddTicks(2211)
                         });
                 });
 
@@ -1423,6 +1421,18 @@ namespace IDE.DAL.Migrations
 
                     b.HasOne("IDE.DAL.Entities.User", "User")
                         .WithMany("Builds")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("IDE.DAL.Entities.FavouriteProjects", b =>
+                {
+                    b.HasOne("IDE.DAL.Entities.Project", "Project")
+                        .WithMany("FavouriteProjects")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("IDE.DAL.Entities.User", "User")
+                        .WithMany("FavouriteProjects")
                         .HasForeignKey("UserId");
                 });
 
