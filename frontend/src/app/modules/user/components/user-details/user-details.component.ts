@@ -20,8 +20,9 @@ export class UserDetailsComponent implements OnInit {
   ngOnInit() {
       this.userService.getUserDetailsFromToken().subscribe(response =>{
         this.user = response.body;
-        this.user.gitHubUrl = "https://github.com/kotsabiukmv98";
-        console.log(this.user);
+        if (!this.user.url){
+            this.user.url = './assets/img/user-default-avatar.png';
+        }
       });
       this.actions = [
         {label: 'Change Image', icon: 'pi pi-cloud-upload', command: () => {
