@@ -32,6 +32,8 @@ namespace IDE.API
             services.ConfigureNoSqlDb(Configuration);
             services.RegisterAutoMapper();
             services.RegisterHttpClientFactories(Configuration);
+            services.RegisterRabbitMQ(Configuration.GetSection("RabbitMQ").Value);
+
             services.AddCors();       
 
             services.AddMvcCore()

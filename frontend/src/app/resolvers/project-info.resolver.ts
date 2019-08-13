@@ -17,17 +17,17 @@ export class ProjectInfoResolver  {
         private router:Router){
     }
   
-    // resolve(route: ActivatedRouteSnapshot): Observable<ProjectInfoDTO> {
-    //     return this.service.getProject(+route.params['id']).pipe(
-    //         map(resp=>{
-    //             if(resp.body.id!=null)
-    //                 return resp.body;
-    //         }),
-    //         catchError((error) => {
-    //             this.toastrService.error('can`t retrieve data from the server');
-    //             this.router.navigate(['/dashboard']);
-    //             return of(null); 
-    //         })
-    //     )
-    // }
+     resolve(route: ActivatedRouteSnapshot): Observable<ProjectInfoDTO> {
+         return this.service.getProjectById(+route.params['id']).pipe(
+             map(resp=>{
+                 if(resp.body.id!=null)
+                     return resp.body;
+             }),
+             catchError((error) => {
+                 this.toastrService.error('can`t retrieve data from the server');
+                 this.router.navigate(['/dashboard']);
+                 return of(null); 
+             })
+         )
+     }
 }
