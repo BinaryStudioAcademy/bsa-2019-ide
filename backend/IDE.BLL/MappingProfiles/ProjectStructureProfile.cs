@@ -12,9 +12,10 @@ namespace IDE.BLL.MappingProfiles
     {
         public ProjectStructureProfile()
         {
-            CreateMap<FileStructure, FileDTO>();
-            CreateMap<FileDTO, FileStructure>();
-            CreateMap<ProjectStructureDTO, ProjectStructure>();
+            CreateMap<FileStructure, FileStructureDTO>();
+            CreateMap<FileStructureDTO, FileStructure>();
+            CreateMap<ProjectStructureDTO, ProjectStructure>()
+                .ForMember(a => a.NestedFiles, b => b.UseDestinationValue());
             CreateMap<ProjectStructure, ProjectStructureDTO>();
         }
     }

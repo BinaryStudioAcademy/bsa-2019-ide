@@ -8,9 +8,10 @@ namespace IDE.Common.ModelsDTO.DTO.Workspace
     {
         public ProjectStructureDTO()
         {
-            NestedFiles = new List<FileDTO>();
+            NestedFiles = new List<FileStructureDTO>();
         }
+
         public string Id { get; set; }
-        public ICollection<FileDTO> NestedFiles { get; set; }
+        public ICollection<FileStructureDTO> NestedFiles { get; set; }
     }
 }

@@ -1,8 +1,8 @@
 ﻿/* Auto Generated */
 
-import { FileDTO } from "./../File/fileDTO"
+import { FileStructureDTO } from "./fileStructureDTO"
 
 export interface ProjectStructureDTO {
     id: string;
-    nestedFiles: FileDTO[];
+    nestedFiles: FileStructureDTO[];
 }
