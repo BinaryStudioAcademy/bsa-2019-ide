@@ -25,6 +25,8 @@ import { ContextMenuModule, MenuModule } from 'primeng/primeng';
     MonacoEditorModule,
     FormsModule,
     TabMenuModule,
+    MenuModule,
+    ContextMenuModule
   ]
 })
 export class WorkspaceModule { }
