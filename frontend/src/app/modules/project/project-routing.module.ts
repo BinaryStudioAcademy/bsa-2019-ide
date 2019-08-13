@@ -9,14 +9,13 @@ import { LoginGuard } from 'src/app/guards/login.guard';
 
 const projectRoutes: Routes = [
   {
-    path: 'project/add',
-    component: CreateProjectComponent,
-    canActivate: [LoginGuard]
-  },
-  {
     path: 'project',
     component: ProjectRootComponent,
     children: [
+      {
+        path: 'add',
+        component: CreateProjectComponent
+      },
       {
         path: ':id',
         component: ProjectDetailsComponent,
@@ -25,7 +24,7 @@ const projectRoutes: Routes = [
       {
         path: ':id/settings',
         component: ProjectSettingsComponent
-      }
+      },
     ],
     canActivate: [LoginGuard]
   }
