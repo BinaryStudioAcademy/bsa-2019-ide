@@ -43,10 +43,12 @@ namespace IDE.API.Extensions
 
             services.AddScoped<FileService>();
             services.AddScoped<FileHistoryService>();
+            services.AddScoped<ProjectStructureService>();
 
             services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
             services.AddScoped<INoSqlRepository<File>, NoSqlRepository<File>>();
             services.AddScoped<INoSqlRepository<FileHistory>, NoSqlRepository<FileHistory>>();
+            services.AddScoped<INoSqlRepository<ProjectStructure>, NoSqlRepository<ProjectStructure>>();
         }
 
         public static void RegisterServicesWithIConfiguration(this IServiceCollection services, IConfiguration conf)
@@ -76,6 +78,7 @@ namespace IDE.API.Extensions
                 cfg.AddProfile<FileProfile>();
                 cfg.AddProfile<FileHistoryProfile>();
                 cfg.AddProfile<GitCredentialProfile>();
+                cfg.AddProfile<ProjectStructureProfile>();
             });
         }
 
