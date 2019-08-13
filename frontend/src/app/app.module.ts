@@ -22,6 +22,7 @@ import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { GeneralModule } from './general/general.module';
 import { TreeModule } from 'primeng/tree';
 import {MonacoEditorModule } from '@materia-ui/ngx-monaco-editor'
+import { ContextMenuModule, MenuModule } from 'primeng/primeng';
 
 
 
@@ -32,6 +33,7 @@ import {MonacoEditorModule } from '@materia-ui/ngx-monaco-editor'
 
     ],
     imports: [
+        MenuModule,
         BrowserModule,
         BrowserAnimationsModule,
         AuthorizationModule,
@@ -48,7 +50,8 @@ import {MonacoEditorModule } from '@materia-ui/ngx-monaco-editor'
         ToastrModule.forRoot(),
         GeneralModule,
         TreeModule,
-        MonacoEditorModule
+        MonacoEditorModule,
+        ContextMenuModule
         
     ],
     providers:
