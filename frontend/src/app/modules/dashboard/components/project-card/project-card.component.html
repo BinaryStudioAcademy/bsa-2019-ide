@@ -1,6 +1,10 @@
 <p-card routerLink="/workspace/{{project.id}}" subheader="{{project.creator}}">
     <p-header>
         <div class="imgContainer" [style.background-image]="'url(' + project.photoLink + ')'">
+            <div class="star" (click)="favourite($event)">
+                <i class="pi pi-star-o iStar" *ngIf="!project.favourite"></i>
+                <i class="pi pi-star iStar" *ngIf="project.favourite"></i>
+            </div>
             <h1>
                 {{project.title}}
             </h1>
@@ -10,7 +14,7 @@
         <p>
             <span class="highlighted">Created:</span> {{project.created | date:'d MMMM yyyy'}}
         </p>
-        <p>
+        <p *ngIf="project.lastBuild">
             <span class="highlighted">Last build:</span> {{lastTimeBuild()}}
         </p>
     </div>

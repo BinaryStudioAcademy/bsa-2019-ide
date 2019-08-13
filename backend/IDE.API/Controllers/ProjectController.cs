@@ -15,10 +15,12 @@ namespace IDE.API.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
+        private readonly IProjectMemberSettingsService _projectMemberSettings;
 
-        public ProjectController(IProjectService projectService)
+        public ProjectController(IProjectService projectService, IProjectMemberSettingsService projectMemberSettings)
         {
             _projectService = projectService;
+            _projectMemberSettings = projectMemberSettings;
         }
 
         [HttpGet("{projectId}")]
@@ -66,6 +68,13 @@ namespace IDE.API.Controllers
         public async Task<ActionResult> DeleteProject(int id)
         {
             await _projectService.DeleteProjectAsync(id);
+            return NoContent();
+        }
+
+        [HttpPut("favourite")]
+        public async Task<ActionResult> SetFavouriteProject([FromBody]int projectId)
+        {
+            await _projectMemberSettings.SetFavouriteProject(projectId, this.GetUserIdFromToken());
             return NoContent();
         }
     }

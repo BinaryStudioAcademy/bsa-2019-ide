@@ -28,6 +28,9 @@ namespace IDE.DAL.Context
             modelBuilder.Entity<ProjectMember>()
                 .HasKey(pm => new {pm.ProjectId, pm.UserId});
 
+            modelBuilder.Entity<FavouriteProjects>()
+                .HasKey(fp => new { fp.ProjectId, fp.UserId });
+
             modelBuilder.Entity<ProjectMember>()
                 .HasOne(pm => pm.Project)
                 .WithMany(p => p.ProjectMembers)

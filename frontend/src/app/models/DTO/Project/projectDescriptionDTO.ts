@@ -6,5 +6,6 @@ export interface ProjectDescriptionDTO {
     creator: string;
     photoLink: string;
     created: Date;
+    favourite: boolean;
     lastBuild?: Date;
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ProjectDescriptionDTO } from '../../../../models/DTO/Project/projectDescriptionDTO';
+import { ProjectService } from 'src/app/services/project.service/project.service';
 
 @Component({
     selector: 'app-project-card',
@@ -10,7 +11,7 @@ export class ProjectCardComponent implements OnInit {
     DATE = new Date();
     @Input() project: ProjectDescriptionDTO;
 
-    constructor() { }
+    constructor(private projectService: ProjectService) { }
 
     ngOnInit() { }
 
@@ -35,5 +36,13 @@ export class ProjectCardComponent implements OnInit {
         const currentYear = this.DATE.getUTCFullYear();
 
         return ((currentYear - 2019) * 365 + currentMonth * 30 + currentDays) - ((year - 2019) * 365 + month * 30 + days);
+    }
+
+    favourite(event: Event): void {
+        event.stopPropagation();
+        this.project.favourite = !this.project.favourite;
+
+        this.projectService.changeFavourity(this.project.id)
+            .subscribe();
     }
 }

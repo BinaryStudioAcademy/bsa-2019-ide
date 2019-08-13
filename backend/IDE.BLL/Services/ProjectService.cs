@@ -27,6 +27,17 @@ namespace IDE.BLL.Services
             _fileService = fileService;
         }
 
+        // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
+        public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)
+        {
+            var project = await _context.Projects
+                .Include(p => p.Author)
+                .Include(p => p.Logo)
+                .FirstOrDefaultAsync(p => p.Id == projectId);
+
+            return _mapper.Map<ProjectDTO>(project);
+        }
+
         public async Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId)
         {
             //Maybe it can be a bit easier
@@ -45,18 +56,7 @@ namespace IDE.BLL.Services
                     .Include(x => x.Logo)
                     .ToListAsync());
 
-            return MapAndGetLastBuildFinishedDate(projects);
-        }
-
-        // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
-        public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)
-        {
-            var project = await _context.Projects                
-                .Include(p => p.Author)
-                .Include(p => p.Logo)
-                .FirstOrDefaultAsync(p => p.Id == projectId);
-
-            return _mapper.Map<ProjectDTO>(project);
+            return MapAndGetLastBuildFinishedDate(projects, userId);
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId)
@@ -71,7 +71,7 @@ namespace IDE.BLL.Services
             
             var collection = await projects.ToListAsync();
 
-            return MapAndGetLastBuildFinishedDate(collection);
+            return MapAndGetLastBuildFinishedDate(collection, userId);
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId)
@@ -84,22 +84,24 @@ namespace IDE.BLL.Services
 
             var collection = await projects.ToListAsync();
 
-            return MapAndGetLastBuildFinishedDate(collection);
+            return MapAndGetLastBuildFinishedDate(collection, userId);
         }
 
-        private ICollection<ProjectDescriptionDTO> MapAndGetLastBuildFinishedDate(List<Project> projects)
+        private ICollection<ProjectDescriptionDTO> MapAndGetLastBuildFinishedDate(List<Project> projects, int userId)
         {
             var projectsDescriptions = _mapper.Map<ICollection<ProjectDescriptionDTO>>(projects);
 
+            var likedProject = _context.FavouriteProjects.Where(x => x.UserId == userId);
             foreach (var projectDescription in projectsDescriptions)
             {
                 projectDescription.LastBuild = _context.Builds
                     .Where(y => y.ProjectId == projectDescription.Id)
                     .OrderByDescending(z => z.BuildFinished)
                     .FirstOrDefault()?.BuildFinished;
+                projectDescription.Favourite = likedProject.FirstOrDefault(x => x.ProjectId == projectDescription.Id) != null; 
             }
 
-            return projectsDescriptions;
+            return projectsDescriptions.OrderByDescending(x => x.LastBuild).ToList();
         }
 
         public async Task<int> CreateProject(ProjectCreateDTO projectCreateDto)

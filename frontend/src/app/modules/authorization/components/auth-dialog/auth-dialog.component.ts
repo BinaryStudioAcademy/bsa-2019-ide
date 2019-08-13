@@ -24,7 +24,7 @@ export class AuthDialogComponent implements OnInit {
   public nickName: string;
   private nav: NavMenuComponent;
 
-  public display: boolean=false;
+  public display: boolean = false;
   public hidePass = true;
   public title: string;
   private unsubscribe$ = new Subject<void>();
@@ -32,23 +32,22 @@ export class AuthDialogComponent implements OnInit {
 
   constructor(
       private authService: AuthenticationService,
-      public ref: DynamicDialogRef, 
+      public ref: DynamicDialogRef,
       public config: DynamicDialogConfig,
       private router: Router
   ) {}
 
   public ngOnInit() {
-      this.title = this.config.data.dialogType === DialogType.SignIn ? 'Lon in your account' : 'Create your account';         
+      this.title = this.config.data.dialogType === DialogType.SignIn ? 'Lon in your account' : 'Create your account';
   }
-  
+
 
   public ngOnDestroy() {
       this.unsubscribe$.next();
       this.unsubscribe$.complete();
   }
 
-  public close()
-  {
+  public close() {
       this.ref.close();
   }
 
@@ -57,22 +56,22 @@ export class AuthDialogComponent implements OnInit {
       this.authService
           .login({ email: this.email, password: this.password })
           .pipe(takeUntil(this.unsubscribe$))
-          .subscribe(result=>this.ref.close());
-    this.router.navigate(['/']);
+          .subscribe(result => this.ref.close());
+      this.router.navigate(['/']);
   }
 
   public signUp() {
-    let user={
-        id:0,
-        firstName:this.firstName,
-        lastName:this.lastName,
-        nickName:this.nickName,
-        password:this.password,
-        email:this.email
+    const user = {
+        id: 0,
+        firstName: this.firstName,
+        lastName: this.lastName,
+        nickName: this.nickName,
+        password: this.password,
+        email: this.email
     };
-       this.authService
-         .register(user)
-          .pipe(takeUntil(this.unsubscribe$))
-          .subscribe(result=>this.ref.close());
+    this.authService
+        .register(user)
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(result => this.ref.close());
   }
 }
