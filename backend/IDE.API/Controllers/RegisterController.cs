@@ -1,4 +1,5 @@
-﻿using IDE.BLL.Services;
+﻿using AutoMapper;
+using IDE.BLL.Services;
 using IDE.Common.DTO.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,13 @@ namespace IDE.API.Controllers
     {
         private readonly UserService _userService;
         private readonly AuthService _authService;
+        private readonly IMapper _mapper;
 
-        public RegisterController(UserService userService, AuthService authService)
+        public RegisterController(UserService userService, AuthService authService, IMapper mapper)
         {
             _userService = userService;
             _authService = authService;
+            _mapper = mapper;
         }
 
         [HttpPost]
@@ -26,11 +29,11 @@ namespace IDE.API.Controllers
         {
             var createdUser = await _userService.CreateUser(user);
             string UserName = createdUser.FirstName + createdUser.LastName + createdUser.NickName;
-            var token = await _authService.GenerateAccessToken(createdUser.Id, UserName, createdUser.Email);
+            var token = await _authService.GenerateAccessToken(createdUser);
 
             var result = new AuthUserDTO
             {
-                User = createdUser,
+                User = _mapper.Map<UserDTO>(createdUser),
                 Token = token
             };
 

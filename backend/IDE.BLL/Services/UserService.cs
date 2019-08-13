@@ -19,7 +19,8 @@ namespace IDE.BLL.Services
             _context = context;
             _mapper = mapper;
         }
-        public async Task<UserDTO> CreateUser(UserRegisterDTO userDto)
+
+        public async Task<User> CreateUser(UserRegisterDTO userDto)
         {
             var userEntity = _mapper.Map<User>(userDto);
             var salt = SecurityHelper.GetRandomBytes();
@@ -31,7 +32,18 @@ namespace IDE.BLL.Services
             _context.Users.Add(userEntity);
             await _context.SaveChangesAsync();
 
-            return _mapper.Map<UserDTO>(userEntity);
+            return userEntity;
+        }
+
+        public async Task<UserDetailsDTO> GetUserDetailsById(int id)
+        {
+            var user = await GetUserByIdInternal(id);
+            if (user == null)
+            {
+                throw new NotFoundException(nameof(User), id);
+            }
+
+            return _mapper.Map<UserDetailsDTO>(user);
         }
 
         public async Task<UserDTO> GetUserById(int id)

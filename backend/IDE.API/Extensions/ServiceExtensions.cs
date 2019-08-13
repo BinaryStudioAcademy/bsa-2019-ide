@@ -33,10 +33,12 @@ namespace IDE.API.Extensions
         {
             services.AddScoped<JwtIssuerOptions>();
             services.AddScoped<JWTFactory>();
+            
             services.AddScoped<AuthService>();
-            services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
-            services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<UserService>();
+            services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<ITokenService, TokenService>();
+
             services.AddScoped<FileService>();
             services.AddScoped<FileHistoryService>();
             services.AddScoped<ProjectStructureService>();
