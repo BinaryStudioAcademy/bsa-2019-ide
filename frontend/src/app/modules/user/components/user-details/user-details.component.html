@@ -7,13 +7,15 @@
         <p class="property-name">Email</p>
         <p class="property-value p-col-align-center">{{user.email}}</p>
         <p class="property-name">Github URL:</p>
-        <a class="property-value p-col-align-center" href="{{user.gitHubUrl}}">github</a>
+        <a *ngIf="user.gitHubUrl" class="property-value p-col-align-center" href="{{user.gitHubUrl}}">github</a>
+        <p *ngIf="!user.gitHubUrl" class="property-value p-col-align-center">GitHub not specified</p>
         <p class="property-name">Birthday:</p>
-        <p class="property-value p-col-align-center">{{user.birthday}}</p>
+        <p *ngIf="user.birthday" class="property-value p-col-align-center">{{user.birthday | date:'mediumDate'}}</p>
+        <p *ngIf="!user.birthday" class="property-value p-col-align-center">Birthday not specified</p>
         <p class="property-name ">Last Active:</p>
-        <p class="property-value p-col-align-center">{{user.registeredAt}}</p>
+        <p class="property-value p-col-align-center">{{user.registeredAt | date:'medium'}}</p>
         <p class="property-name">Registred At:</p>
-        <p class="property-value p-col-align-center">{{user.lastActive}}</p>
+        <p class="property-value p-col-align-center">{{user.lastActive | date:'medium'}}</p>
         <p-slideMenu #menu [model]="actions" [popup]="true" [viewportHeight]="200"></p-slideMenu>
         <button #btn type="button" pButton icon="pi pi-pencil" label="Edit Profile" (click)="menu.toggle($event)"></button>
     </div>

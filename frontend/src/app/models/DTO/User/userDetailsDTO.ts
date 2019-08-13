@@ -7,8 +7,8 @@ export interface UserDetailsDTO {
     nickName: string;
     email: string;
     gitHubUrl?: string;
-    birthday: Date;
+    birthday?: Date;
     registeredAt: Date;
     lastActive: Date;
-    url: string;
+    url?: string;
 }
