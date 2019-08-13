@@ -5,11 +5,13 @@ import { ProjectSettingsComponent } from './components/project-settings/project-
 import { ProjectDetailsComponent } from './components/project-details/project-details.component';
 import { CreateProjectComponent } from './components/create-project/create-project.component';
 import { ProjectInfoResolver } from 'src/app/resolvers/project-info.resolver';
+import { LoginGuard } from 'src/app/guards/login.guard';
 
 const projectRoutes: Routes = [
   {
     path: 'project/add',
-    component: CreateProjectComponent
+    component: CreateProjectComponent,
+    canActivate: [LoginGuard]
   },
   {
     path: 'project/:id',
@@ -18,13 +20,14 @@ const projectRoutes: Routes = [
       {
         path: '',
         component: ProjectDetailsComponent,
-        resolve: { project: ProjectInfoResolver }
+        resolve: { project: ProjectInfoResolver } // What is it?
       },
       {
         path: 'settings',
         component: ProjectSettingsComponent
       }
-    ]
+    ],
+    canActivate: [LoginGuard]
   }
 ];
 

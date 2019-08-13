@@ -5,13 +5,13 @@
         <ul>
             <li (click)="redirect(0)" [class.active]="isActive[0]">{{items[0][0]}}
             </li>
-            <li *ngIf="authorizedUser" (click)="redirect(1)" [class.active]="isActive[1]">{{items[1][0]}}
+            <li (click)="redirect(1)" [class.active]="isActive[1]">{{items[1][0]}}
             </li>
-            <li *ngIf="authorizedUser" (click)="redirect(2)" [class.active]="isActive[2]">{{items[2][0]}}
+            <li (click)="redirect(2)" [class.active]="isActive[2]">{{items[2][0]}}
             </li>
         </ul>
     </div>
-    <div *ngIf="authorizedUser" class="secondMenu">
+    <div class="secondMenu">
         <button icon="pi pi-plus" pButton type="button" class="ui-button-raised" [routerLink]="['/project/add']"
             label="Add"></button>
     </div>
