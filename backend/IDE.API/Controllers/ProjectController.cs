@@ -30,7 +30,7 @@ namespace IDE.API.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects(int userId)
+        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects()
         {
             //Need to get userId from token
             return Ok(await _projectService.GetAllProjects(this.GetUserIdFromToken()));

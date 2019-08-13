@@ -59,7 +59,6 @@ import { TokenGetter } from './services/token.service/token.service';
                 tokenGetter: TokenGetter,
             }
         })
-        
     ],
     providers: [
         DialogService,

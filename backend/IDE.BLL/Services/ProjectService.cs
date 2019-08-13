@@ -101,10 +101,13 @@ namespace IDE.BLL.Services
             var likedProject = _context.FavouriteProjects.Where(x => x.UserId == userId);
             foreach (var projectDescription in projectsDescriptions)
             {
-                projectDescription.LastBuild = _context.Builds
+                var build = _context.Builds
                     .Where(y => y.ProjectId == projectDescription.Id)
                     .OrderByDescending(z => z.BuildFinished)
-                    .FirstOrDefault()?.BuildFinished;
+                    .FirstOrDefault();
+                projectDescription.LastBuild = build?.BuildFinished;
+                projectDescription.BuildStatus = build?.BuildStatus;
+
                 projectDescription.Favourite = likedProject.FirstOrDefault(x => x.ProjectId == projectDescription.Id) != null; 
             }
 
