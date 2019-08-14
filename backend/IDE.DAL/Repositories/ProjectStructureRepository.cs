@@ -48,7 +48,7 @@ namespace IDE.DAL.Repositories
             await _items.DeleteOneAsync(item => item.Id == id);
         }
 
-        private string GetItemsCollectionName()
+        private static string GetItemsCollectionName()
         {
             var itemClassName = typeof(ProjectStructure).ToString().Split('.').Last();
             var itemsCollectionName = itemClassName.Pluralize();
