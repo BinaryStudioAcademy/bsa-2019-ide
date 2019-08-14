@@ -26,7 +26,7 @@ namespace IDE.BLL.Services
             var projectStructure = await _projectStructureRepository.GetByIdAsync(id);
             if (projectStructure == null)
             {
-                throw new NotFoundException(nameof(File), id);
+                throw new NotFoundException(nameof(ProjectStructure), id);
             }
 
             var projectStructureDto = _mapper.Map<ProjectStructureDTO>(projectStructure);
