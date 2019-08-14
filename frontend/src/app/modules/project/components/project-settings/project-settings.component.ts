@@ -14,15 +14,13 @@ import { FormBuilder, Validators } from '@angular/forms';
 export class ProjectSettingsComponent implements OnInit, OnDestroy {
   public projectId: number;
   public project: ProjectInfoDTO;
+  public projectStartState = {} as ProjectInfoDTO;
 
   private unsubscribe$ = new Subject<void>();
 
   public projectForm = this.fb.group({
     name: ['', Validators.required],
     description: ['', Validators.required],
-    language: ['', Validators.required],
-    projectType: ['', Validators.required],
-    compilerType: ['', Validators.required],
     countOfSaveBuilds: ['', Validators.required],
     countOfBuildAttempts: ['', Validators.required]
 });
@@ -43,11 +41,22 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
       .subscribe(
         (resp) => {
           this.project = resp.body;
+          this.projectStartState.name = this.project.name;
+          this.projectStartState.description = this.project.description;
+          this.projectStartState.countOfSaveBuilds = this.project.countOfSaveBuilds;
+          this.projectStartState.countOfBuildAttempts = this.project.countOfBuildAttempts;
         },
         (error) => {
           console.error(error.message);
         }
       );
+  }
+
+  projectItemIsNotChange(): boolean {
+    return this.projectForm.get('name').value === this.projectStartState.name
+      && this.projectForm.get('description').value === this.projectStartState.description
+      && Number(this.projectForm.get('countOfSaveBuilds').value) === this.projectStartState.countOfSaveBuilds
+      && Number(this.projectForm.get('countOfBuildAttempts').value) === this.projectStartState.countOfBuildAttempts;
   }
 
   ngOnDestroy() {
