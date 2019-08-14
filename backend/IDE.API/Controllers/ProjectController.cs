@@ -5,6 +5,7 @@ using IDE.Common.DTO.Project;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using IDE.API.Extensions;
+using IDE.BLL.Services;
 
 namespace IDE.API.Controllers
 {
@@ -16,9 +17,12 @@ namespace IDE.API.Controllers
     {
         private readonly IProjectService _projectService;
         private readonly IProjectMemberSettingsService _projectMemberSettings;
+        private readonly IProjectStructureService _projectStructureService;
 
-        public ProjectController(IProjectService projectService, IProjectMemberSettingsService projectMemberSettings)
+        public ProjectController(IProjectService projectService, IProjectMemberSettingsService projectMemberSettings,
+            IProjectStructureService projectStructureService)
         {
+            _projectStructureService = projectStructureService;
             _projectService = projectService;
             _projectMemberSettings = projectMemberSettings;
         }
@@ -60,8 +64,13 @@ namespace IDE.API.Controllers
         [HttpPost]
         public async Task<ActionResult> AddProject(ProjectCreateDTO project)
         {
+<<<<<<< HEAD
             var author = this.GetUserIdFromToken();
             var id = await _projectService.CreateProject(project, author);
+=======
+            var id = await _projectService.CreateProject(project);
+            await _projectStructureService.CreateEmpty(id.ToString());
+>>>>>>> development
             return Created("/project", id);
         }
 
