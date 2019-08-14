@@ -10,6 +10,7 @@ import { EditorSectionComponent } from '../editor-section/editor-section.compone
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
+import { FileService } from 'src/app/services/file.service/file.service';
 
 
 @Component({
@@ -27,7 +28,8 @@ export class WorkspaceRootComponent implements OnInit {
         private route: ActivatedRoute,
         private tr: ToastrService,
         private ws: WorkspaceService,
-        private saveOnExit: LeavePageDialogService) { }
+        private saveOnExit: LeavePageDialogService,
+        private fileService: FileService) { }
 
     ngOnInit() {
       this.projectId = Number(this.route.snapshot.paramMap.get('id'));
@@ -38,8 +40,17 @@ export class WorkspaceRootComponent implements OnInit {
     }
 
     public onFileSelected(fileId) {
-        this.tr.success(`fileId ${fileId}`, 'Success');
-        console.log(this.editor.code = "bebebe");
+        this.fileService.getProjectById(fileId)
+            .subscribe(
+                (resp) => {
+                    console.log(resp.body);
+                    this.editor.code = resp.body.content;
+                },
+                (error) => {
+                    this.tr.error("Can't load selected file.", "Error Message");
+                    console.error(error.message);
+                }
+            );
     }
 
     public saveFiles() {
