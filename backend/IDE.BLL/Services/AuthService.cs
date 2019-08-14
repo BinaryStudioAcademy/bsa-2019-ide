@@ -72,7 +72,9 @@ namespace IDE.BLL.Services
         public async Task<AccessTokenDTO> RefreshToken(RefreshTokenDTO dto)
         {
             var userId = _jwtFactory.GetUserIdFromToken(dto.AccessToken, dto.Key); //get userId from our access token
-            var userEntity = await _context.Users.FindAsync(userId); //find user with such id
+            var userEntity = _context.Users
+                                .Include(u => u.Avatar)
+                                .FirstOrDefault(x => x.Id == userId); //find user with such id
 
             if (userEntity == null) 
             {

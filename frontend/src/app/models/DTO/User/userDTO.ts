@@ -6,4 +6,5 @@ export interface UserDTO {
     lastName: string;
     nickName: string;
     email: string;
+    photoLink?: string;
 }
