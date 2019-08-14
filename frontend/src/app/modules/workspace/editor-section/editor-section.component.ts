@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -7,7 +8,8 @@ import { MenuItem } from 'primeng/api';
     styleUrls: ['./editor-section.component.sass']
 })
 export class EditorSectionComponent implements OnInit {
-    openedFiles: string[];
+    @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
+    openedFiles: FileUpdateDTO[];
     editorOptions = { theme: 'vs-dark', language: 'javascript' };
     code: string = 'function x() {\nconsole.log("Hello world!");\n}';
     originalCode: string = 'function x() { // TODO }';
@@ -30,24 +32,28 @@ export class EditorSectionComponent implements OnInit {
 
         this.activeItem = this.items[1];
         this.openedFiles = [
-            `file 1****************`,
-            `file 2****************`,
-            `file 3***************`,
-            `file 4****************`
+            { id: '1', folder: 'Project', name: 'Main.cs', content: 'using System;', updaterId: 0 },
+            { id: '2', folder: 'Project', name: 'Startup.cs', content: 'using System;', updaterId: 0 },
+            { id: '3', folder: 'Project', name: 'appsetting.json', content: '{ConnectionStrings: {}}', updaterId: 0 },
+            { id: '4', folder: 'Project', name: 'Project.csproj', content: '<Project Sdk="Microsoft.NET.Sdk.Web">', updaterId: 0 },
         ]
     }
 
-    closeItem(event, index) {
+    public closeItem(event, index) {
+        this.saveFiles([this.openedFiles[index]]);
         this.items = this.items.filter((item, i) => i !== index);
         //delete this.openedFiles[index];
-        this.code = this.openedFiles[index - 1];
+        this.code = this.openedFiles[index - 1].content;
         this.activeItem = this.items[index - 1];
         event.preventDefault();
     }
-    onTabSelect(evt, index) {
-        this.code = this.openedFiles[index];
+    public onTabSelect(evt, index) {
+        this.code = this.openedFiles[index].content;
         console.log(this.openedFiles);
+    }
 
+    public saveFiles(files: FileUpdateDTO[]) {
+        this.filesSaveEvent.emit(files);
     }
 
 }
