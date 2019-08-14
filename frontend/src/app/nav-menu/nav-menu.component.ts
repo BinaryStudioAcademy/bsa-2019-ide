@@ -21,7 +21,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
     public dialogType = DialogType;
     public isAuthorized: boolean;
-    private items: MenuItem[];
+    public  items: MenuItem[];
     private unsubscribe$ = new Subject<void>();
 
     constructor(
