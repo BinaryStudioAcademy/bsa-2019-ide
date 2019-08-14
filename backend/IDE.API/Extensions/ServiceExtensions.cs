@@ -38,6 +38,7 @@ namespace IDE.API.Extensions
             
             services.AddScoped<AuthService>();
             services.AddScoped<UserService>();
+            services.AddScoped<IProjectMemberSettingsService, ProjectMemberSettingsService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ITokenService, TokenService>();
 

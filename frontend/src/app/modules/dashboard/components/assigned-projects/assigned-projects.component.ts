@@ -18,7 +18,7 @@ export class AssignedProjectsComponent implements OnInit {
             this.projects = x.body;
             this.projects.forEach(y => {
             y.created = new Date(y.created);
-            y.lastBuild = new Date(y.lastBuild);
+            y.lastBuild = y.lastBuild ? new Date(y.lastBuild) : null;
             });
         });
     }

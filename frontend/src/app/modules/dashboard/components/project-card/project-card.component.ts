@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ProjectDescriptionDTO } from '../../../../models/DTO/Project/projectDescriptionDTO';
+import { ProjectService } from 'src/app/services/project.service/project.service';
 
 @Component({
     selector: 'app-project-card',
@@ -10,9 +11,14 @@ export class ProjectCardComponent implements OnInit {
     DATE = new Date();
     @Input() project: ProjectDescriptionDTO;
 
-    constructor() { }
+    constructor(private projectService: ProjectService) { }
 
     ngOnInit() { }
+
+    public getPhotoLink() {
+        return this.project.photoLink ? this.project.photoLink :
+            'https://as1.ftcdn.net/jpg/02/06/48/10/500_F_206481019_8BsIcISajJZxJEUBaTlhDwXaedpOEBHD.jpg';
+    }
 
     lastTimeBuild(): string {
         const daysCount = this.getDaysCountFromCurrentDate(this.project.lastBuild);
@@ -35,5 +41,13 @@ export class ProjectCardComponent implements OnInit {
         const currentYear = this.DATE.getUTCFullYear();
 
         return ((currentYear - 2019) * 365 + currentMonth * 30 + currentDays) - ((year - 2019) * 365 + month * 30 + days);
+    }
+
+    public favourite(event: Event): void {
+        event.stopPropagation();
+        this.project.favourite = !this.project.favourite;
+
+        this.projectService.changeFavourity(this.project.id)
+            .subscribe();
     }
 }
