@@ -33,12 +33,21 @@ namespace IDE.BLL.Services
             return projectStructureDto;
         }
 
-        public async Task<ProjectStructureDTO> CreateAsync(ProjectStructureDTO fileCreateDto)
+        public async Task UpdateAsync(ProjectStructureDTO projectStructureDTO)
         {
-            var fileStructureCreate = _mapper.Map<ProjectStructure>(fileCreateDto);
-            var createdFile = await _projectStructureRepository.CreateAsync(fileStructureCreate);
+            var currentProjectStructureDto = await GetByIdAsync(projectStructureDTO.Id);
+            currentProjectStructureDto.NestedFiles = projectStructureDTO.NestedFiles;
 
-            return await GetByIdAsync(createdFile.Id);
+            var projectStructureUpdate = _mapper.Map<ProjectStructure>(currentProjectStructureDto);
+            await _projectStructureRepository.UpdateAsync(projectStructureUpdate);
+        }
+
+        public async Task<ProjectStructureDTO> CreateAsync(ProjectStructureDTO projectStructureDto)
+        {
+            var projectStructureCreate = _mapper.Map<ProjectStructure>(projectStructureDto);
+            var createdProjectStructure = await _projectStructureRepository.CreateAsync(projectStructureCreate);
+
+            return await GetByIdAsync(createdProjectStructure.Id);
         }
 
     }

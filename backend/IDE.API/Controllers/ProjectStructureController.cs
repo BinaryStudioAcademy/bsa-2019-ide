@@ -21,10 +21,17 @@ namespace IDE.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] ProjectStructureDTO fileCreateDTO)
+        public async Task<IActionResult> CreateAsync([FromBody] ProjectStructureDTO projectStructureDTO)
         {
-            var createdFile = await _projectStructureService.CreateAsync(fileCreateDTO);
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = createdFile.Id }, createdFile);
+            var createdProjectStructure = await _projectStructureService.CreateAsync(projectStructureDTO);
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = createdProjectStructure.Id }, createdProjectStructure);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateAsync([FromBody] ProjectStructureDTO projectStructureDTO)
+        {
+            await _projectStructureService.UpdateAsync(projectStructureDTO);
+            return NoContent();
         }
 
         [HttpGet("{id}")]
