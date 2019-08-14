@@ -9,7 +9,7 @@ import { ProjectStructureDTO } from '../models/DTO/Workspace/projectStructureDTO
 })
 export class FileBrowserService {
 
-    private address:string = 'projectstructure/';
+    private address = 'projectstructure/';
 
     constructor(private requests: HttpClientWrapperService, private convert: NodesPrepareToViewService) { }
 

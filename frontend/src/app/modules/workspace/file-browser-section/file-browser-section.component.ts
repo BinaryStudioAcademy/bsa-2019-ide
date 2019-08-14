@@ -19,7 +19,7 @@ export class FileBrowserSectionComponent implements OnInit {
     items: MenuItem[];
     files: TreeNode[];
     selectedFile2: TreeNode;
-    projectId: number;
+    public projectId: number;
   
   
     constructor(private fileBService: FileBrowserService,
