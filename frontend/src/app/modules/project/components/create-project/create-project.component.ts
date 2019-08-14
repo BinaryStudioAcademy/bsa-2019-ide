@@ -12,17 +12,17 @@ import { Router } from '@angular/router';
 })
 export class CreateProjectComponent implements OnInit, OnDestroy {
 
-    constructor(
-        private fb: FormBuilder,
-        private projectService: ProjectService,
-        private toastrService: ToastrService,
-        private router: Router) { }
-
     public languages: any;
     public projectTypes: any;
     public compilerTypes: any;
     public colors: any;
     private project: ProjectCreateDTO;
+    
+    constructor(
+        private fb: FormBuilder,
+        private projectService: ProjectService,
+        private toastrService: ToastrService,
+        private router: Router) { }
 
     public projectForm = this.fb.group({
         name: ['', Validators.required],
@@ -47,8 +47,6 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
             countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value,
             color: this.projectForm.get('color').value
         };
-
-        console.log(this.project)
         
         this.projectService.addProject(this.project)
             .subscribe(res => {
@@ -61,8 +59,8 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
                 })
     }
 
-    changeLanguage(e) {
-        console.log(e)
+    public changeLanguage(e:number) {
+
         switch(e){
             case 0:{
                 this.compilerTypes = [
