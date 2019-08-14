@@ -50,7 +50,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.isPageLoaded = true;
-          this.toastService.error("Can't load project details", "Error Message");
+          this.toastService.error("Can't load project details.", "Error Message:");
           console.error(error.message);
         }
       );
@@ -90,6 +90,11 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     this.projectStartState.description = this.project.description;
     this.projectStartState.countOfSaveBuilds = this.project.countOfSaveBuilds;
     this.projectStartState.countOfBuildAttempts = this.project.countOfBuildAttempts;
+  }
+
+  private getErrorMessage(field: string): string {
+    const control = this.projectForm.get(field);
+    return control.hasError('required') ? 'Field is required!' : 'error';
   }
 
 }

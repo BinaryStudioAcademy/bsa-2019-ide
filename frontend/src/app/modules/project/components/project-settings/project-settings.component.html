@@ -4,6 +4,7 @@
 <div *ngIf="isPageLoaded && !project" class="error">
   <p>Can't load project details</p>
 </div>
+
 <div *ngIf="isPageLoaded && !!project" class="container">
   <div class="ui-g ui-fluid">
       <div class="ui-g-12">
@@ -23,9 +24,7 @@
                       </div>
                   </div>
               </div>
-              <div class="invalid" *ngIf="projectForm.get('name').errors && projectForm.get('name').dirty">
-                  Name is required.
-              </div>
+              <div class="invalid" *ngIf="projectForm.get('name').invalid">{{getErrorMessage('name')}}</div>
 
               <div class="label">Description</div>
               <div class="ui-g ui-fluid">
@@ -35,10 +34,7 @@
                       </div>
                   </div>
               </div>
-              <div class="invalid"
-                  *ngIf="projectForm.get('description').errors && projectForm.get('description').dirty">
-                  Description is required.
-              </div>
+              <div class="invalid" *ngIf="projectForm.get('description').invalid">{{getErrorMessage('description')}}</div>
 
               <div class="label">Number of saved builds</div>
               <div class="ui-g ui-fluid">
@@ -48,10 +44,7 @@
                       </div>
                   </div>
               </div>
-              <div class="invalid"
-                  *ngIf="projectForm.get('countOfSaveBuilds').errors && projectForm.get('countOfSaveBuilds').dirty">
-                  required.
-              </div>
+              <div class="invalid" *ngIf="projectForm.get('countOfSaveBuilds').invalid">{{getErrorMessage('countOfSaveBuilds')}}</div>
 
               <div class="label">Number of build attempts for user</div>
               <div class="ui-g ui-fluid">
@@ -61,10 +54,7 @@
                       </div>
                   </div>
               </div>
-              <div class="invalid"
-                  *ngIf="projectForm.get('countOfBuildAttempts').errors && projectForm.get('countOfBuildAttempts').dirty">
-                  required.
-              </div>
+              <div class="invalid" *ngIf="projectForm.get('countOfBuildAttempts').invalid">{{getErrorMessage('countOfBuildAttempts')}}</div>
 
               <div class="ui-g ui-fluid">
                   <div class="ui-g-12">
