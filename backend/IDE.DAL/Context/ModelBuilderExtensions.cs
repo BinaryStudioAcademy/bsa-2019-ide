@@ -74,7 +74,7 @@ namespace IDE.DAL.Context
 
             var users = GenerateRandomUsers(avatars);
             var gits = GenerateRandomGitCredentials();
-            var projects = GenerateRandomProjects(users, gits, images);
+            var projects = GenerateRandomProjects(users, gits);
             var builds = GenerateRandomBuilds(users, projects);
             var projectMembers = GenerateRandomProjectMembers(users, projects)
                 .GroupBy(x => x.ProjectId + " " + x.UserId).Select(x => x.First());
@@ -167,7 +167,7 @@ namespace IDE.DAL.Context
         }
 
         private static ICollection<Project> GenerateRandomProjects(ICollection<User> authors,
-            ICollection<GitCredential> gits, ICollection<Image> logos)
+            ICollection<GitCredential> gits)
         {
             var projectId = 1;
 
@@ -182,7 +182,6 @@ namespace IDE.DAL.Context
                 .RuleFor(i => i.Description, f => f.Lorem.Sentence(5))
                 .RuleFor(i => i.GitCredentialId, f => f.PickRandom(gits).Id)
                 .RuleFor(i => i.Language, f => f.PickRandom<Language>())
-                .RuleFor(i => i.LogoId, f => f.PickRandom(logos).Id)
                 .RuleFor(i => i.Name, f => f.Lorem.Word())
                 .RuleFor(i => i.ProjectLink, f => f.Internet.Url())
                 .RuleFor(i => i.ProjectType, f => f.PickRandom<ProjectType>());

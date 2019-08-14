@@ -84,7 +84,7 @@ namespace IDE.DAL.Migrations
                     AccessModifier = table.Column<int>(nullable: false),
                     AuthorId = table.Column<int>(nullable: false),
                     GitCredentialId = table.Column<int>(nullable: true),
-                    LogoId = table.Column<int>(nullable: true)
+                    Color = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -101,12 +101,6 @@ namespace IDE.DAL.Migrations
                         principalTable: "GitCredentials",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Projects_Images_LogoId",
-                        column: x => x.LogoId,
-                        principalTable: "Images",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,11 +203,6 @@ namespace IDE.DAL.Migrations
                 name: "IX_Projects_GitCredentialId",
                 table: "Projects",
                 column: "GitCredentialId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Projects_LogoId",
-                table: "Projects",
-                column: "LogoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_UserId",

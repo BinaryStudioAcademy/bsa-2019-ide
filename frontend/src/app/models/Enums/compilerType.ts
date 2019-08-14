@@ -1,5 +1,8 @@
 ﻿/* Auto Generated */
 
 export enum CompilerType {
-    netCore = 0,
+    coreCLR = 0,
+    roslyn = 1,
+    v8 = 2,
+    gc = 3,
 }

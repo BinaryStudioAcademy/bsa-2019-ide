@@ -105,8 +105,7 @@ export class TokenService {
                 id: token.id,
                 firstName: token.firstName,
                 lastName: token.lastName,
-                nickName: token.nickName,
-                photoLink: token.photoUrl
+                nickName: token.nickName
             };
             return user;
         }
