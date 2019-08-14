@@ -81,7 +81,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
                     { label: 'V8', value: 2 }
                 ];
                 this.projectTypes = [
-                    { label: 'Js/Ts app', value: 3 }
+                    { label: 'Console App', value: 0 },
                 ];
                 break;
             }
@@ -90,7 +90,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
                     { label: 'V8', value: 2 }
                 ];
                 this.projectTypes = [
-                    { label: 'Js/Ts app', value: 3 }
+                    { label: 'Console App', value: 0 },
                 ];
                 break;
             }
@@ -99,7 +99,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
                     { label: 'Gc', value: 3 }
                 ];
                 this.projectTypes = [
-                    { label: 'Go app', value: 4 }
+                    { label: 'Console App', value: 0 },
                 ];
                 break;
             }

@@ -4,8 +4,6 @@
     {
         Console = 0,
         Web = 1,
-        Library = 2,
-        JsTsApp = 3,
-        GoApp = 4
+        Library = 2
     }
 }
