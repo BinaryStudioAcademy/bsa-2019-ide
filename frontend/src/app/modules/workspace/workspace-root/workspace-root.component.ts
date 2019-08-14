@@ -4,13 +4,12 @@ import { WorkspaceService } from './../../../services/workspace.service';
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ResizeEvent } from 'angular-resizable-element';
+import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
-
-
 
 
 @Component({
@@ -19,15 +18,23 @@ import { map } from 'rxjs/internal/operators/map';
     styleUrls: ['./workspace-root.component.sass']
 })
 export class WorkspaceRootComponent implements OnInit {
+    public projectId: number;
+  
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
     constructor(
+        private route: ActivatedRoute,
         private tr: ToastrService,
         private ws: WorkspaceService,
         private saveOnExit: LeavePageDialogService) { }
 
     ngOnInit() {
+      this.projectId = Number(this.route.snapshot.paramMap.get('id'));
+      if (!this.projectId) {
+        console.error('Id in URL is not a number!');
+        return;
+      }
     }
 
     public onFileSelected(fileId) {
