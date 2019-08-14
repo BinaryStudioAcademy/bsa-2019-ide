@@ -76,7 +76,16 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
                 ];
                 break;
             }
-            case 1 || 2:{
+            case 1:{
+                this.compilerTypes = [
+                    { label: 'V8', value: 2 }
+                ];
+                this.projectTypes = [
+                    { label: 'Js/Ts app', value: 3 }
+                ];
+                break;
+            }
+            case 2:{
                 this.compilerTypes = [
                     { label: 'V8', value: 2 }
                 ];

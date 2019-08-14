@@ -32,9 +32,6 @@ namespace IDE.DAL.Entities
         public int? GitCredentialId { get; set; }
         public GitCredential GitCredential { get; set; }
 
-        public int? LogoId { get; set; }
-        public Image Logo { get; set; }
-
         public ICollection<Build> Builds { get; set; }
         public ICollection<ProjectMember> ProjectMembers { get; set; }
         public ICollection<FavouriteProjects> FavouriteProjects { get; set; }

@@ -1,6 +1,5 @@
 <p-card routerLink="/workspace/{{project.id}}" subheader="{{project.creator}}">
     <p-header>
-        <!--<div class="imgContainer" [style.background-image]="'url(' + getPhotoLink() + ')'">-->
             <div class="imgContainer" [ngStyle]="{ 'background-color': project.color }">
             <div class="star" (click)="favourite($event)">
                 <i class="pi pi-star-o iStar" *ngIf="!project.favourite"></i>

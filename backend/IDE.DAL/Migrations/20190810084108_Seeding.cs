@@ -81,29 +81,29 @@ namespace IDE.DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "Projects",
-                columns: new[] { "Id", "AccessModifier", "AuthorId", "CompilerType", "CountOfBuildAttempts", "CountOfSaveBuilds", "CreatedAt", "Description", "GitCredentialId", "Language", "LogoId", "Name", "ProjectLink", "ProjectType", "Color" },
+                columns: new[] { "Id", "AccessModifier", "AuthorId", "CompilerType", "CountOfBuildAttempts", "CountOfSaveBuilds", "CreatedAt", "Description", "GitCredentialId", "Language", "Name", "ProjectLink", "ProjectType", "Color" },
                 values: new object[,]
                 {
-                    { 3, 0, 1, 0, 10, 7, new DateTime(2018, 1, 10, 7, 38, 41, 938, DateTimeKind.Unspecified).AddTicks(7227), "Iste rerum doloremque laudantium rerum.", 20, 1, 4, "cum", "https://talia.net", 2, "#ff0000" },
-                    { 16, 0, 2, 0, 10, 5, new DateTime(2018, 3, 18, 21, 40, 33, 377, DateTimeKind.Unspecified).AddTicks(9460), "Cupiditate harum numquam omnis unde.", 19, 0, 11, "expedita", "http://norbert.name", 1, "#000000"},
-                    { 9, 1, 2, 0, 8, 6, new DateTime(2018, 5, 20, 10, 58, 40, 94, DateTimeKind.Unspecified).AddTicks(1285), "Excepturi odit et dolorem officia.", 2, 1, 19, "qui", "https://leda.net", 0, "#0080ff" },
-                    { 8, 1, 2, 0, 10, 7, new DateTime(2018, 5, 9, 19, 46, 19, 882, DateTimeKind.Unspecified).AddTicks(648), "Qui adipisci deleniti culpa et.", 2, 1, 11, "omnis", "http://hardy.info", 2, "#bf00ff" },
-                    { 18, 0, 3, 0, 10, 10, new DateTime(2018, 3, 23, 20, 43, 12, 521, DateTimeKind.Unspecified).AddTicks(3312), "Voluptatem consectetur minus facere eum.", 16, 1, 19, "exercitationem", "http://margarita.org", 0, "#00ffff" },
-                    { 14, 0, 3, 0, 9, 8, new DateTime(2018, 3, 26, 22, 22, 44, 164, DateTimeKind.Unspecified).AddTicks(6224), "Corporis laboriosam ab voluptatem iure.", 2, 1, 13, "dolores", "https://pearlie.name", 0, "#8b008b" },
-                    { 13, 0, 3, 0, 10, 5, new DateTime(2018, 2, 4, 18, 40, 56, 195, DateTimeKind.Unspecified).AddTicks(3590), "Numquam maxime repudiandae minus velit.", 1, 1, 20, "enim", "http://nathaniel.biz", 2, "#ff8c00" },
-                    { 6, 0, 3, 0, 8, 6, new DateTime(2018, 4, 23, 9, 19, 52, 199, DateTimeKind.Unspecified).AddTicks(611), "Et voluptas consectetur nam nostrum.", 4, 0, 16, "eaque", "https://rocky.info", 2, "#ffd700" },
-                    { 4, 0, 3, 0, 7, 8, new DateTime(2018, 2, 14, 5, 7, 25, 717, DateTimeKind.Unspecified).AddTicks(3791), "Explicabo blanditiis corporis voluptatem tempora.", 3, 0, 10, "laborum", "https://everett.org", 2, "#008000" },
-                    { 2, 1, 3, 0, 5, 6, new DateTime(2018, 6, 9, 18, 2, 26, 825, DateTimeKind.Unspecified).AddTicks(6672), "Repellendus eligendi ad vel officia.", 9, 0, 19, "animi", "http://lucie.org", 2, "#778899" },
-                    { 1, 0, 3, 0, 10, 6, new DateTime(2018, 1, 21, 1, 18, 19, 295, DateTimeKind.Unspecified).AddTicks(3740), "Voluptas fuga soluta officiis temporibus.", 1, 1, 11, "dicta", "http://fabian.biz", 1, "#ff0000" },
-                    { 20, 1, 1, 0, 5, 5, new DateTime(2018, 3, 20, 10, 47, 29, 908, DateTimeKind.Unspecified).AddTicks(5458), "Sapiente corrupti voluptatem laboriosam alias.", 5, 0, 8, "sed", "http://lavina.com", 1, "#000000" },
-                    { 15, 0, 1, 0, 5, 7, new DateTime(2018, 3, 26, 12, 1, 51, 384, DateTimeKind.Unspecified).AddTicks(1676), "Illo aut consequatur quia non.", 3, 0, 20, "ullam", "http://rodolfo.info", 0, "#00ffff"  },
-                    { 12, 1, 1, 0, 6, 9, new DateTime(2018, 6, 12, 22, 50, 26, 607, DateTimeKind.Unspecified).AddTicks(9898), "Ut sed aliquam aperiam dolores.", 20, 0, 6, "repellendus", "http://callie.name", 1, "#bf00ff" },
-                    { 11, 1, 1, 0, 8, 10, new DateTime(2018, 1, 5, 21, 33, 57, 552, DateTimeKind.Unspecified).AddTicks(4525), "Necessitatibus quas et ullam provident.", 10, 0, 8, "dolores", "http://marguerite.org", 1, "#00ffff" },
-                    { 10, 0, 1, 0, 10, 5, new DateTime(2018, 3, 29, 10, 40, 16, 430, DateTimeKind.Unspecified).AddTicks(9934), "Rerum dolores placeat sed vitae.", 20, 0, 4, "ea", "https://taylor.net", 2, "#000000" },
-                    { 7, 1, 1, 0, 10, 7, new DateTime(2018, 1, 14, 6, 41, 21, 239, DateTimeKind.Unspecified).AddTicks(2988), "Quos et sed omnis soluta.", 12, 1, 4, "maxime", "https://christelle.net", 1, "#0080ff" },
-                    { 5, 0, 1, 0, 5, 9, new DateTime(2018, 2, 11, 18, 36, 16, 185, DateTimeKind.Unspecified).AddTicks(2502), "Quidem vel nobis vel vel.", 4, 1, 15, "assumenda", "https://nicklaus.org", 1, "#8b008b" },
-                    { 17, 0, 2, 0, 7, 7, new DateTime(2018, 2, 9, 2, 30, 22, 730, DateTimeKind.Unspecified).AddTicks(6661), "Voluptas amet ut veniam nobis.", 2, 0, 13, "voluptas", "http://kristina.name", 0, "#778899" },
-                    { 19, 0, 2, 0, 6, 6, new DateTime(2018, 3, 5, 4, 14, 28, 816, DateTimeKind.Unspecified).AddTicks(7658), "Provident praesentium aliquam laudantium quo.", 5, 0, 14, "non", "http://ralph.biz", 1, "#ffd700" }
+                    { 3, 0, 1, 0, 10, 7, new DateTime(2018, 1, 10, 7, 38, 41, 938, DateTimeKind.Unspecified).AddTicks(7227), "Iste rerum doloremque laudantium rerum.", 20, 1, "cum", "https://talia.net", 2, "#ff0000" },
+                    { 16, 0, 2, 0, 10, 5, new DateTime(2018, 3, 18, 21, 40, 33, 377, DateTimeKind.Unspecified).AddTicks(9460), "Cupiditate harum numquam omnis unde.", 19, 0, "expedita", "http://norbert.name", 1, "#000000"},
+                    { 9, 1, 2, 0, 8, 6, new DateTime(2018, 5, 20, 10, 58, 40, 94, DateTimeKind.Unspecified).AddTicks(1285), "Excepturi odit et dolorem officia.", 2, 1,  "qui", "https://leda.net", 0, "#0080ff" },
+                    { 8, 1, 2, 0, 10, 7, new DateTime(2018, 5, 9, 19, 46, 19, 882, DateTimeKind.Unspecified).AddTicks(648), "Qui adipisci deleniti culpa et.", 2, 1, "omnis", "http://hardy.info", 2, "#bf00ff" },
+                    { 18, 0, 3, 0, 10, 10, new DateTime(2018, 3, 23, 20, 43, 12, 521, DateTimeKind.Unspecified).AddTicks(3312), "Voluptatem consectetur minus facere eum.", 16, 1, "exercitationem", "http://margarita.org", 0, "#00ffff" },
+                    { 14, 0, 3, 0, 9, 8, new DateTime(2018, 3, 26, 22, 22, 44, 164, DateTimeKind.Unspecified).AddTicks(6224), "Corporis laboriosam ab voluptatem iure.", 2, 1,  "dolores", "https://pearlie.name", 0, "#8b008b" },
+                    { 13, 0, 3, 0, 10, 5, new DateTime(2018, 2, 4, 18, 40, 56, 195, DateTimeKind.Unspecified).AddTicks(3590), "Numquam maxime repudiandae minus velit.", 1, 1,  "enim", "http://nathaniel.biz", 2, "#ff8c00" },
+                    { 6, 0, 3, 0, 8, 6, new DateTime(2018, 4, 23, 9, 19, 52, 199, DateTimeKind.Unspecified).AddTicks(611), "Et voluptas consectetur nam nostrum.", 4, 0, "eaque", "https://rocky.info", 2, "#ffd700" },
+                    { 4, 0, 3, 0, 7, 8, new DateTime(2018, 2, 14, 5, 7, 25, 717, DateTimeKind.Unspecified).AddTicks(3791), "Explicabo blanditiis corporis voluptatem tempora.", 3, 0, "laborum", "https://everett.org", 2, "#008000" },
+                    { 2, 1, 3, 0, 5, 6, new DateTime(2018, 6, 9, 18, 2, 26, 825, DateTimeKind.Unspecified).AddTicks(6672), "Repellendus eligendi ad vel officia.", 9, 0, "animi", "http://lucie.org", 2, "#778899" },
+                    { 1, 0, 3, 0, 10, 6, new DateTime(2018, 1, 21, 1, 18, 19, 295, DateTimeKind.Unspecified).AddTicks(3740), "Voluptas fuga soluta officiis temporibus.", 1, 1, "dicta", "http://fabian.biz", 1, "#ff0000" },
+                    { 20, 1, 1, 0, 5, 5, new DateTime(2018, 3, 20, 10, 47, 29, 908, DateTimeKind.Unspecified).AddTicks(5458), "Sapiente corrupti voluptatem laboriosam alias.", 5, 0, "sed", "http://lavina.com", 1, "#000000" },
+                    { 15, 0, 1, 0, 5, 7, new DateTime(2018, 3, 26, 12, 1, 51, 384, DateTimeKind.Unspecified).AddTicks(1676), "Illo aut consequatur quia non.", 3, 0, "ullam", "http://rodolfo.info", 0, "#00ffff"  },
+                    { 12, 1, 1, 0, 6, 9, new DateTime(2018, 6, 12, 22, 50, 26, 607, DateTimeKind.Unspecified).AddTicks(9898), "Ut sed aliquam aperiam dolores.", 20, 0, "repellendus", "http://callie.name", 1, "#bf00ff" },
+                    { 11, 1, 1, 0, 8, 10, new DateTime(2018, 1, 5, 21, 33, 57, 552, DateTimeKind.Unspecified).AddTicks(4525), "Necessitatibus quas et ullam provident.", 10, 0, "dolores", "http://marguerite.org", 1, "#00ffff" },
+                    { 10, 0, 1, 0, 10, 5, new DateTime(2018, 3, 29, 10, 40, 16, 430, DateTimeKind.Unspecified).AddTicks(9934), "Rerum dolores placeat sed vitae.", 20, 0, "ea", "https://taylor.net", 2, "#000000" },
+                    { 7, 1, 1, 0, 10, 7, new DateTime(2018, 1, 14, 6, 41, 21, 239, DateTimeKind.Unspecified).AddTicks(2988), "Quos et sed omnis soluta.", 12, 1, "maxime", "https://christelle.net", 1, "#0080ff" },
+                    { 5, 0, 1, 0, 5, 9, new DateTime(2018, 2, 11, 18, 36, 16, 185, DateTimeKind.Unspecified).AddTicks(2502), "Quidem vel nobis vel vel.", 4, 1, "assumenda", "https://nicklaus.org", 1, "#8b008b" },
+                    { 17, 0, 2, 0, 7, 7, new DateTime(2018, 2, 9, 2, 30, 22, 730, DateTimeKind.Unspecified).AddTicks(6661), "Voluptas amet ut veniam nobis.", 2, 0, "voluptas", "http://kristina.name", 0, "#778899" },
+                    { 19, 0, 2, 0, 6, 6, new DateTime(2018, 3, 5, 4, 14, 28, 816, DateTimeKind.Unspecified).AddTicks(7658), "Provident praesentium aliquam laudantium quo.", 5, 0, "non", "http://ralph.biz", 1, "#ffd700" }
                 });
 
             migrationBuilder.InsertData(

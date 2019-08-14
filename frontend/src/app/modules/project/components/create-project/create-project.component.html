@@ -114,7 +114,7 @@
                 <div class="label">Project color</div>
                 <div class="ui-g ui-fluid">
                     <div class="ui-g-12">
-                        <p-dropdown [options]="colors" formControlName="color">
+                        <p-dropdown [options]="colors" placeholder="Select project color" formControlName="color">
                             <ng-template let-color pTemplate="item">
                                 <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
                                     <div class="color-label" style="width:15px; height: 15px; float: right; padding-top: 15px" [ngStyle]="{ 'background-color': color.value }" ></div>

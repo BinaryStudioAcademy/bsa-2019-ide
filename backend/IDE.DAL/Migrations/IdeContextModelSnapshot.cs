@@ -820,8 +820,6 @@ namespace IDE.DAL.Migrations
 
                     b.Property<int>("Language");
 
-                    b.Property<int?>("LogoId");
-
                     b.Property<string>("Name");
 
                     b.Property<string>("ProjectLink");
@@ -833,8 +831,6 @@ namespace IDE.DAL.Migrations
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("GitCredentialId");
-
-                    b.HasIndex("LogoId");
 
                     b.ToTable("Projects");
 
@@ -851,7 +847,6 @@ namespace IDE.DAL.Migrations
                             Description = "Voluptas fuga soluta officiis temporibus.",
                             GitCredentialId = 1,
                             Language = 1,
-                            LogoId = 11,
                             Name = "dicta",
                             ProjectLink = "http://fabian.biz",
                             ProjectType = 1
@@ -868,7 +863,6 @@ namespace IDE.DAL.Migrations
                             Description = "Repellendus eligendi ad vel officia.",
                             GitCredentialId = 9,
                             Language = 0,
-                            LogoId = 19,
                             Name = "animi",
                             ProjectLink = "http://lucie.org",
                             ProjectType = 2
@@ -885,7 +879,6 @@ namespace IDE.DAL.Migrations
                             Description = "Iste rerum doloremque laudantium rerum.",
                             GitCredentialId = 20,
                             Language = 1,
-                            LogoId = 4,
                             Name = "cum",
                             ProjectLink = "https://talia.net",
                             ProjectType = 2
@@ -902,7 +895,6 @@ namespace IDE.DAL.Migrations
                             Description = "Explicabo blanditiis corporis voluptatem tempora.",
                             GitCredentialId = 3,
                             Language = 0,
-                            LogoId = 10,
                             Name = "laborum",
                             ProjectLink = "https://everett.org",
                             ProjectType = 2
@@ -919,7 +911,6 @@ namespace IDE.DAL.Migrations
                             Description = "Quidem vel nobis vel vel.",
                             GitCredentialId = 4,
                             Language = 1,
-                            LogoId = 15,
                             Name = "assumenda",
                             ProjectLink = "https://nicklaus.org",
                             ProjectType = 1
@@ -936,7 +927,6 @@ namespace IDE.DAL.Migrations
                             Description = "Et voluptas consectetur nam nostrum.",
                             GitCredentialId = 4,
                             Language = 0,
-                            LogoId = 16,
                             Name = "eaque",
                             ProjectLink = "https://rocky.info",
                             ProjectType = 2
@@ -953,7 +943,6 @@ namespace IDE.DAL.Migrations
                             Description = "Quos et sed omnis soluta.",
                             GitCredentialId = 12,
                             Language = 1,
-                            LogoId = 4,
                             Name = "maxime",
                             ProjectLink = "https://christelle.net",
                             ProjectType = 1
@@ -970,7 +959,6 @@ namespace IDE.DAL.Migrations
                             Description = "Qui adipisci deleniti culpa et.",
                             GitCredentialId = 2,
                             Language = 1,
-                            LogoId = 11,
                             Name = "omnis",
                             ProjectLink = "http://hardy.info",
                             ProjectType = 2
@@ -987,7 +975,6 @@ namespace IDE.DAL.Migrations
                             Description = "Excepturi odit et dolorem officia.",
                             GitCredentialId = 2,
                             Language = 1,
-                            LogoId = 19,
                             Name = "qui",
                             ProjectLink = "https://leda.net",
                             ProjectType = 0
@@ -1004,7 +991,6 @@ namespace IDE.DAL.Migrations
                             Description = "Rerum dolores placeat sed vitae.",
                             GitCredentialId = 20,
                             Language = 0,
-                            LogoId = 4,
                             Name = "ea",
                             ProjectLink = "https://taylor.net",
                             ProjectType = 2
@@ -1021,7 +1007,6 @@ namespace IDE.DAL.Migrations
                             Description = "Necessitatibus quas et ullam provident.",
                             GitCredentialId = 10,
                             Language = 0,
-                            LogoId = 8,
                             Name = "dolores",
                             ProjectLink = "http://marguerite.org",
                             ProjectType = 1
@@ -1038,7 +1023,6 @@ namespace IDE.DAL.Migrations
                             Description = "Ut sed aliquam aperiam dolores.",
                             GitCredentialId = 20,
                             Language = 0,
-                            LogoId = 6,
                             Name = "repellendus",
                             ProjectLink = "http://callie.name",
                             ProjectType = 1
@@ -1055,7 +1039,6 @@ namespace IDE.DAL.Migrations
                             Description = "Numquam maxime repudiandae minus velit.",
                             GitCredentialId = 1,
                             Language = 1,
-                            LogoId = 20,
                             Name = "enim",
                             ProjectLink = "http://nathaniel.biz",
                             ProjectType = 2
@@ -1072,7 +1055,6 @@ namespace IDE.DAL.Migrations
                             Description = "Corporis laboriosam ab voluptatem iure.",
                             GitCredentialId = 2,
                             Language = 1,
-                            LogoId = 13,
                             Name = "dolores",
                             ProjectLink = "https://pearlie.name",
                             ProjectType = 0
@@ -1089,7 +1071,6 @@ namespace IDE.DAL.Migrations
                             Description = "Illo aut consequatur quia non.",
                             GitCredentialId = 3,
                             Language = 0,
-                            LogoId = 20,
                             Name = "ullam",
                             ProjectLink = "http://rodolfo.info",
                             ProjectType = 0
@@ -1106,7 +1087,6 @@ namespace IDE.DAL.Migrations
                             Description = "Cupiditate harum numquam omnis unde.",
                             GitCredentialId = 19,
                             Language = 0,
-                            LogoId = 11,
                             Name = "expedita",
                             ProjectLink = "http://norbert.name",
                             ProjectType = 1
@@ -1123,7 +1103,6 @@ namespace IDE.DAL.Migrations
                             Description = "Voluptas amet ut veniam nobis.",
                             GitCredentialId = 2,
                             Language = 0,
-                            LogoId = 13,
                             Name = "voluptas",
                             ProjectLink = "http://kristina.name",
                             ProjectType = 0
@@ -1140,7 +1119,6 @@ namespace IDE.DAL.Migrations
                             Description = "Voluptatem consectetur minus facere eum.",
                             GitCredentialId = 16,
                             Language = 1,
-                            LogoId = 19,
                             Name = "exercitationem",
                             ProjectLink = "http://margarita.org",
                             ProjectType = 0
@@ -1157,7 +1135,6 @@ namespace IDE.DAL.Migrations
                             Description = "Provident praesentium aliquam laudantium quo.",
                             GitCredentialId = 5,
                             Language = 0,
-                            LogoId = 14,
                             Name = "non",
                             ProjectLink = "http://ralph.biz",
                             ProjectType = 1
@@ -1174,7 +1151,6 @@ namespace IDE.DAL.Migrations
                             Description = "Sapiente corrupti voluptatem laboriosam alias.",
                             GitCredentialId = 5,
                             Language = 0,
-                            LogoId = 8,
                             Name = "sed",
                             ProjectLink = "http://lavina.com",
                             ProjectType = 1
@@ -1447,9 +1423,6 @@ namespace IDE.DAL.Migrations
                         .WithMany()
                         .HasForeignKey("GitCredentialId");
 
-                    b.HasOne("IDE.DAL.Entities.Image", "Logo")
-                        .WithMany()
-                        .HasForeignKey("LogoId");
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.ProjectMember", b =>
