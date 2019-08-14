@@ -1,4 +1,8 @@
-<div class="container">
+<div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+
+<div *ngIf="isPageLoaded" class="container">
   <div class="ui-g ui-fluid">
       <div class="ui-g-12">
           <div class="title">Edit project "{{projectStartState.name}}"</div>
@@ -62,8 +66,11 @@
 
               <div class="ui-g ui-fluid">
                   <div class="ui-g-12">
-                      <button type="button" routerLink="/project/{{projectId}}" pButton class="ui-button-secondary" label="Cancel"></button>
-                      <button type="submit" [disabled]="!projectForm.valid || projectItemIsNotChange()" pButton label="Save"></button>
+                      <button type="button" routerLink="/project/{{projectId}}" pButton class="ui-button-secondary" label="Back to details"></button>
+                      <button *ngIf="isDetailsSaved" type="submit" [disabled]="!projectForm.valid || projectItemIsNotChange()" pButton label="Save"></button>
+                      <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!isDetailsSaved">
+                          <p-progressSpinner></p-progressSpinner>
+                      </div>
                   </div>
               </div>
 

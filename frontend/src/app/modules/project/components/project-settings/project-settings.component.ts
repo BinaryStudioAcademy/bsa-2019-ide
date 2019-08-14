@@ -17,6 +17,8 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
   public projectId: number;
   public project: ProjectUpdateDTO;
   public projectStartState = {} as ProjectUpdateDTO;
+  public isPageLoaded = false;
+  public isDetailsSaved = true;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -43,8 +45,10 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
       .subscribe(
         (resp) => {
           this.SetProjectObjectsFromResponse(resp);
+          this.isPageLoaded = true;
         },
         (error) => {
+          this.isPageLoaded = true;
           console.error(error.message);
         }
       );
@@ -62,13 +66,16 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    this.isDetailsSaved = false;
     console.log('submit click');
     this.projectService.updateProject(this.project)
       .subscribe(
         (resp) => {
           this.SetProjectObjectsFromResponse(resp);
+          this.isDetailsSaved = true;
         },
         (error) => {
+          this.isDetailsSaved = true;
           console.error(error.message);
         }
       );
