@@ -1,3 +1,4 @@
+import { SaveBeforeExitGuard } from './../../guards/save-before-exit.guard';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { WorkspaceRootComponent } from './workspace-root/workspace-root.component';
@@ -7,7 +8,7 @@ const workspaceRoutes: Routes = [
     {
         path: 'workspace/:id',
         component: WorkspaceRootComponent,
-        canActivate: [LoginGuard]
+        canActivate: [LoginGuard], canDeactivate: [SaveBeforeExitGuard]
     }
 ];
 

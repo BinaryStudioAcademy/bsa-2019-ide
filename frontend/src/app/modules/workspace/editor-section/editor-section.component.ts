@@ -42,14 +42,15 @@ export class EditorSectionComponent implements OnInit {
     public closeItem(event, index) {
         this.saveFiles([this.openedFiles[index]]);
         this.items = this.items.filter((item, i) => i !== index);
+        this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
         //delete this.openedFiles[index];
-        this.code = this.openedFiles[index - 1].content;
-        this.activeItem = this.items[index - 1];
+        index = this.items.length === index ? index - 1 : index;
+        this.code = this.openedFiles[index].content;
+        this.activeItem = this.items[index];
         event.preventDefault();
     }
     public onTabSelect(evt, index) {
         this.code = this.openedFiles[index].content;
-        console.log(this.openedFiles);
     }
 
     public saveFiles(files: FileUpdateDTO[]) {

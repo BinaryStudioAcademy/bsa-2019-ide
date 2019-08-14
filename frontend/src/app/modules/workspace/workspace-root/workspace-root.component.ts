@@ -50,7 +50,7 @@ export class WorkspaceRootComponent implements OnInit {
 
     canDeactivate(): Observable<boolean> {
 
-        return this.saveOnExit.confirm('Discard changes?')
+        return this.saveOnExit.confirm('Save changes?')
         .pipe(
             switchMap(
                 mustSave => mustSave ? this.saveFiles().pipe(map(result => result.ok ?  true :  false)) : of(false)));
