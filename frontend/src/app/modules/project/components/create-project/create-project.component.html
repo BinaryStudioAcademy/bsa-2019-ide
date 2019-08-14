@@ -42,7 +42,7 @@
                     <div class="ui-g-12">
                         <div class="">
                             <p-dropdown [options]="languages" placeholder="Select a project language"
-                                formControlName="language"></p-dropdown>
+                                formControlName="language" (ngModelChange)="changeLanguage($event)" ></p-dropdown>
                             <!--<select required type="text"  placeholder="language" formControlName="language">
                                 <option value="0">C#</option>
                             </select>-->

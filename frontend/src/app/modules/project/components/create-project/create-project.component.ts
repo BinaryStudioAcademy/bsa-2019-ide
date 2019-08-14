@@ -59,9 +59,43 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
                 error => {
                     this.toastrService.error('error');
                 })
-                
     }
 
+    changeLanguage(e) {
+        console.log(e)
+        switch(e){
+            case 0:{
+                this.compilerTypes = [
+                    { label: 'CoreCLR', value: 0 },
+                    { label: 'Roslyn', value: 1 }
+                ];
+                this.projectTypes = [
+                    { label: 'Console App', value: 0 },
+                    { label: 'Web App', value: 1 },
+                    { label: 'Library', value: 2 }
+                ];
+                break;
+            }
+            case 1 || 2:{
+                this.compilerTypes = [
+                    { label: 'V8', value: 2 }
+                ];
+                this.projectTypes = [
+                    { label: 'Js/Ts app', value: 3 }
+                ];
+                break;
+            }
+            case 3:{
+                this.compilerTypes = [
+                    { label: 'Gc', value: 3 }
+                ];
+                this.projectTypes = [
+                    { label: 'Go app', value: 4 }
+                ];
+                break;
+            }
+      }
+    }
     ngOnInit(): void { //Maybe choose initializing
         this.colors = [
             { label: 'Red', value: '#ff0000' },
@@ -78,17 +112,9 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
 
         this.languages = [
             { label: 'C#', value: 0 },
-            { label: 'TypeScript', value: 1 }
-        ];
-
-        this.compilerTypes = [
-            { label: '.Net Core', value: 0 }
-        ];
-
-        this.projectTypes = [
-            { label: 'Console App', value: 0 },
-            { label: 'Web App', value: 1 },
-            { label: 'Library', value: 2 }
+            { label: 'TypeScript', value: 1 },
+            { label: 'JavaScript', value: 2 },
+            { label: 'Go', value: 3}
         ];
     }
 
