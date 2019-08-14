@@ -42,13 +42,26 @@ export class WorkspaceRootComponent implements OnInit {
 
     public onSaveButtonClick(ev) {
         this.saveFiles().subscribe(
-            success => this.tr.success("Files saved", "Success", { tapToDismiss: true }),
+            success => {
+                if (success.ok) {
+                    this.tr.success("Files saved", "Success", { tapToDismiss: true })
+                } else {
+                    this.tr.error("Can't save files", "Error", { tapToDismiss: true });
+                }
+
+            },
             error => this.tr.error("Can't save files", "Error", { tapToDismiss: true }));
     }
 
     public onFilesSave(ev) {
         this.saveFilesRequest(ev).subscribe(
-            success => this.tr.success("Files saved", "Success", { tapToDismiss: true }),
+            success => {
+                if (success.ok) {
+                    this.tr.success("Files saved", "Success", { tapToDismiss: true })
+                } else {
+                    this.tr.error("Can't save files", "Error", { tapToDismiss: true });
+                }
+            },
             error => this.tr.error("Can't save files", "Error", { tapToDismiss: true }));
     }
 
