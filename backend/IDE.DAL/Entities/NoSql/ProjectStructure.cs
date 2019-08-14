@@ -4,12 +4,14 @@ using System.Collections.Generic;
 
 namespace IDE.DAL.Entities.NoSql
 {
-    public class ProjectStructure: BaseNoSqlModel
+    public class ProjectStructure
     {
         public ProjectStructure()
         {
             NestedFiles = new List<FileStructure>();
         }
+
+        public string Id { get; set; }
         public ICollection<FileStructure> NestedFiles { get; set; }
     }
 }
