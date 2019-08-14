@@ -11,24 +11,23 @@ import { UserDTO } from 'src/app/models/DTO/User/userDTO';
   styleUrls: ['./project-details-info.component.sass']
 })
 export class ProjectDetailsInfoComponent implements OnInit {
-   
-    private authorId;
+    private authorId: number;
 
     @Input() project: ProjectInfoDTO;
 
-    constructor(private authService:AuthenticationService) { }
-    
+    constructor(private authService: AuthenticationService) { }
+
     ngOnInit(): void {
-        this.authService.getUser().subscribe((user:UserDTO)=>{
+        this.authService.getUser().subscribe((user: UserDTO) => {
             this.authorId = user.id;
         });
     }
 
-    IsAuthor():boolean{
-        return this.authorId == this.project.authorId? true : false;
+    IsAuthor(): boolean {
+        return this.authorId === this.project.authorId ? true : false;
     }
 
-    IsPublic():boolean{
-        return this.project.accessModifier==AccessModifier.public? true : false;
+    IsPublic(): boolean {
+        return this.project.accessModifier === AccessModifier.public ? true : false;
     }
 }

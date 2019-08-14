@@ -1,10 +1,15 @@
+import { LeavePageDialogService } from './../../../services/leave-page-dialog.service';
+import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ResizeEvent } from 'angular-resizable-element';
+import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
-
+import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/internal/operators/switchMap';
+import { map } from 'rxjs/internal/operators/map';
 
 
 @Component({
@@ -13,17 +18,70 @@ import { EditorSectionComponent } from '../editor-section/editor-section.compone
     styleUrls: ['./workspace-root.component.sass']
 })
 export class WorkspaceRootComponent implements OnInit {
+    public projectId: number;
+  
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
-    constructor(private tr: ToastrService, private ws: WorkspaceService) { }
+    constructor(
+        private route: ActivatedRoute,
+        private tr: ToastrService,
+        private ws: WorkspaceService,
+        private saveOnExit: LeavePageDialogService) { }
 
     ngOnInit() {
+      this.projectId = Number(this.route.snapshot.paramMap.get('id'));
+      if (!this.projectId) {
+        console.error('Id in URL is not a number!');
+        return;
+      }
     }
 
-    onFileSelected(fileId) {
+    public onFileSelected(fileId) {
         this.tr.success(`fileId ${fileId}`, 'Success');
-        console.log(this.editor.code="bebebe");
+        console.log(this.editor.code = "bebebe");
+    }
+
+    public saveFiles() {
+        const openedFiles = this.editor.openedFiles;
+        return this.saveFilesRequest(openedFiles);
+    }
+
+    public onSaveButtonClick(ev) {
+        this.saveFiles().subscribe(
+            success => {
+                if (success.ok) {
+                    this.tr.success("Files saved", "Success", { tapToDismiss: true })
+                } else {
+                    this.tr.error("Can't save files", "Error", { tapToDismiss: true });
+                }
+
+            },
+            error => this.tr.error("Can't save files", "Error", { tapToDismiss: true }));
+    }
+
+    public onFilesSave(ev) {
+        this.saveFilesRequest(ev).subscribe(
+            success => {
+                if (success.ok) {
+                    this.tr.success("Files saved", "Success", { tapToDismiss: true })
+                } else {
+                    this.tr.error("Can't save files", "Error", { tapToDismiss: true });
+                }
+            },
+            error => this.tr.error("Can't save files", "Error", { tapToDismiss: true }));
+    }
+
+    private saveFilesRequest(files: FileUpdateDTO[]) {
+        return this.ws.saveFilesRequest(files);
+    }
+
+    canDeactivate(): Observable<boolean> {
+
+        return this.saveOnExit.confirm('Save changes?')
+            .pipe(
+                switchMap(
+                    mustSave => mustSave ? this.saveFiles().pipe(map(result => result.ok ? true : false)) : of(false)));
     }
 
     // *********code below for resizing blocks***************
