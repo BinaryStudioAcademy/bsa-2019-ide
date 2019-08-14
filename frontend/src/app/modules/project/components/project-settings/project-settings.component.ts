@@ -84,17 +84,17 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
       );
   }
 
+  public getErrorMessage(field: string): string {
+    const control = this.projectForm.get(field);
+    return control.hasError('required') ? 'Field is required!' : 'error';
+  }
+
   private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectUpdateDTO>) {
     this.project = resp.body;
     this.projectStartState.name = this.project.name;
     this.projectStartState.description = this.project.description;
     this.projectStartState.countOfSaveBuilds = this.project.countOfSaveBuilds;
     this.projectStartState.countOfBuildAttempts = this.project.countOfBuildAttempts;
-  }
-
-  private getErrorMessage(field: string): string {
-    const control = this.projectForm.get(field);
-    return control.hasError('required') ? 'Field is required!' : 'error';
-  }
+  }  
 
 }
