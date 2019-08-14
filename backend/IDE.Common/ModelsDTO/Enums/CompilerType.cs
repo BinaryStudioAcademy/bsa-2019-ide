@@ -2,6 +2,9 @@
 {
     public enum CompilerType : int
     {
-        NetCore = 0
+        CoreCLR = 0,
+        Roslyn = 1,
+        V8 = 2,
+        Gc = 3
     }
 }

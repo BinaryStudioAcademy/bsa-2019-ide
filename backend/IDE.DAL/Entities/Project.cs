@@ -25,14 +25,12 @@ namespace IDE.DAL.Entities
         public CompilerType CompilerType { get; set; }
         public AccessModifier AccessModifier { get; set; }
 
+        public string Color { get; set; }
         public int AuthorId { get; set; }
         public User Author { get; set; }
 
         public int? GitCredentialId { get; set; }
         public GitCredential GitCredential { get; set; }
-
-        public int? LogoId { get; set; }
-        public Image Logo { get; set; }
 
         public ICollection<Build> Builds { get; set; }
         public ICollection<ProjectMember> ProjectMembers { get; set; }

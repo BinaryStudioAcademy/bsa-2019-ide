@@ -32,7 +32,6 @@ namespace IDE.BLL.Services
         {
             var project = await _context.Projects
                 .Include(p => p.Author)
-                .Include(p => p.Logo)
                 .FirstOrDefaultAsync(p => p.Id == projectId);
 
             return _mapper.Map<ProjectDTO>(project);
@@ -43,7 +42,6 @@ namespace IDE.BLL.Services
             //Maybe it can be a bit easier
             var projects = await _context.Projects
                 .Include(x => x.Author)
-                .Include(x => x.Logo)
                 .ToListAsync();
 
 
@@ -57,8 +55,7 @@ namespace IDE.BLL.Services
                 .Where(pr => pr.UserId == userId)
                 .Include(x => x.Project)
                 .Select(x => x.Project)
-                .Include(x => x.Author)
-                .Include(x => x.Logo);
+                .Include(x => x.Author);
             
             var collection = await projects.ToListAsync();
 
@@ -70,8 +67,7 @@ namespace IDE.BLL.Services
             //Maybe it can be a bit easier
             var projects = _context.Projects
                 .Where(pr => pr.AuthorId == userId)
-                .Include(x => x.Author)
-                .Include(x => x.Logo);
+                .Include(x => x.Author);
 
             var collection = await projects.ToListAsync();
 
@@ -85,8 +81,7 @@ namespace IDE.BLL.Services
                .Where(pr => pr.UserId == userId)
                .Include(x => x.Project)
                .Select(x => x.Project)
-               .Include(x => x.Author)
-               .Include(x => x.Logo);
+               .Include(x => x.Author);
 
 
             var collection = await projects.ToListAsync();
@@ -114,23 +109,17 @@ namespace IDE.BLL.Services
             return projectsDescriptions.OrderByDescending(x => x.LastBuild).ToList();
         }
 
-        public async Task<int> CreateProject(ProjectCreateDTO projectCreateDto)
+        public async Task<int> CreateProject(ProjectCreateDTO projectCreateDto, int userId)
         {
-            if (_context.Users.SingleOrDefault(u => u.Id == projectCreateDto.AuthorId) == null)
-            {
-                throw new InvalidAuthorException();
-            }
-
             var project = _mapper.Map<Project>(projectCreateDto);
+            project.AuthorId = userId;
             project.CreatedAt = DateTime.Now;
             project.AccessModifier = AccessModifier.Private;
 
-            await _context.Projects.AddAsync(project);
+            _context.Projects.Add(project);
             await _context.SaveChangesAsync();
 
-            //maybe it`s bad code, but i need to get projectId for redirection to project-details dage
-            var projectForId = await _context.Projects.LastAsync();
-            return projectForId.Id;
+            return project.Id;
         }
 
         public async Task<ProjectInfoDTO> GetProjectById(int projectId)

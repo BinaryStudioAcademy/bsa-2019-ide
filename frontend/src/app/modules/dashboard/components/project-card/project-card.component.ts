@@ -15,11 +15,6 @@ export class ProjectCardComponent implements OnInit {
 
     ngOnInit() { }
 
-    public getPhotoLink() {
-        return this.project.photoLink ? this.project.photoLink :
-            'https://as1.ftcdn.net/jpg/02/06/48/10/500_F_206481019_8BsIcISajJZxJEUBaTlhDwXaedpOEBHD.jpg';
-    }
-
     lastTimeBuild(): string {
         const daysCount = this.getDaysCountFromCurrentDate(this.project.lastBuild);
         if (daysCount > 365) {

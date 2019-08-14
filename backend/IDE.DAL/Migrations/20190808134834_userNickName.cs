@@ -14,10 +14,6 @@ namespace IDE.DAL.Migrations
                 name: "FK_ProjectMembers_Users_UserId",
                 table: "ProjectMembers");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_Projects_Images_LogoId",
-                table: "Projects");
-
             migrationBuilder.AddColumn<string>(
                 name: "NickName",
                 table: "Users",
@@ -38,14 +34,6 @@ namespace IDE.DAL.Migrations
                 principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Projects_Images_LogoId",
-                table: "Projects",
-                column: "LogoId",
-                principalTable: "Images",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -57,10 +45,6 @@ namespace IDE.DAL.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_ProjectMembers_Users_UserId",
                 table: "ProjectMembers");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Projects_Images_LogoId",
-                table: "Projects");
 
             migrationBuilder.DropColumn(
                 name: "NickName",
@@ -79,14 +63,6 @@ namespace IDE.DAL.Migrations
                 table: "ProjectMembers",
                 column: "UserId",
                 principalTable: "Users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Projects_Images_LogoId",
-                table: "Projects",
-                column: "LogoId",
-                principalTable: "Images",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }
