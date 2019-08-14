@@ -69,8 +69,7 @@ namespace IDE.DAL.Context
         {
             Randomizer.Seed = new Random(2048);
 
-            var avatars = GenerateRandomAvatars(out int imageId);
-            var images = GenerateRandomImages(imageId);
+            var avatars = GenerateRandomAvatars();
 
             var users = GenerateRandomUsers(avatars);
             var gits = GenerateRandomGitCredentials();
@@ -79,7 +78,7 @@ namespace IDE.DAL.Context
             var projectMembers = GenerateRandomProjectMembers(users, projects)
                 .GroupBy(x => x.ProjectId + " " + x.UserId).Select(x => x.First());
 
-            modelBuilder.Entity<Image>().HasData(avatars.Concat(images));
+            modelBuilder.Entity<Image>().HasData(avatars);
             modelBuilder.Entity<User>().HasData(users);
             modelBuilder.Entity<GitCredential>().HasData(gits);
             modelBuilder.Entity<Project>().HasData(projects);
@@ -183,6 +182,7 @@ namespace IDE.DAL.Context
                 .RuleFor(i => i.GitCredentialId, f => f.PickRandom(gits).Id)
                 .RuleFor(i => i.Language, f => f.PickRandom<Language>())
                 .RuleFor(i => i.Name, f => f.Lorem.Word())
+                .RuleFor(i => i.Color, f => f.Internet.Color(50, 50, 50))
                 .RuleFor(i => i.ProjectLink, f => f.Internet.Url())
                 .RuleFor(i => i.ProjectType, f => f.PickRandom<ProjectType>());
 
@@ -210,7 +210,7 @@ namespace IDE.DAL.Context
             return generatedGits;
         }
 
-        private static ICollection<Image> GenerateRandomAvatars(out int lastImageId)
+        private static ICollection<Image> GenerateRandomAvatars()
         {
             var imageId = 1;
 
@@ -219,18 +219,6 @@ namespace IDE.DAL.Context
                 .RuleFor(i => i.Url, f => f.Internet.Avatar());
 
             var generatedImages = testImageFake.Generate(USER_COUNT + 1);
-            lastImageId = imageId;
-
-            return generatedImages;
-        }
-
-        private static ICollection<Image> GenerateRandomImages(int imageId)
-        {
-            var testImageFake = new Faker<Image>()
-                .RuleFor(i => i.Id, f => imageId++)
-                .RuleFor(i => i.Url, f => f.Image.LoremFlickrUrl(640, 480));
-
-            var generatedImages = testImageFake.Generate(ENTITY_COUNT);
 
             return generatedImages;
         }
