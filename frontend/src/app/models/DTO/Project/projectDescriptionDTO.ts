@@ -11,4 +11,5 @@ export interface ProjectDescriptionDTO {
     favourite: boolean;
     buildStatus?: BuildStatus;
     lastBuild?: Date;
+    color: string;
 }

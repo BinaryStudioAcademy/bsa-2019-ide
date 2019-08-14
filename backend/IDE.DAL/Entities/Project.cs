@@ -25,6 +25,7 @@ namespace IDE.DAL.Entities
         public CompilerType CompilerType { get; set; }
         public AccessModifier AccessModifier { get; set; }
 
+        public string Color { get; set; }
         public int AuthorId { get; set; }
         public User Author { get; set; }
 

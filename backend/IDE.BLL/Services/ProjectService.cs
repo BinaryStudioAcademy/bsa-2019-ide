@@ -114,23 +114,17 @@ namespace IDE.BLL.Services
             return projectsDescriptions.OrderByDescending(x => x.LastBuild).ToList();
         }
 
-        public async Task<int> CreateProject(ProjectCreateDTO projectCreateDto)
+        public async Task<int> CreateProject(ProjectCreateDTO projectCreateDto, int userId)
         {
-            if (_context.Users.SingleOrDefault(u => u.Id == projectCreateDto.AuthorId) == null)
-            {
-                throw new InvalidAuthorException();
-            }
-
             var project = _mapper.Map<Project>(projectCreateDto);
+            project.AuthorId = userId;
             project.CreatedAt = DateTime.Now;
             project.AccessModifier = AccessModifier.Private;
 
-            await _context.Projects.AddAsync(project);
+            _context.Projects.Add(project);
             await _context.SaveChangesAsync();
 
-            //maybe it`s bad code, but i need to get projectId for redirection to project-details dage
-            var projectForId = await _context.Projects.LastAsync();
-            return projectForId.Id;
+            return project.Id;
         }
 
         public async Task<ProjectInfoDTO> GetProjectById(int projectId)

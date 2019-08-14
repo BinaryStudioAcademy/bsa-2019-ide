@@ -60,7 +60,8 @@ namespace IDE.API.Controllers
         [HttpPost]
         public async Task<ActionResult> AddProject(ProjectCreateDTO project)
         {
-            var id = await _projectService.CreateProject(project);
+            var author = this.GetUserIdFromToken();
+            var id = await _projectService.CreateProject(project, author);
             return Created("/project", id);
         }
 

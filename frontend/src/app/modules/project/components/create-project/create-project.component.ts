@@ -4,8 +4,6 @@ import { ProjectService } from 'src/app/services/project.service/project.service
 import { ProjectCreateDTO } from '../../../../models/DTO/Project/projectCreateDTO';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-import { AuthenticationService } from 'src/app/services/auth.service/auth.service';
-import { UserDTO } from 'src/app/models/DTO/User/userDTO';
 
 @Component({
     selector: 'app-create-project',
@@ -18,14 +16,13 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
         private fb: FormBuilder,
         private projectService: ProjectService,
         private toastrService: ToastrService,
-        private authService: AuthenticationService,
         private router: Router) { }
 
     public languages: any;
     public projectTypes: any;
     public compilerTypes: any;
+    public colors: any;
     private project: ProjectCreateDTO;
-    private authorId:number;
 
     public projectForm = this.fb.group({
         name: ['', Validators.required],
@@ -34,7 +31,8 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
         projectType: ['', Validators.required],
         compilerType: ['', Validators.required],
         countOfSavedBuilds: ['', Validators.required],
-        countOfBuildAttempts: ['', Validators.required]
+        countOfBuildAttempts: ['', Validators.required],
+        color: ['', Validators.required]
     });
 
     onSubmit() {
@@ -42,16 +40,16 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
         this.project = {
             name: this.projectForm.get('name').value,
             description: this.projectForm.get('description').value,
-            //authorId: 2, //you need to path here id of your existing user
-            authorId: this.authorId,
             language: this.projectForm.get('language').value,
             projectType: this.projectForm.get('projectType').value,
             compilerType: this.projectForm.get('compilerType').value,
             countOfSaveBuilds: this.projectForm.get('countOfSavedBuilds').value,
-            countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value
+            countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value,
+            color: this.projectForm.get('color').value
         };
 
-
+        console.log(this.project)
+        
         this.projectService.addProject(this.project)
             .subscribe(res => {
                 this.toastrService.success("Project created");
@@ -61,13 +59,23 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
                 error => {
                     this.toastrService.error('error');
                 })
+                
     }
 
     ngOnInit(): void { //Maybe choose initializing
-        this.authService.getUser().subscribe((user:UserDTO)=>{
-            this.authorId = user.id;
-        });
-        
+        this.colors = [
+            { label: 'Red', value: '#ff0000' },
+            { label: 'Black', value: '#000000' },
+            { label: 'Blue', value: '#0080ff' },
+            { label: 'Blueviolet', value: '#bf00ff'},
+            { label: 'Aqua', value: '#00ffff' },
+            { label: 'Dark Magenta', value: '#8b008b' },
+            { label: 'Dark Orange', value: '#ff8c00' },
+            { label: 'Gold', value: '#ffd700' },
+            { label: 'Green', value: '#008000' },
+            { label: 'Light Slate Grey', value: '#778899' },
+        ]
+
         this.languages = [
             { label: 'C#', value: 0 },
             { label: 'TypeScript', value: 1 }

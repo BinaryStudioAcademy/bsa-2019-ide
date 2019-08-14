@@ -2,7 +2,6 @@
     <div class="ui-g ui-fluid">
         <div class="ui-g-12">
             <div class="title">Create project</div>
-            <hr>
         </div>
     </div>
     <div class="ui-g">
@@ -109,6 +108,21 @@
                 <div class="invalid"
                     *ngIf="projectForm.get('countOfBuildAttempts').errors && projectForm.get('countOfBuildAttempts').dirty">
                     required.
+                </div>
+
+                <!-- Color -->
+                <div class="label">Project color</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <p-dropdown [options]="colors" formControlName="color">
+                            <ng-template let-color pTemplate="item">
+                                <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+                                    <div class="color-label" style="width:15px; height: 15px; float: right; padding-top: 15px" [ngStyle]="{ 'background-color': color.value }" ></div>
+                                    <div style="font-size:14px;float:left;margin-top:4px">{{color.label}}</div>
+                                </div>
+                            </ng-template>
+                        </p-dropdown>
+                    </div>
                 </div>
 
                 <!-- Submit -->

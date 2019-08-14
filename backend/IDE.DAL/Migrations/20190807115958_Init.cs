@@ -84,7 +84,8 @@ namespace IDE.DAL.Migrations
                     AccessModifier = table.Column<int>(nullable: false),
                     AuthorId = table.Column<int>(nullable: false),
                     GitCredentialId = table.Column<int>(nullable: true),
-                    LogoId = table.Column<int>(nullable: true)
+                    LogoId = table.Column<int>(nullable: true),
+                    Color = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

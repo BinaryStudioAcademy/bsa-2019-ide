@@ -13,5 +13,6 @@ namespace IDE.Common.DTO.Project
         public bool Favourite { get; set; }
         public BuildStatus? BuildStatus { get; set; }
         public DateTime? LastBuild { get; set; }
+        public string Color { get; set; }
     }
 }
