@@ -16,7 +16,6 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
   tokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        console.log(request);
         return next.handle(request).pipe(
             catchError(error => {
                 const tokenService = this.injector.get(TokenService);

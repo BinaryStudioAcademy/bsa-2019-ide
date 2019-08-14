@@ -1,10 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { DialogType } from 'src/app/modules/authorization/models/auth-dialog-type';
-import { AuthenticationService } from 'src/app/services/auth.service/auth.service';
 import { Subject } from 'rxjs';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
-import { UserRegisterDTO } from '../../../../models/DTO/User/userRegisterDTO';
 import { NavMenuComponent } from 'src/app/nav-menu/nav-menu.component';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -31,10 +29,8 @@ export class AuthDialogComponent implements OnInit {
     public title: string;
     public isSpinner = false;
     private unsubscribe$ = new Subject<void>();
-    providers: [AuthenticationService];
 
     constructor(
-        private authService: AuthenticationService,
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
         private router: Router,
@@ -62,9 +58,9 @@ export class AuthDialogComponent implements OnInit {
         this.tokenService
             .login({ email: this.email, password: this.password })
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(result => {this.isSpinner = false; this.ref.close()},
-                error => { this.isSpinner = false; this.tr.error("The email or password is incorrect", "Error Message"); },
-                () => this.tr.success("You have successfully signed in!")
+            .subscribe(result => {this.isSpinner = false; this.ref.close() },
+                error => { this.isSpinner = false; this.tr.error('The email or password is incorrect', 'Error Message'); },
+                () => this.tr.success('You have successfully signed in!')
             );
         this.router.navigate(['/']);
     }
@@ -78,10 +74,10 @@ export class AuthDialogComponent implements OnInit {
             password: this.password,
             email: this.email
         };
-        this.authService
+        this.tokenService
             .register(user)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(result => this.ref.close(),
-                error => this.tr.error("registering failded", "Error Message"), () => this.tr.success("You have successfully registered!"));
+                error => this.tr.error('registering failded', 'Error Message'), () => this.tr.success('You have successfully registered!'));
     }
 }

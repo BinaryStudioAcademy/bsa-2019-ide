@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy, OnChanges } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { AuthDialogService } from '../services/auth-dialog.service/auth-dialog.service';
 import { DialogType } from '../modules/authorization/models/auth-dialog-type';
-import { AuthenticationService } from '../services/auth.service/auth.service';
 import { UserDTO } from '../models/DTO/User/userDTO';
 import { Router } from '@angular/router';
 import { UserService } from '../services/user.service/user.service';
@@ -26,9 +25,6 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
     constructor(
         private authDialogService: AuthDialogService,
-        private authService: AuthenticationService,
-        private eventService: EventService,
-        private userService: UserService,
         private router: Router,
         private tokenService: TokenService
     ) { }
@@ -72,13 +68,13 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     }
 
     public LogOut() {
-        this.authService.logout();
+        this.tokenService.logout();
         this.authorizedUser = undefined;
         this.router.navigate(['/']);
     }
 
     private getUser() {
-        if (!this.authService.areTokensExist()) {
+        if (!this.tokenService.areTokensExist()) {
             return;
         }
 
