@@ -41,6 +41,7 @@ namespace IDE.API.Extensions
             services.AddScoped<IProjectMemberSettingsService, ProjectMemberSettingsService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IProjectStructureService, ProjectStructureService>();
 
             services.AddScoped<FileService>();
             services.AddScoped<FileHistoryService>();

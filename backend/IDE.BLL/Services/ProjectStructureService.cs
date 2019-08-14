@@ -4,10 +4,11 @@ using IDE.DAL.Entities.NoSql;
 using AutoMapper;
 using System.Threading.Tasks;
 using IDE.BLL.ExceptionsCustom;
+using IDE.BLL.Interfaces;
 
 namespace IDE.BLL.Services
 {
-    public class ProjectStructureService
+    public class ProjectStructureService : IProjectStructureService
     {
         private readonly IProjectStructureRepository _projectStructureRepository;
         private readonly IMapper _mapper;
@@ -47,6 +48,17 @@ namespace IDE.BLL.Services
             var projectStructureCreate = _mapper.Map<ProjectStructure>(projectStructureDto);
             var createdProjectStructure = await _projectStructureRepository.CreateAsync(projectStructureCreate);
 
+            return await GetByIdAsync(createdProjectStructure.Id);
+        }
+
+        public async Task<ProjectStructureDTO> CreateEmpty(string projectId)
+        {
+            var emptyStructureDTO = new ProjectStructureDTO
+            {
+                Id = projectId
+            };
+            var emptyStructure = _mapper.Map<ProjectStructure>(emptyStructureDTO);
+            var createdProjectStructure = await _projectStructureRepository.CreateAsync(emptyStructure);
             return await GetByIdAsync(createdProjectStructure.Id);
         }
 
