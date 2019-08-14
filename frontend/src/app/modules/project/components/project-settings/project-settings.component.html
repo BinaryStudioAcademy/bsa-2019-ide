@@ -1,8 +1,10 @@
 <div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded">
     <p-progressSpinner></p-progressSpinner>
 </div>
-
-<div *ngIf="isPageLoaded" class="container">
+<div *ngIf="isPageLoaded && !project" class="error">
+  <p>Can't load project details</p>
+</div>
+<div *ngIf="isPageLoaded && !!project" class="container">
   <div class="ui-g ui-fluid">
       <div class="ui-g-12">
           <div class="title">Edit project "{{projectStartState.name}}"</div>

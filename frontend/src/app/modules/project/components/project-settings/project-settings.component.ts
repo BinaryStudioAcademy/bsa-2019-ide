@@ -1,12 +1,12 @@
 import { HttpResponse } from '@angular/common/http';
 import { ProjectUpdateDTO } from './../../../../models/DTO/Project/projectUpdateDTO';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectService } from 'src/app/services/project.service/project.service';
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-project-settings',
@@ -32,8 +32,9 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private projectService: ProjectService
-    ) { }
+    private projectService: ProjectService,
+    private toastService: ToastrService
+  ) { }
 
   ngOnInit() {
     this.projectId = Number(this.route.snapshot.paramMap.get('id'));
@@ -49,6 +50,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         },
         (error) => {
           this.isPageLoaded = true;
+          this.toastService.error("Can't load project details", "Error Message");
           console.error(error.message);
         }
       );
@@ -67,15 +69,16 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.isDetailsSaved = false;
-    console.log('submit click');
     this.projectService.updateProject(this.project)
       .subscribe(
         (resp) => {
           this.SetProjectObjectsFromResponse(resp);
           this.isDetailsSaved = true;
+          this.toastService.success("New details have successfully saved!");
         },
         (error) => {
           this.isDetailsSaved = true;
+          this.toastService.error("Can't save new project details", "Error Message");
           console.error(error.message);
         }
       );
