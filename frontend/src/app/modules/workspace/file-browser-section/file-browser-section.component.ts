@@ -4,6 +4,7 @@ import { HttpClientWrapperService } from './../../../services/http-client-wrappe
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TreeNode } from 'primeng/components/common/treenode';
 import{ TreeNodeType} from "../../../models/Enums/treeNodeType"
+import { ActivatedRoute} from '@angular/router';
 
 
 
@@ -18,8 +19,12 @@ export class FileBrowserSectionComponent implements OnInit {
     items: MenuItem[];
     files: TreeNode[];
     selectedFile2: TreeNode;
+    public projectId: number;
   
-    constructor(private fileBService: FileBrowserService) {
+  
+    constructor(private fileBService: FileBrowserService,
+        private activateRoute: ActivatedRoute) {
+        this.projectId = activateRoute.snapshot.params['id'];
     }
 
     contextMenuSaveButton: MenuItem[];
@@ -28,7 +33,7 @@ export class FileBrowserSectionComponent implements OnInit {
     ngOnInit() {
         
         this.files = [];
-        this.fileBService.getPrimeTree().then(x => this.files = x);
+        this.fileBService.getPrimeTree(this.projectId).then(x => this.files = x);
         this.items = [
             {label: 'create file', icon: 'fa fa-file', command: (event) => this.create(1,this.selectedFile2)},
             {label: 'create folder', icon: 'fa fa-folder', command: (event) => this.create(0,this.selectedFile2)},
