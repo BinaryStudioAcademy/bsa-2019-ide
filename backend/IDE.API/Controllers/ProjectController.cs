@@ -73,7 +73,7 @@ namespace IDE.API.Controllers
         public async Task<ActionResult<ProjectInfoDTO>> UpdateProject([FromBody] ProjectUpdateDTO project)
         {
             var updatedProject = await _projectService.UpdateProject(project);
-            return Ok(project);
+            return Ok(updatedProject);
         }
 
         [HttpDelete("{id}")]

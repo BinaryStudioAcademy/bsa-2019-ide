@@ -89,7 +89,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     return control.hasError('required') ? 'Field is required!' : 'error';
   }
 
-  private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectUpdateDTO>) {
+  private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectUpdateDTO>): void {
     this.project = resp.body;
     this.projectStartState.name = this.project.name;
     this.projectStartState.description = this.project.description;
