@@ -26,7 +26,7 @@ import {MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { LoginGuard } from './guards/login.guard';
 import { JwtModule } from '@auth0/angular-jwt';
 import { TokenGetter } from './services/token.service/token.service';
-
+import {SplitButtonModule} from 'primeng/splitbutton';
 
 
 @NgModule({
@@ -36,6 +36,7 @@ import { TokenGetter } from './services/token.service/token.service';
 
     ],
     imports: [
+        SplitButtonModule,
         MenuModule,
         BrowserModule,
         BrowserAnimationsModule,
@@ -50,7 +51,9 @@ import { TokenGetter } from './services/token.service/token.service';
         ButtonModule,
         HttpClientModule,
         DynamicDialogModule,
-        ToastrModule.forRoot(),
+        ToastrModule.forRoot({
+            positionClass: 'toast-bottom-right'
+          }),
         GeneralModule,
         TreeModule,
         MonacoEditorModule,
