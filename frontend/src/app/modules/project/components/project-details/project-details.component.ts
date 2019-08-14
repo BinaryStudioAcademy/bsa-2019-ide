@@ -15,29 +15,15 @@ export class ProjectDetailsComponent implements OnInit {
     public projectId: number;
     public project: ProjectInfoDTO;
 
-    private unsubscribe$ = new Subject<void>();
-
+    
     constructor(
-      private route: ActivatedRoute,
-      private projectService: ProjectService
+      private route: ActivatedRoute
       ) { }
 
     ngOnInit() {
-      this.projectId = Number(this.route.snapshot.paramMap.get('id'));
-      if (!this.projectId) {
-        console.error('Id in URL is not a number!');
-        return;
-      }
 
-      this.projectService.getProjectById(this.projectId)
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe(
-          (resp) => {
-            this.project = resp.body;
-          },
-          (error) => {
-            console.error(error.message);
-          }
-        );
+        this.route.data.subscribe(data => {
+            this.project = data['project'];
+        });
     }
 }
