@@ -39,6 +39,20 @@ namespace IDE.DAL.Context
                 .HasForeignKey(pm => pm.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            modelBuilder.Entity<FavouriteProjects>()
+               .HasKey(fp => new { fp.ProjectId, fp.UserId });
+
+            modelBuilder.Entity<FavouriteProjects>()
+                .HasOne(pm => pm.Project)
+                .WithMany(p => p.FavouriteProjects)
+                .HasForeignKey(pm => pm.ProjectId);
+
+            modelBuilder.Entity<FavouriteProjects>()
+                .HasOne(pm => pm.User)
+                .WithMany(u => u.FavouriteProjects)
+                .HasForeignKey(pm => pm.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
             modelBuilder.Entity<Build>()
                 .HasOne(b => b.Project)
                 .WithMany(p => p.Builds)

@@ -20,6 +20,7 @@ namespace IDE.DAL.Context
         public DbSet<Image> Images { get; private set; }
         public DbSet<RefreshToken> RefreshTokens { get; private set; }
         public DbSet<GitCredential> GitCredentials { get; private set; }
+        public DbSet<FavouriteProjects> FavouriteProjects { get; private set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

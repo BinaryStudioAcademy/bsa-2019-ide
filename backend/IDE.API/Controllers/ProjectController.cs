@@ -5,6 +5,7 @@ using IDE.Common.DTO.Project;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using IDE.API.Extensions;
+using IDE.BLL.Services;
 
 namespace IDE.API.Controllers
 {
@@ -15,10 +16,15 @@ namespace IDE.API.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
+        private readonly IProjectMemberSettingsService _projectMemberSettings;
+        private readonly IProjectStructureService _projectStructureService;
 
-        public ProjectController(IProjectService projectService)
+        public ProjectController(IProjectService projectService, IProjectMemberSettingsService projectMemberSettings,
+            IProjectStructureService projectStructureService)
         {
+            _projectStructureService = projectStructureService;
             _projectService = projectService;
+            _projectMemberSettings = projectMemberSettings;
         }
 
         [HttpGet("{projectId}")]
@@ -28,7 +34,7 @@ namespace IDE.API.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects(int userId)
+        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects()
         {
             //Need to get userId from token
             return Ok(await _projectService.GetAllProjects(this.GetUserIdFromToken()));
@@ -48,10 +54,18 @@ namespace IDE.API.Controllers
             return Ok(await _projectService.GetAssignedUserProjects(this.GetUserIdFromToken()));
         }
 
+        [HttpGet("getFavourite")]
+        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetFavouriteUserProjects()
+        {
+            //Need to get userId from token
+            return Ok(await _projectService.GetFavouriteUserProjects(this.GetUserIdFromToken()));
+        }
+
         [HttpPost]
         public async Task<ActionResult> AddProject(ProjectCreateDTO project)
         {
             var id = await _projectService.CreateProject(project);
+            await _projectStructureService.CreateEmpty(id.ToString());
             return Created("/project", id);
         }
 
@@ -66,6 +80,13 @@ namespace IDE.API.Controllers
         public async Task<ActionResult> DeleteProject(int id)
         {
             await _projectService.DeleteProjectAsync(id);
+            return NoContent();
+        }
+
+        [HttpPut("favourite")]
+        public async Task<ActionResult> SetFavouriteProject([FromBody]int projectId)
+        {
+            await _projectMemberSettings.SetFavouriteProject(projectId, this.GetUserIdFromToken());
             return NoContent();
         }
     }

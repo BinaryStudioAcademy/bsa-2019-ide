@@ -1,9 +1,12 @@
+import { ContextMenu, MenuItem } from 'primeng/primeng';
 import { FileBrowserService } from './../../../services/file-browser.service';
 import { HttpClientWrapperService } from './../../../services/http-client-wrapper.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TreeNode } from 'primeng/components/common/treenode';
-import { MenuItem } from 'primeng/api';
 import{ TreeNodeType} from "../../../models/Enums/treeNodeType"
+import { ActivatedRoute} from '@angular/router';
+
+
 
 @Component({
     selector: 'app-file-browser-section',
@@ -12,20 +15,25 @@ import{ TreeNodeType} from "../../../models/Enums/treeNodeType"
 })
 export class FileBrowserSectionComponent implements OnInit {
 
-
+    @Output() fileSelected = new EventEmitter<string>();
+    items: MenuItem[];
     files: TreeNode[];
     selectedFile2: TreeNode;
-    items: MenuItem[];
-
-    constructor(private fileBService: FileBrowserService) {
+    public projectId: number;
+  
+  
+    constructor(private fileBService: FileBrowserService,
+        private activateRoute: ActivatedRoute) {
+        this.projectId = activateRoute.snapshot.params['id'];
     }
 
     contextMenuSaveButton: MenuItem[];
 
 
     ngOnInit() {
+        
         this.files = [];
-        this.fileBService.getPrimeTree().then(x => this.files = x);
+        this.fileBService.getPrimeTree(this.projectId).then(x => this.files = x);
         this.items = [
             {label: 'create file', icon: 'fa fa-file', command: (event) => this.create(1,this.selectedFile2)},
             {label: 'create folder', icon: 'fa fa-folder', command: (event) => this.create(0,this.selectedFile2)},
@@ -58,6 +66,10 @@ export class FileBrowserSectionComponent implements OnInit {
 
     nodeSelect(evt: any): void {
         console.log(evt.node);
+        const nodeSelected: TreeNode = evt.node;
+        if (nodeSelected.data !== 'Folder') {
+            this.fileSelected.emit(nodeSelected.key);
+        }
     }
 
 }

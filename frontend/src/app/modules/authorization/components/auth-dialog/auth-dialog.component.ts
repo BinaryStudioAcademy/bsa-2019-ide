@@ -35,11 +35,11 @@ export class AuthDialogComponent implements OnInit {
         public config: DynamicDialogConfig,
         private router: Router,
         private tokenService: TokenService,
-        private tr: ToastrService
+        private toast: ToastrService
     ) { }
 
     public ngOnInit() {
-        this.title = this.config.data.dialogType === DialogType.SignIn ? 'Lon in your account' : 'Create your account';
+        this.title = this.config.data.dialogType === DialogType.SignIn ? 'Log in your account' : 'Create your account';
     }
 
 
@@ -58,9 +58,12 @@ export class AuthDialogComponent implements OnInit {
         this.tokenService
             .login({ email: this.email, password: this.password })
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(result => {this.isSpinner = false; this.ref.close() },
-                error => { this.isSpinner = false; this.tr.error('The email or password is incorrect', 'Error Message'); },
-                () => this.tr.success('You have successfully signed in!')
+            .subscribe(result => {this.isSpinner = false; this.ref.close(); },
+                error => {
+                    this.isSpinner = false;
+                    this.toast.error('The email or password is incorrect', 'Error Message');
+                },
+                () => this.toast.success('You have successfully signed in!')
             );
         this.router.navigate(['/']);
     }
@@ -78,6 +81,7 @@ export class AuthDialogComponent implements OnInit {
             .register(user)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(result => this.ref.close(),
-                error => this.tr.error('registering failded', 'Error Message'), () => this.tr.success('You have successfully registered!'));
+                error => this.toast.error('registering failded', 'Error Message'),
+                () => this.toast.success('You have successfully registered!'));
     }
 }

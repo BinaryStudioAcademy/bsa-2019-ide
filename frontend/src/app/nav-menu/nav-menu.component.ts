@@ -20,7 +20,8 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     unAuthUserItems: MenuItem[];
 
     public dialogType = DialogType;
-    public authorizedUser: boolean;
+    public isAuthorized: boolean;
+    private items: MenuItem[];
     private unsubscribe$ = new Subject<void>();
 
     constructor(
@@ -47,11 +48,21 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
         this.tokenService.isAuthenticatedEvent$
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe((user) => this.authorizedUser = user);
+            .subscribe((auth) => (this.isAuthorized = auth));
+
+        this.items = [
+            {label: 'Log out', icon: 'pi pi-sign-out', command: () => {
+                this.LogOut();
+            }}
+        ];
+    }
+
+    public goToUserDetails() {
+        this.router.navigate(['/user/details']);
     }
 
     public getMenuItems() {
-        if (this.authorizedUser) {
+        if (this.isAuthorized) {
             return this.authUserItems;
         } else {
             return this.unAuthUserItems;
@@ -69,7 +80,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
     public LogOut() {
         this.tokenService.logout();
-        this.authorizedUser = undefined;
+        this.isAuthorized = undefined;
         this.router.navigate(['/']);
     }
 
@@ -81,6 +92,6 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.tokenService
             .IsAuthorized()
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe((auth) => this.authorizedUser = auth);
+            .subscribe((auth) => this.isAuthorized = auth);
     }
 }

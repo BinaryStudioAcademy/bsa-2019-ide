@@ -6,7 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./project-root.component.sass']
 })
 export class ProjectRootComponent implements OnInit {
-
   constructor() { }
 
   ngOnInit() {
