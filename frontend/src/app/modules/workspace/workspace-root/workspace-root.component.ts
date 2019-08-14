@@ -7,7 +7,7 @@ import { ResizeEvent } from 'angular-resizable-element';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
 import { Observable, of } from 'rxjs';
-import { switchMap} from 'rxjs/internal/operators/switchMap';
+import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
 
 
@@ -40,8 +40,16 @@ export class WorkspaceRootComponent implements OnInit {
         return this.saveFilesRequest(openedFiles);
     }
 
+    public onSaveButtonClick(ev) {
+        this.saveFiles().subscribe(
+            success => this.tr.success("Files saved", "Success", { tapToDismiss: true }),
+            error => this.tr.error("Can't save files", "Error", { tapToDismiss: true }));
+    }
+
     public onFilesSave(ev) {
-        this.saveFilesRequest(ev).subscribe(success => this.tr.success("Files Saved"), error => this.tr.error("Can't save files"));
+        this.saveFilesRequest(ev).subscribe(
+            success => this.tr.success("Files saved", "Success", { tapToDismiss: true }),
+            error => this.tr.error("Can't save files", "Error", { tapToDismiss: true }));
     }
 
     private saveFilesRequest(files: FileUpdateDTO[]) {
@@ -51,9 +59,9 @@ export class WorkspaceRootComponent implements OnInit {
     canDeactivate(): Observable<boolean> {
 
         return this.saveOnExit.confirm('Save changes?')
-        .pipe(
-            switchMap(
-                mustSave => mustSave ? this.saveFiles().pipe(map(result => result.ok ?  true :  false)) : of(false)));
+            .pipe(
+                switchMap(
+                    mustSave => mustSave ? this.saveFiles().pipe(map(result => result.ok ? true : false)) : of(false)));
     }
 
     // *********code below for resizing blocks***************
