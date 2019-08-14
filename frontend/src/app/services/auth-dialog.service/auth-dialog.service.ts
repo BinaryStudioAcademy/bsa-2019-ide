@@ -15,29 +15,28 @@ export class AuthDialogService implements OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
 
-  public constructor( private authService: AuthenticationService,
-    private dialogService: DialogService)
-    {}
+  public constructor(   private authService: AuthenticationService,
+                        private dialogService: DialogService) { }
 
     public openAuthDialog(type: DialogType) {
         const dialog = this.dialogService.open(AuthDialogComponent, {
             data: { dialogType: type },
             width: '40%',
             contentStyle: {
-              "border-radius" : "5px",
-              "padding": "2%"
+              'border-radius' : '5px',
+              'padding': '2%'
             },
-            showHeader : false          
+            showHeader : false
         });
 
         dialog
         .onClose
         .pipe(takeUntil(this.unsubscribe$))
         .subscribe((result: UserDTO) => {
-          if (result) {
-              this.authService.setUser(result);
-          }
-      });
+            if (result) {
+                this.authService.setUser(result);
+            }
+        });
     }
 
     public ngOnDestroy() {

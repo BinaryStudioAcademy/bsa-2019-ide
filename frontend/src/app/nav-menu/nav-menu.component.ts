@@ -9,6 +9,7 @@ import { UserService } from '../services/user.service/user.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { EventService } from '../services/event.service/event.service';
+import { TokenService } from '../services/token.service/token.service';
 
 @Component({
     selector: 'app-nav-menu',
@@ -20,7 +21,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     unAuthUserItems: MenuItem[];
 
     public dialogType = DialogType;
-    public authorizedUser: UserDTO;
+    public authorizedUser: boolean;
     private unsubscribe$ = new Subject<void>();
 
     constructor(
@@ -28,14 +29,12 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         private authService: AuthenticationService,
         private eventService: EventService,
         private userService: UserService,
-        private router: Router
+        private router: Router,
+        private tokenService: TokenService
     ) { }
 
     ngOnInit() {
         this.getUser();
-
-        console.log(this.authorizedUser);
-
         this.authUserItems = [
             { label: 'Home', routerLink: [''] },
             { label: 'Dashboard', routerLink: ['/dashboard'] },
@@ -50,11 +49,10 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             }
         ];
 
-        this.eventService.userChangedEvent$
+        this.tokenService.isAuthenticatedEvent$
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe((user) => (this.authorizedUser = user ? this.userService.copyUser(user) : undefined));
+            .subscribe((user) => this.authorizedUser = user);
     }
-
 
     public getMenuItems() {
         if (this.authorizedUser) {
@@ -63,7 +61,6 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             return this.unAuthUserItems;
         }
     }
-
 
     public ngOnDestroy() {
         this.unsubscribe$.next();
@@ -85,9 +82,9 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.authService
-            .getUser()
+        this.tokenService
+            .IsAuthorized()
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe((user) => (this.authorizedUser = this.userService.copyUser(user)));
+            .subscribe((auth) => this.authorizedUser = auth);
     }
 }

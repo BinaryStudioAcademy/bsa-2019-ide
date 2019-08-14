@@ -8,6 +8,7 @@ import { UserRegisterDTO } from '../../../../models/DTO/User/userRegisterDTO';
 import { NavMenuComponent } from 'src/app/nav-menu/nav-menu.component';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
     selector: 'app-auth-dialog',
@@ -37,6 +38,7 @@ export class AuthDialogComponent implements OnInit {
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
         private router: Router,
+        private tokenService: TokenService,
         private tr: ToastrService
     ) { }
 
@@ -57,7 +59,7 @@ export class AuthDialogComponent implements OnInit {
 
     public signIn() {
         this.isSpinner = true;
-        this.authService
+        this.tokenService
             .login({ email: this.email, password: this.password })
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(result => {this.isSpinner = false; this.ref.close()},

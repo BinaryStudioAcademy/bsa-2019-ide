@@ -26,6 +26,7 @@ import {MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { LoginGuard } from './guards/login.guard';
 import { JwtModule } from '@auth0/angular-jwt';
 import { TokenGetter } from './services/token.service/token.service';
+import { RefreshTokenInterceptor } from './helpers/token.interceptor';
 
 
 
@@ -59,10 +60,14 @@ import { TokenGetter } from './services/token.service/token.service';
                 tokenGetter: TokenGetter,
             }
         })
-        
     ],
     providers: [
         DialogService,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: RefreshTokenInterceptor,
+            multi: true
+        },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: JwtInterceptor,
