@@ -9,23 +9,22 @@ import { LoginGuard } from 'src/app/guards/login.guard';
 
 const projectRoutes: Routes = [
   {
-    path: 'project/add',
-    component: CreateProjectComponent,
-    canActivate: [LoginGuard]
-  },
-  {
-    path: 'project/:id',
+    path: 'project',
     component: ProjectRootComponent,
     children: [
       {
-        path: '',
+        path: 'add',
+        component: CreateProjectComponent
+      },
+      {
+        path: ':id',
         component: ProjectDetailsComponent,
         resolve: { project: ProjectInfoResolver } // What is it?
       },
       {
-        path: 'settings',
+        path: ':id/settings',
         component: ProjectSettingsComponent
-      }
+      },
     ],
     canActivate: [LoginGuard]
   }
