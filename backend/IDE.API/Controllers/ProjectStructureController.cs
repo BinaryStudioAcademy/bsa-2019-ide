@@ -27,7 +27,7 @@ namespace IDE.API.Controllers
             return CreatedAtAction(nameof(GetByIdAsync), new { id = createdFile.Id }, createdFile);
         }
 
-        [HttpGet("{id:length(24)}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult<ProjectStructureDTO>> GetByIdAsync(string id)
         {
             return Ok(await _projectStructureService.GetByIdAsync(id));

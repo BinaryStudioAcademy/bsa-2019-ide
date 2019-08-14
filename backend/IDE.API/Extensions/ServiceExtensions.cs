@@ -49,7 +49,7 @@ namespace IDE.API.Extensions
             services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
             services.AddScoped<INoSqlRepository<File>, NoSqlRepository<File>>();
             services.AddScoped<INoSqlRepository<FileHistory>, NoSqlRepository<FileHistory>>();
-            services.AddScoped<INoSqlRepository<ProjectStructure>, NoSqlRepository<ProjectStructure>>();
+            services.AddScoped<IProjectStructureRepository, ProjectStructureRepository>();
         }
 
         public static void RegisterServicesWithIConfiguration(this IServiceCollection services, IConfiguration conf)

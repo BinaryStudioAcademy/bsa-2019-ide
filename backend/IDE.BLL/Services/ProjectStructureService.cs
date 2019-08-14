@@ -1,7 +1,6 @@
 ﻿using IDE.Common.ModelsDTO.DTO.Workspace;
 using IDE.DAL.Interfaces;
 using IDE.DAL.Entities.NoSql;
-using System.Text;
 using AutoMapper;
 using System.Threading.Tasks;
 using IDE.BLL.ExceptionsCustom;
@@ -10,11 +9,11 @@ namespace IDE.BLL.Services
 {
     public class ProjectStructureService
     {
-        private readonly INoSqlRepository<ProjectStructure> _projectStructureRepository;
+        private readonly IProjectStructureRepository _projectStructureRepository;
         private readonly IMapper _mapper;
 
         public ProjectStructureService(
-            INoSqlRepository<ProjectStructure> projectStructureRepository,
+            IProjectStructureRepository projectStructureRepository,
             IMapper mapper)
         {
             _projectStructureRepository = projectStructureRepository;
