@@ -27,36 +27,27 @@ namespace IDE.BLL.Services
             _fileService = fileService;
         }
 
-        public async Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId)
-        {
-            //Maybe it can be a bit easier
-            var projects = await _context.ProjectMembers
-                .Where(pr => pr.UserId == userId)
-                .Include(x => x.Project)
-                .Select(x => x.Project)
-                .Include(x => x.Author)
-                .Include(x => x.Logo)
-                .ToListAsync();
-
-            projects
-                .AddRange(await _context.Projects
-                    .Where(pr => pr.AuthorId == userId)
-                    .Include(x => x.Author)
-                    .Include(x => x.Logo)
-                    .ToListAsync());
-
-            return MapAndGetLastBuildFinishedDate(projects);
-        }
-
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
         public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)
         {
-            var project = await _context.Projects                
+            var project = await _context.Projects
                 .Include(p => p.Author)
                 .Include(p => p.Logo)
                 .FirstOrDefaultAsync(p => p.Id == projectId);
 
             return _mapper.Map<ProjectDTO>(project);
+        }
+
+        public async Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId)
+        {
+            //Maybe it can be a bit easier
+            var projects = await _context.Projects
+                .Include(x => x.Author)
+                .Include(x => x.Logo)
+                .ToListAsync();
+
+
+            return MapAndGetLastBuildFinishedDate(projects, userId);
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId)
@@ -71,7 +62,7 @@ namespace IDE.BLL.Services
             
             var collection = await projects.ToListAsync();
 
-            return MapAndGetLastBuildFinishedDate(collection);
+            return MapAndGetLastBuildFinishedDate(collection, userId);
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId)
@@ -84,22 +75,43 @@ namespace IDE.BLL.Services
 
             var collection = await projects.ToListAsync();
 
-            return MapAndGetLastBuildFinishedDate(collection);
+            return MapAndGetLastBuildFinishedDate(collection, userId);
         }
 
-        private ICollection<ProjectDescriptionDTO> MapAndGetLastBuildFinishedDate(List<Project> projects)
+        public async Task<ICollection<ProjectDescriptionDTO>> GetFavouriteUserProjects(int userId)
+        {
+            //Maybe it can be a bit easier
+            var projects = _context.FavouriteProjects
+               .Where(pr => pr.UserId == userId)
+               .Include(x => x.Project)
+               .Select(x => x.Project)
+               .Include(x => x.Author)
+               .Include(x => x.Logo);
+
+
+            var collection = await projects.ToListAsync();
+
+            return MapAndGetLastBuildFinishedDate(collection, userId);
+        }
+
+        private ICollection<ProjectDescriptionDTO> MapAndGetLastBuildFinishedDate(List<Project> projects, int userId)
         {
             var projectsDescriptions = _mapper.Map<ICollection<ProjectDescriptionDTO>>(projects);
 
+            var likedProject = _context.FavouriteProjects.Where(x => x.UserId == userId);
             foreach (var projectDescription in projectsDescriptions)
             {
-                projectDescription.LastBuild = _context.Builds
+                var build = _context.Builds
                     .Where(y => y.ProjectId == projectDescription.Id)
                     .OrderByDescending(z => z.BuildFinished)
-                    .FirstOrDefault()?.BuildFinished;
+                    .FirstOrDefault();
+                projectDescription.LastBuild = build?.BuildFinished;
+                projectDescription.BuildStatus = build?.BuildStatus;
+
+                projectDescription.Favourite = likedProject.FirstOrDefault(x => x.ProjectId == projectDescription.Id) != null; 
             }
 
-            return projectsDescriptions;
+            return projectsDescriptions.OrderByDescending(x => x.LastBuild).ToList();
         }
 
         public async Task<int> CreateProject(ProjectCreateDTO projectCreateDto)

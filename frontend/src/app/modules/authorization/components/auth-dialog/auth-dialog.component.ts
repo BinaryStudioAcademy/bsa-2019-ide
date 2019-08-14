@@ -41,7 +41,7 @@ export class AuthDialogComponent implements OnInit {
     ) { }
 
     public ngOnInit() {
-        this.title = this.config.data.dialogType === DialogType.SignIn ? 'Lon in your account' : 'Create your account';
+        this.title = this.config.data.dialogType === DialogType.SignIn ? 'Log in your account' : 'Create your account';
     }
 
 

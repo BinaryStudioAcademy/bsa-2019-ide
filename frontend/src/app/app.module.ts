@@ -21,7 +21,7 @@ import { DialogService, TreeNode } from 'primeng/api';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { GeneralModule } from './general/general.module';
 import { TreeModule } from 'primeng/tree';
-import { ContextMenuModule, MenuModule } from 'primeng/primeng';
+import { MenuModule } from 'primeng/primeng';
 import {MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { LoginGuard } from './guards/login.guard';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -62,7 +62,6 @@ import {SplitButtonModule} from 'primeng/splitbutton';
                 tokenGetter: TokenGetter,
             }
         })
-        
     ],
     providers: [
         DialogService,
