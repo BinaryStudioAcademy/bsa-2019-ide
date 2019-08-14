@@ -15,7 +15,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
     public languages: any;
     public projectTypes: any;
     public compilerTypes: any;
-    public colors: any;
+    public colors;
     private project: ProjectCreateDTO;
     
     constructor(
