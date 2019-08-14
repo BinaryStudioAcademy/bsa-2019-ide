@@ -5,6 +5,7 @@ import { ProjectDescriptionDTO } from '../../models/DTO/Project/projectDescripti
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
+import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 
 @Injectable({
     providedIn: 'root'
@@ -42,4 +43,9 @@ export class ProjectService {
     getAllProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
         return this.httpClient.getRequest(this.address + '/all');
     }
+
+    updateProject(project: ProjectUpdateDTO): Observable<HttpResponse<ProjectInfoDTO>> {
+        return this.httpClient.putRequest<ProjectInfoDTO>(this.address, project);
+    }
+
 }

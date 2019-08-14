@@ -69,11 +69,11 @@ namespace IDE.API.Controllers
             return Created("/project", id);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult> EditProject(ProjectEditDTO project, int id)
+        [HttpPut]
+        public async Task<ActionResult<ProjectInfoDTO>> UpdateProject([FromBody] ProjectUpdateDTO project)
         {
-            await _projectService.UpdateProject(project, id);
-            return NoContent();
+            var updatedProject = await _projectService.UpdateProject(project);
+            return Ok(updatedProject);
         }
 
         [HttpDelete("{id}")]

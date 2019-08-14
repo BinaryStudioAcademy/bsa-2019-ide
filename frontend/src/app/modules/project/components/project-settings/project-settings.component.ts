@@ -1,10 +1,12 @@
+import { HttpResponse } from '@angular/common/http';
+import { ProjectUpdateDTO } from './../../../../models/DTO/Project/projectUpdateDTO';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { ProjectService } from 'src/app/services/project.service/project.service';
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-project-settings',
@@ -13,8 +15,10 @@ import { FormBuilder, Validators } from '@angular/forms';
 })
 export class ProjectSettingsComponent implements OnInit, OnDestroy {
   public projectId: number;
-  public project: ProjectInfoDTO;
-  public projectStartState = {} as ProjectInfoDTO;
+  public project: ProjectUpdateDTO;
+  public projectStartState = {} as ProjectUpdateDTO;
+  public isPageLoaded = false;
+  public isDetailsSaved = true;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -23,13 +27,14 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     description: ['', Validators.required],
     countOfSaveBuilds: ['', Validators.required],
     countOfBuildAttempts: ['', Validators.required]
-});
+  });
 
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
-    private projectService: ProjectService
-    ) { }
+    private projectService: ProjectService,
+    private toastService: ToastrService
+  ) { }
 
   ngOnInit() {
     this.projectId = Number(this.route.snapshot.paramMap.get('id'));
@@ -40,13 +45,12 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     this.projectService.getProjectById(this.projectId)
       .subscribe(
         (resp) => {
-          this.project = resp.body;
-          this.projectStartState.name = this.project.name;
-          this.projectStartState.description = this.project.description;
-          this.projectStartState.countOfSaveBuilds = this.project.countOfSaveBuilds;
-          this.projectStartState.countOfBuildAttempts = this.project.countOfBuildAttempts;
+          this.SetProjectObjectsFromResponse(resp);
+          this.isPageLoaded = true;
         },
         (error) => {
+          this.isPageLoaded = true;
+          this.toastService.error("Can't load project details.", "Error Message:");
           console.error(error.message);
         }
       );
@@ -64,7 +68,33 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    console.log('submit click');
+    this.isDetailsSaved = false;
+    this.projectService.updateProject(this.project)
+      .subscribe(
+        (resp) => {
+          this.SetProjectObjectsFromResponse(resp);
+          this.isDetailsSaved = true;
+          this.toastService.success("New details have successfully saved!");
+        },
+        (error) => {
+          this.isDetailsSaved = true;
+          this.toastService.error("Can't save new project details", "Error Message");
+          console.error(error.message);
+        }
+      );
+  }
+
+  public getErrorMessage(field: string): string {
+    const control = this.projectForm.get(field);
+    return control.hasError('required') ? 'Field is required!' : 'error';
+  }
+
+  private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectUpdateDTO>): void {
+    this.project = resp.body;
+    this.projectStartState.name = this.project.name;
+    this.projectStartState.description = this.project.description;
+    this.projectStartState.countOfSaveBuilds = this.project.countOfSaveBuilds;
+    this.projectStartState.countOfBuildAttempts = this.project.countOfBuildAttempts;
   }
 
 }
