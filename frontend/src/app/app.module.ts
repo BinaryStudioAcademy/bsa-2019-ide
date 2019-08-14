@@ -51,7 +51,9 @@ import {SplitButtonModule} from 'primeng/splitbutton';
         ButtonModule,
         HttpClientModule,
         DynamicDialogModule,
-        ToastrModule.forRoot(),
+        ToastrModule.forRoot({
+            positionClass: 'toast-bottom-right'
+          }),
         GeneralModule,
         TreeModule,
         MonacoEditorModule,
