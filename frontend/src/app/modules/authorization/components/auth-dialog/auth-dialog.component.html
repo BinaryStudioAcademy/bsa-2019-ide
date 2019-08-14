@@ -1,6 +1,5 @@
 <span class="modal-close-btn" (click)="close()">&times;</span>
 <h2 class="title">{{title}}</h2>
-<div class="spinner-wrapper p-grid p-justify-center" *ngIf="isSpinner"><p-progressSpinner class="p-col-4" ></p-progressSpinner></div>
 
 <form name="authForm" #authForm="ngForm" (ngSubmit)="close()">
   <div *ngIf="config.data.dialogType === dialogType.SignUp">
@@ -89,9 +88,12 @@
 <p class="auth-or">OR</p>
 <div>
   <button type="submit" class="google-btn">Sing up with Google</button>
-  <button type="submit" pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignUp"
-    (click)="signUp()">CREATE
-    ACCOUNT</button>
-  <button pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignIn" (click)="signIn()">LOG IN
-    ACCOUNT</button>
+  <div class="p-grid p-justify-center" *ngIf="isSpinner">
+      <p-progressSpinner [style]="{width: '75px', height: '75px'}"></p-progressSpinner>
+  </div>
+  
+  <button type="submit" pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignUp && !isSpinner"
+    (click)="signUp()">CREATE ACCOUNT</button>
+
+  <button pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignIn && !isSpinner" (click)="signIn()">LOG IN ACCOUNT</button>
 </div>

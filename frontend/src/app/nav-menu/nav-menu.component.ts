@@ -21,6 +21,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
     public dialogType = DialogType;
     public authorizedUser: UserDTO;
+    public items: MenuItem[];
     private unsubscribe$ = new Subject<void>();
 
     constructor(
@@ -33,7 +34,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.getUser();
-
+        
         console.log(this.authorizedUser);
 
         this.authUserItems = [
@@ -53,9 +54,18 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.eventService.userChangedEvent$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((user) => (this.authorizedUser = user ? this.userService.copyUser(user) : undefined));
+
+        this.items = [
+            {label: 'Log out', icon: 'pi pi-sign-out', command: () => {
+                this.LogOut();
+            }}
+        ];
     }
 
-
+    public goToUserDetails(){
+        this.router.navigate(['/user/details']);
+    }
+    
     public getMenuItems() {
         if (this.authorizedUser) {
             return this.authUserItems;

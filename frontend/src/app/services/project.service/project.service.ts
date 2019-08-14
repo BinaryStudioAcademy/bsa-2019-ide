@@ -16,24 +16,32 @@ export class ProjectService {
 
     constructor(private httpClient: HttpClientWrapperService) { }
 
-    addProject(project: ProjectCreateDTO) {
+    public addProject(project: ProjectCreateDTO) {
         return this.httpClient.postRequest(this.address, project);
     }
 
-    getProjectById(id: number): Observable<HttpResponse<ProjectInfoDTO>> {
+    public changeFavourity(projectId: number): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
+        return this.httpClient.putRequest(this.address + '/favourite', projectId);
+    }
+
+    public getProjectById(id: number): Observable<HttpResponse<ProjectInfoDTO>> {
         return this.httpClient.getRequest(this.address + `/${id}`);
     }
 
-    getMyProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
-        return this.httpClient.getRequest('project/my');
+    public getMyProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
+        return this.httpClient.getRequest(this.address + '/my');
     }
 
-    getAssignedProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>>  {
-        return this.httpClient.getRequest('project/assigned');
+    public getFavouriteProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
+        return this.httpClient.getRequest(this.address + '/getFavourite');
     }
 
-    getAllProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>>  {
-        return this.httpClient.getRequest('project/all');
+    getAssignedProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
+        return this.httpClient.getRequest(this.address + '/assigned');
+    }
+
+    getAllProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
+        return this.httpClient.getRequest(this.address + '/all');
     }
 
     updateProject(project: ProjectUpdateDTO): Observable<HttpResponse<ProjectInfoDTO>> {

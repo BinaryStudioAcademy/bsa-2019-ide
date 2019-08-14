@@ -6,7 +6,7 @@ import { UserDTO } from 'src/app/models/DTO/User/userDTO';
   providedIn: 'root'
 })
 export class EventService {
-  private onUserChanged = new Subject<UserDTO>();
+    private onUserChanged = new Subject<UserDTO>();
     public userChangedEvent$ = this.onUserChanged.asObservable();
 
     public userChanged(user: UserDTO) {

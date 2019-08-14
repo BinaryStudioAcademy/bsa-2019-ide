@@ -15,10 +15,12 @@ namespace IDE.API.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
+        private readonly IProjectMemberSettingsService _projectMemberSettings;
 
-        public ProjectController(IProjectService projectService)
+        public ProjectController(IProjectService projectService, IProjectMemberSettingsService projectMemberSettings)
         {
             _projectService = projectService;
+            _projectMemberSettings = projectMemberSettings;
         }
 
         [HttpGet("{projectId}")]
@@ -28,7 +30,7 @@ namespace IDE.API.Controllers
         }
 
         [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects(int userId)
+        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects()
         {
             //Need to get userId from token
             return Ok(await _projectService.GetAllProjects(this.GetUserIdFromToken()));
@@ -46,6 +48,13 @@ namespace IDE.API.Controllers
         {
             //Need to get userId from token
             return Ok(await _projectService.GetAssignedUserProjects(this.GetUserIdFromToken()));
+        }
+
+        [HttpGet("getFavourite")]
+        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetFavouriteUserProjects()
+        {
+            //Need to get userId from token
+            return Ok(await _projectService.GetFavouriteUserProjects(this.GetUserIdFromToken()));
         }
 
         [HttpPost]
@@ -66,6 +75,13 @@ namespace IDE.API.Controllers
         public async Task<ActionResult> DeleteProject(int id)
         {
             await _projectService.DeleteProjectAsync(id);
+            return NoContent();
+        }
+
+        [HttpPut("favourite")]
+        public async Task<ActionResult> SetFavouriteProject([FromBody]int projectId)
+        {
+            await _projectMemberSettings.SetFavouriteProject(projectId, this.GetUserIdFromToken());
             return NoContent();
         }
     }
