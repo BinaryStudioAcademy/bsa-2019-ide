@@ -10,6 +10,7 @@ namespace IDE.DAL.Entities
         {
             Builds = new List<Build>();
             ProjectMembers = new List<ProjectMember>();
+            FavouriteProjects = new List<FavouriteProjects>();
         }
 
         public int Id { get; set; }
@@ -35,5 +36,6 @@ namespace IDE.DAL.Entities
 
         public ICollection<Build> Builds { get; set; }
         public ICollection<ProjectMember> ProjectMembers { get; set; }
+        public ICollection<FavouriteProjects> FavouriteProjects { get; set; }
     }
 }
