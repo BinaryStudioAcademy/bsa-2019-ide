@@ -1,3 +1,5 @@
+import { HttpResponse } from '@angular/common/http';
+import { ProjectUpdateDTO } from './../../../../models/DTO/Project/projectUpdateDTO';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { Subject } from 'rxjs';
@@ -13,8 +15,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 })
 export class ProjectSettingsComponent implements OnInit, OnDestroy {
   public projectId: number;
-  public project: ProjectInfoDTO;
-  public projectStartState = {} as ProjectInfoDTO;
+  public project: ProjectUpdateDTO;
+  public projectStartState = {} as ProjectUpdateDTO;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -23,7 +25,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     description: ['', Validators.required],
     countOfSaveBuilds: ['', Validators.required],
     countOfBuildAttempts: ['', Validators.required]
-});
+  });
 
   constructor(
     private fb: FormBuilder,
@@ -40,11 +42,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     this.projectService.getProjectById(this.projectId)
       .subscribe(
         (resp) => {
-          this.project = resp.body;
-          this.projectStartState.name = this.project.name;
-          this.projectStartState.description = this.project.description;
-          this.projectStartState.countOfSaveBuilds = this.project.countOfSaveBuilds;
-          this.projectStartState.countOfBuildAttempts = this.project.countOfBuildAttempts;
+          this.SetProjectObjectsFromResponse(resp);
         },
         (error) => {
           console.error(error.message);
@@ -65,6 +63,23 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     console.log('submit click');
+    this.projectService.updateProject(this.project)
+      .subscribe(
+        (resp) => {
+          this.SetProjectObjectsFromResponse(resp);
+        },
+        (error) => {
+          console.error(error.message);
+        }
+      );
+  }
+
+  private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectUpdateDTO>) {
+    this.project = resp.body;
+    this.projectStartState.name = this.project.name;
+    this.projectStartState.description = this.project.description;
+    this.projectStartState.countOfSaveBuilds = this.project.countOfSaveBuilds;
+    this.projectStartState.countOfBuildAttempts = this.project.countOfBuildAttempts;
   }
 
 }

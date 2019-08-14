@@ -130,21 +130,25 @@ namespace IDE.BLL.Services
             return _mapper.Map<ProjectInfoDTO>(project);
         }
 
-        public async Task UpdateProject(ProjectEditDTO projectEditDto, int id)
+        public async Task<ProjectInfoDTO> UpdateProject(ProjectUpdateDTO projectUpdateDTO)
         {
-            var targetProject = await _context.Projects.SingleOrDefaultAsync(p => p.Id == id);
+            var targetProject = await _context.Projects.SingleOrDefaultAsync(p => p.Id == projectUpdateDTO.Id);
 
             if (targetProject == null)
             {
-                throw new NotFoundException(nameof(targetProject), id);
+                throw new NotFoundException(nameof(targetProject), projectUpdateDTO.Id);
             }
 
-            targetProject.Name = projectEditDto.Name;
-            targetProject.Description = projectEditDto.Description;
-            targetProject.AccessModifier = projectEditDto.AccessModifier;
+            targetProject.Name = projectUpdateDTO.Name;
+            targetProject.Description = projectUpdateDTO.Description;
+            targetProject.CountOfBuildAttempts = projectUpdateDTO.CountOfBuildAttempts;
+            targetProject.CountOfSaveBuilds = projectUpdateDTO.CountOfSaveBuilds;
+            targetProject.AccessModifier = projectUpdateDTO.AccessModifier;
 
             _context.Projects.Update(targetProject);
             await _context.SaveChangesAsync();
+
+            return await GetProjectById(projectUpdateDTO.Id);
         }
 
         public async Task DeleteProjectAsync(int id)
