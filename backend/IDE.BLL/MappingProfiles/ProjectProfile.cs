@@ -20,7 +20,8 @@ namespace IDE.BLL.MappingProfiles
             CreateMap<Project, ProjectDescriptionDTO>()
                 .ForMember(x => x.Created, y => y.MapFrom(z => z.CreatedAt))
                 .ForMember(x => x.Title, y => y.MapFrom(z => z.Name))
-                .ForMember(x => x.Creator, y => y.MapFrom(z => z.Author.NickName));
+                .ForMember(x => x.Creator, y => y.MapFrom(z => z.Author.NickName))
+                .ForMember(x => x.CreatorId, y => y.MapFrom(z => z.AuthorId));
         }
     }
 }

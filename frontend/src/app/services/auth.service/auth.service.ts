@@ -14,7 +14,7 @@ import { EventService } from '../event.service/event.service';
 @Injectable({
     providedIn: 'root'
 })
-export class AuthenticationService {
+export class AuthenticationService { // please, use tokenService
 
     private user: UserDTO;
 
