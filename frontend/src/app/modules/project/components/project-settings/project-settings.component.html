@@ -58,7 +58,7 @@
 
               <div class="ui-g ui-fluid">
                   <div class="ui-g-12">
-                      <button type="button" routerLink="/project/{{projectId}}" pButton class="ui-button-secondary" label="Back to details"></button>
+                      <button type="button" routerLink="/project/{{project.id}}" pButton class="ui-button-secondary" label="Back to details"></button>
                       <button *ngIf="isDetailsSaved" type="submit" [disabled]="!projectForm.valid || projectItemIsNotChange()" pButton label="Save"></button>
                       <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!isDetailsSaved">
                           <p-progressSpinner></p-progressSpinner>

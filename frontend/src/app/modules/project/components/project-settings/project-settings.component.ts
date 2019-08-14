@@ -95,6 +95,6 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     this.projectStartState.description = this.project.description;
     this.projectStartState.countOfSaveBuilds = this.project.countOfSaveBuilds;
     this.projectStartState.countOfBuildAttempts = this.project.countOfBuildAttempts;
-  }  
+  }
 
 }
