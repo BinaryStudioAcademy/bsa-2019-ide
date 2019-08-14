@@ -1,6 +1,5 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { DialogType } from 'src/app/modules/authorization/models/auth-dialog-type';
-import { AuthenticationService } from '../auth.service/auth.service';
 import { AuthDialogComponent } from 'src/app/modules/authorization/components/auth-dialog/auth-dialog.component';
 import { takeUntil } from 'rxjs/operators';
 import { UserDTO } from 'src/app/models/DTO/User/userDTO';
@@ -15,29 +14,27 @@ export class AuthDialogService implements OnDestroy {
   private unsubscribe$ = new Subject<void>();
 
 
-  public constructor( private authService: AuthenticationService,
-    private dialogService: DialogService)
-    {}
+  public constructor(   private dialogService: DialogService) { }
 
     public openAuthDialog(type: DialogType) {
         const dialog = this.dialogService.open(AuthDialogComponent, {
             data: { dialogType: type },
             width: '40%',
             contentStyle: {
-              "border-radius" : "5px",
-              "padding": "2%"
+              'border-radius' : '5px',
+              'padding': '2%'
             },
-            showHeader : false          
+            showHeader : false
         });
 
-        dialog
-        .onClose
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe((result: UserDTO) => {
-          if (result) {
-              this.authService.setUser(result);
-          }
-      });
+        // dialog
+        // .onClose
+        // .pipe(takeUntil(this.unsubscribe$))
+        // .subscribe((result: UserDTO) => {
+        //     if (result) {
+        //         this.authService.setUser(result);
+        //     }
+        // });
     }
 
     public ngOnDestroy() {

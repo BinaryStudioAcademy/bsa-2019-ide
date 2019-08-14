@@ -33,13 +33,16 @@ namespace IDE.BLL.JWT
         {
             var claims = new[]
             {
-                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                  new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
                  new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
                  new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
 
+                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                  new Claim("id", user.Id.ToString()),
-                 new Claim(ClaimTypes.Name, user.FirstName)
+                 new Claim("nickName", user.NickName),
+                 new Claim("firstName", user.FirstName),
+                 new Claim("lastName", user.LastName),
+                 new Claim("photoUrl", user.Avatar?.Url),
              };
                          
             // Create the JWT security token and encode it.

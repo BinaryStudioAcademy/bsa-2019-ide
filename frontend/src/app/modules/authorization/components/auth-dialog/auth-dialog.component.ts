@@ -1,13 +1,12 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { DialogType } from 'src/app/modules/authorization/models/auth-dialog-type';
-import { AuthenticationService } from 'src/app/services/auth.service/auth.service';
 import { Subject } from 'rxjs';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
-import { UserRegisterDTO } from '../../../../models/DTO/User/userRegisterDTO';
 import { NavMenuComponent } from 'src/app/nav-menu/nav-menu.component';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
     selector: 'app-auth-dialog',
@@ -30,13 +29,12 @@ export class AuthDialogComponent implements OnInit {
     public title: string;
     public isSpinner = false;
     private unsubscribe$ = new Subject<void>();
-    providers: [AuthenticationService];
 
     constructor(
-        private authService: AuthenticationService,
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
         private router: Router,
+        private tokenService: TokenService,
         private toast: ToastrService
     ) { }
 
@@ -57,15 +55,15 @@ export class AuthDialogComponent implements OnInit {
 
     public signIn() {
         this.isSpinner = true;
-        this.authService
+        this.tokenService
             .login({ email: this.email, password: this.password })
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(result => {this.isSpinner = false; this.ref.close()},
-                error => { 
+            .subscribe(result => {this.isSpinner = false; this.ref.close(); },
+                error => {
                     this.isSpinner = false;
-                    this.toast.error("The email or password is incorrect", "Error Message");
+                    this.toast.error('The email or password is incorrect', 'Error Message');
                 },
-                () => this.toast.success("You have successfully signed in!")
+                () => this.toast.success('You have successfully signed in!')
             );
         this.router.navigate(['/']);
     }
@@ -79,11 +77,11 @@ export class AuthDialogComponent implements OnInit {
             password: this.password,
             email: this.email
         };
-        this.authService
+        this.tokenService
             .register(user)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(result => this.ref.close(),
-                error => this.toast.error("registering failded", "Error Message"),
-                () => this.toast.success("You have successfully registered!"));
+                error => this.toast.error('registering failded', 'Error Message'),
+                () => this.toast.success('You have successfully registered!'));
     }
 }
