@@ -78,7 +78,7 @@ namespace IDE.API.Controllers
         {
             var author = this.GetUserIdFromToken();
             var projectId = await _projectService.CreateProject(project, author);
-
+            /*
             var projectStructureDTO = new ProjectStructureDTO();
             projectStructureDTO.Id = projectId.ToString();
             projectStructureDTO.NestedFiles.Add(new FileStructureDTO()
@@ -88,6 +88,7 @@ namespace IDE.API.Controllers
                 Name = project.Name
             });
             _ = await _projectStructureService.CreateAsync(projectStructureDTO);
+            */
             return Created("/project", projectId);
         }
 
