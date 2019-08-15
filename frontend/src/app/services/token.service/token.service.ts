@@ -99,17 +99,18 @@ export class TokenService {
 
     public getUser(): UserDTO {
         const token = this.jwtService.decodeToken();
-        if (token !== null) {
-            const user: UserDTO = {
-                email: token.email,
-                id: token.id,
-                firstName: token.firstName,
-                lastName: token.lastName,
-                nickName: token.nickName
-            };
-            return user;
-        }
-        return null;
+        if (token === null)
+            return null;
+
+        const user: UserDTO = {
+            email: token.email,
+            id: token.id,
+            firstName: token.firstName,
+            lastName: token.lastName,
+            nickName: token.nickName
+        };
+        
+        return user;        
     }
     public getUserId(): number {
         const token = this.jwtService.decodeToken();
