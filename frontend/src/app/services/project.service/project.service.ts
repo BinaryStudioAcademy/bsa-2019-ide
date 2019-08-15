@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
+import { SearchProjectDTO } from 'src/app/models/DTO/Project/searchProjectDTO';
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +19,11 @@ export class ProjectService {
 
     public addProject(project: ProjectCreateDTO) {
         return this.httpClient.postRequest(this.address, project);
+    }
+
+    public getProjectsName(): Observable<HttpResponse<SearchProjectDTO[]>>
+    {
+        return this.httpClient.getRequest(this.address+'/name');
     }
 
     public changeFavourity(projectId: number): Observable<HttpResponse<ProjectDescriptionDTO[]>> {

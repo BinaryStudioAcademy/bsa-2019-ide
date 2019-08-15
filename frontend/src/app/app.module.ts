@@ -30,6 +30,7 @@ import { RefreshTokenInterceptor } from './helpers/token.interceptor';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormsModule } from '@angular/forms';
+import {AutoCompleteModule} from 'primeng/primeng';
 
 @NgModule({
     declarations: [
@@ -38,6 +39,7 @@ import { FormsModule } from '@angular/forms';
 
     ],
     imports: [
+        AutoCompleteModule,
         FormsModule,
         SplitButtonModule,
         MenuModule,

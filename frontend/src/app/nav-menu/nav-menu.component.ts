@@ -7,8 +7,10 @@ import { Router } from '@angular/router';
 import { UserService } from '../services/user.service/user.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { EventService } from '../services/event.service/event.service';
+import { ProjectService } from '../services/project.service/project.service';
 import { TokenService } from '../services/token.service/token.service';
+import { ProjectDescriptionDTO } from '../models/DTO/Project/projectDescriptionDTO';
+import { SearchProjectDTO } from '../models/DTO/Project/searchProjectDTO'
 
 @Component({
     selector: 'app-nav-menu',
@@ -21,13 +23,17 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
     public dialogType = DialogType;
     public isAuthorized: boolean;
-    public  items: MenuItem[];
+    public items: MenuItem[];
     private unsubscribe$ = new Subject<void>();
+
+    project: SearchProjectDTO;
+    filterProhects: SearchProjectDTO[]
 
     constructor(
         private authDialogService: AuthDialogService,
         private router: Router,
-        private tokenService: TokenService
+        private tokenService: TokenService,
+        private projectService: ProjectService
     ) { }
 
     ngOnInit() {
@@ -51,10 +57,37 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             .subscribe((auth) => (this.isAuthorized = auth));
 
         this.items = [
-            {label: 'Log out', icon: 'pi pi-sign-out', command: () => {
-                this.LogOut();
-            }}
+            {
+                label: 'Log out', icon: 'pi pi-sign-out', command: () => {
+                    this.LogOut();
+                }
+            }
         ];
+    }
+
+    filterProject(event) {
+        let query = event.query;
+        this.projectService.getProjectsName().subscribe(projects => {
+            this.filterProhects = this.filterProhects = this.filter(query, projects.body);
+            this.filterProhects = this.filterProhects;
+        });
+    }
+
+    checkProject(project: SearchProjectDTO) {
+        console.log(this.project.name);
+        this.project.name="";
+        this.router.navigate([`/project/${project.id}`]);
+    }
+
+    filter(query, countries: SearchProjectDTO[]): SearchProjectDTO[] {
+        let filtered: SearchProjectDTO[] = [];
+        for (let i = 0; i < countries.length; i++) {
+            let country = countries[i];
+            if (country.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+                filtered.push(country);
+            }
+        }
+        return filtered;
     }
 
     public goToUserDetails() {
