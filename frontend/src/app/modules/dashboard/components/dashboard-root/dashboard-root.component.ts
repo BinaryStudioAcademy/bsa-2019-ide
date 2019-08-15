@@ -20,10 +20,8 @@ export class DashboardRootComponent implements OnInit {
         ['Favourite projects', '/dashboard/favouriteProjects']
         ];
         const route = this.router.url;
-        console.log(route);
         this.isActive = [];
         this.isActive[this.items.findIndex(x => x[1] === route)] = true;
-        console.log( this.isActive);
     }
 
     redirect(i: number) {

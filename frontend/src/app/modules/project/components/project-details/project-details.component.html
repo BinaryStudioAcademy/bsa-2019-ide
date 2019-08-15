@@ -5,6 +5,29 @@
     </button>
   </div>
 </div>
+
+<p-tabView orientation="left">
+    <p-tabPanel header="Details">
+        <app-project-details-info [project]="project"></app-project-details-info>
+    </p-tabPanel>
+    <p-tabPanel header="Build results">
+        Here will be build results
+    </p-tabPanel>
+    <p-tabPanel header="Artifacts">
+        Here will be artifacts(list of zip builds)
+    </p-tabPanel>
+    <p-tabPanel header="User statistics">
+        <app-project-details-user-statistics></app-project-details-user-statistics>
+    </p-tabPanel>
+    <p-tabPanel header="Git Credentials">
+        Here will be git url <address></address>
+    </p-tabPanel>
+    <p-tabPanel header="History of changes">
+        Here will be history of changes
+    </p-tabPanel>
+</p-tabView>
+
+<!--
 <div class="ui-g">
     <div class="ui-g-12 ui-md-6 ui-lg-4">
         <div class="block-item">
@@ -17,3 +40,4 @@
         </div>
     </div>
 </div>
+-->

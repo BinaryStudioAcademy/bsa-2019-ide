@@ -10,6 +10,9 @@ import { EditorSectionComponent } from '../editor-section/editor-section.compone
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
+
+
+import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
 import { MenuItem } from 'primeng/api';
 
@@ -24,8 +27,8 @@ export class WorkspaceRootComponent implements OnInit {
     public openedFiles: FileUpdateDTO[];
     public items: MenuItem[];
     public activeItem: MenuItem;
-    
-    
+
+
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
@@ -77,7 +80,7 @@ export class WorkspaceRootComponent implements OnInit {
             );
     }
 
-    public saveFiles() {        
+    public saveFiles() : Observable<HttpResponse<FileUpdateDTO>[]> {
         const openedFiles = this.editor.openedFiles;
         return this.saveFilesRequest(openedFiles);
     }
@@ -85,7 +88,7 @@ export class WorkspaceRootComponent implements OnInit {
     public onSaveButtonClick(ev) {
         this.saveFiles().subscribe(
             success => {
-                if (success.ok) {
+                if (success.every(x => x.ok)) {
                     this.tr.success("Files saved", "Success", { tapToDismiss: true })
                 } else {
                     this.tr.error("Can't save files", "Error", { tapToDismiss: true });
@@ -100,7 +103,7 @@ export class WorkspaceRootComponent implements OnInit {
 
         this.saveFilesRequest(ev).subscribe(
             success => {
-                if (success.ok) {
+                if (success.every(x => x.ok)) {
                     this.tr.success("Files saved", "Success", { tapToDismiss: true })
                 } else {
                     this.tr.error("Can't save files", "Error", { tapToDismiss: true });
@@ -116,7 +119,7 @@ export class WorkspaceRootComponent implements OnInit {
         this.items.splice(indexTab, 1);
     }
 
-    private saveFilesRequest(files: FileUpdateDTO[]) {
+    private saveFilesRequest(files: FileUpdateDTO[]) : Observable<HttpResponse<FileUpdateDTO>[]> {
         return this.ws.saveFilesRequest(files);
     }
 
@@ -125,7 +128,7 @@ export class WorkspaceRootComponent implements OnInit {
         return this.saveOnExit.confirm('Save changes?')
             .pipe(
                 switchMap(
-                    mustSave => mustSave ? this.saveFiles().pipe(map(result => result.ok ? true : false)) : of(false)));
+                    mustSave => mustSave ? this.saveFiles().pipe(map(result => result.every(x=>x.ok) ? true : false)) : of(false)));
     }
 
     // *********code below for resizing blocks***************

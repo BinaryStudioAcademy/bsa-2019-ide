@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using IDE.API.Extensions;
 using IDE.BLL.Interfaces;
+using IDE.BLL.Services;
 using IDE.Common.DTO.Project;
+using IDE.Common.ModelsDTO.DTO.Workspace;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using IDE.API.Extensions;
-using IDE.BLL.Services;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using IDE.Common.ModelsDTO.DTO.Project;
 
 namespace IDE.API.Controllers
 {
@@ -18,13 +20,17 @@ namespace IDE.API.Controllers
         private readonly IProjectService _projectService;
         private readonly IProjectMemberSettingsService _projectMemberSettings;
         private readonly IProjectStructureService _projectStructureService;
+        private readonly FileService _fileService;
 
-        public ProjectController(IProjectService projectService, IProjectMemberSettingsService projectMemberSettings,
-            IProjectStructureService projectStructureService)
+        public ProjectController(IProjectService projectService,
+                                IProjectMemberSettingsService projectMemberSettings,
+                                IProjectStructureService projectStructureService,
+                                FileService fileService)
         {
             _projectStructureService = projectStructureService;
             _projectService = projectService;
             _projectMemberSettings = projectMemberSettings;
+            _fileService = fileService;
         }
 
         [HttpGet("{projectId}")]
@@ -38,6 +44,12 @@ namespace IDE.API.Controllers
         {
             //Need to get userId from token
             return Ok(await _projectService.GetAllProjects(this.GetUserIdFromToken()));
+        }
+
+        [HttpGet("name")]
+        public async Task<ActionResult<IEnumerable<SearchProjectDTO>>> GetProjectName()
+        {
+            return Ok(await _projectService.GetProjectsName());
         }
 
         [HttpGet("my")]
@@ -62,11 +74,21 @@ namespace IDE.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddProject(ProjectCreateDTO project)
+        public async Task<ActionResult> CreateProject(ProjectCreateDTO project)
         {
             var author = this.GetUserIdFromToken();
-            var id = await _projectService.CreateProject(project, author);
-            return Created("/project", id);
+            var projectId = await _projectService.CreateProject(project, author);
+
+            var projectStructureDTO = new ProjectStructureDTO();
+            projectStructureDTO.Id = projectId.ToString();
+            projectStructureDTO.NestedFiles.Add(new FileStructureDTO()
+            {
+                Type = 0,
+                Details = $"Super important details of file {project.Name}",
+                Name = project.Name
+            });
+            _ = await _projectStructureService.CreateAsync(projectStructureDTO);
+            return Created("/project", projectId);
         }
 
         [HttpPut]

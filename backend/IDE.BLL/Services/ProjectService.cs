@@ -4,6 +4,7 @@ using IDE.BLL.Interfaces;
 using IDE.Common.DTO.Common;
 using IDE.Common.DTO.Project;
 using IDE.Common.Enums;
+using IDE.Common.ModelsDTO.DTO.Project;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +36,13 @@ namespace IDE.BLL.Services
                 .FirstOrDefaultAsync(p => p.Id == projectId);
 
             return _mapper.Map<ProjectDTO>(project);
+        }
+
+        public async Task<ICollection<SearchProjectDTO>> GetProjectsName()
+        {
+            var project = await _context.Projects
+                .Select(item => new SearchProjectDTO {Id=item.Id, Name=item.Name }).ToListAsync();
+            return project;
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId)
