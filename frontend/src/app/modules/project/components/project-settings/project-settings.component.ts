@@ -20,7 +20,6 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
   public projectStartState = {} as ProjectUpdateDTO;
   public isPageLoaded = false;
   public isDetailsSaved = true;
-  public isAuthor = false;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -50,7 +49,6 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         this.projectService.getProjectById(this.projectId)
         .subscribe(
             (resp) => {
-                this.isAuthor = userId === resp.body.authorId;
                 this.SetProjectObjectsFromResponse(resp);
                 this.isPageLoaded = true;
             },
@@ -78,7 +76,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     this.projectService.updateProject(this.project)
       .subscribe(
         (resp) => {
-          this.SetProjectObjectsFromResponse(resp);
+          this.router.navigate([`project/${this.projectId}`]);
           this.isDetailsSaved = true;
           this.toastService.success('New details have successfully saved!');
         },
