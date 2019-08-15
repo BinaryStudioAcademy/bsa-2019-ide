@@ -7,7 +7,7 @@ namespace IDE.Common.ModelsDTO.DTO.Project
 {
     public class LikedProjectInLanguageDTO
     {
-        public Language ProjectType;
-        public LikedProjectDTO[] LikedProjects;
+        public Language ProjectType { get; set; }
+        public LikedProjectDTO[] LikedProjects { get; set; }
     }
 }

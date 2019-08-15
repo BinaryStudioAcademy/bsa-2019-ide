@@ -6,10 +6,10 @@ namespace IDE.Common.ModelsDTO.DTO.Project
 {
     public class LikedProjectDTO
     {
-        public int ProjectId;
-        public int LikesCount;
-        public string ProjectName;
-        public string ProjectDescription;
-        public string AuthorNickName;
+        public int ProjectId { get; set; }
+        public int LikesCount { get; set; }
+        public string ProjectName { get; set; }
+        public string ProjectDescription { get; set; }
+        public string AuthorNickName { get; set; }
     }
 }
