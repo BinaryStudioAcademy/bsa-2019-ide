@@ -9,9 +9,16 @@ import { ProjectDescriptionDTO } from '../../../../models/DTO/Project/projectDes
 export class ProjectsListComponent implements OnInit {
     @Input() header: string;
     @Input() projects: ProjectDescriptionDTO[];
+    currentMenu: any;
 
     constructor() { }
 
     ngOnInit() { }
 
+    hideAllMenus(menu: any) {
+        if (this.currentMenu !== undefined) {
+            this.currentMenu.hide();
+        }
+        this.currentMenu = menu;
+    }
 }

@@ -4,6 +4,9 @@ import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { AccessModifier } from 'src/app/models/Enums/accessModifier';
 import { UserDTO } from 'src/app/models/DTO/User/userDTO';
 import { TokenService } from 'src/app/services/token.service/token.service';
+import { ProjectService } from 'src/app/services/project.service/project.service';
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-project-details-info',
@@ -15,7 +18,12 @@ export class ProjectDetailsInfoComponent implements OnInit {
 
     @Input() project: ProjectInfoDTO;
 
-    constructor(private tokenService: TokenService) { }
+    constructor(
+      private tokenService: TokenService,
+      private projectService: ProjectService,
+      private router: Router,
+      private toastService: ToastrService
+    ) { }
 
     ngOnInit(): void {
         this.authorId = this.tokenService.getUserId();
@@ -28,4 +36,24 @@ export class ProjectDetailsInfoComponent implements OnInit {
     IsPublic(): boolean {
         return this.project.accessModifier === AccessModifier.public;
     }
+
+    getRemovingHeader() {
+      return 'Delete project "' + this.project.name + '"?';
+    }
+
+    remove(event: boolean) {
+      if (event) {
+          this.projectService.deleteProject(this.project.id)
+              .subscribe(
+                  (resp) => {
+                    this.router.navigate(['/dashboard']);
+                    this.toastService.success('Project "' + this.project.name + '" was successfully deleted');
+                  },
+                  (error) => {
+                    this.toastService.error('Please, try again later', 'Ooops, smth goes wrong');
+                    console.error(error.message);
+                  });
+      } else {
+      }
+  }
 }

@@ -36,6 +36,8 @@ namespace IDE.BLL.Services
                 throw new NotFoundException(name: nameof(userEntity));
             }
 
+            
+
             if (!SecurityHelper.ValidatePassword(userDto.Password, userEntity.PasswordHash, userEntity.PasswordSalt))
             {
                 throw new InvalidUsernameOrPasswordException("wrong username or password");
