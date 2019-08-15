@@ -1,6 +1,14 @@
 <p-menubar [model]="getMenuItems()">
     <div *ngIf="isAuthorized">
-        <input [(ngModel)]="searchText" class="search-input" pInputText placeholder="search text goes here">
+        <span class="ui-fluid">
+            <p-autoComplete [(ngModel)]="projects" [suggestions]="filterProjectsMultiple"
+                (completeMethod)="filterProjectsMultiple($event)" styleClass="wid100" [minLength]="1"
+                placeholder="Countries" field="name" [multiple]="true">
+            </p-autoComplete>
+        </span>
+        <ul>
+            <li *ngFor="let c of projects">{{c.name}}</li>
+        </ul>
         <p-splitButton label="My Profile" icon="pi pi-user" (onClick)="goToUserDetails()" [model]="items">
         </p-splitButton>
     </div>

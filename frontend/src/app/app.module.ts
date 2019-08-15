@@ -29,7 +29,7 @@ import { TokenGetter } from './services/token.service/token.service';
 import { RefreshTokenInterceptor } from './helpers/token.interceptor';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import { SharedModule } from './modules/shared/shared.module';
-
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [
@@ -38,6 +38,7 @@ import { SharedModule } from './modules/shared/shared.module';
 
     ],
     imports: [
+        FormsModule,
         SplitButtonModule,
         MenuModule,
         BrowserModule,
