@@ -27,15 +27,15 @@
         <p-card header="Secondary">
              <p>
                 <span class="highlighted">Language: </span>
-                <span>{{project.language}}</span>
+                <span appLanguage [language]="project.language"></span>
             </p>
              <p>
                 <span class="highlighted">ProjectType: </span>
-                <span>{{project.projectType}}</span>
+                <span appProjectType [projectType]="project.projectType"></span>
             </p>
              <p>
                 <span class="highlighted">CompilerType: </span>
-                <span>{{project.compilerType}}</span>
+                <span appCompilerType [compilerType]="project.compilerType"></span>
             </p>
             <!--here will be check(if project access modifier - public)-->
             <p *ngIf="IsPublic()">
