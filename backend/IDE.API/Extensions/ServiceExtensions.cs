@@ -1,61 +1,36 @@
-﻿using AutoMapper;
-using FluentValidation;
+﻿using FluentValidation;
 using IDE.API.Validators;
-using IDE.BLL.Interfaces;
-using IDE.BLL.JWT;
-using IDE.BLL.MappingProfiles;
-using IDE.BLL.Services;
 using IDE.Common.DTO.Common;
 using IDE.Common.DTO.File;
 using IDE.Common.DTO.User;
-using IDE.DAL.Entities.NoSql;
-using IDE.DAL.Factories;
-using IDE.DAL.Factories.Abstractions;
-using IDE.DAL.Interfaces;
-using IDE.DAL.Repositories;
-using IDE.DAL.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
 using IDE.Common.Authentication;
 using IDE.Common.ModelsDTO.DTO.Authentification;
-using RabbitMQ.Shared.Interfaces;
-using RabbitMQ.Shared.QueueServices;
+using Microsoft.AspNetCore.Builder;
+using IDE.DAL.Context;
+using IDE.BLL;
+using IDE.DAL;
+using RabbitMQ.Shared;
 
 namespace IDE.API.Extensions
 {
     public static class ServiceExtensions
     {
-        public static void RegisterCustomServices(this IServiceCollection services)
+        public static void RegisterCustomServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<JwtIssuerOptions>();
-            services.AddScoped<JWTFactory>();
-            
-            services.AddScoped<AuthService>();
-            services.AddScoped<UserService>();
-            services.AddScoped<IProjectMemberSettingsService, ProjectMemberSettingsService>();
-            services.AddScoped<IProjectService, ProjectService>();
-            services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IProjectStructureService, ProjectStructureService>();
 
-            services.AddScoped<FileService>();
-            services.AddScoped<FileHistoryService>();
-            services.AddScoped<ProjectStructureService>();
+            BLLConfigurations.ConfigureServices(services, configuration);
 
-            services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
-            services.AddScoped<INoSqlRepository<File>, NoSqlRepository<File>>();
-            services.AddScoped<INoSqlRepository<FileHistory>, NoSqlRepository<FileHistory>>();
-            services.AddScoped<IProjectStructureRepository, ProjectStructureRepository>();
-        }
+            DALConfigurations.ConfigureServices(services, configuration);
 
-        public static void RegisterServicesWithIConfiguration(this IServiceCollection services, IConfiguration conf)
-        {
-            services.AddSingleton<IAzureBlobConnectionFactory>(new AzureBlobConnectionFactory(conf));
+            RabbitMQConfigurations.ConfigureServices(services, configuration);
         }
 
         public static void RegisterCustomValidators(this IServiceCollection services)
@@ -67,42 +42,6 @@ namespace IDE.API.Extensions
             services.AddSingleton<IValidator<UserLoginDTO>, UserLogInDTOValidator>();
             services.AddSingleton<IValidator<FileCreateDTO>, FileCreateDTOValidator>();
             services.AddSingleton<IValidator<FileUpdateDTO>, FileUpdateDTOValidator>();
-        }
-
-        public static void RegisterAutoMapper(this IServiceCollection services)
-        {
-            services.AddAutoMapper(cfg =>
-            {
-                cfg.AddProfile<UserProfile>();
-                cfg.AddProfile<ProjectProfile>();
-                cfg.AddProfile<ImageProfile>();
-                cfg.AddProfile<BuildProfile>();
-                cfg.AddProfile<FileProfile>();
-                cfg.AddProfile<FileHistoryProfile>();
-                cfg.AddProfile<GitCredentialProfile>();
-                cfg.AddProfile<ProjectStructureProfile>();
-            });
-        }
-
-        public static void RegisterHttpClientFactories(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddHttpClient<IImageUploader, ImgurUploaderService>(client =>
-            {
-                var imgurClientId = configuration["BsaIdeImgurClientId"];
-                var imgurApiUrl = configuration.GetSection("ImgurApiUrl").Value;
-
-                client.BaseAddress = new Uri(imgurApiUrl);
-                client.DefaultRequestHeaders.Add("Authorization", $"Client-ID {imgurClientId}");
-            });
-        }
-
-        public static void ConfigureNoSqlDb(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.Configure<FileStorageNoSqlDbSettings>(
-                configuration.GetSection(nameof(FileStorageNoSqlDbSettings)));
-
-            services.AddSingleton<IFileStorageNoSqlDbSettings>(sp =>
-               sp.GetRequiredService<IOptions<FileStorageNoSqlDbSettings>>().Value);
         }
 
         public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
@@ -157,22 +96,6 @@ namespace IDE.API.Extensions
                     }
                 };
             });
-        }
-
-        public static void RegisterRabbitMQ(this IServiceCollection services, string connection)
-        {
-            services.AddScoped<BLL.Interfaces.IQueueService, QueueService>();
-
-            services.AddScoped<IMessageQueue, MessageQueue>();
-            services.AddSingleton<RabbitMQ.Client.IConnectionFactory>(x => new ExtendedConnectionFactory(new Uri(connection))); //"amqp://admin:admin@localhost:5672"
-
-            services.AddScoped<IMessageProducer, MessageProducer>();
-            services.AddScoped<IMessageProducerScope, MessageProducerScope>();
-            services.AddScoped<IMessageProducerScopeFactory, MessageProducerScopeFactory>();
-
-            services.AddScoped<IMessageConsumer, MessageConsumer>();
-            services.AddScoped<IMessageConsumerScope, MessageConsumerScope>();
-            services.AddScoped<IMessageConsumerScopeFactory, MessageConsumerScopeFactory>();
         }
     }
 }
