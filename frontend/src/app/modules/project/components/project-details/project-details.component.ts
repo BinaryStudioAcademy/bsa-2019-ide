@@ -15,8 +15,9 @@ export class ProjectDetailsComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-      this.route.data.subscribe(data => {
-        this.project = data['project'];
-      });
+        this.route.data.subscribe(data => {
+            this.project = data['project'];
+            this.projectId = this.project.id;
+        });
     }
 }
