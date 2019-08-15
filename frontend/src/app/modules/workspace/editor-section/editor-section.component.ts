@@ -44,8 +44,8 @@ export class EditorSectionComponent implements OnInit {
         this.fileCloseEvent.emit(this.openedFiles[index]);
 
         this.saveFiles([this.openedFiles[index]]);
-        this.items = this.items.filter((item, i) => i !== index);
-        this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
+        //this.items = this.items.filter((item, i) => i !== index);
+        //this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
         //delete this.openedFiles[index];
         index = this.items.length === index ? index - 1 : index;
         this.code = this.openedFiles[index].content;

@@ -69,8 +69,6 @@ export class WorkspaceRootComponent implements OnInit {
                     this.items.push({label: resp.body.name, icon: 'fa fa-fw fa-file', target: resp.body.id})
                     this.activeItem = this.items[this.items.length - 1];
                     this.editor.code = resp.body.content;
-
-                    console.log(this.openedFiles);
                 },
                 (error) => {
                     this.tr.error("Can't load selected file.", "Error Message");
@@ -79,8 +77,7 @@ export class WorkspaceRootComponent implements OnInit {
             );
     }
 
-    public saveFiles() {
-        
+    public saveFiles() {        
         const openedFiles = this.editor.openedFiles;
         return this.saveFilesRequest(openedFiles);
     }
@@ -117,9 +114,6 @@ export class WorkspaceRootComponent implements OnInit {
         this.openedFiles.splice(indexFile, 1);
         const indexTab = this.items.findIndex(i => i.target === ev.id);
         this.items.splice(indexTab, 1);
-        this.activeItem = this.items[this.items.length - 1];
-        console.log( "file close from root works",indexFile, this.openedFiles);
-        console.log( "tab close from root works",indexTab, this.items);
     }
 
     private saveFilesRequest(files: FileUpdateDTO[]) {
