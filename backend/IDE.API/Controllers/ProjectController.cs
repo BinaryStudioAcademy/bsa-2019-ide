@@ -79,7 +79,8 @@ namespace IDE.API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteProject(int id)
         {
-            await _projectService.DeleteProjectAsync(id);
+            int userId = this.GetUserIdFromToken();
+            await _projectService.DeleteProjectAsync(id, userId);
             return NoContent();
         }
 

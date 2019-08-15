@@ -2,11 +2,12 @@ import { HttpResponse } from '@angular/common/http';
 import { ProjectUpdateDTO } from './../../../../models/DTO/Project/projectUpdateDTO';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { takeUntil } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
   selector: 'app-project-settings',
@@ -19,6 +20,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
   public projectStartState = {} as ProjectUpdateDTO;
   public isPageLoaded = false;
   public isDetailsSaved = true;
+  public isAuthor = false;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -29,31 +31,35 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     countOfBuildAttempts: ['', Validators.required]
   });
 
-  constructor(
-    private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private projectService: ProjectService,
-    private toastService: ToastrService
-  ) { }
+    constructor(
+        private fb: FormBuilder,
+        private route: ActivatedRoute,
+        private projectService: ProjectService,
+        private toastService: ToastrService,
+        private tokenService: TokenService,
+        private router: Router
+    ) { }
 
   ngOnInit() {
-    this.projectId = Number(this.route.snapshot.paramMap.get('id'));
-    if (!this.projectId) {
-      console.error('Id in URL is not a number!');
-      return;
-    }
-    this.projectService.getProjectById(this.projectId)
-      .subscribe(
-        (resp) => {
-          this.SetProjectObjectsFromResponse(resp);
-          this.isPageLoaded = true;
-        },
-        (error) => {
-          this.isPageLoaded = true;
-          this.toastService.error("Can't load project details.", "Error Message:");
-          console.error(error.message);
+        this.projectId = Number(this.route.snapshot.paramMap.get('id'));
+        const userId: number = this.tokenService.getUserId();
+        if (!this.projectId) {
+            console.error('Id in URL is not a number!');
+            return;
         }
-      );
+        this.projectService.getProjectById(this.projectId)
+        .subscribe(
+            (resp) => {
+                this.isAuthor = userId === resp.body.authorId;
+                this.SetProjectObjectsFromResponse(resp);
+                this.isPageLoaded = true;
+            },
+            (error) => {
+                this.isPageLoaded = true;
+                this.toastService.error('Can\'t load project details.', 'Error Message:');
+                console.error(error.message);
+            }
+        );
   }
 
   projectItemIsNotChange(): boolean {
@@ -74,15 +80,34 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         (resp) => {
           this.SetProjectObjectsFromResponse(resp);
           this.isDetailsSaved = true;
-          this.toastService.success("New details have successfully saved!");
+          this.toastService.success('New details have successfully saved!');
         },
         (error) => {
           this.isDetailsSaved = true;
-          this.toastService.error("Can't save new project details", "Error Message");
+          this.toastService.error('Can\'t save new project details', 'Error Message');
           console.error(error.message);
         }
       );
   }
+    remove(event: boolean) {
+        if (event) {
+            this.projectService.deleteProject(this.projectId)
+                .subscribe(
+                    (resp) => {
+                      this.router.navigate(['/dashboard']);
+                      this.toastService.success('Project "' + this.project.name + '" was successfully deleted');
+                    },
+                    (error) => {
+                      this.toastService.error('Please, try again later', 'Ooops, smth goes wrong');
+                      console.error(error.message);
+                    });
+        } else {
+        }
+    }
+
+    getRemovingHeader() {
+        return 'Delete project "' + this.project.name + '"?';
+    }
 
   public getErrorMessage(field: string): string {
     const control = this.projectForm.get(field);

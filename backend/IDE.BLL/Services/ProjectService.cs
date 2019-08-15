@@ -152,17 +152,22 @@ namespace IDE.BLL.Services
             return await GetProjectById(projectUpdateDTO.Id);
         }
 
-        public async Task DeleteProjectAsync(int id)
+        public async Task DeleteProjectAsync(int id, int ownerId)
         {
-            var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == id);
+
+            var project = await _context.Projects
+                .Include(pr => pr.Builds)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (project == null)
                 throw new NotFoundException(nameof(Project), id);
+            if (project.AuthorId != ownerId)
+                throw new InvalidAuthorException();
 
-            var filesDelete = await _fileService.GetAllForProjectAsync(id);
-            foreach (var file in filesDelete)
-            {
-                await _fileService.DeleteAsync(file.Id);
-            }
+            //var filesDelete = await _fileService.GetAllForProjectAsync(id);
+            //foreach (var file in filesDelete)
+            //{
+            //    await _fileService.DeleteAsync(file.Id);
+            //}
 
             _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
