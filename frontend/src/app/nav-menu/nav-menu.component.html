@@ -1,6 +1,8 @@
 <p-menubar [model]="getMenuItems()">
     <div *ngIf="isAuthorized">
-        <p-splitButton label="My Profile" icon="pi pi-user" (onClick)="goToUserDetails()" [model]="items"></p-splitButton>
+        <input [(ngModel)]="searchText" class="search-input" pInputText placeholder="search text goes here">
+        <p-splitButton label="My Profile" icon="pi pi-user" (onClick)="goToUserDetails()" [model]="items">
+        </p-splitButton>
     </div>
     <div *ngIf="!isAuthorized">
         <button class="login-btn" pButton (click)="openAuthDialog(dialogType.SignIn)" label="Login"></button>
