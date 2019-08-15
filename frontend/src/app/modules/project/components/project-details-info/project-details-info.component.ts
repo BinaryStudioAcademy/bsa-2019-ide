@@ -22,10 +22,10 @@ export class ProjectDetailsInfoComponent implements OnInit {
     }
 
     IsAuthor(): boolean {
-        return this.authorId === this.project.authorId ? true : false;
+        return this.authorId === this.project.authorId;
     }
 
     IsPublic(): boolean {
-        return this.project.accessModifier === AccessModifier.public ? true : false;
+        return this.project.accessModifier === AccessModifier.public;
     }
 }
