@@ -74,6 +74,9 @@ export class WorkspaceRootComponent implements OnInit {
     }
 
     public onSaveButtonClick(ev) {
+        if (!this.editor.anyFileChanged()) {
+            return;
+        }
         this.saveFiles().subscribe(
             success => {
                 if (success.every(x => x.ok)) {
