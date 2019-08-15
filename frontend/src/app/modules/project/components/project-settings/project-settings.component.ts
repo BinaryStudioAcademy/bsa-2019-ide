@@ -89,25 +89,6 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         }
       );
   }
-    remove(event: boolean) {
-        if (event) {
-            this.projectService.deleteProject(this.projectId)
-                .subscribe(
-                    (resp) => {
-                      this.router.navigate(['/dashboard']);
-                      this.toastService.success('Project "' + this.project.name + '" was successfully deleted');
-                    },
-                    (error) => {
-                      this.toastService.error('Please, try again later', 'Ooops, smth goes wrong');
-                      console.error(error.message);
-                    });
-        } else {
-        }
-    }
-
-    getRemovingHeader() {
-        return 'Delete project "' + this.project.name + '"?';
-    }
 
   public getErrorMessage(field: string): string {
     const control = this.projectForm.get(field);
