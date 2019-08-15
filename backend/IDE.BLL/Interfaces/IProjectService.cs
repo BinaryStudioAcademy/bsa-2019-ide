@@ -1,5 +1,6 @@
 using IDE.Common.DTO.Common;
 using IDE.Common.DTO.Project;
+using IDE.Common.ModelsDTO.DTO.Project;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,6 +9,7 @@ namespace IDE.BLL.Interfaces
     public interface IProjectService
     {
         Task<ProjectInfoDTO> GetProjectById(int projectId);
+        Task<ICollection<SearchProjectDTO>> GetProjectsName();
         Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId);
         Task<ICollection<ProjectDescriptionDTO>> GetFavouriteUserProjects(int userId);
         Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId);
