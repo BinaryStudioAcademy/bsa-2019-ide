@@ -28,7 +28,6 @@ namespace IDE.API.Controllers
         public async Task<IActionResult> Post([FromBody] UserRegisterDTO user)
         {
             var createdUser = await _userService.CreateUser(user);
-            string UserName = createdUser.FirstName + createdUser.LastName + createdUser.NickName;
             var token = await _authService.GenerateAccessToken(createdUser);
 
             var result = new AuthUserDTO

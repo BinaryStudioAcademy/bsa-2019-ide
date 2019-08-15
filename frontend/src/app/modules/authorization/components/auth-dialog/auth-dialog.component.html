@@ -6,7 +6,7 @@
     <div>
       <label for="float-firstName-input">Your first name</label>
       <input id="float-firstName-input" type="text" size="30" [(ngModel)]="firstName" name="authFirstName"
-        #upFirstname="ngModel" pInputText pattern="[а-яА-Яa-zA-ZіІїЇ^0-9]{2,32}" maxlength="32" minlength="2" >
+        #upFirstname="ngModel" pInputText pattern="[а-яА-Яa-zA-ZіІїЇ]{2,32}" maxlength="32" minlength="2" >
         <div *ngIf="upFirstname.invalid && (upFirstname.dirty || upFirstname.touched)" class="alert-danger">
           <div *ngIf="upFirstname.errors.pattern">
             First name can only contain latin\cyrillic letters (upper\lowercase).
@@ -22,7 +22,7 @@
     <div>
       <label for="float-lastName-input">Your last name</label>
       <input id="float-lastName-input" type="text" size="30" [(ngModel)]="lastName" name="authLastName"
-        #upLastname="ngModel" pInputText pattern="[а-яА-Яa-zA-ZіІїЇ^0-9]{2,32}" maxlength="32" minlength="2">
+        #upLastname="ngModel" pInputText pattern="[а-яА-Яa-zA-ZіІїЇ]{2,32}" maxlength="32" minlength="2">
         <div *ngIf="upLastname.invalid && (upLastname.dirty || upLastname.touched)" class="alert-danger">
           <div *ngIf="upLastname.errors.pattern">
             Last name can only contain latin\cyrillic letters (upper\lowercase).
@@ -55,7 +55,7 @@
   <div>
     <label for="float-email-input">Your E-mail</label>
     <input id="float-email-input" type="text" size="30" [(ngModel)]="email" name="email" #inEmail="ngModel" pInputText
-      required pattern="[^.]{0}[a-zA-Z0-9._]{1,35}[^.]{0}@[^-]{0}[a-zA-Z0-9.]{3,35}[^-]{0}">
+      required pattern="[^.]{0}[a-zA-Z0-9._]{1,35}[^.]{0}@[^-]{0}[a-zA-Z0-9]{1,17}[^-]{0}[.]{1}[a-zA-Z]{1,17}">
     <div *ngIf="inEmail.invalid && (inEmail.dirty || inEmail.touched)" class="alert-danger">
       <div *ngIf="inEmail.errors.pattern">
         Email can only contain latin letters (upper\lowercase), digits, ".", "_", "@". "." can not be first or last symbol.
