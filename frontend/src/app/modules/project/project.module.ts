@@ -42,7 +42,8 @@ import {TabViewModule} from 'primeng/tabview';
     KeyFilterModule,
     SharedModule,
     ProgressSpinnerModule,
-    TabViewModule
+    TabViewModule,
+    SharedModule
   ]
 })
 export class ProjectModule { }
