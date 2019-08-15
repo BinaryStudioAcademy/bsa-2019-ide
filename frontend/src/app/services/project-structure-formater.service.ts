@@ -13,7 +13,6 @@ export class ProjectStructureFormaterService {
         label: "NoNameFolder",
         expandedIcon: "fa fa-folder-open",
         collapsedIcon: "fa fa-folder",
-        children: []
     }
 
     fileNode: TreeNode = {
@@ -34,16 +33,19 @@ export class ProjectStructureFormaterService {
         let root : TreeNode;
         if (fileStructure.type == TreeNodeType.folder){
             root = this.makeFolderNode(fileStructure.name, fileStructure.id);
-            root.type = "0";
+            root.type = TreeNodeType.folder.toString();
             if (fileStructure.nestedFiles && fileStructure.nestedFiles.length !== 0) {
+                if (!root.children)
+                    root.children = [];
                 for (let item of fileStructure.nestedFiles){
                     root.children.push(this.toTreeNode(item, root));
                 }
             }
         } else {
             root = this.makeFileNode(fileStructure.name, fileStructure.id);
-            root.type = "1";
+            root.type = TreeNodeType.file.toString();
         }
+        root.data = fileStructure.details;
         root.parent = parent;
         return root;
     }
