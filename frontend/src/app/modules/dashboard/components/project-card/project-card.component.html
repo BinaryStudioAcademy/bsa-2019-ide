@@ -1,6 +1,6 @@
 <p-card routerLink="/workspace/{{project.id}}" subheader="{{project.creator}}">
     <p-header>
-            <div class="imgContainer" [ngStyle]="{ 'background-color': project.color }">
+        <div class="imgContainer" [ngStyle]="{ 'background-color': project.color }">
             <div class="star" (click)="favourite($event)">
                 <i class="pi pi-star-o iStar" *ngIf="!project.favourite"></i>
                 <i class="pi pi-star iStar" *ngIf="project.favourite"></i> 
@@ -9,9 +9,8 @@
                 <p-contextMenu #menu [model]="contextMenu" appendTo="body"></p-contextMenu>
                 
                 <i class="pi pi-ellipsis-v menu-ellipsis"
-                 (contextmenu)="openCm($event, menu)" (click)="openCm($event, menu)" (keyup.enter)="openCm($event, menu)"></i>
+                (contextmenu)="openCm($event, menu)" (click)="openCm($event, menu)" (keyup.enter)="openCm($event, menu)"></i>
             </div>
-            
             <h2>
                 {{project.title}}
             </h2>

@@ -17,9 +17,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="invalid" *ngIf="projectForm.get('name').errors && projectForm.get('name').dirty">
-                    Name is required.
-                </div>
+                <div class="invalid" *ngIf="projectForm.get('name').invalid && projectForm.get('name').dirty">{{getErrorMessage('name')}}</div>
 
                 <!-- Project Description -->
                 <div class="label">Description</div>
@@ -31,10 +29,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="invalid"
-                    *ngIf="projectForm.get('description').errors && projectForm.get('description').dirty">
-                    Description is required.
-                </div>
+                <div class="invalid" *ngIf="projectForm.get('description').invalid && projectForm.get('description').dirty">{{getErrorMessage('description')}}</div>
+
 
                 <!-- Project  Language -->
                 <div class="label">Language</div>
@@ -85,30 +81,26 @@
                 <div class="ui-g ui-fluid">
                     <div class="ui-g-12">
                         <div class="ui-inputgroup">
-                            <input type="text" pInputText pKeyFilter="int" formControlName="countOfSavedBuilds"
+                            <input type="text" pInputText pKeyFilter="pint" formControlName="countOfSavedBuilds"
                                 placeholder="builds">
                         </div>
                     </div>
                 </div>
-                <div class="invalid"
-                    *ngIf="projectForm.get('countOfSavedBuilds').errors && projectForm.get('countOfSavedBuilds').dirty">
-                    required.
-                </div>
+                <div class="invalid" *ngIf="projectForm.get('countOfSavedBuilds').invalid && projectForm.get('countOfSavedBuilds').dirty">{{getErrorMessage('countOfSavedBuilds')}}</div>
+
 
                 <!-- Number of saved builds -->
                 <div class="label">Number of build attempts for user</div>
                 <div class="ui-g ui-fluid">
                     <div class="ui-g-12">
                         <div class="ui-inputgroup">
-                            <input type="text" pInputText pKeyFilter="int" formControlName="countOfBuildAttempts"
+                            <input type="text" pInputText pKeyFilter="pint" formControlName="countOfBuildAttempts"
                                 placeholder="build attempts">
                         </div>
                     </div>
                 </div>
-                <div class="invalid"
-                    *ngIf="projectForm.get('countOfBuildAttempts').errors && projectForm.get('countOfBuildAttempts').dirty">
-                    required.
-                </div>
+                <div class="invalid" *ngIf="projectForm.get('countOfBuildAttempts').invalid && projectForm.get('countOfBuildAttempts').dirty">{{getErrorMessage('countOfBuildAttempts')}}</div>
+
 
                 <!-- Color -->
                 <div class="label">Project color</div>

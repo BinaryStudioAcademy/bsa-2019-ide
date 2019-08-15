@@ -20,25 +20,24 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
   public projectStartState = {} as ProjectUpdateDTO;
   public isPageLoaded = false;
   public isDetailsSaved = true;
-  public isAuthor = false;
 
   private unsubscribe$ = new Subject<void>();
 
   public projectForm = this.fb.group({
     name: ['', Validators.required],
     description: ['', Validators.required],
-    countOfSaveBuilds: ['', Validators.required],
-    countOfBuildAttempts: ['', Validators.required]
+    countOfSaveBuilds: ['', [Validators.required, Validators.max(10)]],
+    countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]]
   });
 
-    constructor(
-        private fb: FormBuilder,
-        private route: ActivatedRoute,
-        private projectService: ProjectService,
-        private toastService: ToastrService,
-        private tokenService: TokenService,
-        private router: Router
-    ) { }
+  constructor(
+      private fb: FormBuilder,
+      private route: ActivatedRoute,
+      private projectService: ProjectService,
+      private toastService: ToastrService,
+      private tokenService: TokenService,
+      private router: Router
+  ) { }
 
   ngOnInit() {
         this.projectId = Number(this.route.snapshot.paramMap.get('id'));
@@ -50,7 +49,6 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         this.projectService.getProjectById(this.projectId)
         .subscribe(
             (resp) => {
-                this.isAuthor = userId === resp.body.authorId;
                 this.SetProjectObjectsFromResponse(resp);
                 this.isPageLoaded = true;
             },
@@ -78,7 +76,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     this.projectService.updateProject(this.project)
       .subscribe(
         (resp) => {
-          this.SetProjectObjectsFromResponse(resp);
+          this.router.navigate([`project/${this.projectId}`]);
           this.isDetailsSaved = true;
           this.toastService.success('New details have successfully saved!');
         },
@@ -89,29 +87,15 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         }
       );
   }
-    remove(event: boolean) {
-        if (event) {
-            this.projectService.deleteProject(this.projectId)
-                .subscribe(
-                    (resp) => {
-                      this.router.navigate(['/dashboard']);
-                      this.toastService.success('Project "' + this.project.name + '" was successfully deleted');
-                    },
-                    (error) => {
-                      this.toastService.error('Please, try again later', 'Ooops, smth goes wrong');
-                      console.error(error.message);
-                    });
-        } else {
-        }
-    }
-
-    getRemovingHeader() {
-        return 'Delete project "' + this.project.name + '"?';
-    }
 
   public getErrorMessage(field: string): string {
     const control = this.projectForm.get(field);
-    return control.hasError('required') ? 'Field is required!' : 'error';
+    const isMaxError: boolean = !!control.errors && !!control.errors.max;
+    return control.hasError('required')
+      ? 'Value is required!'
+      : (isMaxError)
+        ? `Quantity must be less than ${control.errors.max.max}!`
+        : 'validation error';
   }
 
   private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectUpdateDTO>): void {

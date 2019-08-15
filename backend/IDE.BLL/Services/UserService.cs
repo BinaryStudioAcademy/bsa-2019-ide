@@ -6,6 +6,7 @@ using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
@@ -23,6 +24,12 @@ namespace IDE.BLL.Services
         public async Task<User> CreateUser(UserRegisterDTO userDto)
         {
             var userEntity = _mapper.Map<User>(userDto);
+            var user = await _context.Users.Where(a => a.Email == userEntity.Email).FirstOrDefaultAsync();
+            if(user!=null)
+            {
+                throw new ExistedUserLoginException();
+            }
+
             var salt = SecurityHelper.GetRandomBytes();
 
             userEntity.PasswordSalt = Convert.ToBase64String(salt);
