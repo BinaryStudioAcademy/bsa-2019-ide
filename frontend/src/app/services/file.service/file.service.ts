@@ -8,7 +8,7 @@ import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
   providedIn: 'root'
 })
 export class FileService {
-    private address: string = 'files';
+    private address: 'files';
     
     constructor(private httpClient: HttpClientWrapperService) { }
 
