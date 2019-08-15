@@ -1,4 +1,4 @@
-<div class="container" *ngIf="projects && projects !== undefined">
+<div class="container" *ngIf="projects && projects.length">
     <app-projects-list [projects]="projects" header="All projects"></app-projects-list>
 </div>
 <div *ngIf="projects && !projects.length">
