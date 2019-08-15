@@ -27,6 +27,9 @@ export class EditorSectionComponent implements OnInit {
 
     ngOnInit() { }
 
+    onChange(ev){
+        console.log(ev);
+    }
     public closeItem(event, index) {
         this.fileCloseEvent.emit(this.openedFiles[index]);
 

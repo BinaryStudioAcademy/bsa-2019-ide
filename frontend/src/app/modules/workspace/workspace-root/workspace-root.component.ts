@@ -54,7 +54,7 @@ export class WorkspaceRootComponent implements OnInit {
         this.activeItem = this.items[this.items.length - 1];
 
     }
-
+   
     public onFileSelected(fileId: string): void {
         if (!!this.openedFiles.find(f => f.id === fileId)){
             this.activeItem = this.items.find(i => i.target === fileId);
