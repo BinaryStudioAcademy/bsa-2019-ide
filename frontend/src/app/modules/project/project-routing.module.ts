@@ -21,7 +21,7 @@ const projectRoutes: Routes = [
         component: ProjectDetailsComponent,
         resolve: { project: ProjectInfoResolver } // What is it?
                                                   // I don't know bro.
-      },
+      },                                          // Gyus this is for loading data
       {
         path: ':id/settings',
         component: ProjectSettingsComponent
