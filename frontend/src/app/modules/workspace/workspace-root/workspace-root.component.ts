@@ -109,7 +109,7 @@ export class WorkspaceRootComponent implements OnInit {
             error => this.tr.error("Can't save files", "Error", { tapToDismiss: true }));
     }
 
-    public onFileClose(ev: FileUpdateDTO) {
+    public onFileClose(ev: FileUpdateDTO): void {
         const indexFile = this.openedFiles.findIndex(f => f.id === ev.id);
         this.openedFiles.splice(indexFile, 1);
         const indexTab = this.items.findIndex(i => i.target === ev.id);
