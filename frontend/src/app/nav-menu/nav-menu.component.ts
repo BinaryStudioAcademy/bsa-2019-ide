@@ -34,8 +34,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.getUser();
         this.authUserItems = [
             { label: 'Home', routerLink: [''] },
-            { label: 'Dashboard', routerLink: ['/dashboard'] },
-            { label: 'User', routerLink: ['/user'] }
+            { label: 'Dashboard', routerLink: ['/dashboard'] }
         ];
         this.unAuthUserItems = [
             {
