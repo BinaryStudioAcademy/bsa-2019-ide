@@ -1,7 +1,7 @@
 <p-menubar [model]="getMenuItems()">
     <div *ngIf="isAuthorized">
-        <p-autoComplete [(ngModel)]="project" [suggestions]="filterProhects"
-            (completeMethod)="filterProject($event)" field="name" [size]="30" placeholder="Countries"
+        <p-autoComplete class="auto-complete" [(ngModel)]="project" [suggestions]="filterProhects"
+            (completeMethod)="filterProject($event)" field="name" [size]="30" placeholder="Project title..."
             [minLength]="1" (onSelect)="checkProject(project)"></p-autoComplete>
         <p-splitButton label="My Profile" icon="pi pi-user" (onClick)="goToUserDetails()" [model]="items">
         </p-splitButton>

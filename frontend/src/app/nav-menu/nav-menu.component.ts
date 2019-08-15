@@ -69,23 +69,30 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         let query = event.query;
         this.projectService.getProjectsName().subscribe(projects => {
             this.filterProhects = this.filterProhects = this.filter(query, projects.body);
-            this.filterProhects = this.filterProhects;
         });
     }
 
     checkProject(project: SearchProjectDTO) {
-        console.log(this.project.name);
-        this.project.name="";
+        this.project=null;
         this.router.navigate([`/project/${project.id}`]);
     }
 
-    filter(query, countries: SearchProjectDTO[]): SearchProjectDTO[] {
+    filter(query, projects: SearchProjectDTO[]): SearchProjectDTO[] {
         let filtered: SearchProjectDTO[] = [];
-        for (let i = 0; i < countries.length; i++) {
-            let country = countries[i];
+        for (let i = 0; i < projects.length; i++) {
+            let country = projects[i];
             if (country.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
                 filtered.push(country);
             }
+        }
+        if (filtered.length==0)
+        {
+            var notFound:SearchProjectDTO=
+            {
+                id:0,
+                name: "We couldn’t find any project matching "+query
+            }
+            filtered.push(notFound);
         }
         return filtered;
     }
