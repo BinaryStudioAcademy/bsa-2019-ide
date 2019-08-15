@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IDE.DAL.Migrations
 {
     [DbContext(typeof(IdeContext))]
-    [Migration("20190807115958_Init")]
-    partial class Init
+    [Migration("20190815083335_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,6 +46,19 @@ namespace IDE.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Builds");
+                });
+
+            modelBuilder.Entity("IDE.DAL.Entities.FavouriteProjects", b =>
+                {
+                    b.Property<int>("ProjectId");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("ProjectId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("FavouriteProjects");
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.GitCredential", b =>
@@ -92,6 +105,8 @@ namespace IDE.DAL.Migrations
 
                     b.Property<int>("AuthorId");
 
+                    b.Property<string>("Color");
+
                     b.Property<int>("CompilerType");
 
                     b.Property<int>("CountOfBuildAttempts");
@@ -102,11 +117,9 @@ namespace IDE.DAL.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<int>("GitCredentialId");
+                    b.Property<int?>("GitCredentialId");
 
                     b.Property<int>("Language");
-
-                    b.Property<int?>("LogoId");
 
                     b.Property<string>("Name");
 
@@ -119,8 +132,6 @@ namespace IDE.DAL.Migrations
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("GitCredentialId");
-
-                    b.HasIndex("LogoId");
 
                     b.ToTable("Projects");
                 });
@@ -179,6 +190,8 @@ namespace IDE.DAL.Migrations
 
                     b.Property<string>("LastName");
 
+                    b.Property<string>("NickName");
+
                     b.Property<string>("PasswordHash");
 
                     b.Property<string>("PasswordSalt");
@@ -204,6 +217,18 @@ namespace IDE.DAL.Migrations
                         .HasForeignKey("UserId");
                 });
 
+            modelBuilder.Entity("IDE.DAL.Entities.FavouriteProjects", b =>
+                {
+                    b.HasOne("IDE.DAL.Entities.Project", "Project")
+                        .WithMany("FavouriteProjects")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("IDE.DAL.Entities.User", "User")
+                        .WithMany("FavouriteProjects")
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("IDE.DAL.Entities.Project", b =>
                 {
                     b.HasOne("IDE.DAL.Entities.User", "Author")
@@ -213,12 +238,7 @@ namespace IDE.DAL.Migrations
 
                     b.HasOne("IDE.DAL.Entities.GitCredential", "GitCredential")
                         .WithMany()
-                        .HasForeignKey("GitCredentialId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("IDE.DAL.Entities.Image", "Logo")
-                        .WithMany()
-                        .HasForeignKey("LogoId");
+                        .HasForeignKey("GitCredentialId");
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.ProjectMember", b =>
