@@ -9,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ProjectDetailsComponent implements OnInit {
     public project: ProjectInfoDTO;
+    projectId: number;
 
     constructor(
       private route: ActivatedRoute
