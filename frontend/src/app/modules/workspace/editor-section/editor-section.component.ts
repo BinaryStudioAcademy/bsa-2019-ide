@@ -2,52 +2,84 @@ import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 
+export interface TabFileWrapper {
+    isChanged: boolean;
+    innerFile: FileUpdateDTO;
+}
+
 @Component({
     selector: 'app-editor-section',
     templateUrl: './editor-section.component.html',
     styleUrls: ['./editor-section.component.sass']
 })
 export class EditorSectionComponent implements OnInit {
-    
+
     @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
-    @Output() fileCloseEvent = new EventEmitter<FileUpdateDTO>();
-    
-    @Input() openedFiles: FileUpdateDTO[];
+
+    public openedFiles: TabFileWrapper[];
     editorOptions = { theme: 'vs-dark', language: 'javascript' };
-    code: string = 'function x() {\nconsole.log("Hello world!");\n}';
-    originalCode: string = 'function x() { // TODO }';
+    code = 'function x() {\nconsole.log("Hello world!");\n}';
+    originalCode = 'function x() { // TODO }';
     options = {
         theme: 'vs-dark'
     };
 
-    @Input() items: MenuItem[];
-    @Input() activeItem: MenuItem;
+    public items: MenuItem[];
+    public activeItem: MenuItem;
 
     constructor() { }
 
-    ngOnInit() { }
+    ngOnInit() {
+        this.openedFiles = [
+            { isChanged: false, innerFile: { id: '1', folder: 'Project', name: 'Main.cs', content: 'Hello World', updaterId: 0 } },
+            { isChanged: false, innerFile: { id: '2', folder: 'Project', name: 'Startup.cs', content: 'Hello World', updaterId: 0 } },
+        ];
+        this.items = [
+            { label: this.openedFiles[0].innerFile.name, icon: 'fa fa-fw fa-file', id: '1' },
+            { label: this.openedFiles[1].innerFile.name, icon: 'fa fa-fw fa-file', id: '2' },
 
-    onChange(ev){
-        console.log(ev);
+        ];
+        this.activeItem = this.items[1];
+
     }
-    public closeItem(event, index) {
-        this.fileCloseEvent.emit(this.openedFiles[index]);
 
-        this.saveFiles([this.openedFiles[index]]);
-        //this.items = this.items.filter((item, i) => i !== index);
-        //this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
-        //delete this.openedFiles[index];
+    onChange(ev) {
+        this.getFileFromActiveItem(this.activeItem).isChanged = true;
+    }
+
+    public closeItem(event, index) {
+        if (this.openedFiles[index].isChanged) {
+            this.saveFiles([this.openedFiles[index].innerFile]);
+        }
+        this.items = this.items.filter((item, i) => i !== index);
+        this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
+
         index = this.items.length === index ? index - 1 : index;
-        this.code = this.openedFiles[index].content;
+        this.code = this.openedFiles[index].innerFile.content;
         this.activeItem = this.items[index];
         event.preventDefault();
     }
     public onTabSelect(evt, index) {
-        this.code = this.openedFiles[index].content;
+        this.code = this.openedFiles[index].innerFile.content;
     }
 
     public saveFiles(files: FileUpdateDTO[]) {
         this.filesSaveEvent.emit(files);
     }
 
+    public AddFileToOpened(file: FileUpdateDTO) {
+        const fileWrapper: TabFileWrapper = { isChanged: false, innerFile: file }
+        this.openedFiles.push(fileWrapper);
+    }
+
+    public getFileFromActiveItem(item: MenuItem): TabFileWrapper {
+        return this.openedFiles.find(x => x.innerFile.id === item.id);
+    }
+    public confirmSaving(fileIds: string[]) {
+        fileIds.map(x => this.openedFiles.filter(f => f.innerFile.id == x)[0]).forEach(x => x.isChanged = false);
+    }
+
+    anyFileChanged(): boolean {
+        return this.openedFiles.some(x => x.isChanged);
+    }
 }
