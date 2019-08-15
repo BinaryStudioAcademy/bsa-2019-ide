@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ProjectDescriptionDTO } from '../../../../models/DTO/Project/projectDescriptionDTO';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { Router } from '@angular/router';
@@ -12,8 +12,9 @@ import { MenuItem } from 'primeng/api';
     styleUrls: ['./project-card.component.sass']
 })
 export class ProjectCardComponent implements OnInit {
-    DATE = new Date();
     @Input() project: ProjectDescriptionDTO;
+    @Output() showMenu = new EventEmitter<any>();
+    DATE = new Date();
     currentUserId: number;
     contextMenu: MenuItem[];
 
@@ -21,11 +22,10 @@ export class ProjectCardComponent implements OnInit {
         private projectService: ProjectService,
         private toastrService: ToastrService,
         private tokenService: TokenService,
-        private router:Router) { }
+        private router: Router) { }
 
     ngOnInit() {
         this.currentUserId = this.tokenService.getUserId();
-
     }
 
     public favourite(event: Event): void {
@@ -36,14 +36,14 @@ export class ProjectCardComponent implements OnInit {
             .subscribe();
     }
 
-    public GoToPage(page: string){
-        switch(page){
+    public GoToPage(page: string) {
+        switch (page) {
             case 'details': {
                 this.router.navigate([`/project/${this.project.id}`]);
                 break;
             }
             case 'settings': {
-                if(this.currentUserId!=this.project.creatorId){
+                if (this.currentUserId !== this.project.creatorId) {
                     this.toastrService.warning('Only author can open project settings');
                     return;
                 }
@@ -85,6 +85,7 @@ export class ProjectCardComponent implements OnInit {
     openCm(event, menu) {
         event.preventDefault();
         event.stopPropagation();
+        this.showMenu.emit(menu);
         this.prepCm();
         menu.show(event);
         return false;
