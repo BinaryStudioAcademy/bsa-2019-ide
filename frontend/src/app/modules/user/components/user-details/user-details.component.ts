@@ -23,6 +23,11 @@ export class UserDetailsComponent implements OnInit {
         if (!this.user.url){
             this.user.url = './assets/img/user-default-avatar.png';
         }
+        console.log(new Date(1,1,1,1,1,1,1));
+        if(this.user.birthday==new Date())
+        {
+            this.user.birthday==null;
+        }
       });
       this.actions = [
         {label: 'Change Image', icon: 'pi pi-cloud-upload', command: () => {
