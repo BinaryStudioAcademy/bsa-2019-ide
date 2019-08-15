@@ -8,18 +8,18 @@ import { ProjectService } from 'src/app/services/project.service/project.service
   styleUrls: ['./my-projects.component.sass']
 })
 export class MyProjectsComponent implements OnInit {
-  projects: ProjectDescriptionDTO[];
+    projects: ProjectDescriptionDTO[];
 
-  constructor(private projectService: ProjectService) { }
+    constructor(private projectService: ProjectService) { }
 
-  ngOnInit() {
-    this.projectService.getMyProjects()
-      .subscribe(x => {
-            this.projects = x.body;
-            this.projects.forEach(y => {
-                y.created = new Date(y.created);
-                y.lastBuild = y.lastBuild = y.lastBuild ? new Date(y.lastBuild) : null;
-            });
-      });
-  }
+    ngOnInit() {
+        this.projectService.getMyProjects()
+        .subscribe(x => {
+                this.projects = x.body;
+                this.projects.forEach(y => {
+                    y.created = new Date(y.created);
+                    y.lastBuild = y.lastBuild = y.lastBuild ? new Date(y.lastBuild) : null;
+                });
+        });
+    }
 }
