@@ -42,7 +42,7 @@ namespace IDE.BLL.JWT
                  new Claim("nickName", user.NickName),
                  new Claim("firstName", user.FirstName),
                  new Claim("lastName", user.LastName),
-                 new Claim("photoUrl", user.Avatar?.Url),
+                 new Claim("photoUrl", user.Avatar != null ? user.Avatar.Url : "")
              };
                          
             // Create the JWT security token and encode it.

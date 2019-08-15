@@ -65,7 +65,6 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     nodeSelect(evt: any): void {
-        console.log(evt.node);
         const nodeSelected: TreeNode = evt.node;
         if (nodeSelected.data !== 'Folder') {
             this.fileSelected.emit(nodeSelected.key);

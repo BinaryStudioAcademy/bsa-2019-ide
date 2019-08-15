@@ -76,6 +76,7 @@ namespace IDE.API
                 using (var context = serviceScope.ServiceProvider.GetService<IdeContext>())
                 {
                     context.InitializeDatabase();
+                    context.EnsureSeeded();
                 }
             }
         }

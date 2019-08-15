@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IDE.DAL.Migrations
 {
-    public partial class Init : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -46,6 +46,7 @@ namespace IDE.DAL.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
+                    NickName = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
                     PasswordHash = table.Column<string>(nullable: true),
                     PasswordSalt = table.Column<string>(nullable: true),
@@ -82,9 +83,9 @@ namespace IDE.DAL.Migrations
                     ProjectType = table.Column<int>(nullable: false),
                     CompilerType = table.Column<int>(nullable: false),
                     AccessModifier = table.Column<int>(nullable: false),
+                    Color = table.Column<string>(nullable: true),
                     AuthorId = table.Column<int>(nullable: false),
-                    GitCredentialId = table.Column<int>(nullable: true),
-                    Color = table.Column<string>(nullable: true)
+                    GitCredentialId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -100,7 +101,7 @@ namespace IDE.DAL.Migrations
                         column: x => x.GitCredentialId,
                         principalTable: "GitCredentials",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -155,6 +156,30 @@ namespace IDE.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FavouriteProjects",
+                columns: table => new
+                {
+                    ProjectId = table.Column<int>(nullable: false),
+                    UserId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FavouriteProjects", x => new { x.ProjectId, x.UserId });
+                    table.ForeignKey(
+                        name: "FK_FavouriteProjects_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FavouriteProjects_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProjectMembers",
                 columns: table => new
                 {
@@ -190,6 +215,11 @@ namespace IDE.DAL.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FavouriteProjects_UserId",
+                table: "FavouriteProjects",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProjectMembers_UserId",
                 table: "ProjectMembers",
                 column: "UserId");
@@ -219,6 +249,9 @@ namespace IDE.DAL.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Builds");
+
+            migrationBuilder.DropTable(
+                name: "FavouriteProjects");
 
             migrationBuilder.DropTable(
                 name: "ProjectMembers");

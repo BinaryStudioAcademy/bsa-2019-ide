@@ -18,7 +18,6 @@ export class FileBrowserService {
             .getRequest(this.address + id)
             .toPromise();
         const ps = psJson.body as ProjectStructureDTO;
-        console.log(ps);
         return ps;
 
     }
