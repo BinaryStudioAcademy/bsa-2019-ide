@@ -1,5 +1,7 @@
 using FluentValidation.AspNetCore;
 using IDE.API.Extensions;
+using IDE.BLL;
+using IDE.DAL;
 using IDE.DAL.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RabbitMQ.Shared;
 
 namespace IDE.API
 {
@@ -21,18 +24,9 @@ namespace IDE.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<IdeContext>(option =>
-                option.UseSqlServer(Configuration.GetConnectionString("IdeDBConnection")));
-            services.RegisterAutoMapper();
-
-            services.RegisterCustomServices();
-            services.RegisterServicesWithIConfiguration(Configuration);
-            services.RegisterCustomValidators();
+            services.RegisterCustomServices(Configuration);
             services.ConfigureJwt(Configuration);
-            services.ConfigureNoSqlDb(Configuration);
-            services.RegisterAutoMapper();
-            services.RegisterHttpClientFactories(Configuration);
-            services.RegisterRabbitMQ(Configuration.GetSection("RabbitMQ").Value);
+            services.RegisterCustomValidators();
 
             services.AddCors();       
 
@@ -54,8 +48,8 @@ namespace IDE.API
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
-            UpdateDatabase(app);
+
+            DALConfigurations.Configure(app, env);
             
             app.UseCors(builder => builder
                 .AllowAnyMethod()
@@ -69,16 +63,5 @@ namespace IDE.API
             app.UseMvc();
         }
 
-        private static void UpdateDatabase(IApplicationBuilder app)
-        {
-            using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
-            {
-                using (var context = serviceScope.ServiceProvider.GetService<IdeContext>())
-                {
-                    context.InitializeDatabase();
-                    context.EnsureSeeded();
-                }
-            }
-        }
     }
 }

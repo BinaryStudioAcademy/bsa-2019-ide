@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using IDE.Common.ModelsDTO.DTO.Project;
 
 namespace IDE.API.Controllers
 {
@@ -43,6 +44,12 @@ namespace IDE.API.Controllers
         {
             //Need to get userId from token
             return Ok(await _projectService.GetAllProjects(this.GetUserIdFromToken()));
+        }
+
+        [HttpGet("name")]
+        public async Task<ActionResult<IEnumerable<SearchProjectDTO>>> GetProjectName()
+        {
+            return Ok(await _projectService.GetProjectsName());
         }
 
         [HttpGet("my")]

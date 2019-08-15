@@ -8,6 +8,18 @@
   <ItemGroup>
 
     <PackageReference Include="AutoMapper" Version="8.1.1" />
+
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
+
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.5.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.5.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
