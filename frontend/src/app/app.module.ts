@@ -21,7 +21,7 @@ import { DialogService } from 'primeng/api';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { GeneralModule } from './general/general.module';
 import { TreeModule } from 'primeng/tree';
-import { MenuModule } from 'primeng/primeng';
+import { MenuModule,AutoCompleteModule } from 'primeng/primeng';
 import {MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { LoginGuard } from './guards/login.guard';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -30,7 +30,6 @@ import { RefreshTokenInterceptor } from './helpers/token.interceptor';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormsModule } from '@angular/forms';
-import {AutoCompleteModule} from 'primeng/primeng';
 
 @NgModule({
     declarations: [

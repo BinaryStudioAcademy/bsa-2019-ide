@@ -2,14 +2,11 @@ import { Component, OnInit, OnDestroy, OnChanges } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { AuthDialogService } from '../services/auth-dialog.service/auth-dialog.service';
 import { DialogType } from '../modules/authorization/models/auth-dialog-type';
-import { UserDTO } from '../models/DTO/User/userDTO';
 import { Router } from '@angular/router';
-import { UserService } from '../services/user.service/user.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ProjectService } from '../services/project.service/project.service';
 import { TokenService } from '../services/token.service/token.service';
-import { ProjectDescriptionDTO } from '../models/DTO/Project/projectDescriptionDTO';
 import { SearchProjectDTO } from '../models/DTO/Project/searchProjectDTO'
 
 @Component({
@@ -21,13 +18,12 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     authUserItems: MenuItem[];
     unAuthUserItems: MenuItem[];
 
+    public project: SearchProjectDTO;
+    public filterProhects: SearchProjectDTO[]
     public dialogType = DialogType;
     public isAuthorized: boolean;
     public items: MenuItem[];
     private unsubscribe$ = new Subject<void>();
-
-    project: SearchProjectDTO;
-    filterProhects: SearchProjectDTO[]
 
     constructor(
         private authDialogService: AuthDialogService,
@@ -65,29 +61,29 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         ];
     }
 
-    filterProject(event) {
-        let query = event.query;
+    public filterProject(event): void {
+        const query = event.query;
         this.projectService.getProjectsName().subscribe(projects => {
             this.filterProhects = this.filterProhects = this.filter(query, projects.body);
         });
     }
 
-    checkProject(project: SearchProjectDTO) {
+    public checkProject(project: SearchProjectDTO): void {
         this.project=null;
         this.router.navigate([`/project/${project.id}`]);
     }
 
-    filter(query, projects: SearchProjectDTO[]): SearchProjectDTO[] {
-        let filtered: SearchProjectDTO[] = [];
+    public filter(query, projects: SearchProjectDTO[]): SearchProjectDTO[] {
+        const filtered: SearchProjectDTO[] = [];
         for (let i = 0; i < projects.length; i++) {
-            let country = projects[i];
-            if (country.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-                filtered.push(country);
+            const project = projects[i];
+            if (project.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+                filtered.push(project);
             }
         }
         if (filtered.length==0)
         {
-            var notFound:SearchProjectDTO=
+            const notFound:SearchProjectDTO=
             {
                 id:0,
                 name: "We couldn’t find any project matching "+query
