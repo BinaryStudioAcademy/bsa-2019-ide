@@ -27,15 +27,15 @@
         <p-card header="Secondary">
              <p>
                 <span class="highlighted">Language: </span>
-                <span>{{project.language}}</span>
+                <span appLanguage [language]="project.language"></span>
             </p>
              <p>
                 <span class="highlighted">ProjectType: </span>
-                <span>{{project.projectType}}</span>
+                <span appProjectType [projectType]="project.projectType"></span>
             </p>
              <p>
                 <span class="highlighted">CompilerType: </span>
-                <span>{{project.compilerType}}</span>
+                <span appCompilerType [compilerType]="project.compilerType"></span>
             </p>
             <!--here will be check(if project access modifier - public)-->
             <p *ngIf="IsPublic()">
@@ -70,7 +70,10 @@
         </p-card>
     </div>
     -->
-    <div *ngIf="IsAuthor()"class="project-description">
-        <button pButton routerLink="/project/{{project.id}}/settings" label="Edit"></button>
+    <div *ngIf="IsAuthor()" class="ui-g ui-fluid">
+      <div class="ui-g-12">
+          <button  pButton routerLink="/project/{{project.id}}/settings" label="Edit"></button>
+          <app-confirmation-dialog buttonName="Delete" [header]="getRemovingHeader()" message="Do you want to delete this project?" (IsConfirmed)="remove($event)"></app-confirmation-dialog>
+      </div>
     </div>
 <!--</p-card>-->

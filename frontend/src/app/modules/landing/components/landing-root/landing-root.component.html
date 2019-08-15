@@ -1,3 +1,43 @@
-<p>landing-root works!</p>
-<button  type="button" (click) = "hello('hello message')" >click hello message</button>
-
+<div class="container">
+    <div class="ui-g">
+        <div class="ui-g-12 first-block">
+            <div class="ui-g-5 center">
+                <img src="https://patimes.org/wp-content/uploads/2015/04/Vaz-collaboration1.jpg" width="80%">
+            </div>
+            <div class="ui-g-7 text-block">
+                <!--Change text))-->
+                <h2>Collaborate with other people</h2>
+                <p>Using this platform, you can collaborate with other people and write projects together, here we need to add more text, because people would read it and they would be really interested for their work</p>
+            </div>
+        </div>
+        <div class="ui-g-12 second-block">
+            <div class="ui-g-7 text-block">
+                <!--Change text))-->
+                <h2>Write your code everywhere</h2>
+                <p>After creating a project, it will be available for you, wherever you won't be. For it you need just three things:</p>
+                <ul class="text-block-categories">
+                    <li>Notebook or other device</li>
+                    <li>Internet</li>
+                    <li>And wish to code &#x2764;</li>
+                </ul>
+            </div>
+            <div class="ui-g-5 center">
+                <img src="http://www.illuminationworksllc.com/wp-content/uploads/2017/04/ProjectManagement-1.jpg" width="80%">
+            </div>
+        </div>
+        <div class="languageContainer" *ngIf="!smthWrong">
+            <div class="ui-g-12 line">
+            </div>
+            <div class="p-grid ui-g-12">
+                <div class="p-col language" *ngFor="let item of menuItems; index as i">
+                    <div class="block">
+                        <div class="image" [ngClass]="{'active': active === i}"
+                         (click)="showProjects(i)" [style.background-image]="'url(' + item.url + ')'"></div>
+                        <p>{{item.name}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="projects ui-g-12">
+                <app-projects-list [projects]="shownProjects === undefined ? null : shownProjects.likedProjects"></app-projects-list>
+            </div>
+        </div>
