@@ -30,14 +30,14 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]]
   });
 
-    constructor(
-        private fb: FormBuilder,
-        private route: ActivatedRoute,
-        private projectService: ProjectService,
-        private toastService: ToastrService,
-        private tokenService: TokenService,
-        private router: Router
-    ) { }
+  constructor(
+      private fb: FormBuilder,
+      private route: ActivatedRoute,
+      private projectService: ProjectService,
+      private toastService: ToastrService,
+      private tokenService: TokenService,
+      private router: Router
+  ) { }
 
   ngOnInit() {
         this.projectId = Number(this.route.snapshot.paramMap.get('id'));
@@ -92,11 +92,10 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     const control = this.projectForm.get(field);
     const isMaxError: boolean = !!control.errors && !!control.errors.max;
     return control.hasError('required')
-      ? 'You must enter a value!'
+      ? 'Value is required!'
       : (isMaxError)
         ? `Quantity must be less than ${control.errors.max.max}!`
         : 'validation error';
-
   }
 
   private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectUpdateDTO>): void {
