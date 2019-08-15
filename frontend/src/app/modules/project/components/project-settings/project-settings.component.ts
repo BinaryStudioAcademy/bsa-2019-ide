@@ -26,8 +26,8 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
   public projectForm = this.fb.group({
     name: ['', Validators.required],
     description: ['', Validators.required],
-    countOfSaveBuilds: ['', Validators.required],
-    countOfBuildAttempts: ['', Validators.required]
+    countOfSaveBuilds: ['', [Validators.required, Validators.max(10)]],
+    countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]]
   });
 
     constructor(
@@ -90,7 +90,13 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
 
   public getErrorMessage(field: string): string {
     const control = this.projectForm.get(field);
-    return control.hasError('required') ? 'Field is required!' : 'error';
+    const isMaxError: boolean = !!control.errors && !!control.errors.max;
+    return control.hasError('required')
+      ? 'You must enter a value!'
+      : (isMaxError)
+        ? `Quantity must be less than ${control.errors.max.max}!`
+        : 'validation error';
+
   }
 
   private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectUpdateDTO>): void {
