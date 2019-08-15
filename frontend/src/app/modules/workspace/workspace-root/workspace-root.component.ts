@@ -80,6 +80,7 @@ export class WorkspaceRootComponent implements OnInit {
     }
 
     public saveFiles() {
+        
         const openedFiles = this.editor.openedFiles;
         return this.saveFilesRequest(openedFiles);
     }
@@ -98,6 +99,8 @@ export class WorkspaceRootComponent implements OnInit {
     }
 
     public onFilesSave(ev) {
+
+
         this.saveFilesRequest(ev).subscribe(
             success => {
                 if (success.ok) {
@@ -107,6 +110,16 @@ export class WorkspaceRootComponent implements OnInit {
                 }
             },
             error => this.tr.error("Can't save files", "Error", { tapToDismiss: true }));
+    }
+
+    public onFileClose(ev: FileUpdateDTO) {
+        const indexFile = this.openedFiles.findIndex(f => f.id === ev.id);
+        this.openedFiles.splice(indexFile, 1);
+        const indexTab = this.items.findIndex(i => i.target === ev.id);
+        this.items.splice(indexTab, 1);
+        this.activeItem = this.items[this.items.length - 1];
+        console.log( "file close from root works",indexFile, this.openedFiles);
+        console.log( "tab close from root works",indexTab, this.items);
     }
 
     private saveFilesRequest(files: FileUpdateDTO[]) {

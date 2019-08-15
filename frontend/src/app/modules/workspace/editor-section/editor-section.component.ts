@@ -10,6 +10,7 @@ import { MenuItem } from 'primeng/api';
 export class EditorSectionComponent implements OnInit {
     
     @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
+    @Output() fileCloseEvent = new EventEmitter<FileUpdateDTO>();
     
     @Input() openedFiles: FileUpdateDTO[];
     editorOptions = { theme: 'vs-dark', language: 'javascript' };
@@ -21,8 +22,6 @@ export class EditorSectionComponent implements OnInit {
 
     @Input() items: MenuItem[];
     @Input() activeItem: MenuItem;
-
-    
 
     constructor() { }
 
@@ -42,6 +41,8 @@ export class EditorSectionComponent implements OnInit {
     }
 
     public closeItem(event, index) {
+        this.fileCloseEvent.emit(this.openedFiles[index]);
+
         this.saveFiles([this.openedFiles[index]]);
         this.items = this.items.filter((item, i) => i !== index);
         this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
