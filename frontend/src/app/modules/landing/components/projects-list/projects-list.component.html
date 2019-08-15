@@ -1,0 +1,12 @@
+<div class="container">
+    <div class="noData" *ngIf="projects === null">
+        There aren't any favourite projects in this category. You can be the first one:)
+    </div>
+    <div *ngIf="projects !== undefined && projects !== null && projects.length !== 0">
+        <div *ngFor="let project of projects" class="project">
+            <p>Project: <span class="highlighted">{{ project.projectName }} </span> {{project.likesCount}}<span class="heart">&#x2764;</span></p>
+            <p>Owner: <span class="highlighted">{{ project.authorNickName }} </span></p>
+            <p *ngIf="project.projectDescription">{{project.projectDescription}}</p>
+        </div>
+    </div>
+</div>
