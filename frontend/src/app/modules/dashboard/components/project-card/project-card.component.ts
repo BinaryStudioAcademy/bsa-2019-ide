@@ -1,6 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ProjectDescriptionDTO } from '../../../../models/DTO/Project/projectDescriptionDTO';
 import { ProjectService } from 'src/app/services/project.service/project.service';
+import { Router } from '@angular/router';
+import { TokenService } from 'src/app/services/token.service/token.service';
+import { ToastrService } from 'ngx-toastr';
+import { MenuItem } from 'primeng/api';
 
 @Component({
     selector: 'app-project-card',
@@ -10,10 +14,43 @@ import { ProjectService } from 'src/app/services/project.service/project.service
 export class ProjectCardComponent implements OnInit {
     DATE = new Date();
     @Input() project: ProjectDescriptionDTO;
+    currentUserId: number;
+    contextMenu: MenuItem[];
 
-    constructor(private projectService: ProjectService) { }
+    constructor(
+        private projectService: ProjectService,
+        private toastrService: ToastrService,
+        private tokenService: TokenService,
+        private router:Router) { }
 
-    ngOnInit() { }
+    ngOnInit() {
+        this.currentUserId = this.tokenService.getUserId();
+
+    }
+
+    public favourite(event: Event): void {
+        event.stopPropagation();
+        this.project.favourite = !this.project.favourite;
+
+        this.projectService.changeFavourity(this.project.id)
+            .subscribe();
+    }
+
+    public GoToPage(page: string){
+        switch(page){
+            case 'details': {
+                this.router.navigate([`/project/${this.project.id}`]);
+                break;
+            }
+            case 'settings': {
+                if(this.currentUserId!=this.project.creatorId){
+                    this.toastrService.warning('Only author can open project settings');
+                    return;
+                }
+                this.router.navigate([`/project/${this.project.id}/settings`]);
+            }
+        }
+    }
 
     lastTimeBuild(): string {
         const daysCount = this.getDaysCountFromCurrentDate(this.project.lastBuild);
@@ -38,11 +75,18 @@ export class ProjectCardComponent implements OnInit {
         return ((currentYear - 2019) * 365 + currentMonth * 30 + currentDays) - ((year - 2019) * 365 + month * 30 + days);
     }
 
-    public favourite(event: Event): void {
-        event.stopPropagation();
-        this.project.favourite = !this.project.favourite;
+    prepCm() {
+        this.contextMenu = [
+            {label: 'Details', icon: 'pi pi-info-circle', command: (event) => this.GoToPage('details') },
+            {label: 'Settings', icon: 'pi pi-cog', command: (event) => this.GoToPage('settings')}
+        ];
+    }
 
-        this.projectService.changeFavourity(this.project.id)
-            .subscribe();
+    openCm(event, menu) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.prepCm();
+        menu.show(event);
+        return false;
     }
 }

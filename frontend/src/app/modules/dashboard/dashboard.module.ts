@@ -12,6 +12,7 @@ import { AllProjectsComponent } from './components/all-projects/all-projects.com
 import { MyProjectsComponent } from './components/my-projects/my-projects.component';
 import { AssignedProjectsComponent } from './components/assigned-projects/assigned-projects.component';
 import { FavouriteProjectsComponent } from './components/favourite-projects/favourite-projects.component';
+import {ContextMenuModule} from 'primeng/contextmenu';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { FavouriteProjectsComponent } from './components/favourite-projects/favo
     MenuModule,
     ButtonModule,
     CardModule,
-    TabMenuModule
+    TabMenuModule,
+    ContextMenuModule
   ]
 })
 export class DashboardModule { }

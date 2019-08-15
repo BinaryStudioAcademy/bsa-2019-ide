@@ -17,9 +17,10 @@ export class FavouriteProjectsComponent implements OnInit {
     this.projectService.getFavouriteProjects()
     .subscribe(x => {
         this.projects = x.body;
+        console.log(this.projects.length);
         this.projects.forEach(y => {
-        y.created = new Date(y.created);
-        y.lastBuild = y.lastBuild ? new Date(y.lastBuild) : null;
+            y.created = new Date(y.created);
+            y.lastBuild = y.lastBuild ? new Date(y.lastBuild) : null;
         });
     });
   }
