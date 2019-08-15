@@ -33,7 +33,6 @@ export class ProjectStructureFormaterService {
     toTreeNode(fileStructure: FileStructureDTO, parent: TreeNode = null) : TreeNode {
         let root : TreeNode;
         if (fileStructure.type == TreeNodeType.folder){
-            debugger;
             root = this.makeFolderNode(fileStructure.name, fileStructure.id);
             root.type = "0";
             if (fileStructure.nestedFiles && fileStructure.nestedFiles.length !== 0) {
@@ -58,7 +57,6 @@ export class ProjectStructureFormaterService {
     makeFolderNode(name: string, id: string) {
         const emptyFolder = this.getEmptyFolderNode();
         emptyFolder.label = name;
-        debugger;
         emptyFolder.key = (++this.itemId).toString();
         return emptyFolder;
     }

@@ -117,10 +117,9 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     private createFolder(node: TreeNode) {
-        debugger;
         let newFolderNode = this.projectStructureFormaterService.makeFolderNode(`New Folder ${++this.folderCounter}`, this.folderCounter.toString());
         newFolderNode.type = TreeNodeType.folder.toString();
-        // newFolderNode.parent = node;
+        newFolderNode.parent = node;
         newFolderNode.children = null;
         this.appendNewNode(node, newFolderNode);
         this.toast.success("Folder successfully created", "Success Message", { tapToDismiss: true })
@@ -158,7 +157,6 @@ export class FileBrowserSectionComponent implements OnInit {
     nodeSelect(evt: any): void {
         const nodeSelected: TreeNode = evt.node;
         if (nodeSelected.type === TreeNodeType.file.toString()) {
-            debugger;
             this.fileSelected.emit(nodeSelected.key);
         }
     }

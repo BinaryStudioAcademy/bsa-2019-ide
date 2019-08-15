@@ -20,7 +20,6 @@ export class FileBrowserService {
     }
 
     public updateProjectStructure(id: number, projectStructure : ProjectStructureDTO) : Observable<HttpResponse<any>>{
-        debugger;
         return this.httpClient.postRequest(this.address + `${id}`, projectStructure);
     }
 }
