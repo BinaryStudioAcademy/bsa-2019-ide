@@ -8,6 +8,7 @@ import { ProjectStructureDTO } from 'src/app/models/DTO/Workspace/projectStructu
 import { ToastrService } from 'ngx-toastr';
 import { FileCreateDTO } from 'src/app/models/DTO/File/fileCreateDTO';
 import { ProjectStructureFormaterService } from 'src/app/services/project-structure-formater.service';
+import { FileStructureDTO } from 'src/app/models/DTO/Workspace/fileStructureDTO';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -41,9 +42,7 @@ export class FileBrowserSectionComponent implements OnInit {
         this.projectStructureService.getProjectStructureById(this.projectId).subscribe(
             (response) => {
                 this.files = [];
-                console.log("Formating to tree view:");
                 this.files.push(this.projectStructureFormaterService.toTreeView(response.body));
-                console.log(this.files);
             },
             (error) => {
                 console.log(error);
@@ -93,6 +92,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 newFileNode.type = TreeNodeType.file.toString();
                 newFileNode.parent = node;
                 this.appendNewNode(node, newFileNode);
+                this.updateProjectStructure();
                 this.toast.success("File successfully created", "Success Message", { tapToDismiss: true })
             },
             (error) => {
@@ -100,44 +100,56 @@ export class FileBrowserSectionComponent implements OnInit {
                 console.log(error);
             }
         );
-       
-        // this.projectStructureService.updateProjectStructure(this.projectId, this.files[0] as ProjectStructureDTO)
-        //     .subscribe(response =>{
-        //         debugger;
-        //         console.log("Project structure updated:");
-        //         console.log(response);
-        //     }, response => {
-        //         debugger;
-        //         console.log("Project structure updated:");
-        //         console.log(response);
-        //     }
-        // );
+    }
+
+
+    private getFileStructure(files : TreeNode[]) : FileStructureDTO[] {
+        let fileStructure : FileStructureDTO[] = [];
+        if (!files || files.length === 0)
+            return fileStructure;
+
+        files.forEach(element => {
+            let file : FileStructureDTO = {
+                id : element.key,
+                details : element.data || "",
+                name : element.label,
+                type : element.type === TreeNodeType.folder.toString() ?
+                    TreeNodeType.folder : TreeNodeType.file,
+                nestedFiles : []
+            };
+            file.nestedFiles = this.getFileStructure(element.children);
+            fileStructure.push(file);
+        });
+
+        return fileStructure;
+    }
+
+    private updateProjectStructure(){
         
-        console.log(node);
+        let fileStructure : FileStructureDTO[];
+        fileStructure = this.getFileStructure(this.files);
+        let projectStructured : ProjectStructureDTO = {
+            id : this.projectId.toString(),
+            nestedFiles : fileStructure
+        };
+
+        this.projectStructureService.updateProjectStructure(this.projectId, projectStructured).subscribe(
+            (response) => {
+
+            },
+            (error) => {
+                console.log(error);
+            }
+        );
     }
 
     private createFolder(node: TreeNode) {
         let newFolderNode = this.projectStructureFormaterService.makeFolderNode(`New Folder ${++this.folderCounter}`, this.folderCounter.toString());
         newFolderNode.type = TreeNodeType.folder.toString();
         newFolderNode.parent = node;
-        newFolderNode.children = null;
         this.appendNewNode(node, newFolderNode);
         this.toast.success("Folder successfully created", "Success Message", { tapToDismiss: true })
-
-
-        // this.projectStructureService.updateProjectStructure(this.projectId, this.files[0] as ProjectStructureDTO)
-        //     .subscribe(response =>{
-        //         debugger;
-        //         console.log("Project structure updated:");
-        //         console.log(response);
-        //     }, response => {
-        //         debugger;
-        //         console.log("Project structure updated:");
-        //         console.log(response);
-        //     }
-        // );
-        
-        console.log(node);
+        this.updateProjectStructure();        
     }
 
     private rename(node: TreeNode) {
