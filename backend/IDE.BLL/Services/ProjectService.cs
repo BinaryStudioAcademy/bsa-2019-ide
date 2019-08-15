@@ -4,6 +4,7 @@ using IDE.BLL.Interfaces;
 using IDE.Common.DTO.Common;
 using IDE.Common.DTO.Project;
 using IDE.Common.Enums;
+using IDE.Common.ModelsDTO.DTO.Project;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -171,6 +172,30 @@ namespace IDE.BLL.Services
 
             _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<LikedProjectInLanguageDTO>> GetLikedProjects()
+        {
+            return await _context.FavouriteProjects
+                .Include(x => x.Project)
+                .Include(x => x.Project.Author)
+                .GroupBy(x => x.Project.Language)
+                .Select(x =>
+                    new LikedProjectInLanguageDTO()
+                    {
+                        ProjectType = x.Key,
+                        LikedProjects =
+                                x.GroupBy(y => y.ProjectId)
+                                .Select(z => new LikedProjectDTO()
+                                {
+                                    ProjectId = z.FirstOrDefault().ProjectId,
+                                    ProjectDescription = z.FirstOrDefault().Project.Description,
+                                    ProjectName = z.FirstOrDefault().Project.Name,
+                                    AuthorNickName = z.FirstOrDefault().Project.Author.NickName,
+                                    LikesCount = z.Count()
+                                }).OrderBy(i => i.LikesCount).Take(5).ToArray()
+                    })
+                    .OrderBy(x => x.ProjectType).ToListAsync();
         }
     }
 }

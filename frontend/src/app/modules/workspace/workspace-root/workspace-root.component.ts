@@ -24,8 +24,8 @@ export class WorkspaceRootComponent implements OnInit {
     public openedFiles: FileUpdateDTO[];
     public items: MenuItem[];
     public activeItem: MenuItem;
-    
-    
+
+
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
@@ -56,7 +56,7 @@ export class WorkspaceRootComponent implements OnInit {
     }
 
     public onFileSelected(fileId: string): void {
-        if (!!this.openedFiles.find(f => f.id === fileId)){
+        if (!!this.openedFiles.find(f => f.id === fileId)) {
             this.activeItem = this.items.find(i => i.target === fileId);
             this.editor.code = this.openedFiles.find(f => f.id === fileId).content;
             return;
@@ -77,7 +77,7 @@ export class WorkspaceRootComponent implements OnInit {
             );
     }
 
-    public saveFiles() {        
+    public saveFiles() {
         const openedFiles = this.editor.openedFiles;
         return this.saveFilesRequest(openedFiles);
     }
@@ -121,7 +121,6 @@ export class WorkspaceRootComponent implements OnInit {
     }
 
     canDeactivate(): Observable<boolean> {
-
         return this.saveOnExit.confirm('Save changes?')
             .pipe(
                 switchMap(

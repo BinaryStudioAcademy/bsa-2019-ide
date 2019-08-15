@@ -1,5 +1,6 @@
 using IDE.Common.DTO.Common;
 using IDE.Common.DTO.Project;
+using IDE.Common.ModelsDTO.DTO.Project;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,5 +17,6 @@ namespace IDE.BLL.Interfaces
         Task<int> CreateProject(ProjectCreateDTO project, int userId);
         Task<ProjectDTO> GetProjectByIdAsync(int projectId);
         Task DeleteProjectAsync(int id, int userId);
+        Task<IEnumerable<LikedProjectInLanguageDTO>> GetLikedProjects();
     }
 }
