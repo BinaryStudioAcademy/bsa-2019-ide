@@ -12,7 +12,7 @@ import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 })
 export class ProjectService {
 
-    private address: string = 'project';
+    private address = 'project';
 
     constructor(private httpClient: HttpClientWrapperService) { }
 
@@ -36,16 +36,19 @@ export class ProjectService {
         return this.httpClient.getRequest(this.address + '/getFavourite');
     }
 
-    getAssignedProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
+    public getAssignedProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
         return this.httpClient.getRequest(this.address + '/assigned');
     }
 
-    getAllProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
+    public getAllProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
         return this.httpClient.getRequest(this.address + '/all');
     }
 
-    updateProject(project: ProjectUpdateDTO): Observable<HttpResponse<ProjectInfoDTO>> {
+    public updateProject(project: ProjectUpdateDTO): Observable<HttpResponse<ProjectInfoDTO>> {
         return this.httpClient.putRequest<ProjectInfoDTO>(this.address, project);
     }
 
+    public deleteProject(projectId: number) {
+        return this.httpClient.deleteRequest(this.address + '/' + projectId);
+    }
 }

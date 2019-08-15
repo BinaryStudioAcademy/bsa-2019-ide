@@ -15,6 +15,6 @@ namespace IDE.BLL.Interfaces
         Task<ProjectInfoDTO> UpdateProject(ProjectUpdateDTO project); 
         Task<int> CreateProject(ProjectCreateDTO project, int userId);
         Task<ProjectDTO> GetProjectByIdAsync(int projectId);
-        Task DeleteProjectAsync(int id);
+        Task DeleteProjectAsync(int id, int userId);
     }
 }
