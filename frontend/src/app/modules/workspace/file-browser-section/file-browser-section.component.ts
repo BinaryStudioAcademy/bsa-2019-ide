@@ -5,7 +5,8 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { TreeNode } from 'primeng/components/common/treenode';
 import{ TreeNodeType} from "../../../models/Enums/treeNodeType"
 import { ActivatedRoute} from '@angular/router';
-
+//Delete it!!!
+import * as hardcodedFolderHierarchy from './files.json';
 
 
 @Component({
@@ -17,8 +18,8 @@ export class FileBrowserSectionComponent implements OnInit {
 
     @Output() fileSelected = new EventEmitter<string>();
     items: MenuItem[];
-    files: TreeNode[];
-    selectedFile2: TreeNode;
+    public files: TreeNode[];
+    public selectedItem: TreeNode;
     public projectId: number;
   
   
@@ -33,16 +34,24 @@ export class FileBrowserSectionComponent implements OnInit {
     ngOnInit() {
         
         this.files = [];
-        this.fileBService.getPrimeTree(this.projectId).then(x => this.files = x);
+        // this.fileBService.getPrimeTree(this.projectId).then(x => this.files = x);
+        this.files = hardcodedFolderHierarchy.default.data;
         this.items = [
-            {label: 'create file', icon: 'fa fa-file', command: (event) => this.create(1,this.selectedFile2)},
-            {label: 'create folder', icon: 'fa fa-folder', command: (event) => this.create(0,this.selectedFile2)},
-            {label: 'delete', icon: 'fa fa-remove', command: (event) => this.delete(this.selectedFile2)},
-            {label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedFile2)}
+            {label: 'create file', icon: 'fa fa-file', command: (event) => this.createFile(this.selectedItem)},
+            {label: 'create folder', icon: 'fa fa-folder', command: (event) => this.createFolder(this.selectedItem)},
+            {label: 'delete', icon: 'fa fa-remove', command: (event) => this.delete(this.selectedItem)},
+            {label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem)}
         ];
+        
     }
 
-    private create(type: TreeNodeType, node: TreeNode)
+    private createFile(node: TreeNode)
+    {
+        //TODO add create implementation
+        console.log(node);
+    }
+
+    private createFolder(node: TreeNode)
     {
         //TODO add create implementation
         console.log(node);
@@ -61,7 +70,7 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     unselectFile() {
-        this.selectedFile2 = null;
+        this.selectedItem = null;
     }
 
     nodeSelect(evt: any): void {
