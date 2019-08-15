@@ -38,6 +38,13 @@ namespace IDE.BLL.Services
             return _mapper.Map<ProjectDTO>(project);
         }
 
+        public async Task<ICollection<SearchProjectDTO>> GetProjectsName()
+        {
+            var project = await _context.Projects
+                .Select(item => new SearchProjectDTO {Id=item.Id, Name=item.Name }).ToListAsync();
+            return project;
+        }
+
         public async Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId)
         {
             //Maybe it can be a bit easier

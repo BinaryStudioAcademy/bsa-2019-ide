@@ -18,6 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SharedModule } from '../shared/shared.module';
+import {TabViewModule} from 'primeng/tabview';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { SharedModule } from '../shared/shared.module';
     InputTextModule,
     KeyFilterModule,
     SharedModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    TabViewModule
   ]
 })
 export class ProjectModule { }

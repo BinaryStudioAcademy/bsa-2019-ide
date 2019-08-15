@@ -10,6 +10,9 @@ import { EditorSectionComponent } from '../editor-section/editor-section.compone
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
+
+
+import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
 import { MenuItem } from 'primeng/api';
 
@@ -45,7 +48,7 @@ export class WorkspaceRootComponent implements OnInit {
 
         this.openedFiles = [
             { id: '1', folder: 'Project', name: 'Main.cs', content: 'Hello World', updaterId: 0 }
-        ]
+        ];
 
         this.items = [
             { label: this.openedFiles[0].name, icon: 'fa fa-fw fa-file' }
@@ -66,18 +69,18 @@ export class WorkspaceRootComponent implements OnInit {
             .subscribe(
                 (resp) => {
                     this.openedFiles.push(resp.body as FileUpdateDTO);
-                    this.items.push({label: resp.body.name, icon: 'fa fa-fw fa-file', target: resp.body.id})
+                    this.items.push({label: resp.body.name, icon: 'fa fa-fw fa-file', target: resp.body.id});
                     this.activeItem = this.items[this.items.length - 1];
                     this.editor.code = resp.body.content;
                 },
                 (error) => {
-                    this.tr.error("Can't load selected file.", "Error Message");
+                    this.tr.error('Can\'t load selected file.', 'Error Message');
                     console.error(error.message);
                 }
             );
     }
 
-    public saveFiles() {
+    public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
         const openedFiles = this.editor.openedFiles;
         return this.saveFilesRequest(openedFiles);
     }
@@ -85,14 +88,14 @@ export class WorkspaceRootComponent implements OnInit {
     public onSaveButtonClick(ev) {
         this.saveFiles().subscribe(
             success => {
-                if (success.ok) {
-                    this.tr.success("Files saved", "Success", { tapToDismiss: true })
+                if (success.every(x => x.ok)) {
+                    this.tr.success('Files saved', 'Success', { tapToDismiss: true });
                 } else {
-                    this.tr.error("Can't save files", "Error", { tapToDismiss: true });
+                    this.tr.error('Can\'t save files', 'Error', { tapToDismiss: true });
                 }
 
             },
-            error => this.tr.error("Can't save files", "Error", { tapToDismiss: true }));
+            error => this.tr.error('Can\'t save files', 'Error', { tapToDismiss: true }));
     }
 
     public onFilesSave(ev) {
@@ -100,13 +103,13 @@ export class WorkspaceRootComponent implements OnInit {
 
         this.saveFilesRequest(ev).subscribe(
             success => {
-                if (success.ok) {
-                    this.tr.success("Files saved", "Success", { tapToDismiss: true })
+                if (success.every(x => x.ok)) {
+                    this.tr.success('Files saved', 'Success', { tapToDismiss: true });
                 } else {
-                    this.tr.error("Can't save files", "Error", { tapToDismiss: true });
+                    this.tr.error('Can\'t save files', 'Error', { tapToDismiss: true });
                 }
             },
-            error => this.tr.error("Can't save files", "Error", { tapToDismiss: true }));
+            error => this.tr.error('Can\'t save files', 'Error', { tapToDismiss: true }));
     }
 
     public onFileClose(ev: FileUpdateDTO): void {
@@ -116,7 +119,7 @@ export class WorkspaceRootComponent implements OnInit {
         this.items.splice(indexTab, 1);
     }
 
-    private saveFilesRequest(files: FileUpdateDTO[]) {
+    private saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
         return this.ws.saveFilesRequest(files);
     }
 
@@ -124,7 +127,7 @@ export class WorkspaceRootComponent implements OnInit {
         return this.saveOnExit.confirm('Save changes?')
             .pipe(
                 switchMap(
-                    mustSave => mustSave ? this.saveFiles().pipe(map(result => result.ok ? true : false)) : of(false)));
+                    mustSave => mustSave ? this.saveFiles().pipe(map(result => result.every(x => x.ok) ? true : false)) : of(false)));
     }
 
     // *********code below for resizing blocks***************

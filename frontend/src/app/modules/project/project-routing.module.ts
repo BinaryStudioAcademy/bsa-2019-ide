@@ -20,6 +20,7 @@ const projectRoutes: Routes = [
         path: ':id',
         component: ProjectDetailsComponent,
         resolve: { project: ProjectInfoResolver } // What is it?
+                                                  // I don't know bro.
       },
       {
         path: ':id/settings',

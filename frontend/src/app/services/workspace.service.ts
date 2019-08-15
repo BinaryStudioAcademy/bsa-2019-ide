@@ -3,6 +3,7 @@ import { HttpClientWrapperService } from './http-client-wrapper.service';
 import { Injectable } from '@angular/core';
 import { FileUpdateDTO } from '../models/DTO/File/fileUpdateDTO';
 import { of } from 'rxjs/internal/observable/of';
+import { forkJoin, Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -11,13 +12,15 @@ export class WorkspaceService {
 
     constructor(private req: HttpClientWrapperService) { }
 
-   public getFileById(fileId) {
-        //this.req.getRequest()
+    public getFileById(fileId) {
+        return this.req.getRequest(`files/${fileId}`);
     }
 
-   public saveFilesRequest(files: FileUpdateDTO[]) {
-        //return this.req.putRequest('files', files);
-        const re =  new HttpResponse<FileUpdateDTO>({status:200});// delete when backend setup
-        return of(re);                                            // delete when backend setup
+    public saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
+        const fileRequests: Observable<HttpResponse<FileUpdateDTO>>[] = files.map(x => this.saveFileRequest(x));
+        return forkJoin(fileRequests);
+    }
+    public saveFileRequest(file: FileUpdateDTO): Observable<HttpResponse<FileUpdateDTO>> {
+        return this.req.putRequest('files', file);
     }
 }
