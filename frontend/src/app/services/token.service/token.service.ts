@@ -114,7 +114,7 @@ export class TokenService {
     public getUserId(): number {
         const token = this.jwtService.decodeToken();
         if (token !== null) {
-            return token.id;
+            return Number.parseInt(token.id, 10);
         }
         return null;
     }

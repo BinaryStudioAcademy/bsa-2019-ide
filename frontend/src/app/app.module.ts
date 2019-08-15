@@ -17,7 +17,7 @@ import { ButtonModule } from 'primeng/button';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
-import { DialogService, TreeNode } from 'primeng/api';
+import { DialogService } from 'primeng/api';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { GeneralModule } from './general/general.module';
 import { TreeModule } from 'primeng/tree';
@@ -28,6 +28,7 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { TokenGetter } from './services/token.service/token.service';
 import { RefreshTokenInterceptor } from './helpers/token.interceptor';
 import {SplitButtonModule} from 'primeng/splitbutton';
+import { SharedModule } from './modules/shared/shared.module';
 
 
 @NgModule({
@@ -50,6 +51,7 @@ import {SplitButtonModule} from 'primeng/splitbutton';
         AppRoutingModule,
         MenubarModule,
         ButtonModule,
+        SharedModule,
         HttpClientModule,
         DynamicDialogModule,
         ToastrModule.forRoot({

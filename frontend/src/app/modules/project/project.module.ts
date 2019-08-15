@@ -9,13 +9,15 @@ import { ProjectDetailsInfoComponent } from './components/project-details-info/p
 import { ProjectDetailsUserStatisticsComponent } from './components/project-details-user-statistics/project-details-user-statistics.component';
 
 import { ButtonModule } from 'primeng/button';
-import {CardModule} from 'primeng/card';
-import {TableModule} from 'primeng/table';
-import {ReactiveFormsModule} from '@angular/forms';
-import {DropdownModule} from 'primeng/dropdown';
-import {InputTextareaModule} from 'primeng/inputtextarea';
-import {InputTextModule} from 'primeng/inputtext';
-import {KeyFilterModule} from 'primeng/keyfilter';
+import { CardModule } from 'primeng/card';
+import { TableModule } from 'primeng/table';
+import { ReactiveFormsModule } from '@angular/forms';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputTextModule } from 'primeng/inputtext';
+import { KeyFilterModule } from 'primeng/keyfilter';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import {KeyFilterModule} from 'primeng/keyfilter';
     DropdownModule,
     InputTextareaModule,
     InputTextModule,
-    KeyFilterModule
+    KeyFilterModule,
+    SharedModule,
+    ProgressSpinnerModule
   ]
 })
 export class ProjectModule { }
