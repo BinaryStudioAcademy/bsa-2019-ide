@@ -25,20 +25,7 @@ export class EditorSectionComponent implements OnInit {
 
     constructor() { }
 
-    ngOnInit() {
-        // this.items = [
-        //     { label: 'file1', icon: 'fa fa-fw fa-file' },
-        //     { label: 'file2', icon: 'fa fa-fw fa-file' },
-        //     { label: 'file3', icon: 'fa fa-fw fa-file' },
-        // ];
-
-        // this.activeItem = this.items[this.items.length - 1];
-        // this.openedFiles = [
-        //     { id: '1', folder: 'Project', name: 'Main.cs', content: 'using System;', updaterId: 0 },
-        //     { id: '2', folder: 'Project', name: 'Startup.cs', content: 'using System;', updaterId: 0 },
-        //     { id: '3', folder: 'Project', name: 'appsetting.json', content: '{ConnectionStrings: {}}', updaterId: 0 },
-        // ]
-    }
+    ngOnInit() { }
 
     public closeItem(event, index) {
         this.fileCloseEvent.emit(this.openedFiles[index]);
