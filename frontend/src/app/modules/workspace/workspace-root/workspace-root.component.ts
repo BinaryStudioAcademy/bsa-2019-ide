@@ -10,6 +10,8 @@ import { EditorSectionComponent } from '../editor-section/editor-section.compone
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
+import { FileService } from 'src/app/services/file.service/file.service';
+import { MenuItem } from 'primeng/api';
 
 
 @Component({
@@ -19,7 +21,11 @@ import { map } from 'rxjs/internal/operators/map';
 })
 export class WorkspaceRootComponent implements OnInit {
     public projectId: number;
-  
+    public openedFiles: FileUpdateDTO[];
+    public items: MenuItem[];
+    public activeItem: MenuItem;
+    
+    
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
@@ -27,22 +33,51 @@ export class WorkspaceRootComponent implements OnInit {
         private route: ActivatedRoute,
         private tr: ToastrService,
         private ws: WorkspaceService,
-        private saveOnExit: LeavePageDialogService) { }
+        private saveOnExit: LeavePageDialogService,
+        private fileService: FileService) { }
 
     ngOnInit() {
-      this.projectId = Number(this.route.snapshot.paramMap.get('id'));
-      if (!this.projectId) {
-        console.error('Id in URL is not a number!');
-        return;
-      }
+        this.projectId = Number(this.route.snapshot.paramMap.get('id'));
+        if (!this.projectId) {
+            console.error('Id in URL is not a number!');
+            return;
+        }
+
+        this.openedFiles = [
+            { id: '1', folder: 'Project', name: 'Main.cs', content: 'Hello World', updaterId: 0 }
+        ]
+
+        this.items = [
+            { label: this.openedFiles[0].name, icon: 'fa fa-fw fa-file' }
+        ];
+
+        this.activeItem = this.items[this.items.length - 1];
+
     }
 
-    public onFileSelected(fileId) {
-        this.tr.success(`fileId ${fileId}`, 'Success');
-        console.log(this.editor.code = "bebebe");
+    public onFileSelected(fileId: string): void {
+        if (!!this.openedFiles.find(f => f.id === fileId)){
+            this.activeItem = this.items.find(i => i.target === fileId);
+            this.editor.code = this.openedFiles.find(f => f.id === fileId).content;
+            return;
+        }
+
+        this.fileService.getProjectById(fileId)
+            .subscribe(
+                (resp) => {
+                    this.openedFiles.push(resp.body as FileUpdateDTO);
+                    this.items.push({label: resp.body.name, icon: 'fa fa-fw fa-file', target: resp.body.id})
+                    this.activeItem = this.items[this.items.length - 1];
+                    this.editor.code = resp.body.content;
+                },
+                (error) => {
+                    this.tr.error("Can't load selected file.", "Error Message");
+                    console.error(error.message);
+                }
+            );
     }
 
-    public saveFiles() {
+    public saveFiles() {        
         const openedFiles = this.editor.openedFiles;
         return this.saveFilesRequest(openedFiles);
     }
@@ -61,6 +96,8 @@ export class WorkspaceRootComponent implements OnInit {
     }
 
     public onFilesSave(ev) {
+
+
         this.saveFilesRequest(ev).subscribe(
             success => {
                 if (success.ok) {
@@ -70,6 +107,13 @@ export class WorkspaceRootComponent implements OnInit {
                 }
             },
             error => this.tr.error("Can't save files", "Error", { tapToDismiss: true }));
+    }
+
+    public onFileClose(ev: FileUpdateDTO): void {
+        const indexFile = this.openedFiles.findIndex(f => f.id === ev.id);
+        this.openedFiles.splice(indexFile, 1);
+        const indexTab = this.items.findIndex(i => i.target === ev.id);
+        this.items.splice(indexTab, 1);
     }
 
     private saveFilesRequest(files: FileUpdateDTO[]) {
