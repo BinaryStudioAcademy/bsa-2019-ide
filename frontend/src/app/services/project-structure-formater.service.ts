@@ -3,14 +3,14 @@ import { Injectable } from '@angular/core';
 import { TreeNode } from 'primeng/components/common/api';
 import { FileStructureDTO } from '../models/DTO/Workspace/fileStructureDTO';
 import {TreeNodeType} from '../models/Enums/treeNodeType';
+import { ProjectStructureDTO } from '../models/DTO/Workspace/projectStructureDTO';
 
 @Injectable({
     providedIn: 'root'
 })
-export class NodesPrepareToViewService {
+export class ProjectStructureFormaterService {
     folderNode: TreeNode = {
         label: "NoNameFolder",
-        data: "Folder",
         expandedIcon: "fa fa-folder-open",
         collapsedIcon: "fa fa-folder",
         children: []
@@ -18,28 +18,35 @@ export class NodesPrepareToViewService {
 
     fileNode: TreeNode = {
         label: "NoNameFile",
-        data: "File",
         icon: "fa fa-file"
     }
 
+    private itemId : number = 0;
+    
     constructor() { }
-    toPrimeTree(primeTree: TreeNode[], ps: FileStructureDTO[]) {
-        for (const el of ps) {
-            if (el.type == TreeNodeType.folder) {
-                const newNode = this.makeFolderNode(el.name, el.id);
-                if (!el.nestedFiles || el.nestedFiles.length === 0) {
-                    primeTree.push(newNode);
-                    continue;
-                }
-                newNode.children = this.toPrimeTree([], el.nestedFiles);
-                primeTree.push(newNode);
-            } else {
-                const newNode = this.makeFileNode(el.name, el.id);
-                primeTree.push(newNode);
-            }
-        }
-        return primeTree;
+    toTreeView(projectStructure: ProjectStructureDTO) : TreeNode {
+        let root : TreeNode;
+        root = this.toTreeNode(projectStructure.nestedFiles[0]);
+        return root;
+    }
 
+    toTreeNode(fileStructure: FileStructureDTO, parent: TreeNode = null) : TreeNode {
+        let root : TreeNode;
+        if (fileStructure.type == TreeNodeType.folder){
+            debugger;
+            root = this.makeFolderNode(fileStructure.name, fileStructure.id);
+            root.type = "0";
+            if (fileStructure.nestedFiles && fileStructure.nestedFiles.length !== 0) {
+                for (let item of fileStructure.nestedFiles){
+                    root.children.push(this.toTreeNode(item, root));
+                }
+            }
+        } else {
+            root = this.makeFileNode(fileStructure.name, fileStructure.id);
+            root.type = "1";
+        }
+        root.parent = parent;
+        return root;
     }
 
     getEmptyFolderNode() {
@@ -51,7 +58,8 @@ export class NodesPrepareToViewService {
     makeFolderNode(name: string, id: string) {
         const emptyFolder = this.getEmptyFolderNode();
         emptyFolder.label = name;
-        emptyFolder.key = id;
+        debugger;
+        emptyFolder.key = (++this.itemId).toString();
         return emptyFolder;
     }
     makeFileNode(name: string, id: string) {
