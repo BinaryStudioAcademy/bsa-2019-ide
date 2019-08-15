@@ -17,7 +17,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
     public compilerTypes: any;
     public colors;
     private project: ProjectCreateDTO;
-    
+
     constructor(
         private fb: FormBuilder,
         private projectService: ProjectService,
@@ -30,8 +30,8 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
         language: ['', Validators.required],
         projectType: ['', Validators.required],
         compilerType: ['', Validators.required],
-        countOfSavedBuilds: ['', Validators.required],
-        countOfBuildAttempts: ['', Validators.required],
+        countOfSavedBuilds: ['', [Validators.required, Validators.max(10)]],
+        countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
         color: ['', Validators.required]
     });
 
@@ -47,7 +47,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
             countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value,
             color: this.projectForm.get('color').value
         };
-        
+
         this.projectService.addProject(this.project)
             .subscribe(res => {
                 this.toastrService.success("Project created");
@@ -127,5 +127,15 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.projectForm = null;
+    }
+
+    public getErrorMessage(field: string): string {
+      const control = this.projectForm.get(field);
+      const isMaxError: boolean = !!control.errors && !!control.errors.max;
+      return control.hasError('required')
+        ? 'Value is required!'
+        : (isMaxError)
+          ? `Quantity must be less than ${control.errors.max.max}!`
+          : 'validation error';
     }
 }
