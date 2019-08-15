@@ -31,11 +31,11 @@ import {SplitButtonModule} from 'primeng/splitbutton';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormsModule } from '@angular/forms';
 
+
 @NgModule({
     declarations: [
         AppComponent,
-        NavMenuComponent,
-
+        NavMenuComponent
     ],
     imports: [
         AutoCompleteModule,
