@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { NodesPrepareToViewService } from './nodes-prepare-to-view.service';
+import { ProjectStructureFormaterService } from './nodes-prepare-to-view.service';
 
-describe('NodesPrepareToViewService', () => {
+describe('ProjectStructureFormaterService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: NodesPrepareToViewService = TestBed.get(NodesPrepareToViewService);
+    const service: ProjectStructureFormaterService = TestBed.get(ProjectStructureFormaterService);
     expect(service).toBeTruthy();
   });
 });

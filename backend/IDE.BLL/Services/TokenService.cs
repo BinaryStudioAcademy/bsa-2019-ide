@@ -2,11 +2,8 @@
 using IDE.BLL.Interfaces;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 
 namespace IDE.BLL.Services
 {

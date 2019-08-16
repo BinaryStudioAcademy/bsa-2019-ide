@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using IDE.API.Extensions;
 using IDE.BLL.Services;
 using IDE.Common.DTO.File;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
-    // [Authorize] // TODO: use after authorization launch
+    [Authorize] // TODO: use after authorization launch
     [ApiController]
     public class FilesController : ControllerBase
     {
@@ -33,6 +35,9 @@ namespace IDE.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] FileCreateDTO fileCreateDTO)
         {
+            var authorId = this.GetUserIdFromToken();
+            fileCreateDTO.CreatorId = authorId;
+
             var createdFile = await _fileService.CreateAsync(fileCreateDTO);
             return CreatedAtAction(nameof(GetByIdAsync), new { id = createdFile.Id }, createdFile);
         }

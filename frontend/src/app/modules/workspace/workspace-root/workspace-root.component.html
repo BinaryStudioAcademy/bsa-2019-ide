@@ -4,7 +4,7 @@
     <button pButton type="button" icon="pi pi-play" iconPos="left" class="ui-button-secondary" label="Run"></button>
     <button pButton type="button" icon="pi pi-arrow-down" iconPos="left" class="ui-button-secondary" label="Build"></button>
     <button pButton type="button" (click)="onSaveButtonClick($event)" icon="pi pi-save" iconPos="left" class="ui-button-secondary" label="Save"></button>
-    <button pButton routerLink="/project/{{projectId}}" type="button" iconPos="left" class="ui-button-secondary" label="Project details"></button>
+    <button pButton routerLink="/project/{{projectId}}" type="button" icon="pi pi-info" iconPos="left" class="ui-button-primary" label="Project details"></button>
   </div>
 
 </div>
@@ -16,11 +16,11 @@
 </div>
   <div class="p-col">
     <div class="inner-wrapper p-grid p-nogutter ">
-      <div class="file-browser-content p-col-12 p-md-3 p-align-stretch ">
+      <div class="file-browser-content p-col-12 p-md-3 p-align-stretch" >
         <app-file-browser-section (fileSelected) = "onFileSelected($event)"></app-file-browser-section>
       </div>
       <div class="editor-content p-col-12 p-md-9 p-align-stretch ">
-    <app-editor-section [openedFiles]="openedFiles" [items]="items" [activeItem]="activeItem" (fileCloseEvent)="onFileClose($event)" (filesSaveEvent)= "onFilesSave($event)" ></app-editor-section>
+    <app-editor-section  (filesSaveEvent)= "onFilesSave($event)" ></app-editor-section>
       </div>
     </div>
   </div>

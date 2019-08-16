@@ -63,7 +63,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public filterProject(event): void {
         const query = event.query;
         this.projectService.getProjectsName().subscribe(projects => {
-            this.filterProhects = this.filterProhects = this.filter(query, projects.body);
+            this.filterProhects = this.filter(query, projects.body);
         });
     }
 
@@ -76,16 +76,15 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         const filtered: SearchProjectDTO[] = [];
         for (let i = 0; i < projects.length; i++) {
             const project = projects[i];
-            if (project.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+            if (project.name.toLowerCase().indexOf(query.toLowerCase()) !== -1) {
                 filtered.push(project);
             }
         }
-        if (filtered.length==0)
+        if (filtered.length === 0)
         {
-            const notFound:SearchProjectDTO=
-            {
+            const notFound:SearchProjectDTO = {
                 id:0,
-                name: "We couldn’t find any project matching "+query
+                name: "We couldn’t find any project matching " + query
             }
             filtered.push(notFound);
         }

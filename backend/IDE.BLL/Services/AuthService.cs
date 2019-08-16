@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
+using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.JWT;
 using IDE.Common.DTO.User;
-using IDE.DAL.Entities;
+using IDE.Common.ModelsDTO.DTO.Authentification;
 using IDE.Common.Security;
+using IDE.DAL.Context;
+using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
-using IDE.BLL.ExceptionsCustom;
-using IDE.DAL.Context;
-using IDE.BLL.Helpers;
-using IDE.Common.ModelsDTO.DTO.Authentification;
 
 namespace IDE.BLL.Services
 {
@@ -75,8 +74,8 @@ namespace IDE.BLL.Services
         {
             var userId = _jwtFactory.GetUserIdFromToken(dto.AccessToken, dto.Key); //get userId from our access token
             var userEntity = _context.Users
-                                .Include(u => u.Avatar)
-                                .FirstOrDefault(x => x.Id == userId); //find user with such id
+                            .Include(u => u.Avatar)
+                            .FirstOrDefault(x => x.Id == userId); //find user with such id
 
             if (userEntity == null) 
             {

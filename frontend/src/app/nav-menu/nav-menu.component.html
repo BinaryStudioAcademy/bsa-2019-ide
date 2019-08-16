@@ -3,8 +3,7 @@
         <p-autoComplete class="auto-complete" [(ngModel)]="project" [suggestions]="filterProhects"
             (completeMethod)="filterProject($event)" field="name" [size]="30" placeholder="Project title..."
             [minLength]="1" (onSelect)="checkProject(project)"></p-autoComplete>
-        <p-splitButton label="My Profile" icon="pi pi-user" (onClick)="goToUserDetails()" [model]="items">
-        </p-splitButton>
+        <p-splitButton label="My Profile" icon="pi pi-user" (onClick)="goToUserDetails()" [model]="items"></p-splitButton>
     </div>
     <div *ngIf="!isAuthorized">
         <button class="login-btn" pButton (click)="openAuthDialog(dialogType.SignIn)" label="Login"></button>
