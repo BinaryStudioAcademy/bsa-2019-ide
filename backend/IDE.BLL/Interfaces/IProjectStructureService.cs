@@ -1,7 +1,4 @@
 ﻿using IDE.Common.ModelsDTO.DTO.Workspace;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Interfaces
@@ -11,6 +8,6 @@ namespace IDE.BLL.Interfaces
         Task<ProjectStructureDTO> GetByIdAsync(string id);
         Task UpdateAsync(ProjectStructureDTO projectStructureDTO);
         Task<ProjectStructureDTO> CreateAsync(ProjectStructureDTO projectStructureDto);
-        Task<ProjectStructureDTO> CreateEmpty(string projectId);
+        Task<ProjectStructureDTO> CreateEmptyAsync(string projectId, string projectName);
     }
 }

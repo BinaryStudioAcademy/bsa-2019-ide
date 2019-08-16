@@ -30,11 +30,11 @@
                 <span appLanguage [language]="project.language"></span>
             </p>
              <p>
-                <span class="highlighted">ProjectType: </span>
+                <span class="highlighted">Project type: </span>
                 <span appProjectType [projectType]="project.projectType"></span>
             </p>
              <p>
-                <span class="highlighted">CompilerType: </span>
+                <span class="highlighted">Compiler type: </span>
                 <span appCompilerType [compilerType]="project.compilerType"></span>
             </p>
             <!--here will be check(if project access modifier - public)-->
@@ -47,11 +47,11 @@
     <div class="project-description">
         <p-card header="Additional">
              <p>
-                <span class="highlighted">CountOfSaveBuilds: </span>
+                <span class="highlighted">Amount of saved builds: </span>
                 <span>{{project.countOfSaveBuilds}}</span>
             </p>
              <p>
-                <span class="highlighted">CountOfBuildAttempts: </span>
+                <span class="highlighted">Amount of build attempts: </span>
                 <span>{{project.countOfBuildAttempts}}</span>
             </p>
         </p-card>
@@ -72,7 +72,7 @@
     -->
     <div *ngIf="IsAuthor()" class="ui-g ui-fluid">
       <div class="ui-g-12">
-          <button  pButton routerLink="/project/{{project.id}}/settings" label="Edit"></button>
+          <button  pButton icon="pi pi-pencil" routerLink="/project/{{project.id}}/settings" label="Edit"></button>
           <app-confirmation-dialog buttonName="Delete" [header]="getRemovingHeader()" message="Do you want to delete this project?" (IsConfirmed)="remove($event)"></app-confirmation-dialog>
       </div>
     </div>
