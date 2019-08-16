@@ -30,14 +30,12 @@ import { RefreshTokenInterceptor } from './helpers/token.interceptor';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormsModule } from '@angular/forms';
-import { UserAccessDirective } from './directives/userAccess/user-access.directive';
 
 
 @NgModule({
     declarations: [
         AppComponent,
-        NavMenuComponent,
-        UserAccessDirective
+        NavMenuComponent
     ],
     imports: [
         AutoCompleteModule,

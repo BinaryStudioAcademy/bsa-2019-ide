@@ -20,6 +20,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SharedModule } from '../shared/shared.module';
 import {TabViewModule} from 'primeng/tabview';
 import { CollaboratorsListComponent } from './components/collaborators-list/collaborators-list.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { CollaboratorsListComponent } from './components/collaborators-list/coll
     CollaboratorsListComponent
   ],
   imports: [
+    FormsModule,
     CommonModule,
     ProjectRoutingModule,
     ButtonModule,
