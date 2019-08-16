@@ -31,7 +31,6 @@
                 </div>
                 <div class="invalid" *ngIf="projectForm.get('description').invalid && projectForm.get('description').dirty">{{getErrorMessage('description')}}</div>
 
-
                 <!-- Project  Language -->
                 <div class="label">Language</div>
                 <div class="ui-g ui-fluid">
@@ -101,6 +100,16 @@
                 </div>
                 <div class="invalid" *ngIf="projectForm.get('countOfBuildAttempts').invalid && projectForm.get('countOfBuildAttempts').dirty">{{getErrorMessage('countOfBuildAttempts')}}</div>
 
+                <!-- Access modifier -->
+                <div class="label">Access</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="">
+                            <p-dropdown [options]="access" placeholder="Select project access"
+                                formControlName="access"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Color -->
                 <div class="label">Project color</div>

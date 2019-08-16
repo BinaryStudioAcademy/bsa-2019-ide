@@ -117,8 +117,6 @@ namespace IDE.DAL.Migrations
 
                     b.Property<int?>("GitCredentialId");
 
-                    b.Property<bool>("IsPrivate");
-
                     b.Property<int>("Language");
 
                     b.Property<string>("Name");

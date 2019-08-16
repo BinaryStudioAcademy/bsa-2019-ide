@@ -30,7 +30,7 @@ namespace IDE.BLL.Services
             var projectMember = _context.ProjectMembers.FirstOrDefault(pm => pm.UserId == userId && pm.ProjectId == projectId);
             if (projectMember == null)
             {
-                if (project.IsPrivate)
+                if (project.AccessModifier == AccessModifier.Private)
                     return new ProjectRightsDTO();
                 else
                     return new ProjectRightsDTO() { Access = UserAccess.CanRead };

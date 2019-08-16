@@ -7,7 +7,6 @@ import { ProjectService } from 'src/app/services/project.service/project.service
 import { takeUntil } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
   selector: 'app-project-settings',
@@ -20,6 +19,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
   public projectStartState = {} as ProjectUpdateDTO;
   public isPageLoaded = false;
   public isDetailsSaved = true;
+  public access: any;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -27,7 +27,8 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     name: ['', Validators.required],
     description: ['', Validators.required],
     countOfSaveBuilds: ['', [Validators.required, Validators.max(10)]],
-    countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]]
+    countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
+    access: ['', Validators.required]
   });
 
   constructor(
@@ -35,13 +36,11 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
       private route: ActivatedRoute,
       private projectService: ProjectService,
       private toastService: ToastrService,
-      private tokenService: TokenService,
       private router: Router
   ) { }
 
   ngOnInit() {
         this.projectId = Number(this.route.snapshot.paramMap.get('id'));
-        const userId: number = this.tokenService.getUserId();
         if (!this.projectId) {
             console.error('Id in URL is not a number!');
             return;
@@ -58,13 +57,18 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
                 console.error(error.message);
             }
         );
+        this.access = [
+            { label: 'Public', value: 0 },
+            { label: 'Private', value: 1 }
+        ];
   }
 
   projectItemIsNotChange(): boolean {
     return this.projectForm.get('name').value === this.projectStartState.name
       && this.projectForm.get('description').value === this.projectStartState.description
       && Number(this.projectForm.get('countOfSaveBuilds').value) === this.projectStartState.countOfSaveBuilds
-      && Number(this.projectForm.get('countOfBuildAttempts').value) === this.projectStartState.countOfBuildAttempts;
+      && Number(this.projectForm.get('countOfBuildAttempts').value) === this.projectStartState.countOfBuildAttempts
+      && this.project.accessModifier === this.projectStartState.accessModifier;
   }
 
   ngOnDestroy() {
@@ -104,6 +108,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     this.projectStartState.description = this.project.description;
     this.projectStartState.countOfSaveBuilds = this.project.countOfSaveBuilds;
     this.projectStartState.countOfBuildAttempts = this.project.countOfBuildAttempts;
+    this.projectStartState.accessModifier = this.project.accessModifier;
   }
 
 }
