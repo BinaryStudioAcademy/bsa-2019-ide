@@ -25,7 +25,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
         private router: Router) { }
 
     public projectForm = this.fb.group({
-        name: ['', Validators.required],
+        name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32)]],
         description: ['', Validators.required],
         language: ['', Validators.required],
         projectType: ['', Validators.required],
