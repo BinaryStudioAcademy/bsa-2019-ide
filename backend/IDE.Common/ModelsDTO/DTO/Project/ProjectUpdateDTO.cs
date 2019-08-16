@@ -10,5 +10,6 @@ namespace IDE.Common.DTO.Project
         public int CountOfSaveBuilds { get; set; }
         public int CountOfBuildAttempts { get; set; }
         public AccessModifier AccessModifier { get; set; }
+        public string Color { get; set; }
     }
 }

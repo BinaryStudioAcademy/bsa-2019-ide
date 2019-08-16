@@ -6,6 +6,7 @@ import { ProjectDetailsComponent } from './components/project-details/project-de
 import { CreateProjectComponent } from './components/create-project/create-project.component';
 import { ProjectInfoResolver } from 'src/app/resolvers/project-info.resolver';
 import { LoginGuard } from 'src/app/guards/login.guard';
+import { ProjectSettingsRouteGuard } from 'src/app/guards/project-settings-route.guard';
 
 const projectRoutes: Routes = [
   {
@@ -24,7 +25,8 @@ const projectRoutes: Routes = [
       },                                          // Gyus this is for loading data
       {
         path: ':id/settings',
-        component: ProjectSettingsComponent
+        component: ProjectSettingsComponent,
+        canActivate: [ProjectSettingsRouteGuard]
       },
     ],
     canActivate: [LoginGuard]
