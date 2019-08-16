@@ -1,5 +1,5 @@
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 
 export interface TabFileWrapper {
@@ -30,6 +30,7 @@ export class EditorSectionComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
+        
         this.openedFiles = [
             { isChanged: false, innerFile: { id: '1', folder: 'Project', name: 'Main.cs', content: 'Hello World', updaterId: 0 } },
             { isChanged: false, innerFile: { id: '2', folder: 'Project', name: 'Startup.cs', content: 'Hello World', updaterId: 0 } },
@@ -43,8 +44,12 @@ export class EditorSectionComponent implements OnInit {
 
     }
 
+    
+
     onChange(ev) {
-        this.getFileFromActiveItem(this.activeItem).isChanged = true;
+        const touchedFile = this.getFileFromActiveItem(this.activeItem);
+        touchedFile.isChanged = true;
+        touchedFile.innerFile.content = this.code;
     }
 
     public closeItem(event, index) {
@@ -60,6 +65,7 @@ export class EditorSectionComponent implements OnInit {
         event.preventDefault();
     }
     public onTabSelect(evt, index) {
+        this.activeItem = this.items[index];
         this.code = this.openedFiles[index].innerFile.content;
     }
 
