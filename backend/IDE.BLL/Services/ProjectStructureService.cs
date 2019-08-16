@@ -5,6 +5,7 @@ using AutoMapper;
 using System.Threading.Tasks;
 using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
+using IDE.Common.ModelsDTO.Enums;
 
 namespace IDE.BLL.Services
 {
@@ -51,16 +52,23 @@ namespace IDE.BLL.Services
             return await GetByIdAsync(createdProjectStructure.Id);
         }
 
-        public async Task<ProjectStructureDTO> CreateEmpty(string projectId)
+        public async Task<ProjectStructureDTO> CreateEmptyAsync(string projectId, string projectName)
         {
-            var emptyStructureDTO = new ProjectStructureDTO
+            var emptyStructureDTO = new ProjectStructureDTO()
             {
                 Id = projectId
             };
+            var initialFileStructure = new FileStructureDTO()
+            {
+                Type = TreeNodeType.Folder,
+                Details = $"Super important details of file {projectName}",
+                Name = projectName
+            };
+            emptyStructureDTO.NestedFiles.Add(initialFileStructure);
+
             var emptyStructure = _mapper.Map<ProjectStructure>(emptyStructureDTO);
             var createdProjectStructure = await _projectStructureRepository.CreateAsync(emptyStructure);
             return await GetByIdAsync(createdProjectStructure.Id);
         }
-
     }
 }

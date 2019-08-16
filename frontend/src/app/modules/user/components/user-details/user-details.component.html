@@ -1,5 +1,5 @@
-<div class="container p-grid p-justify-around p-align-start">
-    <div *ngIf="user" class="panel p-col-10 p-md-4 p-lg-3 p-grid p-dir-col">
+<div class="p-grid p-justify-around p-align-start">
+    <div *ngIf="user" class="panel p-col p-md-6 p-lg-4 p-grid p-dir-col">
         <img class="p-col-align-center" alt="avatar" (click)="expandImage(user.url)" src="{{user.url}}">
         <h1 class="p-col-align-center">{{user.firstName}} {{user.lastName}}</h1>
         <p class="property-name">Nickname:</p>
@@ -22,7 +22,7 @@
     <div *ngIf="!user" class="panel p-col-10 p-md-4 p-lg-3 p-grid  p-justify-center">
         <p-progressSpinner></p-progressSpinner>
     </div>
-    <div class="panel p-col-10 p-md-7 p-lg-7  p-dir-col">
+    <div class="panel p-col-10 p-md-8 p-lg-7  p-dir-col">
         More information about user: projects, builds, ets..
     </div>
 </div>
