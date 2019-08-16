@@ -1,7 +1,8 @@
 <div class="collaboratorContainer">
-        <div *ngFor="let collaborator of collaborators" class="ui-g-12 ui-md-6 ui-lg-3">
+    <div *ngFor="let collaborator of collaborators">
+        <div class="collaborator-item">
             <div>{{collaborator.nickName}}</div>
-            <span appUserAccess [userAccess]="collaborator.access"></span>
-            <p-dropdown [options]="userAccess" [(ngModel)]="selectedAccess"></p-dropdown>
+            <p-dropdown [options]="userAccess" [(ngModel)]="collaborator.access"></p-dropdown>
         </div>
+    </div>
 </div>

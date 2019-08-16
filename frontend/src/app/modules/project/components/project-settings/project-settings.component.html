@@ -66,7 +66,11 @@
                   </div>
               </div>
               <div class="invalid" *ngIf="projectForm.get('countOfBuildAttempts').invalid">{{getErrorMessage('countOfBuildAttempts')}}</div>
+
+              <div class="label">Collaborators:</div>
               <app-collaborators-list [collaborators]="collaborators"></app-collaborators-list>
+
+
               <div class="ui-g ui-fluid">
                   <div class="ui-g-12">
                       <button type="button" routerLink="/project/{{project.id}}" pButton class="ui-button-secondary" label="Back to details"></button>
