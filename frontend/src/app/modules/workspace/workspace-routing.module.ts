@@ -8,7 +8,7 @@ const workspaceRoutes: Routes = [
     {
         path: 'workspace/:id',
         component: WorkspaceRootComponent,
-        canActivate: [LoginGuard], canDeactivate: [SaveBeforeExitGuard]
+        canActivate: [LoginGuard]
     }
 ];
 

@@ -14,5 +14,5 @@
     </ng-template>
   </p-tabMenu>
 </div>
-<ngx-monaco-editor class="my-code-editor" [options]="editorOptions" [(ngModel)]="code">
+<ngx-monaco-editor class="my-code-editor" [options]="editorOptions" [(ngModel)]="code" (ngModelChange)="onChange($event)">
 </ngx-monaco-editor>
