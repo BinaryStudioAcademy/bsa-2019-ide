@@ -4,7 +4,7 @@
         <p-button icon="pi pi-chevron-up" label="Collapse" (click)="collapseAll()"></p-button>
     </div>
     <p-tree class="custom-tree" selectionMode="single" [value]="files"  [(selection)]="selectedItem"
-            [contextMenu]="cm" (onNodeSelect)="nodeSelect($event)">   
+            [contextMenu]="cm" (onNodeSelect)="nodeSelect($event)" [filter]="true" filterMode="strict">   
         </p-tree>
     <p-contextMenu #cm [model]="items"></p-contextMenu>
 </div>
