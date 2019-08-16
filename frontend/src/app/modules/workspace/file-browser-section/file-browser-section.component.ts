@@ -188,13 +188,13 @@ export class FileBrowserSectionComponent implements OnInit {
         }
     }
 
-    private expandAll(){
+    public expandAll(){
         this.files.forEach( node => {
             this.expandRecursive(node, true);
         } );
     }
 
-    private collapseAll(){
+    public collapseAll(){
         this.files.forEach( node => {
             this.expandRecursive(node, false);
         } );
