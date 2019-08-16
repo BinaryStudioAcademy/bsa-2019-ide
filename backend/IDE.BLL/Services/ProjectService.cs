@@ -5,6 +5,7 @@ using IDE.Common.DTO.Common;
 using IDE.Common.DTO.Project;
 using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Project;
+using IDE.Common.ModelsDTO.DTO.User;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -69,6 +70,19 @@ namespace IDE.BLL.Services
             var collection = await projects.ToListAsync();
 
             return MapAndGetLastBuildFinishedDate(collection, userId);
+        }
+
+        public async Task<ICollection<UserNicknameDTO>> GetProjectCollaborators(int projectId, int authorId)
+        {
+            var colaborators = await _context.ProjectMembers
+                .Where(a => a.ProjectId == projectId && a.UserId != authorId)
+                .Select(a => new UserNicknameDTO
+                {
+                    Id=a.UserId,
+                    NickName=a.User.NickName
+                }).ToListAsync();
+
+            return colaborators;
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId)

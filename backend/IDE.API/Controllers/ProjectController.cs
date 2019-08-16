@@ -8,12 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using IDE.Common.ModelsDTO.DTO.Project;
+using IDE.Common.ModelsDTO.DTO.User;
 
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
     //[AllowAnonymous]
-    [Authorize]
+    //[Authorize]
     [ApiController]
     public class ProjectController : ControllerBase
     {
@@ -71,6 +72,12 @@ namespace IDE.API.Controllers
         {
             //Need to get userId from token
             return Ok(await _projectService.GetFavouriteUserProjects(this.GetUserIdFromToken()));
+        }
+
+        [HttpGet("collaborators/{projectId}")]
+        public async Task<ActionResult<IEnumerable<UserNicknameDTO>>> GetListOdProjectCollaborators(int projectId)
+        {
+            return Ok(await _projectService.GetProjectCollaborators(projectId, this.GetUserIdFromToken()));
         }
 
         [HttpPost]

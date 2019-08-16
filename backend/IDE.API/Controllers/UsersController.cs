@@ -42,7 +42,7 @@ namespace IDE.API.Controllers
         }
 
         [HttpGet("nickname/{nickPart}")]
-        public async Task<IEnumerable<UserNickname>> GetUsersNickByNicknamePart(string nickPart = null)
+        public async Task<IEnumerable<UserNicknameDTO>> GetUsersNickByNicknamePart(string nickPart = null)
         {
             return await _userService.GetUserListByNickNameParts(nickPart);
         } 

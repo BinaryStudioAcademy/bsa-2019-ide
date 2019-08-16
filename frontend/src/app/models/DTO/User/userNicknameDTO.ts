@@ -1,6 +1,6 @@
 ﻿/* Auto Generated */
 
-export interface UserNickname {
+export interface UserNicknameDTO {
     id: number;
     nickName: string;
 }

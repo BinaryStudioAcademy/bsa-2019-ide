@@ -4,7 +4,7 @@ using System.Text;
 
 namespace IDE.Common.ModelsDTO.DTO.User
 {
-    public class UserNickname
+    public class UserNicknameDTO
     {
         public int Id { get; set; }
         public string NickName { get; set; }
