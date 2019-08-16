@@ -20,4 +20,8 @@ export class FileService {
     public addFile(file: FileCreateDTO): Observable<HttpResponse<FileDTO>> {
         return this.httpClient.postRequest(this.address, file);
     }
+
+    public deleteFile(id: string) : Observable<HttpResponse<any>> {
+        return this.httpClient.deleteRequest(this.address + '/' + id);
+    }
 }
