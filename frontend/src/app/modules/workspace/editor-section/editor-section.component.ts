@@ -1,5 +1,5 @@
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 
 export interface TabFileWrapper {
@@ -12,7 +12,7 @@ export interface TabFileWrapper {
     templateUrl: './editor-section.component.html',
     styleUrls: ['./editor-section.component.sass']
 })
-export class EditorSectionComponent implements OnInit {
+export class EditorSectionComponent implements OnInit , OnChanges{
 
     @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
 
@@ -30,6 +30,7 @@ export class EditorSectionComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
+        console.log("init");
         this.openedFiles = [
             { isChanged: false, innerFile: { id: '1', folder: 'Project', name: 'Main.cs', content: 'Hello World', updaterId: 0 } },
             { isChanged: false, innerFile: { id: '2', folder: 'Project', name: 'Startup.cs', content: 'Hello World', updaterId: 0 } },
@@ -42,9 +43,15 @@ export class EditorSectionComponent implements OnInit {
         this.activeItem = this.items[1];
 
     }
+    ngOnChanges(changes:  SimpleChanges){
+        console.log("changes");
+        console.log(changes);
+    }
 
     onChange(ev) {
-        this.getFileFromActiveItem(this.activeItem).isChanged = true;
+        const touchedFile = this.getFileFromActiveItem(this.activeItem);
+        touchedFile.isChanged = true;
+        touchedFile.innerFile.content = this.code;
     }
 
     public closeItem(event, index) {
@@ -60,6 +67,7 @@ export class EditorSectionComponent implements OnInit {
         event.preventDefault();
     }
     public onTabSelect(evt, index) {
+        this.activeItem = this.items[index];
         this.code = this.openedFiles[index].innerFile.content;
     }
 
