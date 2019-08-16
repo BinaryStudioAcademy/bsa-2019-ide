@@ -46,7 +46,7 @@ export class EditorSectionComponent implements OnInit {
 
     
 
-    onChange() {
+    onChange(ev) {
         const touchedFile = this.getFileFromActiveItem(this.activeItem);
         touchedFile.isChanged = true;
         touchedFile.innerFile.content = this.code;
@@ -64,7 +64,7 @@ export class EditorSectionComponent implements OnInit {
         this.activeItem = this.items[index];
         event.preventDefault();
     }
-    public onTabSelect(index) {
+    public onTabSelect(evt, index) {
         this.activeItem = this.items[index];
         this.code = this.openedFiles[index].innerFile.content;
     }
