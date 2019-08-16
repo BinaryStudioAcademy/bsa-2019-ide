@@ -70,10 +70,12 @@ export class FileBrowserSectionComponent implements OnInit {
             if (!parent.parent.children)
                 parent.parent.children = [];
             parent.parent.children.push(newNode);
+            parent.parent.children.sort(this.nodeCompare);
         } else {
             if (!parent.children)
                 parent.children = [];
             parent.children.push(newNode);
+            parent.children.sort(this.nodeCompare);
         }
     }
 
@@ -165,9 +167,6 @@ export class FileBrowserSectionComponent implements OnInit {
         this.deleteFiles(node);
         node.parent.children = node.parent.children.filter(n => node.key !== n.key);
         this.updateProjectStructure();
-        // parent.
-        console.log("delete");
-        console.log(node);
     }
 
     private deleteFiles(node : TreeNode){
@@ -218,5 +217,21 @@ export class FileBrowserSectionComponent implements OnInit {
         if (nodeSelected.type === TreeNodeType.file.toString()) {
             this.fileSelected.emit(nodeSelected.key);
         }
+    }
+
+    nodeCompare(a : TreeNode, b : TreeNode) : number {
+        if (+a.type < (+b.type)){
+            return -1;
+        } else if (+a.type === (+b.type)) {
+            if (a.label < b.label) {
+                return -1;
+            } else if (a.label > b.label) {
+                return 1;
+            }
+            else {
+                return 0;
+            }
+        }
+        return 1;
     }
 }
