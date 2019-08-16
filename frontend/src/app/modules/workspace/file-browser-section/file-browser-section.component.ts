@@ -157,9 +157,35 @@ export class FileBrowserSectionComponent implements OnInit {
         console.log("rename");
     }
 
-    private delete(node: TreeNode) {
-        //TODO add delete implementation
+    private delete(node: TreeNode){
+        if (!node.parent){
+            this.toast.error("Couldn't delete root directory", "Error Message", { tapToDismiss: true })
+            return;
+        }
+        this.deleteFiles(node);
+        node.parent.children = node.parent.children.filter(n => node.key !== n.key);
+        this.updateProjectStructure();
+        // parent.
         console.log("delete");
+        console.log(node);
+    }
+
+    private deleteFiles(node : TreeNode){
+        debugger;
+        if (node.type === TreeNodeType.file.toString()){
+            this.fileService.deleteFile(node.key).subscribe(
+                (response) => {    
+                },
+                (error) => {
+                    console.log(error);
+                }
+            );;
+        }
+        if (!node.children || node.children.length === 0)
+            return;
+        for (let child of node.children){
+            this.deleteFiles(child)
+        }
     }
 
     private expandAll(){
