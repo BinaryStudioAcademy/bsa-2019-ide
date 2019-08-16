@@ -4,14 +4,16 @@ using IDE.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IDE.DAL.Migrations
 {
     [DbContext(typeof(IdeContext))]
-    partial class IdeContextModelSnapshot : ModelSnapshot
+    [Migration("20190816100047_privateProjects")]
+    partial class privateProjects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

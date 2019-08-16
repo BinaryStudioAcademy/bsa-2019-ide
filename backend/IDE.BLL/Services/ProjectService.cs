@@ -50,6 +50,7 @@ namespace IDE.BLL.Services
             //Maybe it can be a bit easier
             var projects = await _context.Projects
                 .Include(x => x.Author)
+                .Where(x => !x.IsPrivate || (x.IsPrivate && x.AuthorId == userId))
                 .ToListAsync();
 
 
@@ -186,6 +187,7 @@ namespace IDE.BLL.Services
             return await _context.FavouriteProjects
                 .Include(x => x.Project)
                 .Include(x => x.Project.Author)
+                .Where(x => !x.Project.IsPrivate)
                 .GroupBy(x => x.Project.Language)
                 .Select(x =>
                     new LikedProjectInLanguageDTO()
@@ -200,7 +202,7 @@ namespace IDE.BLL.Services
                                     ProjectName = z.FirstOrDefault().Project.Name,
                                     AuthorNickName = z.FirstOrDefault().Project.Author.NickName,
                                     LikesCount = z.Count()
-                                }).OrderBy(i => i.LikesCount).Take(5).ToArray()
+                                }).OrderByDescending(i => i.LikesCount).Take(5).ToArray()
                     })
                     .OrderBy(x => x.ProjectType).ToListAsync();
         }

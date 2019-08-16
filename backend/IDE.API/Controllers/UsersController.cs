@@ -4,6 +4,9 @@ using IDE.BLL.Services;
 using IDE.Common.DTO.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections;
+using IDE.Common.ModelsDTO.DTO.User;
+using System.Collections.Generic;
 
 namespace IDE.API.Controllers
 {
@@ -37,5 +40,11 @@ namespace IDE.API.Controllers
         {
             return Ok(await _userService.GetUserById(id));
         }
+
+        [HttpGet("nickname/{nickPart}")]
+        public async Task<IEnumerable<UserNickname>> GetUsersNickByNicknamePart(string nickPart = null)
+        {
+            return await _userService.GetUserListByNickNameParts(nickPart);
+        } 
     }
 }

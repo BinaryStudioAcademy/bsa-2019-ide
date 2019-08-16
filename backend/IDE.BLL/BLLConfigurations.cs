@@ -25,6 +25,7 @@ namespace IDE.BLL
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IProjectStructureService, ProjectStructureService>();
+            services.AddScoped<IRightsService, RightsService>();
 
             services.AddScoped<FileService>();
             services.AddScoped<FileHistoryService>();

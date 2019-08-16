@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
 using IDE.Common.DTO.User;
+using IDE.Common.ModelsDTO.DTO.User;
 using IDE.Common.Security;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
@@ -40,6 +41,27 @@ namespace IDE.BLL.Services
             await _context.SaveChangesAsync();
 
             return userEntity;
+        }
+
+        public async Task<UserNickname[]> GetUserListByNickNameParts(string nickPart = null)
+        {
+            if(nickPart == null)
+            {
+                return await _context.Users.Select(u => new UserNickname()
+                {
+                    Id = u.Id,
+                    NickName = u.NickName
+                }).ToArrayAsync();
+            }
+            else
+            {
+                return await _context.Users
+                    .Where(u => u.NickName.Contains(nickPart)).Select(u => new UserNickname()
+                        {
+                            Id = u.Id,
+                            NickName = u.NickName
+                        }).ToArrayAsync();
+            }
         }
 
         public async Task<UserDetailsDTO> GetUserDetailsById(int id)

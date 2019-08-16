@@ -17,6 +17,7 @@ namespace IDE.DAL.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; }
+        public bool IsPrivate { get; set; }
         public string ProjectLink { get; set; }
         public int CountOfSaveBuilds { get; set; }
         public int CountOfBuildAttempts { get; set; }
