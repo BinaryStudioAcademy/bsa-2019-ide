@@ -43,11 +43,11 @@ namespace IDE.BLL.Services
             return userEntity;
         }
 
-        public async Task<UserNickname[]> GetUserListByNickNameParts(string nickPart = null)
+        public async Task<UserNicknameDTO[]> GetUserListByNickNameParts(string nickPart = null)
         {
             if(nickPart == null)
             {
-                return await _context.Users.Select(u => new UserNickname()
+                return await _context.Users.Select(u => new UserNicknameDTO()
                 {
                     Id = u.Id,
                     NickName = u.NickName
@@ -56,7 +56,7 @@ namespace IDE.BLL.Services
             else
             {
                 return await _context.Users
-                    .Where(u => u.NickName.Contains(nickPart)).Select(u => new UserNickname()
+                    .Where(u => u.NickName.Contains(nickPart)).Select(u => new UserNicknameDTO()
                         {
                             Id = u.Id,
                             NickName = u.NickName

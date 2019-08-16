@@ -19,6 +19,7 @@ import { KeyFilterModule } from 'primeng/keyfilter';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SharedModule } from '../shared/shared.module';
 import {TabViewModule} from 'primeng/tabview';
+import { CollaboratorsListComponent } from './components/collaborators-list/collaborators-list.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import {TabViewModule} from 'primeng/tabview';
     ProjectDetailsComponent,
     ProjectDetailsInfoComponent,
     ProjectDetailsUserStatisticsComponent,
-    CreateProjectComponent
+    CreateProjectComponent,
+    CollaboratorsListComponent
   ],
   imports: [
     CommonModule,

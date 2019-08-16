@@ -7,11 +7,12 @@ import { ProjectService } from 'src/app/services/project.service/project.service
 import { takeUntil } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 
 @Component({
-  selector: 'app-project-settings',
-  templateUrl: './project-settings.component.html',
-  styleUrls: ['./project-settings.component.sass']
+    selector: 'app-project-settings',
+    templateUrl: './project-settings.component.html',
+    styleUrls: ['./project-settings.component.sass']
 })
 export class ProjectSettingsComponent implements OnInit, OnDestroy {
   public projectId: number;
@@ -20,8 +21,9 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
   public isPageLoaded = false;
   public isDetailsSaved = true;
   public access: any;
+  public collaborators: CollaboratorDTO[];
 
-  private unsubscribe$ = new Subject<void>();
+    private unsubscribe$ = new Subject<void>();
 
   public projectForm = this.fb.group({
     name: ['', Validators.required],
@@ -31,37 +33,48 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     access: ['', Validators.required]
   });
 
-  constructor(
-      private fb: FormBuilder,
-      private route: ActivatedRoute,
-      private projectService: ProjectService,
-      private toastService: ToastrService,
-      private router: Router
-  ) { }
+    constructor(
+        private fb: FormBuilder,
+        private route: ActivatedRoute,
+        private projectService: ProjectService,
+        private toastService: ToastrService,
+        private router: Router
+        ) { }
 
-  ngOnInit() {
+    ngOnInit() {
         this.projectId = Number(this.route.snapshot.paramMap.get('id'));
         if (!this.projectId) {
             console.error('Id in URL is not a number!');
             return;
         }
         this.projectService.getProjectById(this.projectId)
-        .subscribe(
-            (resp) => {
-                this.SetProjectObjectsFromResponse(resp);
-                this.isPageLoaded = true;
-            },
-            (error) => {
-                this.isPageLoaded = true;
-                this.toastService.error('Can\'t load project details.', 'Error Message:');
-                console.error(error.message);
-            }
-        );
+            .subscribe(
+                (resp) => {
+                    this.SetProjectObjectsFromResponse(resp);
+                    this.isPageLoaded = true;
+                },
+                (error) => {
+                    this.isPageLoaded = true;
+                    this.toastService.error('Can\'t load project details.', 'Error Message:');
+                    console.error(error.message);
+                }
+            );
+            this.projectService.getProjectCollaborators(this.projectId)
+            .subscribe(
+                (resp) => {
+                    this.collaborators = resp.body;
+                    console.log(this.collaborators);
+                },
+                (error)=>{
+                    this.toastService.error("'Can\'t load project collaborators.', 'Error Message:'");
+                }
+            );
+        
         this.access = [
             { label: 'Public', value: 0 },
             { label: 'Private', value: 1 }
         ];
-  }
+    }
 
   projectItemIsNotChange(): boolean {
     return this.projectForm.get('name').value === this.projectStartState.name
@@ -71,36 +84,36 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
       && this.project.accessModifier === this.projectStartState.accessModifier;
   }
 
-  ngOnDestroy() {
-    takeUntil(this.unsubscribe$);
-  }
+    ngOnDestroy() {
+        takeUntil(this.unsubscribe$);
+    }
 
-  onSubmit() {
-    this.isDetailsSaved = false;
-    this.projectService.updateProject(this.project)
-      .subscribe(
-        (resp) => {
-          this.router.navigate([`project/${this.projectId}`]);
-          this.isDetailsSaved = true;
-          this.toastService.success('New details have successfully saved!');
-        },
-        (error) => {
-          this.isDetailsSaved = true;
-          this.toastService.error('Can\'t save new project details', 'Error Message');
-          console.error(error.message);
-        }
-      );
-  }
+    onSubmit() {
+        this.isDetailsSaved = false;
+        this.projectService.updateProject(this.project)
+            .subscribe(
+                (resp) => {
+                    this.router.navigate([`project/${this.projectId}`]);
+                    this.isDetailsSaved = true;
+                    this.toastService.success('New details have successfully saved!');
+                },
+                (error) => {
+                    this.isDetailsSaved = true;
+                    this.toastService.error('Can\'t save new project details', 'Error Message');
+                    console.error(error.message);
+                }
+            );
+    }
 
-  public getErrorMessage(field: string): string {
-    const control = this.projectForm.get(field);
-    const isMaxError: boolean = !!control.errors && !!control.errors.max;
-    return control.hasError('required')
-      ? 'Value is required!'
-      : (isMaxError)
-        ? `Quantity must be less than ${control.errors.max.max}!`
-        : 'validation error';
-  }
+    public getErrorMessage(field: string): string {
+        const control = this.projectForm.get(field);
+        const isMaxError: boolean = !!control.errors && !!control.errors.max;
+        return control.hasError('required')
+            ? 'Value is required!'
+            : (isMaxError)
+                ? `Quantity must be less than ${control.errors.max.max}!`
+                : 'validation error';
+    }
 
   private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectUpdateDTO>): void {
     this.project = resp.body;
