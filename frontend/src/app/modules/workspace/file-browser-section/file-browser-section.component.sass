@@ -2,15 +2,31 @@
 ::ng-deep .custom-tree .ui-tree
     width: 100%
     height: 100%
+    // overflow: hidden !important
+
 ::ng-deep body .ui-button.ui-state-default.ui-button-secondary:enabled:focus, body .ui-buttonset.ui-button-secondary > .ui-button.ui-state-default:enabled:focus
     box-shadow: none
-// ::ng-deep body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content.ui-treenode-selectable .ui-treenode-label:not(.ui-state-highlight):hover
-//     background-color: #fff
+
+::ng-deep body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content.ui-treenode-selectable .ui-treenode-label:not(.ui-state-highlight):hover
+    background-color: #fff
 ::ng-deep .ui-treenode-content.ui-treenode-selectable:focus
     outline: none
+    // overflow: hidden !important
+::ng-deep body .ui-tree
+    border: none
+
+::ng-deep body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content
+    overflow-x: hidden !important
+    overflow-y: auto
+    border: none
+
 ::ng-deep body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content .ui-treenode-icon.fa.fa-folder-open,
 ::ng-deep body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content .ui-treenode-icon.fa.fa-folder
     color: #EECA66
 .tree-wrapper
-    height: 100vh
-    overflow-y: auto
+    height: auto
+    // overflow-y: auto
+    // overflow: hidden !important
+
+.bottom-btns
+    margin-top: 8px
