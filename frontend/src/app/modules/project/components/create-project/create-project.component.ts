@@ -101,8 +101,9 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
                 ];
                 break;
             }
-      }
+        }
     }
+
     ngOnInit(): void { //Maybe choose initializing
         this.colors = [
             { label: 'Red', value: '#ff0000' },
@@ -130,12 +131,19 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
     }
 
     public getErrorMessage(field: string): string {
-      const control = this.projectForm.get(field);
-      const isMaxError: boolean = !!control.errors && !!control.errors.max;
-      return control.hasError('required')
-        ? 'Value is required!'
-        : (isMaxError)
-          ? `Quantity must be less than ${control.errors.max.max}!`
-          : 'validation error';
+        const control = this.projectForm.get(field);
+        const isMaxError: boolean = !!control.errors && !!control.errors.max;
+        const isMinLengthError: boolean = !!control.errors && !!control.errors.minlength;
+        const isMaxLengthError: boolean = !!control.errors && !!control.errors.maxlength;
+
+        return control.hasError('required')
+                ? 'Value is required!'
+            : (isMaxError)
+                ? `Quantity must be less than ${control.errors.max.max}!`
+            : (isMinLengthError)
+                ? `The length must be at least ${control.errors.minlength.requiredLength} letters!`
+            : (isMaxLengthError)
+                ? `The length should be no more than ${control.errors.maxlength.requiredLength} letters!`
+                    : 'validation error';
     }
 }
