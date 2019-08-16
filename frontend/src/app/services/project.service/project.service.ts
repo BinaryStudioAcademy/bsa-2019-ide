@@ -7,7 +7,7 @@ import { HttpResponse } from '@angular/common/http';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { SearchProjectDTO } from 'src/app/models/DTO/Project/searchProjectDTO';
-import { UserNicknameDTO } from 'src/app/models/DTO/User/userNicknameDTO';
+import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 
 @Injectable({
     providedIn: 'root'
@@ -22,7 +22,7 @@ export class ProjectService {
         return this.httpClient.postRequest(this.address, project);
     }
 
-    public getProjectCollaborators(projectId: number): Observable<HttpResponse<UserNicknameDTO[]>>
+    public getProjectCollaborators(projectId: number): Observable<HttpResponse<CollaboratorDTO[]>>
     {
         return this.httpClient.getRequest(this.address+'/collaborators/'+projectId);
     }

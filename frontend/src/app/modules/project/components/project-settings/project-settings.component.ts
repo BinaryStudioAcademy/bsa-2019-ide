@@ -8,7 +8,7 @@ import { takeUntil } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { TokenService } from 'src/app/services/token.service/token.service';
-import { UserNicknameDTO } from 'src/app/models/DTO/User/userNicknameDTO';
+import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 
 @Component({
     selector: 'app-project-settings',
@@ -21,7 +21,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     public projectStartState = {} as ProjectUpdateDTO;
     public isPageLoaded = false;
     public isDetailsSaved = true;
-    public collaborators: UserNicknameDTO[];
+    public collaborators: CollaboratorDTO[];
 
     private unsubscribe$ = new Subject<void>();
 

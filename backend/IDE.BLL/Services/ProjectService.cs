@@ -72,14 +72,15 @@ namespace IDE.BLL.Services
             return MapAndGetLastBuildFinishedDate(collection, userId);
         }
 
-        public async Task<ICollection<UserNicknameDTO>> GetProjectCollaborators(int projectId, int authorId)
+        public async Task<ICollection<CollaboratorDTO>> GetProjectCollaborators(int projectId, int authorId)
         {
             var colaborators = await _context.ProjectMembers
                 .Where(a => a.ProjectId == projectId && a.UserId != authorId)
-                .Select(a => new UserNicknameDTO
+                .Select(a => new CollaboratorDTO
                 {
                     Id=a.UserId,
-                    NickName=a.User.NickName
+                    NickName=a.User.NickName,
+                    Access=a.UserAccess
                 }).ToListAsync();
 
             return colaborators;

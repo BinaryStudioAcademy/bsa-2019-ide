@@ -75,7 +75,7 @@ namespace IDE.API.Controllers
         }
 
         [HttpGet("collaborators/{projectId}")]
-        public async Task<ActionResult<IEnumerable<UserNicknameDTO>>> GetListOdProjectCollaborators(int projectId)
+        public async Task<ActionResult<IEnumerable<CollaboratorDTO>>> GetListOdProjectCollaborators(int projectId)
         {
             return Ok(await _projectService.GetProjectCollaborators(projectId, this.GetUserIdFromToken()));
         }

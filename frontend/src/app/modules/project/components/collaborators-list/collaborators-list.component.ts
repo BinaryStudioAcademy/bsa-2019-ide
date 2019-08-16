@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { UserNicknameDTO } from 'src/app/models/DTO/User/userNicknameDTO';
+import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 
 @Component({
   selector: 'app-collaborators-list',
@@ -8,7 +8,7 @@ import { UserNicknameDTO } from 'src/app/models/DTO/User/userNicknameDTO';
 })
 export class CollaboratorsListComponent implements OnInit {
 
-  @Input() collaborators: UserNicknameDTO[];
+  @Input() collaborators: CollaboratorDTO[];
   constructor() { }
 
   ngOnInit() {
