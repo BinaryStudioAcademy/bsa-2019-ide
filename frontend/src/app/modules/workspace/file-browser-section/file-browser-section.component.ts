@@ -162,6 +162,27 @@ export class FileBrowserSectionComponent implements OnInit {
         console.log("delete");
     }
 
+    private expandAll(){
+        this.files.forEach( node => {
+            this.expandRecursive(node, true);
+        } );
+    }
+
+    private collapseAll(){
+        this.files.forEach( node => {
+            this.expandRecursive(node, false);
+        } );
+    }
+
+    private expandRecursive(node:TreeNode, isExpand:boolean){
+        node.expanded = isExpand;
+        if(node.children){
+            node.children.forEach( childNode => {
+                this.expandRecursive(childNode, isExpand);
+            } );
+        }
+    }
+
     unselectFile() {
         this.selectedItem = null;
     }
