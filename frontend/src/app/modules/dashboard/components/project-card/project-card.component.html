@@ -11,9 +11,11 @@
                 <i class="pi pi-ellipsis-v menu-ellipsis"
                 (contextmenu)="openCm($event, menu)" (click)="openCm($event, menu)" (keyup.enter)="openCm($event, menu)"></i>
             </div>
-            <h2>
-                {{project.title}}
-            </h2>
+            <div class="title-ellipsis">
+              <h2>
+                  {{project.title}}
+              </h2>
+            </div>
         </div>
     </p-header>
     <div>
