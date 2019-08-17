@@ -26,7 +26,7 @@ namespace IDE.BLL.Services
         {
             var userEntity = _mapper.Map<User>(userDto);
             var user = await _context.Users.Where(a => a.Email == userEntity.Email).FirstOrDefaultAsync();
-            if(user!=null)
+            if (user != null)
             {
                 throw new ExistedUserLoginException();
             }
@@ -43,25 +43,15 @@ namespace IDE.BLL.Services
             return userEntity;
         }
 
-        public async Task<UserNicknameDTO[]> GetUserListByNickNameParts(string nickPart = null)
+        public async Task<UserNicknameDTO[]> GetUserListByNickNameParts()
         {
-            if(nickPart == null)
+
+            return await _context.Users.Select(u => new UserNicknameDTO()
             {
-                return await _context.Users.Select(u => new UserNicknameDTO()
-                {
-                    Id = u.Id,
-                    NickName = u.NickName
-                }).ToArrayAsync();
-            }
-            else
-            {
-                return await _context.Users
-                    .Where(u => u.NickName.Contains(nickPart)).Select(u => new UserNicknameDTO()
-                        {
-                            Id = u.Id,
-                            NickName = u.NickName
-                        }).ToArrayAsync();
-            }
+                Id = u.Id,
+                NickName = u.NickName
+            }).ToArrayAsync();
+
         }
 
         public async Task<UserDetailsDTO> GetUserDetailsById(int id)

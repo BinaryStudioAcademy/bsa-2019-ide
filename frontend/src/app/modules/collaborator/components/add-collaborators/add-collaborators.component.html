@@ -1,1 +1,3 @@
-<p>add-collaborators works!</p>
+<p-autoComplete class="auto-complete" [(ngModel)]="collaborator" [suggestions]="filterCollaborators"
+    (completeMethod)="filterCollarator($event)" field="nickName" [size]="30" placeholder="User nickname..." [minLength]="1"
+    (onSelect)="checkCollaborator(collaborator)"></p-autoComplete>

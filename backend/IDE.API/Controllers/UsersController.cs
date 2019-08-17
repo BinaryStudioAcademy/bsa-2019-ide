@@ -41,10 +41,10 @@ namespace IDE.API.Controllers
             return Ok(await _userService.GetUserById(id));
         }
 
-        [HttpGet("nickname/{nickPart}")]
-        public async Task<IEnumerable<UserNicknameDTO>> GetUsersNickByNicknamePart(string nickPart = null)
+        [HttpGet("nickname")]
+        public async Task<IEnumerable<UserNicknameDTO>> GetUsersNickByNickname()
         {
-            return await _userService.GetUserListByNickNameParts(nickPart);
+            return await _userService.GetUserListByNickNameParts();
         } 
     }
 }
