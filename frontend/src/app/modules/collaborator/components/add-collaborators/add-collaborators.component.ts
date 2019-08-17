@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserNicknameDTO } from '../../../../models/DTO/User/userNicknameDTO';
 import { UserService } from 'src/app/services/user.service/user.service';
+import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
+import { ProjectService } from 'src/app/services/project.service/project.service';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-add-collaborators',
@@ -12,11 +15,22 @@ export class AddCollaboratorsComponent implements OnInit {
 
     public collaborator: UserNicknameDTO;
     filterCollaborators: UserNicknameDTO[];
+    newCollaborators: CollaboratorDTO[];
 
   constructor(private route: ActivatedRoute,
-    private userService: UserService) { }
+    private userService: UserService,
+    private projectService: ProjectService,
+    public config: DynamicDialogConfig,
+    public ref: DynamicDialogRef,) { }
 
   ngOnInit() {
+      this.projectService.getProjectCollaborators(11).subscribe(projectCollaborators=>
+        this.newCollaborators=projectCollaborators.body);
+  }
+
+  public close(): void
+  {
+    this.ref.close();
   }
 
   public filterCollarator(event): void {

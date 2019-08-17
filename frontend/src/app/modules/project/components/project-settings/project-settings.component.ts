@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 import { RightsService } from 'src/app/services/rights.service/rights.service'
 import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
 
 @Component({
     selector: 'app-project-settings',
@@ -42,7 +43,9 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         private projectService: ProjectService,
         private toastService: ToastrService,
         private router: Router,
-        private rightService: RightsService
+        private rightService: RightsService,
+        public ref: DynamicDialogRef,
+        public config: DynamicDialogConfig
     ) { }
 
     ngOnInit() {
@@ -80,7 +83,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         ];
     }
 
-    projectItemIsNotChange(): boolean {
+    public projectItemIsNotChange(): boolean {
         return this.IsProjectNotChange()
             && this.IsCollaboratorChange();
     }

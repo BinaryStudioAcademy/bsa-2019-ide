@@ -16,6 +16,8 @@ import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
 import { MenuItem } from 'primeng/api';
 import { catchError } from 'rxjs/internal/operators/catchError';
+import { ProjectService } from 'src/app/services/project.service/project.service';
+import { CollaborateService } from 'src/app/services/collaborator.service/collaborate.service';
 
 
 
@@ -38,7 +40,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private tr: ToastrService,
         private ws: WorkspaceService,
         private saveOnExit: LeavePageDialogService,
-        private fileService: FileService) { }
+        private fileService: FileService,
+        private collaborateService: CollaborateService) { }
 
     ngOnInit() {
         this.routeSub = this.route.params.subscribe(params => {
@@ -72,12 +75,17 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             );
     }
 
+    public openModalWindow(): void
+    {
+        this.collaborateService.openDialogWindow(this.projectId);
+    }
+
     public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
         const openedFiles = this.editor.openedFiles.map(x => x.innerFile);
         return this.saveFilesRequest(openedFiles);
     }
 
-    public onSaveButtonClick(ev) {
+    public onSaveButtonClick(event) {
         if (!this.editor.anyFileChanged()) {
             return;
         }

@@ -21,6 +21,7 @@ import { SharedModule } from '../shared/shared.module';
 import {TabViewModule} from 'primeng/tabview';
 import { CollaboratorsListComponent } from './components/collaborators-list/collaborators-list.component';
 import { FormsModule } from '@angular/forms';
+import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,11 @@ import { FormsModule } from '@angular/forms';
     SharedModule,
     ProgressSpinnerModule,
     TabViewModule,
-    SharedModule
+    SharedModule,
+    DynamicDialogModule
+  ],
+  exports:[
+    CollaboratorsListComponent
   ]
 })
 export class ProjectModule { }

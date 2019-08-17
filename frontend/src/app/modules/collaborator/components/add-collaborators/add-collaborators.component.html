@@ -1,3 +1,6 @@
-<p-autoComplete class="auto-complete" [(ngModel)]="collaborator" [suggestions]="filterCollaborators"
-    (completeMethod)="filterCollarator($event)" field="nickName" [size]="30" placeholder="User nickname..." [minLength]="1"
-    (onSelect)="checkCollaborator(collaborator)"></p-autoComplete>
+<span class="modal-close-btn" (click)="close()">&times;</span>
+<h2 class="title">Search and add new collaborators:</h2>
+<p-autoComplete class="collaborator-auto-complete" [(ngModel)]="collaborator" [suggestions]="filterCollaborators"
+    (completeMethod)="filterCollarator($event)" field="nickName" [size]="30" placeholder="User nickname..."
+    [minLength]="1" (onSelect)="checkCollaborator(collaborator)"></p-autoComplete>
+<app-collaborators-list [collaborators]="newCollaborators"></app-collaborators-list>
