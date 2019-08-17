@@ -71,7 +71,7 @@
     </div>
     -->
     <div *ngIf="IsAuthor()" class="ui-g ui-fluid">
-      <div class="ui-g-12">
+      <div class="ui-g-12 project-details-bnts">
           <button  pButton icon="pi pi-pencil" routerLink="/project/{{project.id}}/settings" label="Edit"></button>
           <app-confirmation-dialog buttonName="Delete" [header]="getRemovingHeader()" message="Do you want to delete this project?" (IsConfirmed)="remove($event)"></app-confirmation-dialog>
       </div>
