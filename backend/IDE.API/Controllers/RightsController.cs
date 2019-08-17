@@ -1,6 +1,7 @@
 ﻿using IDE.API.Extensions;
 using IDE.BLL.Interfaces;
 using IDE.Common.Enums;
+using IDE.Common.ModelsDTO.DTO.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
-    [Authorize]
+    //[Authorize]
     [ApiController]
     public class RightsController : ControllerBase
     {
@@ -20,10 +21,10 @@ namespace IDE.API.Controllers
             _rightsService = rightsService;
         }
 
-        [HttpPut("{projectId}/{access}")]
-        public async Task<IActionResult> SetRights(int projectId, UserAccess access)
+        [HttpPut]
+        public async Task<IActionResult> SetRights([FromBody] UpdateUserRightDTO update)
         {
-            await _rightsService.SetRightsToProject(projectId, access, this.GetUserIdFromToken());
+            await _rightsService.SetRightsToProject(update);
             return Ok();
         }
 

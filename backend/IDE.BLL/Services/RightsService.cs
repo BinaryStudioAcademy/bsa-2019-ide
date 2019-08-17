@@ -2,6 +2,7 @@
 using IDE.BLL.Interfaces;
 using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Common;
+using IDE.Common.ModelsDTO.DTO.User;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using System;
@@ -41,25 +42,25 @@ namespace IDE.BLL.Services
             }
         }
 
-        public async Task SetRightsToProject(int projectId, UserAccess access, int userId)
+        public async Task SetRightsToProject(UpdateUserRightDTO update)
         {
-            var project = _context.Projects.FirstOrDefault(p => p.Id == projectId);
-            if (project.AuthorId == userId)
+            var project = _context.Projects.FirstOrDefault(p => p.Id == update.ProjectId);
+            if (project.AuthorId == update.UserId)
                 throw new RightsChangeForProjectAuthorException();
 
-            var projectMember = _context.ProjectMembers.FirstOrDefault(pm => pm.UserId == userId && pm.ProjectId == projectId);
+            var projectMember = _context.ProjectMembers.FirstOrDefault(pm => pm.UserId == update.UserId && pm.ProjectId == update.ProjectId);
             if (projectMember == null)
             {
                 _context.Add(new ProjectMember()
                 {
-                    ProjectId = projectId,
-                    UserId = userId,
-                    UserAccess = access
+                    ProjectId = update.ProjectId,
+                    UserId = update.UserId,
+                    UserAccess = update.Access
                 });
             }
             else
             {
-                projectMember.UserAccess = access;
+                projectMember.UserAccess = update.Access;
                 _context.Update(projectMember);
             }
             await _context.SaveChangesAsync();

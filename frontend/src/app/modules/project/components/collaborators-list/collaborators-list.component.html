@@ -2,7 +2,7 @@
     <div *ngFor="let collaborator of collaborators">
         <div class="collaborator-item">
             <div>{{collaborator.nickName}}</div>
-            <p-dropdown [options]="userAccess" [(ngModel)]="collaborator.access"></p-dropdown>
+            <p-dropdown [options]="userAccess" [(ngModel)]="collaborator.access" (onChange)="change()"></p-dropdown>
         </div>
     </div>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input,EventEmitter,Output } from '@angular/core';
 import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { SelectItem } from 'primeng/api';
@@ -15,14 +15,20 @@ export class CollaboratorsListComponent implements OnInit {
     label: string;
 
     @Input() collaborators: CollaboratorDTO[];
+    @Output() onChanged = new EventEmitter<CollaboratorDTO[]>();
+
     constructor() { }
+
+    public change() {
+        this.onChanged.emit(this.collaborators);
+    }
 
     ngOnInit() {
         this.userAccess = [
             { label: 'Can read', value: 0 },
             { label: 'Can write', value: 1 },
             { label: 'Can build', value: 2 },
-            { label: 'Can write', value: 3 },
+            { label: 'Can run', value: 3 },
         ];
     }
 
