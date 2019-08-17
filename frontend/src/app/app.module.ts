@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 
 import { AuthorizationModule } from './modules/authorization/authorization.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import {CollaboratorModule} from './modules/collaborator/collaborator.module';
 import { LandingModule } from './modules/landing/landing.module';
 import { ProjectModule } from './modules/project/project.module';
 import { UserModule } from './modules/user/user.module';
@@ -38,6 +39,7 @@ import { FormsModule } from '@angular/forms';
         NavMenuComponent
     ],
     imports: [
+        CollaboratorModule,
         AutoCompleteModule,
         FormsModule,
         SplitButtonModule,

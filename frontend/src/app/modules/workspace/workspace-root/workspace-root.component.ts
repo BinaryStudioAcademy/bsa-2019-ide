@@ -2,12 +2,12 @@ import { LeavePageDialogService } from './../../../services/leave-page-dialog.se
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
 
@@ -25,8 +25,10 @@ import { catchError } from 'rxjs/internal/operators/catchError';
     templateUrl: './workspace-root.component.html',
     styleUrls: ['./workspace-root.component.sass']
 })
-export class WorkspaceRootComponent implements OnInit {
+export class WorkspaceRootComponent implements OnInit, OnDestroy {
+
     public projectId: number;
+    private routeSub: Subscription;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
@@ -39,7 +41,9 @@ export class WorkspaceRootComponent implements OnInit {
         private fileService: FileService) { }
 
     ngOnInit() {
-
+        this.routeSub = this.route.params.subscribe(params => {
+            this.projectId=params['id'];
+          });
     }
 
     public onFileSelected(fileId: string): void {
@@ -108,12 +112,16 @@ export class WorkspaceRootComponent implements OnInit {
         return this.ws.saveFilesRequest(files);
     }
 
-    canDeactivate(): Observable<boolean> {
+    public canDeactivate(): Observable<boolean> {
         return !this.editor.anyFileChanged() ? of(true) : this.saveOnExit.confirm('Save changes?')
             .pipe(
                 switchMap(
                     mustSave => mustSave ? this.saveFiles().pipe(map(result => result.every(x => x.ok) ? true : false)) : of(false)));
     }
+
+    ngOnDestroy() {
+        this.routeSub.unsubscribe();
+      }
 
 
     // *********code below for resizing blocks***************

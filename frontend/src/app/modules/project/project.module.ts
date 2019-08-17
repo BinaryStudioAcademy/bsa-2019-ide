@@ -30,7 +30,7 @@ import { FormsModule } from '@angular/forms';
     ProjectDetailsInfoComponent,
     ProjectDetailsUserStatisticsComponent,
     CreateProjectComponent,
-    CollaboratorsListComponent
+    CollaboratorsListComponent,
   ],
   imports: [
     FormsModule,
