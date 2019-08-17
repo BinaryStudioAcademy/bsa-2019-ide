@@ -20,6 +20,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
   public projectStartState = {} as ProjectUpdateDTO;
   public isPageLoaded = false;
   public isDetailsSaved = true;
+  public colors;
 
   private unsubscribe$ = new Subject<void>();
 
@@ -27,7 +28,8 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     name: ['', Validators.required],
     description: ['', Validators.required],
     countOfSaveBuilds: ['', [Validators.required, Validators.max(10)]],
-    countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]]
+    countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
+    color: ['', Validators.required]
   });
 
   constructor(
@@ -58,13 +60,27 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
                 console.error(error.message);
             }
         );
+
+        this.colors = [
+            { label: 'Red', value: '#ff0000' },
+            { label: 'Black', value: '#000000' },
+            { label: 'Blue', value: '#0080ff' },
+            { label: 'Blueviolet', value: '#bf00ff'},
+            { label: 'Aqua', value: '#00ffff' },
+            { label: 'Dark Magenta', value: '#8b008b' },
+            { label: 'Dark Orange', value: '#ff8c00' },
+            { label: 'Gold', value: '#ffd700' },
+            { label: 'Green', value: '#008000' },
+            { label: 'Light Slate Grey', value: '#778899' },
+        ]
   }
 
   projectItemIsNotChange(): boolean {
     return this.projectForm.get('name').value === this.projectStartState.name
       && this.projectForm.get('description').value === this.projectStartState.description
       && Number(this.projectForm.get('countOfSaveBuilds').value) === this.projectStartState.countOfSaveBuilds
-      && Number(this.projectForm.get('countOfBuildAttempts').value) === this.projectStartState.countOfBuildAttempts;
+      && Number(this.projectForm.get('countOfBuildAttempts').value) === this.projectStartState.countOfBuildAttempts
+      && this.projectForm.get('color').value === this.projectStartState.color;
   }
 
   ngOnDestroy() {
@@ -104,6 +120,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     this.projectStartState.description = this.project.description;
     this.projectStartState.countOfSaveBuilds = this.project.countOfSaveBuilds;
     this.projectStartState.countOfBuildAttempts = this.project.countOfBuildAttempts;
+    this.projectStartState.color = this.project.color;
   }
 
 }
