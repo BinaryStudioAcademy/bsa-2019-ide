@@ -24,7 +24,7 @@ namespace IDE.API.Controllers
         [HttpPut]
         public async Task<IActionResult> SetRights([FromBody] UpdateUserRightDTO update)
         {
-            await _rightsService.SetRightsToProject(update);
+            await _rightsService.SetRightsToProject(update, this.GetUserIdFromToken());
             return Ok();
         }
 
