@@ -1,14 +1,15 @@
-import { Component, OnInit, Input,EventEmitter,Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { SelectItem } from 'primeng/api';
+import { AddCollaboratorsComponent } from '../add-collaborators/add-collaborators.component';
 
 @Component({
-    selector: 'app-collaborators-list',
-    templateUrl: './collaborators-list.component.html',
-    styleUrls: ['./collaborators-list.component.sass']
+    selector: 'app-add-collaborators-list',
+    templateUrl: './add-collaborators-list.component.html',
+    styleUrls: ['./add-collaborators-list.component.sass']
 })
-export class CollaboratorsListComponent implements OnInit {
+export class AddCollaboratorsListComponent implements OnInit {
 
     selectedAccess: UserAccess
     userAccess: SelectItem[];
@@ -17,12 +18,9 @@ export class CollaboratorsListComponent implements OnInit {
     @Input() collaborators: CollaboratorDTO[];
     @Output() onChanged = new EventEmitter<CollaboratorDTO[]>();
 
-    constructor() { 
-    }
-
-    public change() {
-        this.onChanged.emit(this.collaborators);
-    }
+    constructor(
+        private addCollaboratorsComponent: AddCollaboratorsComponent
+    ) { }
 
     ngOnInit() {
         this.userAccess = [
@@ -34,6 +32,11 @@ export class CollaboratorsListComponent implements OnInit {
     }
 
     public delete(collaboratorId: number): void {
+        this.addCollaboratorsComponent.delete(collaboratorId);
+    }
+
+    public change() {
+        this.onChanged.emit(this.collaborators);
     }
 
     public getUserAccess(user: CollaboratorDTO): SelectItem {
@@ -51,7 +54,7 @@ export class CollaboratorsListComponent implements OnInit {
                 this.label = "Can run"
                 break;
         }
-        return { label:this.label,value:user.access};
+        return { label: this.label, value: user.access };
     }
 
 }

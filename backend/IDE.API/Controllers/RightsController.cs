@@ -1,6 +1,7 @@
 ﻿using IDE.API.Extensions;
 using IDE.BLL.Interfaces;
 using IDE.Common.Enums;
+using IDE.Common.ModelsDTO.DTO.Common;
 using IDE.Common.ModelsDTO.DTO.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
-    //[Authorize]
+    [Authorize]
     [ApiController]
     public class RightsController : ControllerBase
     {
@@ -25,6 +26,13 @@ namespace IDE.API.Controllers
         public async Task<IActionResult> SetRights([FromBody] UpdateUserRightDTO update)
         {
             await _rightsService.SetRightsToProject(update, this.GetUserIdFromToken());
+            return Ok();
+        }
+
+        [HttpDelete("{userId}/{projectId}")]
+        public async Task<IActionResult> DeleteRights(int userId, int projectId)
+        {
+            await _rightsService.DeleteRights(userId, projectId);
             return Ok();
         }
 

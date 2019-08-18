@@ -5,6 +5,7 @@ using IDE.Common.ModelsDTO.DTO.Common;
 using IDE.Common.ModelsDTO.DTO.User;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,13 @@ namespace IDE.BLL.Services
             {
                 return new ProjectRightsDTO() { Access = projectMember.UserAccess };
             }
+        }
+
+        public async Task DeleteRights(int userId,int projectId)
+        {
+            var collaborator = await _context.ProjectMembers.Where(item=> item.UserId== userId && item.ProjectId== projectId).FirstOrDefaultAsync();
+            _context.ProjectMembers.Remove(collaborator);
+            await _context.SaveChangesAsync();
         }
 
         public async Task SetRightsToProject(UpdateUserRightDTO update, int userId)

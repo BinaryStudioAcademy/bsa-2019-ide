@@ -2,5 +2,12 @@
 <h2 class="title">Search and add new collaborators:</h2>
 <p-autoComplete class="collaborator-auto-complete" [(ngModel)]="collaborator" [suggestions]="filterCollaborators"
     (completeMethod)="filterCollarator($event)" field="nickName" [size]="30" placeholder="User nickname..."
-    [minLength]="1" (onSelect)="checkCollaborator(collaborator)"></p-autoComplete>
-<app-collaborators-list [collaborators]="newCollaborators"></app-collaborators-list>
+    [minLength]="1" (onSelect)="addCollaborator(collaborator)"></p-autoComplete>
+
+<app-add-collaborators-list [collaborators]="newCollaborators"></app-add-collaborators-list>
+
+<button *ngIf="isCollaboratorsSaved" type="submit" pButton class="save-btn" [disabled]="IsNotCollaboratorsChange()"
+    label="Save" (click)="save()"></button>
+<div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!isCollaboratorsSaved">
+    <p-progressSpinner></p-progressSpinner>
+</div>

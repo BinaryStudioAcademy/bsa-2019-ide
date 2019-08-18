@@ -10,7 +10,6 @@ import { ToastrService } from 'ngx-toastr';
 import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 import { RightsService } from 'src/app/services/rights.service/rights.service'
 import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
-import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
 
 @Component({
     selector: 'app-project-settings',
@@ -44,8 +43,6 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         private toastService: ToastrService,
         private router: Router,
         private rightService: RightsService,
-        public ref: DynamicDialogRef,
-        public config: DynamicDialogConfig
     ) { }
 
     ngOnInit() {
@@ -67,7 +64,6 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         this.projectService.getProjectCollaborators(this.projectId)
             .subscribe(
                 (resp) => {
-                    console.log("ckebhcdbc");
                     this.SetCollaboratorsFromResponse(resp);
                     this.isPageLoaded = true;
                 },
@@ -115,7 +111,6 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
 
     onSubmit() {
         this.isDetailsSaved = false;
-        console.log(this.IsCollaboratorChange());
         if (!this.IsCollaboratorChange()) {
             for (let i in this.collaborators) {
                 if (this.collaborators[i].access !== this.startCollaborators[i].access) {
