@@ -20,7 +20,7 @@
               <div class="ui-g ui-fluid">
                   <div class="ui-g-12">
                       <div class="ui-inputgroup">
-                          <input type="text" pInputText formControlName="name" placeholder="name" [(ngModel)]=project.name>
+                          <input pInputText pKeyFilter="alphanum" type="text" formControlName="name" placeholder="name" [(ngModel)]=project.name>
                       </div>
                   </div>
               </div>
@@ -73,8 +73,8 @@
               <div class="ui-g ui-fluid">
                   <div class="ui-g-12">
                       <button type="button" routerLink="/project/{{project.id}}" pButton class="ui-button-secondary" label="Back to details"></button>
-                      <button *ngIf="isDetailsSaved" type="submit" [disabled]="!projectForm.valid || projectItemIsNotChange()" pButton label="Save"></button>
-                      <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!isDetailsSaved">
+                      <button *ngIf="hasDetailsSaveResponse" type="submit" [disabled]="!projectForm.valid || projectItemIsNotChange()" pButton label="Save"></button>
+                      <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
                           <p-progressSpinner></p-progressSpinner>
                       </div>
                   </div>

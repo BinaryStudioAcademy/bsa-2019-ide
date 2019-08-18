@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { ProjectDescriptionDTO } from '../../../../models/DTO/Project/projectDescriptionDTO';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { Router } from '@angular/router';
@@ -8,7 +8,8 @@ import { MenuItem } from 'primeng/api';
 @Component({
     selector: 'app-project-card',
     templateUrl: './project-card.component.html',
-    styleUrls: ['./project-card.component.sass']
+    styleUrls: ['./project-card.component.sass'],
+    encapsulation: ViewEncapsulation.None
 })
 export class ProjectCardComponent implements OnInit {
     @Input() project: ProjectDescriptionDTO;
