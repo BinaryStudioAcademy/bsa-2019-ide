@@ -23,7 +23,7 @@ export class AddCollaboratorsComponent implements OnInit {
     public filterCollaborators: UserNicknameDTO[];
     public newCollaborators: CollaboratorDTO[] = [];
     public isCollaboratorsSaved: boolean = true;
-    public projectId: number = 11;
+    public projectId: number;
     public deleteCollaborators: CollaboratorDTO[] = [];
 
     private startCollaborators = [] as CollaboratorDTO[];
@@ -38,15 +38,13 @@ export class AddCollaboratorsComponent implements OnInit {
         private toastService: ToastrService) { }
 
     public ngOnInit(): void {
+        this.projectId=this.config.data.id;
         this.projectService.getProjectCollaborators(this.projectId)
             .subscribe(
                 (resp) => {
-
                     this.SetCollaboratorsFromResponse(resp);
-                    //this.isPageLoaded = true;
                 },
                 (error) => {
-                    //this.isPageLoaded = true;
                     this.toastService.error("'Can\'t load project collaborators.', 'Error Message:'");
                 }
             );
@@ -91,7 +89,6 @@ export class AddCollaboratorsComponent implements OnInit {
             this.rightService.setUsersRigths(update)
                 .subscribe(
                     (resp) => {
-                        this.router.navigate([`workspace/${this.projectId}`]);
                         this.isCollaboratorsSaved = true;
                         this.ref.close();
                         this.toastService.success('New collacortors access have successfully saved!');
@@ -134,7 +131,6 @@ export class AddCollaboratorsComponent implements OnInit {
     }
 
     private SetCollaboratorsFromResponse(resp: HttpResponse<CollaboratorDTO[]>): void {
-        console.log(resp.body);
         this.newCollaborators = resp.body;
         this.newCollaborators.forEach(element => {
             let newElement: CollaboratorDTO =

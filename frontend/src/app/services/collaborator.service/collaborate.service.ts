@@ -12,9 +12,10 @@ export class CollaborateService {
 
   public openDialogWindow(projectId: number)
     {
-        console.log("modal");
         const dialog = this.dialogService.open(AddCollaboratorsComponent, {
-            data: {projectId},
+            data: {
+                id: projectId
+            },
             width: '40%',
             contentStyle: {
               'border-radius' : '5px',

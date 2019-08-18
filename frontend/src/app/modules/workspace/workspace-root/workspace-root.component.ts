@@ -18,6 +18,8 @@ import { MenuItem } from 'primeng/api';
 import { catchError } from 'rxjs/internal/operators/catchError';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { CollaborateService } from 'src/app/services/collaborator.service/collaborate.service';
+import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 
 
@@ -31,6 +33,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     public projectId: number;
     private routeSub: Subscription;
+    private project: ProjectInfoDTO;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
@@ -41,12 +44,30 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private ws: WorkspaceService,
         private saveOnExit: LeavePageDialogService,
         private fileService: FileService,
-        private collaborateService: CollaborateService) { }
+        private collaborateService: CollaborateService,
+        private projectService: ProjectService,
+        private tokenService: TokenService) { }
 
     ngOnInit() {
         this.routeSub = this.route.params.subscribe(params => {
-            this.projectId=params['id'];
-          });
+            this.projectId = params['id'];
+        });
+        this.projectService.getProjectById(this.projectId)
+        .subscribe(
+            (resp) => {
+                this.project = resp.body;
+            },
+            (error) => {
+                this.tr.error("Can't load selected project.", 'Error Message');
+            }
+        );
+    }
+
+    public isAuthor(): boolean {
+        if (this.project.authorId == this.tokenService.getUserId()) {
+            return true;
+        }
+        return false;
     }
 
     public onFileSelected(fileId: string): void {
@@ -75,8 +96,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             );
     }
 
-    public openModalWindow(): void
-    {
+    public openModalWindow(): void {
+        console.log(this.projectId);
         this.collaborateService.openDialogWindow(this.projectId);
     }
 
@@ -129,7 +150,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.routeSub.unsubscribe();
-      }
+    }
 
 
     // *********code below for resizing blocks***************
