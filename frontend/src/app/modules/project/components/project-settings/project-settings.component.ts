@@ -10,6 +10,8 @@ import { ToastrService } from 'ngx-toastr';
 import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 import { RightsService } from 'src/app/services/rights.service/rights.service'
 import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
+import { DeleteCollaboratorRightDTO } from 'src/app/models/DTO/Common/deleteCollaboratorRightDTO';
+import { UserNicknameDTO } from 'src/app/models/DTO/User/userNicknameDTO';
 
 @Component({
     selector: 'app-project-settings',
@@ -24,6 +26,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     public isDetailsSaved = true;
     public access: any;
     public collaborators: CollaboratorDTO[];
+    public deleteCollaborators: CollaboratorDTO[] = [];
 
     private unsubscribe$ = new Subject<void>();
     private startCollaborators = [] as CollaboratorDTO[];
@@ -79,6 +82,15 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         ];
     }
 
+    public delete(collaboratorId: number): void {
+        const deleteCollaborator = this.collaborators.find(item => item.id == collaboratorId);
+        this.deleteCollaborators.push(deleteCollaborator);
+        const index: number = this.collaborators.indexOf(deleteCollaborator);
+        if (index !== -1) {
+            this.collaborators.splice(index, 1);
+        }
+    }
+
     public projectItemIsNotChange(): boolean {
         return this.IsProjectNotChange()
             && this.IsCollaboratorChange();
@@ -97,6 +109,10 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     }
 
     public IsCollaboratorChange(): boolean {
+        if(this.deleteCollaborators.length!=0)
+        {
+            return false;
+        }
         for (let i in this.collaborators) {
             if (this.collaborators[i].access !== this.startCollaborators[i].access) {
                 return false;
@@ -109,9 +125,36 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         takeUntil(this.unsubscribe$);
     }
 
+    private IsSelected(collaborator: UserNicknameDTO): boolean {
+        let result: boolean = false;
+        this.collaborators.forEach(element => {
+            if (element.id === collaborator.id) {
+                result = true;
+            }
+        });
+        return result;
+    }
+
     onSubmit() {
         this.isDetailsSaved = false;
         if (!this.IsCollaboratorChange()) {
+            this.deleteCollaborators.forEach(item => {
+                const deleteItem: DeleteCollaboratorRightDTO =
+                {
+                    id: item.id,
+                    access: item.access,
+                    nickName: item.nickName,
+                    projectId: this.projectId
+                }
+                if (!this.IsSelected(deleteItem)) {
+                    this.rightService.deleteCollaborator(deleteItem)
+                        .subscribe(
+                            (error) => {
+                                this.toastService.error('Can\'t delete collacortors access', 'Error Message');
+                            }
+                        );
+                }
+            });
             for (let i in this.collaborators) {
                 if (this.collaborators[i].access !== this.startCollaborators[i].access) {
                     const update: UpdateUserRightDTO=

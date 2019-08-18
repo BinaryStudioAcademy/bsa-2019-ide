@@ -71,16 +71,15 @@ export class AddCollaboratorsComponent implements OnInit {
                 nickName: item.nickName,
                 projectId: this.projectId
             }
-            console.log(deleteItem);
-            this.rightService.deleteCollaborator(deleteItem)
-                .subscribe(
-                    (resp) => {
-                        this.router.navigate([`workspace/${this.projectId}`]);
-                    },
-                    (error) => {
-                        this.toastService.error('Can\'t delete collacortors access', 'Error Message');
-                    }
-                );
+            if (!this.IsSelected(deleteItem)) {
+                this.rightService.deleteCollaborator(deleteItem)
+                    .subscribe(
+                        (resp)=>{},
+                        (error) => {
+                            this.toastService.error('Can\'t delete collacortors access', 'Error Message');
+                        }
+                    );
+            }
         });
         for (let i in this.newCollaborators) {
             const update: UpdateUserRightDTO =
@@ -94,6 +93,7 @@ export class AddCollaboratorsComponent implements OnInit {
                     (resp) => {
                         this.router.navigate([`workspace/${this.projectId}`]);
                         this.isCollaboratorsSaved = true;
+                        this.ref.close();
                         this.toastService.success('New collacortors access have successfully saved!');
                     },
                     (error) => {
@@ -164,10 +164,10 @@ export class AddCollaboratorsComponent implements OnInit {
     }
 
     private IsSelected(collaborator: UserNicknameDTO): boolean {
-        let result: boolean=false;
+        let result: boolean = false;
         this.newCollaborators.forEach(element => {
             if (element.id === collaborator.id) {
-                result=true;
+                result = true;
             }
         });
         return result;

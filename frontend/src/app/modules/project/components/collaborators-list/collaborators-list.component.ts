@@ -2,6 +2,7 @@ import { Component, OnInit, Input,EventEmitter,Output } from '@angular/core';
 import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { SelectItem } from 'primeng/api';
+import { ProjectSettingsComponent } from '../project-settings/project-settings.component';
 
 @Component({
     selector: 'app-collaborators-list',
@@ -17,7 +18,7 @@ export class CollaboratorsListComponent implements OnInit {
     @Input() collaborators: CollaboratorDTO[];
     @Output() onChanged = new EventEmitter<CollaboratorDTO[]>();
 
-    constructor() { 
+    constructor(private projectSettingComponent: ProjectSettingsComponent) { 
     }
 
     public change() {
@@ -34,6 +35,7 @@ export class CollaboratorsListComponent implements OnInit {
     }
 
     public delete(collaboratorId: number): void {
+        this.projectSettingComponent.delete(collaboratorId);
     }
 
     public getUserAccess(user: CollaboratorDTO): SelectItem {
