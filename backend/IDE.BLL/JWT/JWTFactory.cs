@@ -39,7 +39,7 @@ namespace IDE.BLL.JWT
 
                  new Claim(JwtRegisteredClaimNames.Email, user.Email),
                  new Claim("id", user.Id.ToString()),
-                 new Claim("nickName", user.NickName),
+                 new Claim(ClaimTypes.Name, user.NickName),
                  new Claim("firstName", user.FirstName),
                  new Claim("lastName", user.LastName),
                  new Claim("photoUrl", user.Avatar != null ? user.Avatar.Url : "")
