@@ -16,6 +16,7 @@ import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
 import { MenuItem } from 'primeng/api';
 import { catchError } from 'rxjs/internal/operators/catchError';
+import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 
 
 
@@ -39,7 +40,7 @@ export class WorkspaceRootComponent implements OnInit {
         private fileService: FileService) { }
 
     ngOnInit() {
-
+        this.projectId = +this.route.snapshot.paramMap.get('id');
     }
 
     public onFileSelected(fileId: string): void {
@@ -53,10 +54,12 @@ export class WorkspaceRootComponent implements OnInit {
             .subscribe(
                 (resp) => {
                     if (resp.ok) {
-                        this.editor.AddFileToOpened(resp.body as FileUpdateDTO);
-                        this.editor.items.push({ label: resp.body.name, icon: 'fa fa-fw fa-file', id: resp.body.id });
+                        const { id, name, content, folder, updaterId } = resp.body as FileDTO;
+                        const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, updaterId };
+                        this.editor.AddFileToOpened(fileUpdateDTO);
+                        this.editor.items.push({ label: name, icon: 'fa fa-fw fa-file', id: id });
                         this.editor.activeItem = this.editor.items[this.editor.items.length - 1];
-                        this.editor.code = resp.body.content;
+                        this.editor.code = content;
                     } else {
                         this.tr.error("Can't load selected file.", 'Error Message');
                     }

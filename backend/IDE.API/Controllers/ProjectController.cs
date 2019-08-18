@@ -8,12 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using IDE.Common.ModelsDTO.DTO.Project;
+using System.IO;
+using System;
 
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
     //[AllowAnonymous]
-    [Authorize]
+    //[Authorize]
     [ApiController]
     public class ProjectController : ControllerBase
     {
@@ -103,6 +105,24 @@ namespace IDE.API.Controllers
         {
             await _projectMemberSettings.SetFavouriteProject(projectId, this.GetUserIdFromToken());
             return NoContent();
+        }
+
+        [HttpGet("Download/{id}")]
+        public async  Task<ActionResult> DownloadProject(int id)
+        {
+            var tempDir = Path.Combine(Directory.GetCurrentDirectory(), "Temp");
+            if (Directory.Exists(tempDir))
+            {
+                Directory.Delete(tempDir,true);
+            }
+            var path = Path.Combine(tempDir,Guid.NewGuid().ToString());
+
+            bool result = await _projectService.MakeProjectZipFile(id, path);
+            if (!result) return BadRequest(); 
+            var returnFile = new PhysicalFileResult(Path.Combine(path,"project.zip"), "application/zip");
+            returnFile.FileDownloadName = "project.zip";
+            return returnFile;
+            
         }
     }
 }
