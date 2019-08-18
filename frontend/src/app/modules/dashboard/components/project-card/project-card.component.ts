@@ -3,7 +3,6 @@ import { ProjectDescriptionDTO } from '../../../../models/DTO/Project/projectDes
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { Router } from '@angular/router';
 import { TokenService } from 'src/app/services/token.service/token.service';
-import { ToastrService } from 'ngx-toastr';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -20,7 +19,6 @@ export class ProjectCardComponent implements OnInit {
 
     constructor(
         private projectService: ProjectService,
-        private toastrService: ToastrService,
         private tokenService: TokenService,
         private router: Router) { }
 
@@ -43,14 +41,12 @@ export class ProjectCardComponent implements OnInit {
                 break;
             }
             case 'settings': {
-                if (this.currentUserId !== this.project.creatorId) {
-                    this.toastrService.warning('Only author can open project settings');
-                    return;
-                }
                 this.router.navigate([`/project/${this.project.id}/settings`]);
+                break;
+                }
             }
         }
-    }
+    
 
     lastTimeBuild(): string {
         const daysCount = this.getDaysCountFromCurrentDate(this.project.lastBuild);
@@ -76,10 +72,17 @@ export class ProjectCardComponent implements OnInit {
     }
 
     prepCm() {
-        this.contextMenu = [
-            {label: 'Details', icon: 'pi pi-info-circle', command: (event) => this.GoToPage('details') },
-            {label: 'Settings', icon: 'pi pi-cog', command: (event) => this.GoToPage('settings')}
-        ];
+        if(this.currentUserId!=this.project.creatorId){
+            this.contextMenu = [
+                {label: 'Details', icon: 'pi pi-info-circle', command: (event) => this.GoToPage('details') }
+            ];
+        }
+        else{
+            this.contextMenu = [
+                {label: 'Details', icon: 'pi pi-info-circle', command: (event) => this.GoToPage('details') },
+                {label: 'Settings', icon: 'pi pi-cog', command: (event) => this.GoToPage('settings')}
+            ];
+        }
     }
 
     openCm(event, menu) {
