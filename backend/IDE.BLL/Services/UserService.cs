@@ -43,10 +43,12 @@ namespace IDE.BLL.Services
             return userEntity;
         }
 
-        public async Task<UserNicknameDTO[]> GetUserListByNickNameParts()
+        public async Task<UserNicknameDTO[]> GetUserListByNickNameParts(int currentUser)
         {
 
-            return await _context.Users.Select(u => new UserNicknameDTO()
+            return await _context.Users
+                .Where(item=>item.Id!=currentUser)
+                .Select(u => new UserNicknameDTO()
             {
                 Id = u.Id,
                 NickName = u.NickName

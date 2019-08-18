@@ -32,7 +32,7 @@ namespace IDE.API.Controllers
         [HttpDelete("{userId}/{projectId}")]
         public async Task<IActionResult> DeleteRights(int userId, int projectId)
         {
-            await _rightsService.DeleteRights(userId, projectId);
+            await _rightsService.DeleteRights(userId, projectId, this.GetUserIdFromToken());
             return Ok();
         }
 

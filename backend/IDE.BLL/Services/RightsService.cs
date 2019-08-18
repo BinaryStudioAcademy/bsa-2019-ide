@@ -43,11 +43,20 @@ namespace IDE.BLL.Services
             }
         }
 
-        public async Task DeleteRights(int userId,int projectId)
+        public async Task DeleteRights(int userId,int projectId, int currentUserId)
         {
-            var collaborator = await _context.ProjectMembers.Where(item=> item.UserId== userId && item.ProjectId== projectId).FirstOrDefaultAsync();
-            _context.ProjectMembers.Remove(collaborator);
-            await _context.SaveChangesAsync();
+            var project = await _context.Projects.Where(item => item.Id == projectId).FirstOrDefaultAsync();
+
+            if (project.AuthorId==currentUserId)
+            {
+                var collaborator = await _context.ProjectMembers.Where(item => item.UserId == userId && item.ProjectId == projectId).FirstOrDefaultAsync();
+                _context.ProjectMembers.Remove(collaborator);
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new NonAuthorRightsChange();
+            }
         }
 
         public async Task SetRightsToProject(UpdateUserRightDTO update, int userId)

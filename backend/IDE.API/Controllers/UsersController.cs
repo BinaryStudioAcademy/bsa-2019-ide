@@ -44,7 +44,7 @@ namespace IDE.API.Controllers
         [HttpGet("nickname")]
         public async Task<IEnumerable<UserNicknameDTO>> GetUsersNickByNickname()
         {
-            return await _userService.GetUserListByNickNameParts();
+            return await _userService.GetUserListByNickNameParts(this.GetUserIdFromToken());
         } 
     }
 }

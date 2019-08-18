@@ -10,6 +10,7 @@ import { RightsService } from 'src/app/services/rights.service/rights.service'
 import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DeleteCollaboratorRightDTO } from 'src/app/models/DTO/Common/deleteCollaboratorRightDTO';
+import { BlockUIModule } from 'primeng/primeng';
 
 @Component({
     selector: 'app-add-collaborators',
@@ -159,8 +160,17 @@ export class AddCollaboratorsComponent implements OnInit {
 
     public checkCollaborator(collaborator: UserNicknameDTO): void {
         this.collaborator = null;
-        console.log(collaborator);
-        //this.router.navigate([`/project/${project.id}`]);
+        this.router.navigate([`/workspace/${this.projectId}`]);
+    }
+
+    private IsSelected(collaborator: UserNicknameDTO): boolean {
+        let result: boolean=false;
+        this.newCollaborators.forEach(element => {
+            if (element.id === collaborator.id) {
+                result=true;
+            }
+        });
+        return result;
     }
 
     public filter(query, collaborators: UserNicknameDTO[]): UserNicknameDTO[] {
@@ -168,7 +178,10 @@ export class AddCollaboratorsComponent implements OnInit {
         for (let i = 0; i < collaborators.length; i++) {
             const collaborator = collaborators[i];
             if (collaborator.nickName.toLowerCase().indexOf(query.toLowerCase()) !== -1) {
-                filtered.push(collaborator);
+                console.log(this.IsSelected(collaborator));
+                if (!this.IsSelected(collaborator)) {
+                    filtered.push(collaborator);
+                }
             }
         }
         if (filtered.length === 0) {
