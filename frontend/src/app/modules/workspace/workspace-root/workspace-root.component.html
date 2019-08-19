@@ -6,8 +6,6 @@
             label="Build"></button>
         <button pButton type="button" (click)="onSaveButtonClick($event)" icon="pi pi-save" iconPos="left"
             class="ui-button-secondary" label="Save"></button>
-        <button pButton routerLink="/project/{{projectId}}" type="button" icon="pi pi-info" iconPos="left"
-            class="ui-button-primary" label="Project details"></button>
     </div>
 
 </div>
@@ -19,11 +17,14 @@
             routerLink="/project/{{projectId}}/settings"></button>
         <button pButton type="button" icon="pi pi-search" iconPos="left" class="ui-button-secondary"
             (click)="showSerachField()"></button>
+        <button pButton type="button" icon="pi pi-info" iconPos="left" class="ui-button-secondary"
+            routerLink="/project/{{projectId}}"></button>
     </div>
     <div class="p-col">
         <div class="inner-wrapper p-grid p-nogutter ">
             <div *ngIf="showFileBrowser" class="file-browser-content p-col-12 p-md-3 p-align-stretch">
-                <app-file-browser-section (fileSelected)="onFileSelected($event)" [show]="showSerachFiels"></app-file-browser-section>
+                <app-file-browser-section (fileSelected)="onFileSelected($event)" [show]="showSerachFiels">
+                </app-file-browser-section>
             </div>
             <div class="editor-content p-col-12 p-md-9 p-align-stretch " [ngClass]="{large:!showFileBrowser}">
                 <app-editor-section (filesSaveEvent)="onFilesSave($event)"></app-editor-section>

@@ -18,7 +18,7 @@ import { FileStructureDTO } from 'src/app/models/DTO/Workspace/fileStructureDTO'
 export class FileBrowserSectionComponent implements OnInit {
 
     @Output() fileSelected = new EventEmitter<string>();
-    @Input() show:boolean;
+    @Input() show: boolean;
     items: MenuItem[];
     public files: TreeNode[];
     public selectedItem: TreeNode;
