@@ -8,7 +8,8 @@
 
 </div>
 <div class="wks-wrapper p-grid p-nogutter">
-  <div  class="left-panel p-col-fixed" style="width:2rem;" class="resize-rect ">
+  <div  class="left-panel p-col-fixed">
+    <button pButton type="button" icon="pi pi-clone" iconPos="left" class="ui-button-secondary" (click)="hideFileBrowser()"></button>
     <button pButton type="button" icon="pi pi-file" iconPos="left" class="ui-button-secondary" disabled></button>
     <button pButton routerLink="/project/{{projectId}}" title="Project details" type="button" icon="pi pi-info" iconPos="left" class="ui-button-secondary"></button>
     <button pButton type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary" routerLink="/project/{{projectId}}/settings"></button>
@@ -20,11 +21,11 @@
 </div>
   <div class="p-col">
     <div class="inner-wrapper p-grid p-nogutter ">
-      <div class="file-browser-content p-col-12 p-md-3 p-align-stretch">
+      <div *ngIf="showFileBrowser" class="file-browser-content p-col-12 p-md-3 p-align-stretch" >
         <app-file-browser-section #fileBrowser (fileSelected) = "onFileSelected($event)"></app-file-browser-section>
       </div>
-      <div class="editor-content p-col-12 p-md-9 p-align-stretch ">
-    <app-editor-section  (filesSaveEvent)= "onFilesSave($event)" ></app-editor-section>
+      <div class="editor-content p-col-12 p-md-9 p-align-stretch " [ngClass]="{large:!showFileBrowser}">
+        <app-editor-section (filesSaveEvent)= "onFilesSave($event)" ></app-editor-section>
       </div>
     </div>
   </div>

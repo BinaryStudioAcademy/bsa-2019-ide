@@ -16,9 +16,6 @@ import { FileService } from 'src/app/services/file.service/file.service';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
 
-
-
-
 @Component({
     selector: 'app-workspace-root',
     templateUrl: './workspace-root.component.html',
@@ -27,6 +24,9 @@ import { FileBrowserSectionComponent } from '../file-browser-section/file-browse
 export class WorkspaceRootComponent implements OnInit {
     public projectId: number;
     public userId: number;
+    public showFileBrowser:boolean=true;
+    public showSerachFiels:boolean=false;
+    public large: boolean=false;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
@@ -95,6 +95,16 @@ export class WorkspaceRootComponent implements OnInit {
 
             },
             error => this.tr.error("Can't save files", 'Error', { tapToDismiss: true }));
+    }
+
+    public hideFileBrowser()
+    {
+        this.showFileBrowser=!this.showFileBrowser;
+    }
+
+    public showSerachField()
+    {
+        this.showSerachFiels=!this.showSerachField;
     }
 
     public onFilesSave(files: FileUpdateDTO[]) {
