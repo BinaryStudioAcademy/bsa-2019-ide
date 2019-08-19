@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 })
 export class DashboardRootComponent implements OnInit {
     items: string[][];
-    isActive: Array<boolean>;
+    isActive: number;
 
     constructor(  private router: Router) { }
 
@@ -19,14 +19,11 @@ export class DashboardRootComponent implements OnInit {
         ['Assigned projects', '/dashboard/assignedProjects'],
         ['Favourite projects', '/dashboard/favouriteProjects']
         ];
-        const route = this.router.url;
-        this.isActive = [];
-        this.isActive[this.items.findIndex(x => x[1] === route)] = true;
+        this.isActive = this.items.findIndex(x => x[1] === this.router.url);
     }
 
     redirect(i: number) {
-        this.isActive = [];
-        this.isActive[i] = true;
+        this.isActive = i;
         this.router.navigate([this.items[i][1]]);
     }
 }
