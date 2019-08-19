@@ -19,12 +19,12 @@ import { ɵBrowserPlatformLocation } from '@angular/platform-browser';
 export class FileBrowserSectionComponent implements OnInit {
 
     @Output() fileSelected = new EventEmitter<string>();
-    @Input() show: boolean;
+    @Input() public show: boolean;
     items: MenuItem[];
     public files: TreeNode[];
     public selectedItem: TreeNode;
     public projectId: number;
-    public expand: boolean=false;
+    public expand=false;
 
     private fileCounter: number = 0;
     private folderCounter: number = 0;
