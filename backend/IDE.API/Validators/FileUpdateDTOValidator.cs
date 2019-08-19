@@ -8,8 +8,7 @@ namespace IDE.API.Validators
         public FileUpdateDTOValidator()
         {
             RuleFor(f => f.Id)
-                .NotEmpty().WithMessage("Id is mandatory.")
-                .Length(24).WithMessage("Id length should have 24 characters.");
+                .NotEmpty().WithMessage("Id is mandatory.");
 
             RuleFor(f => f.Name)
                 .NotEmpty().WithMessage("Name is mandatory.")

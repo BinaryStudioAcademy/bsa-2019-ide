@@ -38,6 +38,14 @@ export class EditorSectionComponent implements OnInit {
         this.items = [
             // { label: this.openedFiles[0].innerFile.name, icon: 'fa fa-fw fa-file', id: '1' },
             // { label: this.openedFiles[1].innerFile.name, icon: 'fa fa-fw fa-file', id: '2' },
+//=======
+//            { isChanged: false, innerFile: { id: '5d5576e350e2ac1a54d9dcfe', folder: 'Project', name: 'Main.cs', content: 'Hello World', updaterId: 0 } },
+//            { isChanged: false, innerFile: { id: '5d5576e850e2ac1a54d9dd00', folder: 'Project', name: 'Startup.cs', content: 'Hello World', updaterId: 0 } },
+//        ];
+//        this.items = [
+//            { label: this.openedFiles[0].innerFile.name, icon: 'fa fa-fw fa-file', id: '5d5576e350e2ac1a54d9dcfe' },
+//            { label: this.openedFiles[1].innerFile.name, icon: 'fa fa-fw fa-file', id: '5d5576e850e2ac1a54d9dd00' },
+//>>>>>>> development
 
         ];
         // this.activeItem = this.items[1];
