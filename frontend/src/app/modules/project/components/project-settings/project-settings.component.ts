@@ -12,6 +12,7 @@ import { RightsService } from 'src/app/services/rights.service/rights.service'
 import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
 import { DeleteCollaboratorRightDTO } from 'src/app/models/DTO/Common/deleteCollaboratorRightDTO';
 import { UserNicknameDTO } from 'src/app/models/DTO/User/userNicknameDTO';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
     selector: 'app-project-settings',
@@ -23,10 +24,11 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     public project: ProjectUpdateDTO;
     public projectStartState = {} as ProjectUpdateDTO;
     public isPageLoaded = false;
-    public isDetailsSaved = true;
+    public hasDetailsSaveResponse = true;
     public access: any;
     public collaborators: CollaboratorDTO[];
     public deleteCollaborators: CollaboratorDTO[] = [];
+    public colors;
 
     private unsubscribe$ = new Subject<void>();
     private startCollaborators = [] as CollaboratorDTO[];
@@ -37,7 +39,8 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         description: ['', Validators.required],
         countOfSaveBuilds: ['', [Validators.required, Validators.max(10)]],
         countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
-        access: ['', Validators.required]
+        access: ['', Validators.required],
+        color: ['', Validators.required]
     });
 
     constructor(
@@ -47,11 +50,13 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         private toastService: ToastrService,
         private router: Router,
         private rightService: RightsService,
+        private tokenService: TokenService
     ) { }
 
     ngOnInit() {
         this.area="projectSettings";
         this.projectId = Number(this.route.snapshot.paramMap.get('id'));
+        const userId: number = this.tokenService.getUserId();
         if (!this.projectId) {
             console.error('Id in URL is not a number!');
             return;
@@ -82,6 +87,42 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
             { label: 'Public', value: 0 },
             { label: 'Private', value: 1 }
         ];
+
+        this.colors = [
+            { label: 'Red', value: '#ff0000' },
+            { label: 'Black', value: '#000000' },
+            { label: 'Blue', value: '#0080ff' },
+            { label: 'Blueviolet', value: '#bf00ff'},
+            { label: 'Aqua', value: '#00ffff' },
+            { label: 'Dark Magenta', value: '#8b008b' },
+            { label: 'Dark Orange', value: '#ff8c00' },
+            { label: 'Gold', value: '#ffd700' },
+            { label: 'Green', value: '#008000' },
+            { label: 'Light Slate Grey', value: '#778899' },
+        ]
+    }
+
+    public getErrorMessage(field: string): string {
+        const control = this.projectForm.get(field);    
+
+        let errorMessage: string;        
+        if (control.hasError('required')) {
+            errorMessage = 'Value is required!';
+        }
+        else if(control.hasError('max')) {
+            errorMessage = `Quantity must be less than ${control.errors.max.max}!`;
+        }
+        else if (control.hasError('minlength')) {
+            errorMessage = `The length must be at least ${control.errors.minlength.requiredLength} letters!`;
+        }
+        else if (control.hasError('maxlength')) {
+            errorMessage = `The length should be no more than ${control.errors.maxlength.requiredLength} letters!`;
+        }
+        else {
+            errorMessage = 'validation error';
+        }
+
+        return errorMessage;
     }
 
     public delete(collaboratorId: number): void {
@@ -107,7 +148,8 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
             && this.projectForm.get('description').value === this.projectStartState.description
             && Number(this.projectForm.get('countOfSaveBuilds').value) === this.projectStartState.countOfSaveBuilds
             && Number(this.projectForm.get('countOfBuildAttempts').value) === this.projectStartState.countOfBuildAttempts
-            && this.project.accessModifier === this.projectStartState.accessModifier;
+            && this.project.accessModifier === this.projectStartState.accessModifier
+            && this.projectForm.get('color').value === this.projectStartState.color;
     }
 
     public IsCollaboratorChange(): boolean {
@@ -138,7 +180,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     }
 
     onSubmit() {
-        this.isDetailsSaved = false;
+        this.hasDetailsSaveResponse = false;
         if (!this.IsCollaboratorChange()) {
             this.deleteCollaborators.forEach(item => {
                 const deleteItem: DeleteCollaboratorRightDTO =
@@ -186,28 +228,17 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
             .subscribe(
                 (resp) => {
                     this.router.navigate([`project/${this.projectId}`]);
-                    this.isDetailsSaved = true;
+                    this.hasDetailsSaveResponse = true;
                     this.toastService.success('New details have successfully saved!');
                 },
                 (error) => {
-                    this.isDetailsSaved = true;
+                    this.hasDetailsSaveResponse = true;
                     this.toastService.error('Can\'t save new project details', 'Error Message');
                     console.error(error.message);
                 }
             );
         }
     }
-
-    public getErrorMessage(field: string): string {
-        const control = this.projectForm.get(field);
-        const isMaxError: boolean = !!control.errors && !!control.errors.max;
-        return control.hasError('required')
-            ? 'Value is required!'
-            : (isMaxError)
-                ? `Quantity must be less than ${control.errors.max.max}!`
-                : 'validation error';
-    }
-
     private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectUpdateDTO>): void {
         this.project = resp.body;
         this.projectStartState.name = this.project.name;
@@ -215,6 +246,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
         this.projectStartState.countOfSaveBuilds = this.project.countOfSaveBuilds;
         this.projectStartState.countOfBuildAttempts = this.project.countOfBuildAttempts;
         this.projectStartState.accessModifier = this.project.accessModifier;
+        this.projectStartState.color = this.project.color;
     }
 
     private SetCollaboratorsFromResponse(resp: HttpResponse<CollaboratorDTO[]>): void {
