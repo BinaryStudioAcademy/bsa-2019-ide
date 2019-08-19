@@ -96,13 +96,16 @@ export class WorkspaceRootComponent implements OnInit {
             error => this.tr.error("Can't save files", 'Error', { tapToDismiss: true }));
     }
 
-    public onFilesSave(ev: FileUpdateDTO[]) {
-        this.saveFilesRequest(ev)
+    public onFilesSave(files: FileUpdateDTO[]) {
+        files.forEach(file => {
+            file.updaterId = this.userId;
+        });
+        this.saveFilesRequest(files)
             .subscribe(
                 success => {
                     if (success.every(x => x.ok)) {
                         this.tr.success("Files saved", 'Success', { tapToDismiss: true });
-                        this.editor.confirmSaving(ev.map(x => x.id));
+                        this.editor.confirmSaving(files.map(x => x.id));
                     } else {
                         this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
