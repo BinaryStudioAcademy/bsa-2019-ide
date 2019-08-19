@@ -7,6 +7,5 @@
         public string Name { get; set; }
         public string Content { get; set; }
         public string Folder { get; set; }
-        public int UpdaterId { get; set; }
     }
 }

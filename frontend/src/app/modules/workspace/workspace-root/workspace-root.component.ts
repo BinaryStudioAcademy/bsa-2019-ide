@@ -16,6 +16,7 @@ import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
 import { MenuItem } from 'primeng/api';
 import { catchError } from 'rxjs/internal/operators/catchError';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 
 
@@ -27,6 +28,7 @@ import { catchError } from 'rxjs/internal/operators/catchError';
 })
 export class WorkspaceRootComponent implements OnInit {
     public projectId: number;
+    public userId: number;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
@@ -36,10 +38,12 @@ export class WorkspaceRootComponent implements OnInit {
         private tr: ToastrService,
         private ws: WorkspaceService,
         private saveOnExit: LeavePageDialogService,
+        private tokenService: TokenService,
         private fileService: FileService) { }
 
     ngOnInit() {
-
+        this.projectId = Number(this.route.snapshot.paramMap.get('id'));
+        this.userId = this.tokenService.getUserId();
     }
 
     public onFileSelected(fileId: string): void {
@@ -69,7 +73,10 @@ export class WorkspaceRootComponent implements OnInit {
     }
 
     public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
-        const openedFiles = this.editor.openedFiles.map(x => x.innerFile);
+        const openedFiles: FileUpdateDTO[] = this.editor.openedFiles.map(x => x.innerFile);
+        openedFiles.forEach(file => {
+            // file.updaterId = 0;
+        });
         return this.saveFilesRequest(openedFiles);
     }
 
@@ -89,13 +96,16 @@ export class WorkspaceRootComponent implements OnInit {
             error => this.tr.error("Can't save files", 'Error', { tapToDismiss: true }));
     }
 
-    public onFilesSave(ev: FileUpdateDTO[]) {
-        this.saveFilesRequest(ev)
+    public onFilesSave(files: FileUpdateDTO[]) {
+        files.forEach(file => {
+            //file.updaterId = 0;
+        });
+        this.saveFilesRequest(files)
             .subscribe(
                 success => {
                     if (success.every(x => x.ok)) {
                         this.tr.success("Files saved", 'Success', { tapToDismiss: true });
-                        this.editor.confirmSaving(ev.map(x => x.id));
+                        this.editor.confirmSaving(files.map(x => x.id));
                     } else {
                         this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
