@@ -222,7 +222,7 @@ namespace IDE.BLL.Services
             //ICollection<FileDTO> filesForProject = await _fileService.GetAllForProjectAsync(projectId);
             await Task.Delay(10);
             List<FakeFile> ffls = new List<FakeFile>{
-                new FakeFile { Id = "0", Folder="Project", Name="Main.cs", Content=@"using System;
+                new FakeFile { Id = "0", Folder="Project", Name="Main1.cs", Content=@"using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -354,7 +354,7 @@ using Microsoft.AspNetCore.HttpsPolicy;"},
 
 
                 }
-                ZipFile.CreateFromDirectory(Path.Combine(path,"ProjectFolder"), Path.Combine(path, "project.zip"));
+                ZipFile.CreateFromDirectory(Path.Combine(path,"ProjectFolder"), Path.Combine(path, $"project_{projectId}.zip"));
                 var dirToDelete = Path.Combine(path, "ProjectFolder");
                 Directory.Delete(dirToDelete, true);
             }

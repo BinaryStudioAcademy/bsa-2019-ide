@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using IDE.Common.ModelsDTO.DTO.Project;
 using System.IO;
 using System;
+using IDE.DAL.Interfaces;
 
 namespace IDE.API.Controllers
 {
@@ -23,16 +24,19 @@ namespace IDE.API.Controllers
         private readonly IProjectMemberSettingsService _projectMemberSettings;
         private readonly IProjectStructureService _projectStructureService;
         private readonly FileService _fileService;
+        private readonly IBlobRepository _blobRepo;
 
         public ProjectController(IProjectService projectService,
                                 IProjectMemberSettingsService projectMemberSettings,
                                 IProjectStructureService projectStructureService,
-                                FileService fileService)
+                                FileService fileService,
+                                IBlobRepository blobRepo)
         {
             _projectStructureService = projectStructureService;
             _projectService = projectService;
             _projectMemberSettings = projectMemberSettings;
             _fileService = fileService;
+            _blobRepo = blobRepo;
         }
 
         [HttpGet("{projectId}")]
@@ -108,21 +112,46 @@ namespace IDE.API.Controllers
         }
 
         [HttpGet("Download/{id}")]
-        public async  Task<ActionResult> DownloadProject(int id)
+        public async Task<ActionResult> DownloadProject(int id)
         {
             var tempDir = Path.Combine(Directory.GetCurrentDirectory(), "Temp");
-            if (Directory.Exists(tempDir))
-            {
-                Directory.Delete(tempDir,true);
-            }
-            var path = Path.Combine(tempDir,Guid.NewGuid().ToString());
+            
+            var path = Path.Combine(tempDir, Guid.NewGuid().ToString());
 
             bool result = await _projectService.MakeProjectZipFile(id, path);
-            if (!result) return BadRequest(); 
-            var returnFile = new PhysicalFileResult(Path.Combine(path,"project.zip"), "application/zip");
-            returnFile.FileDownloadName = "project.zip";
-            return returnFile;
-            
+            if (!result) return BadRequest();
+            Uri uri;
+            try
+            {
+                uri = await _blobRepo.UploadFileFromPathOnServer(Path.Combine(path, $"project_{id}.zip"));
+            }
+            catch (FileNotFoundException)
+            {
+
+                return NotFound();
+            }
+
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
+            }
+
+            try
+            {
+
+                Stream memStream = await _blobRepo.DownloadFileAsync(uri.ToString(), "DownloadProjectZipContainer");
+
+                return File(memStream, "application/zip", "project.zip");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+
+
+            //var returnFile = new PhysicalFileResult(Path.Combine(path,"project.zip"), "application/zip");
+            //returnFile.FileDownloadName = "project.zip";
+
         }
     }
 }

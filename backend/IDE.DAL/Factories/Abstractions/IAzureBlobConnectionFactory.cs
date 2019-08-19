@@ -6,5 +6,7 @@ namespace IDE.DAL.Factories.Abstractions
     public interface IAzureBlobConnectionFactory
     {
         Task<CloudBlobContainer> GetArchiveArtifactsBlobContainer();
+        Task<CloudBlobContainer> GetDownloadedProjectZipsBlobContainer();
+        Task<CloudBlobContainer> GetBlobContainer(string containerNameKey);
     }
 }
