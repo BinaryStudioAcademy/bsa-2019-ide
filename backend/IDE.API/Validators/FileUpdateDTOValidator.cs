@@ -20,9 +20,6 @@ namespace IDE.API.Validators
 
             RuleFor(f => f.Content)
                 .NotEmpty().WithMessage("Content is mandatory.");
-
-            RuleFor(f => f.UpdaterId)
-                .NotEmpty().WithMessage("UpdaterId is mandatory.");
         }
     }
 }

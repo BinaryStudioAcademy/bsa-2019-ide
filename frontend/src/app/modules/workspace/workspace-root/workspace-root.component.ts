@@ -75,7 +75,7 @@ export class WorkspaceRootComponent implements OnInit {
     public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
         const openedFiles: FileUpdateDTO[] = this.editor.openedFiles.map(x => x.innerFile);
         openedFiles.forEach(file => {
-            file.updaterId = this.userId;
+            // file.updaterId = 0;
         });
         return this.saveFilesRequest(openedFiles);
     }
@@ -98,7 +98,7 @@ export class WorkspaceRootComponent implements OnInit {
 
     public onFilesSave(files: FileUpdateDTO[]) {
         files.forEach(file => {
-            file.updaterId = this.userId;
+            //file.updaterId = 0;
         });
         this.saveFilesRequest(files)
             .subscribe(
