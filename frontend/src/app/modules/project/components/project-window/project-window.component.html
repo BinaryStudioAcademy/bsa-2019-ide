@@ -14,7 +14,7 @@
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
                     <div class="ui-inputgroup">
-                        <input type="text" pInputText pKeyFilter="alphanum" formControlName="name" placeholder="name" [(ngModel)]="project.name">
+                        <input type="text" pInputText pKeyFilter="alphanum" formControlName="name" placeholder="name">
                     </div>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                 <div class="ui-g-12">
                     <div class="ui-inputgroup">
                         <textarea [rows]="3" pInputTextarea formControlName="description"
-                            placeholder="description" [(ngModel)]="project.description"></textarea>
+                            placeholder="description"></textarea>
                     </div>
                 </div>
             </div>
@@ -39,7 +39,7 @@
                 <div class="ui-g-12">
                     <div class="">
                         <p-dropdown [options]="languages" placeholder="Select a project language"
-                            formControlName="language" (ngModelChange)="changeLanguage($event)" [(ngModel)]="project.language"></p-dropdown>
+                            formControlName="language" (ngModelChange)="changeLanguage($event)"></p-dropdown>
                     </div>
                 </div>
             </div>
@@ -50,7 +50,7 @@
                 <div class="ui-g-12">
                     <div class="">
                         <p-dropdown [options]="projectTypes" placeholder="Select a project type"
-                            formControlName="projectType" [(ngModel)]="project.projectType"></p-dropdown>
+                            formControlName="projectType"></p-dropdown>
                     </div>
                 </div>
             </div>
@@ -61,7 +61,7 @@
                 <div class="ui-g-12">
                     <div class="">
                         <p-dropdown [options]="compilerTypes" placeholder="Select a compiler type"
-                            formControlName="compilerType" [(ngModel)]="project.compilerType"></p-dropdown>
+                            formControlName="compilerType"></p-dropdown>
                         <!--<select required type="text" placeholder="compiler type" formControlName="compilerType">
                             <option value="0">NetCore</option>
                         </select>-->
@@ -75,7 +75,7 @@
                 <div class="ui-g-12">
                     <div class="ui-inputgroup">
                         <input type="text" pInputText pKeyFilter="pint" formControlName="countOfSavedBuilds"
-                            placeholder="builds" [(ngModel)]="project.countOfSaveBuilds">
+                            placeholder="builds">
                     </div>
                 </div>
             </div>
@@ -88,7 +88,7 @@
                 <div class="ui-g-12">
                     <div class="ui-inputgroup">
                         <input type="text" pInputText pKeyFilter="pint" formControlName="countOfBuildAttempts"
-                            placeholder="build attempts" [(ngModel)]="project.countOfBuildAttempts">
+                            placeholder="build attempts">
                     </div>
                 </div>
             </div>
@@ -99,7 +99,7 @@
             <div class="label">Project color</div>
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
-                    <p-dropdown [options]="colors" placeholder="Select project color" formControlName="color"  [(ngModel)]="project.color">
+                    <p-dropdown [options]="colors" placeholder="Select project color" formControlName="color">
                         <ng-template let-item pTemplate="selectedItem">
                             <div style="position: relative; height: 20px;" [style.background]="item.value"></div>
                         </ng-template>

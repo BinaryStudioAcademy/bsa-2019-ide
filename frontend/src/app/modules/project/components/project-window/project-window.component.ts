@@ -8,6 +8,8 @@ import { ProjectType } from '../../models/project-type';
 import { HttpResponse } from '@angular/common/http';
 import { ProjectEditDTO } from 'src/app/models/DTO/Project/projectEditDTO';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
+import { ProjectCreateDTO } from 'src/app/models/DTO/Project/projectCreateDTO';
+import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 
 @Component({
   selector: 'app-project-window',
@@ -21,13 +23,17 @@ export class ProjectWindowComponent implements OnInit {
     public compilerTypes: any;
     public colors;
     public projectForm: FormGroup;
-    private project: ProjectEditDTO;
+    //private project: ProjectEditDTO;
     private projectType: ProjectType;
 
     public projectId: number;
-    public projectStartState = {} as ProjectEditDTO;
+    //public projectStartState = {} as ProjectEditDTO;
     public isPageLoaded = false;
     public hasDetailsSaveResponse = true;
+
+    public projectCreate: ProjectCreateDTO;
+    public projectUpdate: ProjectUpdateDTO;
+    public projectUpdateStartState: ProjectUpdateDTO;
 
     constructor(private ref: DynamicDialogRef,
                 private config: DynamicDialogConfig,
@@ -38,22 +44,6 @@ export class ProjectWindowComponent implements OnInit {
 
     ngOnInit(): void { 
         this.projectType = this.config.data.projectType;
-        if (!this.isCreateForm()) {
-            this.projectId = this.config.data.projectId;
-            this.projectService.getProjectById(this.projectId)
-                .subscribe(
-                    (resp) => {
-                        this.SetProjectObjectsFromResponse(resp);
-                        this.title = 'Edit project \"' + resp.body.name + '\"';
-                        this.isPageLoaded = true;
-                    },
-                    (error) => {
-                        this.isPageLoaded = true;
-                        this.toastrService.error('Can\'t load project details.', 'Error Message:');
-                        console.error(error.message);
-                    }
-                );
-        }
         this.title = this.projectType === ProjectType.Create ? 'Create project' : 'Edit project';
 
         this.colors = [
@@ -95,57 +85,113 @@ export class ProjectWindowComponent implements OnInit {
                 countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
                 color: ['', Validators.required]
             });
+            this.projectId = this.config.data.projectId;
+            this.projectService.getProjectById(this.projectId)
+                .subscribe(
+                    (resp) => {
+                        this.SetProjectObjectsFromResponse(resp);
+                        this.InitializeProject();
+                        this.title = 'Edit project \"' + resp.body.name + '\"';
+                        this.isPageLoaded = true;
+                    },
+                    (error) => {
+                        this.isPageLoaded = true;
+                        this.toastrService.error('Can\'t load project details.', 'Error Message:');
+                        console.error(error.message);
+                    }
+                );
         }
 
-        this.project = {
-            color: null,
-            compilerType: null,
-            countOfBuildAttempts: null,
-            countOfSaveBuilds: null,
-            description: null,
-            language: null,
-            name: null,
-            projectType: null,
-            accessModifier: null,
-            id: null
+        if (this.isCreateForm()) {
+            this.projectCreate = {
+                color: null,
+                compilerType: null,
+                countOfBuildAttempts: null,
+                countOfSaveBuilds: null,
+                description: null,
+                language: null,
+                name: null,
+                projectType: null
+            }
+        } else {
+            this.projectUpdate = {
+                color: null,
+                countOfBuildAttempts: null,
+                countOfSaveBuilds: null,
+                description: null,
+                name: null,
+                accessModifier: null,
+                id: null
+            }
         }
     }
     
-    private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectInfoDTO>): void {
-        const res = resp.body;
-        this.project.id = res.id;
-        this.project.name = res.name;
-        this.project.description = res.description;
-        this.project.countOfSaveBuilds = res.countOfSaveBuilds;
-        this.project.countOfBuildAttempts = res.countOfBuildAttempts;
-        this.project.color = res.color;
-        this.project.accessModifier = res.accessModifier;
+    private InitializeProject() {
+        this.projectForm.get('name').setValue(this.projectUpdateStartState.name);
+        this.projectForm.get('description').setValue(this.projectUpdateStartState.description);
+        this.projectForm.get('countOfSavedBuilds').setValue(this.projectUpdateStartState.countOfSaveBuilds);
+        this.projectForm.get('countOfBuildAttempts').setValue(this.projectUpdateStartState.countOfBuildAttempts);
+        this.projectForm.get('color').setValue(this.projectUpdateStartState.color);
+    }
 
-        this.projectStartState.id = res.id;
-        this.projectStartState.name = res.name;
-        this.projectStartState.description = res.description;
-        this.projectStartState.countOfSaveBuilds = res.countOfSaveBuilds;
-        this.projectStartState.countOfBuildAttempts = res.countOfBuildAttempts;
-        this.projectStartState.color = res.color;
-        this.projectStartState.accessModifier = res.accessModifier;
+    private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectInfoDTO>): void {
+        console.log(resp.body);
+        const res = resp.body;
+        this.projectUpdateStartState = resp.body;
+        this.projectUpdate.id = res.id;
+        this.projectUpdate.name = res.name;
+        this.projectUpdate.description = res.description;
+        this.projectUpdate.countOfSaveBuilds = res.countOfSaveBuilds;
+        this.projectUpdate.countOfBuildAttempts = res.countOfBuildAttempts;
+        this.projectUpdate.color = res.color;
+        this.projectUpdate.accessModifier = res.accessModifier;
+        console.log(this.projectUpdate);
+        // this.projectUpdateStartState.id = res.id;
+        // this.projectUpdateStartState.name = res.name;
+        // this.projectUpdateStartState.description = res.description;
+        // this.projectUpdateStartState.countOfSaveBuilds = res.countOfSaveBuilds;
+        // this.projectUpdateStartState.countOfBuildAttempts = res.countOfBuildAttempts;
+        // this.projectUpdateStartState.color = res.color;
+        // this.projectUpdateStartState.accessModifier = res.accessModifier;
     }
 
     projectItemIsNotChange(): boolean {
-        return this.project.name === this.projectStartState.name
-        && this.project.description === this.projectStartState.description
-        && this.project.countOfSaveBuilds === this.projectStartState.countOfSaveBuilds
-        && this.project.countOfBuildAttempts === this.projectStartState.countOfBuildAttempts
-        && this.project.color === this.projectStartState.color;
+        return this.projectForm.get('name').value === this.projectUpdateStartState.name
+        && this.projectForm.get('description').value === this.projectUpdateStartState.description
+        && this.projectForm.get('countOfSavedBuilds').value === this.projectUpdateStartState.countOfSaveBuilds
+        && this.projectForm.get('countOfBuildAttempts').value === this.projectUpdateStartState.countOfBuildAttempts
+        && this.projectForm.get('color').value === this.projectUpdateStartState.color;
     }
 
     isCreateForm() {
         return this.projectType === ProjectType.Create;
     }
 
+    getValuesForProjectUpdate() {
+        this.projectUpdate.name = this.projectForm.get('name').value;
+        this.projectUpdate.description = this.projectForm.get('description').value;
+        this.projectUpdate.countOfSaveBuilds = this.projectForm.get('countOfSavedBuilds').value;
+        this.projectUpdate.countOfBuildAttempts = this.projectForm.get('countOfBuildAttempts').value;
+        this.projectUpdate.color = this.projectForm.get('color').value;
+    }
+
+    getValuesForProjectCreate() {
+        this.projectCreate.name = this.projectForm.get('name').value;
+        this.projectCreate.color = this.projectForm.get('color').value;
+        this.projectCreate.compilerType = this.projectForm.get('compilerType').value;
+        this.projectCreate.countOfBuildAttempts = this.projectForm.get('countOfBuildAttempts').value;
+        this.projectCreate.countOfSaveBuilds = this.projectForm.get('countOfSavedBuilds').value;
+        this.projectCreate.description = this.projectForm.get('description').value;
+        this.projectCreate.language = this.projectForm.get('language').value;
+        this.projectCreate.projectType = this.projectForm.get('projectType').value;
+    }
+
     onSubmit() {
-        console.log(this.project);
         if(this.isCreateForm()) {
-            this.projectService.addProject(this.project)
+            this.getValuesForProjectCreate();
+            console.log(this.projectCreate);
+            return;
+            this.projectService.addProject(this.projectCreate)
                 .subscribe(res => {
                     this.toastrService.success("Project created");
                     let projectId = res.body;
@@ -157,8 +203,11 @@ export class ProjectWindowComponent implements OnInit {
                         this.hasDetailsSaveResponse = true;
                     })
         } else {
+            this.getValuesForProjectUpdate();
+            console.log(this.projectUpdate);
+            return;
             this.hasDetailsSaveResponse = false;
-            this.projectService.updateProject(this.project)
+            this.projectService.updateProject(this.projectUpdate)
             .subscribe(
                 (resp) => {
                     this.router.navigate([`project/${this.projectId}`]);
