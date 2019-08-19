@@ -25,7 +25,6 @@ export class WorkspaceRootComponent implements OnInit {
     public projectId: number;
     public userId: number;
     public showFileBrowser=true;
-    public showSerachFiels=false;
     public large=false;
 
     @ViewChild(EditorSectionComponent, { static: false })
@@ -99,12 +98,7 @@ export class WorkspaceRootComponent implements OnInit {
 
     public hideFileBrowser(): void
     {
-        this.showFileBrowser=!this.showFileBrowser;
-    }
-
-    public showSerachField(): void
-    {
-        this.showSerachFiels=!this.showSerachFiels;
+        this.showFileBrowser= !this.showFileBrowser;
     }
 
     public onFilesSave(files: FileUpdateDTO[]) {

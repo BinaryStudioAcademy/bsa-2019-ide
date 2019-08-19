@@ -28,11 +28,11 @@
     </div>
     <div class="p-col">
         <div class="inner-wrapper p-grid p-nogutter ">
-            <div *ngIf="showFileBrowser" class="file-browser-content p-col-12 p-md-2 p-align-stretch">
+            <div *ngIf="showFileBrowser" class="file-browser-content p-col-12 p-md-4 p-xl-2 p-align-stretch">
                 <app-file-browser-section #fileBrowser (fileSelected)="onFileSelected($event)">
                 </app-file-browser-section>
             </div>
-            <div class="editor-content p-col-12 p-md-10 p-align-stretch " [ngClass]="{large:!showFileBrowser}">
+            <div class="editor-content p-col-12 p-md-8 p-xl-10 p-align-stretch " [ngClass]="{large:!showFileBrowser}">
                 <app-editor-section (filesSaveEvent)="onFilesSave($event)"></app-editor-section>
             </div>
         </div>

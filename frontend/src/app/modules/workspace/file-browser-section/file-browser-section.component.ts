@@ -22,6 +22,7 @@ export class FileBrowserSectionComponent implements OnInit {
     public files: TreeNode[];
     public selectedItem: TreeNode;
     public projectId: number;
+    public expand=false;
 
     private fileCounter: number = 0;
     private folderCounter: number = 0;
