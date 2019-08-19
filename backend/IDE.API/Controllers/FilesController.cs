@@ -45,7 +45,8 @@ namespace IDE.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] FileUpdateDTO fileUpdateDTO)
         {
-            await _fileService.UpdateAsync(fileUpdateDTO);
+            var updaterId = this.GetUserIdFromToken();
+            await _fileService.UpdateAsync(fileUpdateDTO, updaterId);
             return NoContent();
         }
 
