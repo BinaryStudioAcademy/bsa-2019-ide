@@ -25,9 +25,9 @@ export class AddCollaboratorsComponent implements OnInit {
     public isCollaboratorsSaved: boolean = true;
     public projectId: number;
     public deleteCollaborators: CollaboratorDTO[] = [];
+    public area: string
 
     private startCollaborators = [] as CollaboratorDTO[];
-    private area: string
 
     constructor(private route: ActivatedRoute,
         private userService: UserService,
