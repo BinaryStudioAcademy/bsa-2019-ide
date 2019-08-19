@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
-import { ProjectCreateDTO } from '../../models/DTO/Project/projectCreateDTO';
 import { ProjectDescriptionDTO } from '../../models/DTO/Project/projectDescriptionDTO';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
-import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { SearchProjectDTO } from 'src/app/models/DTO/Project/searchProjectDTO';
+import { ProjectEditDTO } from 'src/app/models/DTO/Project/projectEditDTO';
 
 @Injectable({
     providedIn: 'root'
@@ -17,7 +16,7 @@ export class ProjectService {
 
     constructor(private httpClient: HttpClientWrapperService) { }
 
-    public addProject(project: ProjectCreateDTO) {
+    public addProject(project: ProjectEditDTO) {
         return this.httpClient.postRequest(this.address, project);
     }
 
@@ -50,7 +49,7 @@ export class ProjectService {
         return this.httpClient.getRequest(this.address + '/all');
     }
 
-    public updateProject(project: ProjectUpdateDTO): Observable<HttpResponse<ProjectInfoDTO>> {
+    public updateProject(project: ProjectEditDTO): Observable<HttpResponse<ProjectInfoDTO>> {
         return this.httpClient.putRequest<ProjectInfoDTO>(this.address, project);
     }
 

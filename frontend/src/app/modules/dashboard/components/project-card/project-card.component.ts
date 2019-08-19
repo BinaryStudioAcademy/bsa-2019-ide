@@ -4,6 +4,8 @@ import { ProjectService } from 'src/app/services/project.service/project.service
 import { Router } from '@angular/router';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { MenuItem } from 'primeng/api';
+import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
+import { ProjectType } from 'src/app/modules/project/models/project-type';
 
 @Component({
     selector: 'app-project-card',
@@ -21,7 +23,8 @@ export class ProjectCardComponent implements OnInit {
     constructor(
         private projectService: ProjectService,
         private tokenService: TokenService,
-        private router: Router) { }
+        private router: Router,
+        private projectEditDialog: ProjectDialogService) { }
 
     ngOnInit() {
         this.currentUserId = this.tokenService.getUserId();
@@ -81,7 +84,7 @@ export class ProjectCardComponent implements OnInit {
         else{
             this.contextMenu = [
                 {label: 'Details', icon: 'pi pi-info-circle', command: (event) => this.GoToPage('details') },
-                {label: 'Settings', icon: 'pi pi-cog', command: (event) => this.GoToPage('settings')}
+                {label: 'Settings', icon: 'pi pi-cog', command: (event) => this.projectEditDialog.show(ProjectType.Update, this.project.id)}
             ];
         }
     }

@@ -9,7 +9,7 @@
         </ul>
     </div>
     <div class="secondMenu">
-        <button icon="pi pi-plus" pButton type="button" class="ui-button-raised" [routerLink]="['/project/add']"
+        <button icon="pi pi-plus" pButton type="button" class="ui-button-raised" (click)="createProject()"
             label="Add"></button>
     </div>
     <router-outlet></router-outlet>
