@@ -46,7 +46,7 @@ namespace IDE.BLL.Services
         public async Task<UserAccess> GetUserRightById(int userId, int projectId)
         {
             var access = await _context.ProjectMembers
-                .FirstOrDefaultAsync(item => item.UserId == userId && item.ProjectId == projectId); ;
+                .FirstOrDefaultAsync(item => item.UserId == userId && item.ProjectId == projectId);
             return access.UserAccess;
         }
 

@@ -40,6 +40,12 @@ namespace IDE.API.Controllers
             return Ok(await _projectService.GetProjectById(projectId));
         }
 
+        [HttpGet("author/{projectId}")]
+        public async Task<ActionResult<int>> GetAuthorId(int projectId)
+        {
+            return Ok(await _projectService.GetAuthorId(projectId));
+        }
+
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects()
         {
@@ -96,7 +102,7 @@ namespace IDE.API.Controllers
             });
 
             await _projectStructureService.CreateAsync(projectStructureDTO);
-            
+
             return Created("/project", projectId);
         }
 

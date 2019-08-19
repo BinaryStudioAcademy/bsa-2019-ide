@@ -37,6 +37,10 @@ export class ProjectService {
         return this.httpClient.putRequest(this.address + '/favourite', projectId);
     }
 
+    public getAuthorId(projectId: number): Observable<HttpResponse<number>>{
+        return this.httpClient.getRequest(this.address+'/author/'+projectId)
+    }
+
     public getProjectById(id: number): Observable<HttpResponse<ProjectInfoDTO>> {
         return this.httpClient.getRequest(this.address + `/${id}`);
     }

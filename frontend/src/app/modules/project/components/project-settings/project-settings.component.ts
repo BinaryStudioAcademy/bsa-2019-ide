@@ -193,6 +193,9 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
                 if (!this.IsSelected(deleteItem)) {
                     this.rightService.deleteCollaborator(deleteItem)
                         .subscribe(
+                            (resp)=>
+                            {
+                            },
                             (error) => {
                                 this.toastService.error('Can\'t delete collacortors access', 'Error Message');
                             }
@@ -211,11 +214,11 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
                     .subscribe(
                         (resp) => {
                             this.router.navigate([`project/${this.projectId}`]);
-                            this.isDetailsSaved = true;
+                            this.hasDetailsSaveResponse = true;
                             this.toastService.success('New collacortors access have successfully saved!');
                         },
                         (error) => {
-                            this.isDetailsSaved = true;
+                            this.hasDetailsSaveResponse = true;
                             this.toastService.error('Can\'t save new collacortors access', 'Error Message');
                         }
                     );

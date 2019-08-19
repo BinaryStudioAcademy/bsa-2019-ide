@@ -22,9 +22,7 @@ import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { RightsService } from 'src/app/services/rights.service/rights.service';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
-
-
-
+import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 
 @Component({
     selector: 'app-workspace-root',
@@ -38,6 +36,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public access: UserAccess;
     private routeSub: Subscription;
     private project: ProjectInfoDTO;
+    private authorId: number;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
@@ -54,42 +53,44 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private tokenService: TokenService) { }
 
     ngOnInit() {
-        const userId=this.tokenService.getUserId();
+        const userId = this.tokenService.getUserId();
         this.routeSub = this.route.params.subscribe(params => {
             this.projectId = params['id'];
         });
-        this.rightService.getUserRightById(userId,this.projectId)
-        .subscribe(
-            (resp)=>{
-                this.access=resp.body;
-            }
-        )
-        this.projectService.getProjectById(this.projectId)
-        .subscribe(
+        this.projectService.getAuthorId(this.projectId)
+            .subscribe(
             (resp) => {
-                this.project = resp.body;
-            },
-            (error) => {
-                this.tr.error("Can't load selected project.", 'Error Message');
-            }
-        );
+                this.authorId = resp.body;
+                console.log(this.authorId);
+            });
+        if (this.userId != this.authorId) {
+            this.rightService.getUserRightById(userId, this.projectId)
+                .subscribe(
+                    (resp) => {
+                        this.access = resp.body;
+                    }
+                )
+        }
+        this.projectService.getProjectById(this.projectId)
+            .subscribe(
+                (resp) => {
+                    this.project = resp.body;
+                },
+                (error) => {
+                    this.tr.error("Can't load selected project.", 'Error Message');
+                }
+            );
     }
 
-    public IsBigger(number: number)
-    {
-        if (this.access>=number)
-        {
+    public IsBigger(number: number) {
+        if (this.access >= number) {
             return true;
         }
         return false;
     }
 
     public isAuthor(): boolean {
-        if (!this.project)
-        {
-            return false;
-        }
-        if (this.project.authorId == this.tokenService.getUserId()) {
+        if (this.authorId == this.tokenService.getUserId()) {
             return true;
         }
         return false;

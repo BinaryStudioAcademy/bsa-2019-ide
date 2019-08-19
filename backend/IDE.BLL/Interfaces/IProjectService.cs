@@ -16,7 +16,8 @@ namespace IDE.BLL.Interfaces
         Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId);
         Task<ICollection<CollaboratorDTO>> GetProjectCollaborators(int projectId, int authorId);
         Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId);
-        Task<ProjectInfoDTO> UpdateProject(ProjectUpdateDTO project); 
+        Task<ProjectInfoDTO> UpdateProject(ProjectUpdateDTO project);
+        Task<int> GetAuthorId(int projectId);
         Task<int> CreateProject(ProjectCreateDTO project, int userId);
         Task<ProjectDTO> GetProjectByIdAsync(int projectId);
         Task DeleteProjectAsync(int id, int userId);

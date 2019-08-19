@@ -177,6 +177,12 @@ namespace IDE.BLL.Services
             return await GetProjectById(projectUpdateDTO.Id);
         }
 
+        public async Task<int> GetAuthorId(int projectId)
+        {
+            var author = await _context.Projects.FirstOrDefaultAsync(item => item.Id == projectId);
+            return author.AuthorId;
+        }
+
         public async Task DeleteProjectAsync(int id, int ownerId)
         {
 
