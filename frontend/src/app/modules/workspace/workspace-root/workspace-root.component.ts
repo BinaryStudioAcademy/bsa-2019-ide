@@ -3,7 +3,6 @@ import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ResizeEvent } from 'angular-resizable-element';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
@@ -14,9 +13,8 @@ import { map } from 'rxjs/internal/operators/map';
 
 import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
-import { MenuItem } from 'primeng/api';
-import { catchError } from 'rxjs/internal/operators/catchError';
 import { TokenService } from 'src/app/services/token.service/token.service';
+import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
 
 
 
@@ -33,6 +31,9 @@ export class WorkspaceRootComponent implements OnInit {
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
+    @ViewChild('fileBrowser', {static: false})
+    private fileBrowser: FileBrowserSectionComponent;
+    
     constructor(
         private route: ActivatedRoute,
         private tr: ToastrService,
@@ -113,6 +114,13 @@ export class WorkspaceRootComponent implements OnInit {
                 error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
 
+    public expand(){
+        this.fileBrowser.expandAll();
+    }
+
+    public collapse(){
+        this.fileBrowser.collapseAll();        
+    }
 
     private saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
         return this.ws.saveFilesRequest(files);

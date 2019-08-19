@@ -17,6 +17,8 @@ import { FileStructureDTO } from 'src/app/models/DTO/Workspace/fileStructureDTO'
 })
 export class FileBrowserSectionComponent implements OnInit {
 
+    
+
     @Output() fileSelected = new EventEmitter<string>();
     items: MenuItem[];
     public files: TreeNode[];
@@ -50,11 +52,16 @@ export class FileBrowserSectionComponent implements OnInit {
         );
         
         this.items = [
-            { label: 'create file', icon: 'fa fa-file', command: (event) => this.createFile(this.selectedItem) },
+            { label: 'create file', icon: 'fa fa-file', command: (event) => this.createFile(this.selectedItem),  },
             { label: 'create folder', icon: 'fa fa-folder', command: (event) => this.createFolder(this.selectedItem) },
             { label: 'delete', icon: 'fa fa-remove', command: (event) => this.delete(this.selectedItem) },
-            { label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem) }
+          { label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem), disabled: true},
+            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem), disabled : true }
         ];
+    }
+
+    private download(node: TreeNode){
+        console.log(`${node.label} should be downloaded`);
     }
 
     private getFolderName(node: TreeNode): string{
