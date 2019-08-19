@@ -10,7 +10,7 @@ namespace IDE.DAL.Interfaces
         #region Add document/documents in the index
         Task IndexAsync(T document);
 
-        Task IndexAsync(IList<T> documents);
+        Task IndexManyAsync(IList<T> documents);
         #endregion
 
         #region Search for documents in the index

@@ -1,4 +1,5 @@
 ﻿using IDE.DAL.Context;
+using IDE.DAL.Entities.Elastic;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Factories;
 using IDE.DAL.Factories.Abstractions;
@@ -29,6 +30,8 @@ namespace IDE.DAL
                 option.UseSqlServer(configuration.GetConnectionString("IdeDBConnection")));
 
             ConfigureNoSqlDb(services, configuration);
+
+            ConfigureElasticSearch(services, configuration);
         }
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -39,7 +42,7 @@ namespace IDE.DAL
         private static void ConfigureElasticSearch(IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<ISearchClientFactory>(x => new SearchClientFactory(configuration.GetSection("ElasticSearch").Value)); //"amqp://admin:admin@localhost:5672"
-            //services.AddScoped<ISearchRepository<FileSearchDocument>, SecondFileSearchRepository/>();
+            services.AddScoped<ISearchRepository<TestDocument>, TestSearchRepository>();
         }
 
         private static void ConfigureNoSqlDb(IServiceCollection services, IConfiguration configuration)

@@ -53,7 +53,7 @@ namespace IDE.DAL.Repositories
             await _client.IndexAsync(document, c => c.OpType(Elasticsearch.Net.OpType.Create).Index(_index));
         }
 
-        public virtual async Task IndexAsync(IList<T> documents)
+        public virtual async Task IndexManyAsync(IList<T> documents)
         {
             await _client.IndexManyAsync(documents);
         }
@@ -81,6 +81,7 @@ namespace IDE.DAL.Repositories
         #region Search in index
 
         //should be overridden
+        //I didn`t implement these methods because they need document`s property
         public virtual async Task<ICollection<T>> AutoCompleteAsync(string query, int skip = 0, int take = -1)
         {
             throw new NotImplementedException();
@@ -88,16 +89,7 @@ namespace IDE.DAL.Repositories
 
         public virtual async Task<ICollection<T>> SearchAsync(string query, int skip = 0, int take = -1)
         {
-            if (take == -1) take = 100;
-
-            var results = await _client.SearchAsync<T>(s => s
-                .Index(_index)
-                .From(skip)
-                .Take(take)
-                .Query(q => q.QueryString(qs => qs.Query(query))
-                ));
-
-            return results.Documents.ToList();
+            throw new NotImplementedException();
         }
         #endregion
     }
