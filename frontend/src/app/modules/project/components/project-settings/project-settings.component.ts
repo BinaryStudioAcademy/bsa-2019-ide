@@ -29,10 +29,10 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     public collaborators: CollaboratorDTO[];
     public deleteCollaborators: CollaboratorDTO[] = [];
     public colors;
+    public area:string;
 
     private unsubscribe$ = new Subject<void>();
     private startCollaborators = [] as CollaboratorDTO[];
-    private area:string;
 
     public projectForm = this.fb.group({
         name: ['', Validators.required],
