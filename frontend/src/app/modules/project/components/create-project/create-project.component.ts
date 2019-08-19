@@ -25,7 +25,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
         private router: Router) { }
 
     public projectForm = this.fb.group({
-        name: ['', Validators.required],
+        name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32)]],
         description: ['', Validators.required],
         language: ['', Validators.required],
         projectType: ['', Validators.required],
@@ -101,8 +101,9 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
                 ];
                 break;
             }
-      }
+        }
     }
+
     ngOnInit(): void { //Maybe choose initializing
         this.colors = [
             { label: 'Red', value: '#ff0000' },
@@ -130,12 +131,25 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
     }
 
     public getErrorMessage(field: string): string {
-      const control = this.projectForm.get(field);
-      const isMaxError: boolean = !!control.errors && !!control.errors.max;
-      return control.hasError('required')
-        ? 'Value is required!'
-        : (isMaxError)
-          ? `Quantity must be less than ${control.errors.max.max}!`
-          : 'validation error';
+        const control = this.projectForm.get(field);    
+
+        let errorMessage: string;        
+        if (control.hasError('required')) {
+            errorMessage = 'Value is required!';
+        }
+        else if(control.hasError('max')) {
+            errorMessage = `Quantity must be less than ${control.errors.max.max}!`;
+        }
+        else if (control.hasError('minlength')) {
+            errorMessage = `The length must be at least ${control.errors.minlength.requiredLength} letters!`;
+        }
+        else if (control.hasError('maxlength')) {
+            errorMessage = `The length should be no more than ${control.errors.maxlength.requiredLength} letters!`;
+        }
+        else {
+            errorMessage = 'validation error';
+        }
+
+        return errorMessage;
     }
 }

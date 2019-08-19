@@ -3,7 +3,6 @@ import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ResizeEvent } from 'angular-resizable-element';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
@@ -14,8 +13,8 @@ import { map } from 'rxjs/internal/operators/map';
 
 import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
-import { MenuItem } from 'primeng/api';
-import { catchError } from 'rxjs/internal/operators/catchError';
+import { TokenService } from 'src/app/services/token.service/token.service';
+import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 
 
@@ -28,19 +27,27 @@ import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 })
 export class WorkspaceRootComponent implements OnInit {
     public projectId: number;
+    public userId: number;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
+
+    @ViewChild('fileBrowser', {static: false})
+    private fileBrowser: FileBrowserSectionComponent;
 
     constructor(
         private route: ActivatedRoute,
         private tr: ToastrService,
         private ws: WorkspaceService,
         private saveOnExit: LeavePageDialogService,
+        private tokenService: TokenService,
         private fileService: FileService) { }
 
     ngOnInit() {
+
         this.projectId = +this.route.snapshot.paramMap.get('id');
+
+        this.userId = this.tokenService.getUserId();
     }
 
     public onFileSelected(fileId: string): void {
@@ -72,7 +79,10 @@ export class WorkspaceRootComponent implements OnInit {
     }
 
     public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
-        const openedFiles = this.editor.openedFiles.map(x => x.innerFile);
+        const openedFiles: FileUpdateDTO[] = this.editor.openedFiles.map(x => x.innerFile);
+        openedFiles.forEach(file => {
+            // file.updaterId = 0;
+        });
         return this.saveFilesRequest(openedFiles);
     }
 
@@ -92,13 +102,16 @@ export class WorkspaceRootComponent implements OnInit {
             error => this.tr.error("Can't save files", 'Error', { tapToDismiss: true }));
     }
 
-    public onFilesSave(ev: FileUpdateDTO[]) {
-        this.saveFilesRequest(ev)
+    public onFilesSave(files: FileUpdateDTO[]) {
+        files.forEach(file => {
+            //file.updaterId = 0;
+        });
+        this.saveFilesRequest(files)
             .subscribe(
                 success => {
                     if (success.every(x => x.ok)) {
                         this.tr.success("Files saved", 'Success', { tapToDismiss: true });
-                        this.editor.confirmSaving(ev.map(x => x.id));
+                        this.editor.confirmSaving(files.map(x => x.id));
                     } else {
                         this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
@@ -106,6 +119,13 @@ export class WorkspaceRootComponent implements OnInit {
                 error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
 
+    public expand(){
+        this.fileBrowser.expandAll();
+    }
+
+    public collapse(){
+        this.fileBrowser.collapseAll();
+    }
 
     private saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
         return this.ws.saveFilesRequest(files);

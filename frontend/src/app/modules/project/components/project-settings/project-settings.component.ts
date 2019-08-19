@@ -15,33 +15,33 @@ import { TokenService } from 'src/app/services/token.service/token.service';
   styleUrls: ['./project-settings.component.sass']
 })
 export class ProjectSettingsComponent implements OnInit, OnDestroy {
-  public projectId: number;
-  public project: ProjectUpdateDTO;
-  public projectStartState = {} as ProjectUpdateDTO;
-  public isPageLoaded = false;
-  public isDetailsSaved = true;
-  public colors;
+    public projectId: number;
+    public project: ProjectUpdateDTO;
+    public projectStartState = {} as ProjectUpdateDTO;
+    public isPageLoaded = false;
+    public hasDetailsSaveResponse = true;
+    public colors;
 
-  private unsubscribe$ = new Subject<void>();
+    private unsubscribe$ = new Subject<void>();
 
-  public projectForm = this.fb.group({
-    name: ['', Validators.required],
-    description: ['', Validators.required],
-    countOfSaveBuilds: ['', [Validators.required, Validators.max(10)]],
-    countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
-    color: ['', Validators.required]
-  });
+    public projectForm = this.fb.group({
+        name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32)]],
+        description: ['', Validators.required],
+        countOfSaveBuilds: ['', [Validators.required, Validators.max(10)]],
+        countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
+        color: ['', Validators.required]
+    });
 
-  constructor(
-      private fb: FormBuilder,
-      private route: ActivatedRoute,
-      private projectService: ProjectService,
-      private toastService: ToastrService,
-      private tokenService: TokenService,
-      private router: Router
-  ) { }
+    constructor(
+        private fb: FormBuilder,
+        private route: ActivatedRoute,
+        private projectService: ProjectService,
+        private toastService: ToastrService,
+        private tokenService: TokenService,
+        private router: Router
+    ) { }
 
-  ngOnInit() {
+    ngOnInit() {
         this.projectId = Number(this.route.snapshot.paramMap.get('id'));
         const userId: number = this.tokenService.getUserId();
         if (!this.projectId) {
@@ -73,54 +73,67 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
             { label: 'Green', value: '#008000' },
             { label: 'Light Slate Grey', value: '#778899' },
         ]
-  }
+    }
 
-  projectItemIsNotChange(): boolean {
-    return this.projectForm.get('name').value === this.projectStartState.name
-      && this.projectForm.get('description').value === this.projectStartState.description
-      && Number(this.projectForm.get('countOfSaveBuilds').value) === this.projectStartState.countOfSaveBuilds
-      && Number(this.projectForm.get('countOfBuildAttempts').value) === this.projectStartState.countOfBuildAttempts
-      && this.projectForm.get('color').value === this.projectStartState.color;
-  }
+    projectItemIsNotChange(): boolean {
+        return this.projectForm.get('name').value === this.projectStartState.name
+        && this.projectForm.get('description').value === this.projectStartState.description
+        && Number(this.projectForm.get('countOfSaveBuilds').value) === this.projectStartState.countOfSaveBuilds
+        && Number(this.projectForm.get('countOfBuildAttempts').value) === this.projectStartState.countOfBuildAttempts
+        && this.projectForm.get('color').value === this.projectStartState.color;
+    }
 
-  ngOnDestroy() {
-    takeUntil(this.unsubscribe$);
-  }
+    ngOnDestroy() {
+        takeUntil(this.unsubscribe$);
+    }
 
-  onSubmit() {
-    this.isDetailsSaved = false;
-    this.projectService.updateProject(this.project)
-      .subscribe(
-        (resp) => {
-          this.router.navigate([`project/${this.projectId}`]);
-          this.isDetailsSaved = true;
-          this.toastService.success('New details have successfully saved!');
-        },
-        (error) => {
-          this.isDetailsSaved = true;
-          this.toastService.error('Can\'t save new project details', 'Error Message');
-          console.error(error.message);
+    onSubmit() {
+        this.hasDetailsSaveResponse = false;
+        this.projectService.updateProject(this.project)
+        .subscribe(
+            (resp) => {
+                this.router.navigate([`project/${this.projectId}`]);
+                this.hasDetailsSaveResponse = true;
+                this.toastService.success('New details have successfully saved!');
+            },
+            (error) => {
+                this.hasDetailsSaveResponse = true;
+                this.toastService.error('Can\'t save new project details', 'Error Message');
+                console.error(error.message);
+            }
+        );
+    }
+
+    public getErrorMessage(field: string): string {
+        const control = this.projectForm.get(field);    
+
+        let errorMessage: string;        
+        if (control.hasError('required')) {
+            errorMessage = 'Value is required!';
         }
-      );
-  }
+        else if(control.hasError('max')) {
+            errorMessage = `Quantity must be less than ${control.errors.max.max}!`;
+        }
+        else if (control.hasError('minlength')) {
+            errorMessage = `The length must be at least ${control.errors.minlength.requiredLength} letters!`;
+        }
+        else if (control.hasError('maxlength')) {
+            errorMessage = `The length should be no more than ${control.errors.maxlength.requiredLength} letters!`;
+        }
+        else {
+            errorMessage = 'validation error';
+        }
 
-  public getErrorMessage(field: string): string {
-    const control = this.projectForm.get(field);
-    const isMaxError: boolean = !!control.errors && !!control.errors.max;
-    return control.hasError('required')
-      ? 'Value is required!'
-      : (isMaxError)
-        ? `Quantity must be less than ${control.errors.max.max}!`
-        : 'validation error';
-  }
+        return errorMessage;
+    }
 
-  private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectUpdateDTO>): void {
-    this.project = resp.body;
-    this.projectStartState.name = this.project.name;
-    this.projectStartState.description = this.project.description;
-    this.projectStartState.countOfSaveBuilds = this.project.countOfSaveBuilds;
-    this.projectStartState.countOfBuildAttempts = this.project.countOfBuildAttempts;
-    this.projectStartState.color = this.project.color;
-  }
+    private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectUpdateDTO>): void {
+        this.project = resp.body;
+        this.projectStartState.name = this.project.name;
+        this.projectStartState.description = this.project.description;
+        this.projectStartState.countOfSaveBuilds = this.project.countOfSaveBuilds;
+        this.projectStartState.countOfBuildAttempts = this.project.countOfBuildAttempts;
+        this.projectStartState.color = this.project.color;
+    }
 
 }
