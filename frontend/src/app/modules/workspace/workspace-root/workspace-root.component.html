@@ -1,5 +1,5 @@
 <div class="top-panel p-grid p-nogutter">
-  <div class="p-col-12">
+  <div class="hor-navbar p-col-12">
 
     <button pButton *ngIf="IsBigger(3) || isAuthor()" type="button" icon="pi pi-play" iconPos="left" class="ui-button-secondary" label="Run"></button>
     <button pButton *ngIf="IsBigger(2) || isAuthor()" type="button" icon="pi pi-arrow-down" iconPos="left" class="ui-button-secondary" label="Build"></button>
@@ -11,14 +11,19 @@
 </div>
 <div class="wks-wrapper p-grid p-nogutter">
   <div  class="left-panel p-col-fixed" style="width:2rem;" class="resize-rect ">
-    <button pButton type="button" icon="pi pi-file" iconPos="left" class="ui-button-secondary"></button>
-    <button pButton type="button" icon="pi pi-cog" iconPos="left" class="ui-button-secondary" routerLink="/project/{{projectId}}/settings"></button>
-    <button pButton type="button" icon="pi pi-search" iconPos="left" class="ui-button-secondary"></button>
+    <button pButton type="button" icon="pi pi-file" iconPos="left" class="ui-button-secondary" disabled></button>
+    <button pButton routerLink="/project/{{projectId}}" title="Project details" type="button" icon="pi pi-info" iconPos="left" class="ui-button-secondary"></button>
+    <button pButton type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary" routerLink="/project/{{projectId}}/settings"></button>
+    <button pButton type="button" icon="pi pi-search" iconPos="left" class="ui-button-secondary" disabled></button>
+    <button pButton type="button" icon="pi pi pi-download" title="Download files" iconPos="left" class="ui-button-secondary" disabled></button>
+    <button pButton type="button" icon="pi pi-upload" title="Upload filse" iconPos="left" class="ui-button-secondary" disabled></button>
+    <button pButton type="button" icon="pi pi-chevron-down" title="Expand all" iconPos="left" class="ui-button-secondary" (click)="expand()" ></button>
+    <button pButton type="button" icon="pi pi-chevron-up" title="Collapse all" iconPos="left" class="ui-button-secondary" (click)="collapse()"></button>
 </div>
   <div class="p-col">
     <div class="inner-wrapper p-grid p-nogutter ">
-      <div class="file-browser-content p-col-12 p-md-3 p-align-stretch" >
-        <app-file-browser-section (fileSelected) = "onFileSelected($event)"></app-file-browser-section>
+      <div class="file-browser-content p-col-12 p-md-3 p-align-stretch">
+        <app-file-browser-section #fileBrowser (fileSelected) = "onFileSelected($event)"></app-file-browser-section>
       </div>
       <div class="editor-content p-col-12 p-md-9 p-align-stretch ">
     <app-editor-section  (filesSaveEvent)= "onFilesSave($event)" ></app-editor-section>

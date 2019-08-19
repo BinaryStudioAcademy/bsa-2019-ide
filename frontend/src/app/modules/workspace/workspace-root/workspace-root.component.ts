@@ -23,6 +23,7 @@ import { TokenService } from 'src/app/services/token.service/token.service';
 import { RightsService } from 'src/app/services/rights.service/rights.service';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
+import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
 
 @Component({
     selector: 'app-workspace-root',
@@ -41,6 +42,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
+    @ViewChild('fileBrowser', {static: false})
+    private fileBrowser: FileBrowserSectionComponent;
+    
     constructor(
         private route: ActivatedRoute,
         private tr: ToastrService,
@@ -168,6 +172,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                 error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
 
+    public expand(){
+        this.fileBrowser.expandAll();
+    }
+
+    public collapse(){
+        this.fileBrowser.collapseAll();        
+    }
 
     private saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
         return this.ws.saveFilesRequest(files);
