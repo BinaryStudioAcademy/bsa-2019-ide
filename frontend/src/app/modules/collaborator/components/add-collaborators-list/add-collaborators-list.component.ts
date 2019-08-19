@@ -30,9 +30,9 @@ export class AddCollaboratorsListComponent implements OnInit {
     ngOnInit() {
         this.userAccess = [
             { label: 'Can read', value: 0 },
-            { label: 'Can write', value: 1 },
-            { label: 'Can build', value: 2 },
-            { label: 'Can run', value: 3 },
+            { label: 'Can edit', value: 1 },
+            { label: 'Can edit and build', value: 2 },
+            { label: 'Provide all access rights', value: 3 },
         ];
     }
 
@@ -57,13 +57,13 @@ export class AddCollaboratorsListComponent implements OnInit {
                 this.label = "Can read"
                 break;
             case 1:
-                this.label = "Can write"
+                this.label = "Can edit"
                 break;
             case 2:
-                this.label = "Can build"
+                this.label = "Can edit and build"
                 break;
             case 3:
-                this.label = "Can run"
+                this.label = "Provide all access rights"
                 break;
         }
         return { label: this.label, value: user.access };
