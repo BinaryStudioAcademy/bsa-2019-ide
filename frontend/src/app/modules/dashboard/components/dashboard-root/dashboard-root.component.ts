@@ -18,10 +18,10 @@ export class DashboardRootComponent implements OnInit {
 
     ngOnInit() {
         this.items = [
-            ['All projects', '/dashboard'],
+            ['Favourite projects', '/dashboard'],
             ['My projects', '/dashboard/myProjects'],
             ['Assigned projects', '/dashboard/assignedProjects'],
-            ['Favourite projects', '/dashboard/favouriteProjects']
+            ['All projects', '/dashboard/all']
         ];
         this.isActive = this.items.findIndex(x => x[1] === this.router.url);
     }

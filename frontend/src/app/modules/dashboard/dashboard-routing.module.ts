@@ -15,7 +15,7 @@ const dashboardRoutes: Routes = [
         children:
         [
         {
-            path: '',
+            path: 'all',
             component: AllProjectsComponent
         },
         {
@@ -24,7 +24,7 @@ const dashboardRoutes: Routes = [
         },
         {
             component: FavouriteProjectsComponent,
-            path: 'favouriteProjects'
+            path: ''
         },
         {
             component: MyProjectsComponent,
