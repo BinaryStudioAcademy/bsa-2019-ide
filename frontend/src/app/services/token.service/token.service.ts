@@ -107,7 +107,7 @@ export class TokenService {
             id: token.id,
             firstName: token.firstName,
             lastName: token.lastName,
-            nickName: token.nickName
+            nickName: token["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
         };
         
         return user;        
