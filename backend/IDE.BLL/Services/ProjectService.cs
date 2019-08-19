@@ -219,139 +219,18 @@ namespace IDE.BLL.Services
 
         public async Task<bool> MakeProjectZipFile(int projectId, string path)
         {
-            //ICollection<FileDTO> filesForProject = await _fileService.GetAllForProjectAsync(projectId);
-            await Task.Delay(10);
-            List<FakeFile> ffls = new List<FakeFile>{
-                new FakeFile { Id = "0", Folder="Project", Name="Main1.cs", Content=@"using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-
-namespace ProjectStructureWebApi
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateWebHostBuilder(args).Build().Run();
-        }
-
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
-    }
-}
-"},
-                new FakeFile {Id = "0", Folder="Project", Name="Startup.cs", Content=@"using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using ProjectStructure.BLL.Hubs;
-using ProjectStructure.BLL.Interfaces;
-using ProjectStructure.BLL.Services;
-using ProjectStructure.Common;
-using ProjectStructure.DAL;
-using ProjectStructure.DAL.Context;
-using ProjectStructure.DAL.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using ProjectStructure.DAL.Entities;
-using ProjectStructureWebApi.Extentions;"},
-                new FakeFile {Id = "0", Folder="Project/Helpers", Name="CalculateHelper.cs", Content=@"using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
-using ProjectStructure.BLL.MappingProfiles;
-using System.Reflection;
-
-namespace ProjectStructureWebApi.Extentions
-{
-    public static class RegistrationServicesExtention
-    {
-        public static void RegisterAutomapper(this IServiceCollection services){
-            services.AddAutoMapper(cfg =>
-            {
-                cfg.AddProfile<ProjectProfile>();
-                cfg.AddProfile<ProjectTaskProfile>();
-                cfg.AddProfile<UserProfile>();
-                cfg.AddProfile<TeamProfile>();
-
-            }, typeof(ProjectProfile).GetTypeInfo().Assembly);
-        }
-    }
-}"},
-                new FakeFile {Id = "0", Folder="Project/Helpers/Enums", Name="ErrEnum.cs", Content=@"using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;"},
-                new FakeFile {Id = "0", Folder="Project/Services", Name="AuthService.cs" ,Content=@"using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;"},
-                new FakeFile {Id = "0", Folder="Project/Services/UserServices", Name="UserService.cs",Content=@"using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;"},
-                new FakeFile {Id = "0", Folder="Project", Name="HelloWorld.txt", Content=@"Hello world"},
-                new FakeFile {Id = "0", Folder="Project/Controllers", Name="UserController.cs", Content=@"using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;"},
-                new FakeFile {Id = "0", Folder="Project/Controllers/Extensions", Name="UserControllerExtention.cs",Content=@"using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;"},
-                new FakeFile {Id = "0", Folder="Project/Common", Name="WeeksEnum.cs", Content=@"using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;"},
-                new FakeFile {Id = "0", Folder="Project/Common/DTO", Name="UserDTO.cs", Content=@"using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;"},
-                new FakeFile {Id = "0", Folder="Project", Name="appsettin.json", Content=@"using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;"},
-            };
+            ICollection<FileDTO> filesForProject = await _fileService.GetAllForProjectAsync(projectId);
             try
             {
-                foreach (var f in ffls)
+                foreach (var f in filesForProject)
                 {
-                    //f.Folder.TrimStart('/', '.');
+                    f.Folder.TrimStart('/', '.');
                     var dest = Path.Combine(path, "ProjectFolder", f.Folder);
                     Directory.CreateDirectory(dest);
                     using (StreamWriter sw = File.CreateText(Path.Combine(dest, f.Name)))
                     {
                         sw.Write(f.Content);
                     }
-
 
                 }
                 ZipFile.CreateFromDirectory(Path.Combine(path,"ProjectFolder"), Path.Combine(path, $"project_{projectId}.zip"));
