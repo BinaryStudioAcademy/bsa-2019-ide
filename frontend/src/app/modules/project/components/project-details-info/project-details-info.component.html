@@ -4,7 +4,8 @@
     </p-header>
 <img class="project-logo" src={{project.logo}}>-->
     <div class="project-description">
-        <p-card header="Main">
+        <div class="card">
+            <h2>Main</h2>
             <p>
                 <span class="highlighted">Name: </span>
                 <span>{{project.name}}</span>
@@ -21,10 +22,11 @@
                 <span class="highlighted">Author: </span>
                 <span>{{project.authorName}}</span>
             </p>
-        </p-card>
+        </div>
     </div>
     <div class="project-description">
-        <p-card header="Secondary">
+        <div class="card">
+            <h2>Secondary</h2>
              <p>
                 <span class="highlighted">Language: </span>
                 <span appLanguage [language]="project.language"></span>
@@ -42,10 +44,11 @@
                 <span class="highlighted">ProjectLink: </span>
                 <span>{{project.projectLink}}</span>
             </p>
-        </p-card>
+        </div>
     </div>
     <div class="project-description">
-        <p-card header="Additional">
+        <div class="card">
+            <h2>Additional</h2>
              <p>
                 <span class="highlighted">Amount of saved builds: </span>
                 <span>{{project.countOfSaveBuilds}}</span>
@@ -54,7 +57,7 @@
                 <span class="highlighted">Amount of build attempts: </span>
                 <span>{{project.countOfBuildAttempts}}</span>
             </p>
-        </p-card>
+        </div>
     </div>
     <!--
     <div *ngFor="let credential of project?.gitCredentials" class="project-description">
