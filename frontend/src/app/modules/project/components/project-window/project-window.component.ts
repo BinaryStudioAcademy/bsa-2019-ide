@@ -44,7 +44,7 @@ export class ProjectWindowComponent implements OnInit {
                 .subscribe(
                     (resp) => {
                         this.SetProjectObjectsFromResponse(resp);
-                        console.log(resp);
+                        this.title = 'Edit project \"' + resp.body.name + '\"';
                         this.isPageLoaded = true;
                     },
                     (error) => {

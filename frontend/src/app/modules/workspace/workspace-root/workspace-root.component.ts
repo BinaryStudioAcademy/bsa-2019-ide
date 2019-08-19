@@ -17,6 +17,8 @@ import { FileService } from 'src/app/services/file.service/file.service';
 import { MenuItem } from 'primeng/api';
 import { catchError } from 'rxjs/internal/operators/catchError';
 import { TokenService } from 'src/app/services/token.service/token.service';
+import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
+import { ProjectType } from '../../project/models/project-type';
 
 
 
@@ -39,7 +41,8 @@ export class WorkspaceRootComponent implements OnInit {
         private ws: WorkspaceService,
         private saveOnExit: LeavePageDialogService,
         private tokenService: TokenService,
-        private fileService: FileService) { }
+        private fileService: FileService,
+        private projectEditService: ProjectDialogService) { }
 
     ngOnInit() {
         this.projectId = Number(this.route.snapshot.paramMap.get('id'));
@@ -125,6 +128,9 @@ export class WorkspaceRootComponent implements OnInit {
                     mustSave => mustSave ? this.saveFiles().pipe(map(result => result.every(x => x.ok) ? true : false)) : of(false)));
     }
 
+    editProjectSettings() {
+        this.projectEditService.show(ProjectType.Update, this.projectId);
+    }
 
     // *********code below for resizing blocks***************
     //   public style: object = {};
