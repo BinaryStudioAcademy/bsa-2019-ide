@@ -49,7 +49,6 @@ namespace IDE.API.Controllers
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects()
         {
-            //Need to get userId from token
             return Ok(await _projectService.GetAllProjects(this.GetUserIdFromToken()));
         }
 
@@ -62,21 +61,18 @@ namespace IDE.API.Controllers
         [HttpGet("my")]
         public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetCreatedByUserProjects()
         {
-            //Need to get userId from token
             return Ok(await _projectService.GetUserProjects(this.GetUserIdFromToken()));
         }
 
         [HttpGet("assigned")]
         public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAssignedToUserProjects()
         {
-            //Need to get userId from token
             return Ok(await _projectService.GetAssignedUserProjects(this.GetUserIdFromToken()));
         }
 
         [HttpGet("getFavourite")]
         public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetFavouriteUserProjects()
         {
-            //Need to get userId from token
             return Ok(await _projectService.GetFavouriteUserProjects(this.GetUserIdFromToken()));
         }
 
