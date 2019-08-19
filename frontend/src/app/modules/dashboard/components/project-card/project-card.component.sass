@@ -1,7 +1,15 @@
-.imgContainer 
+.header
     border-radius: 5px 5px 0 0
-    position: relative
     height:70px
+    display: flex
+    color: #fff
+    align-items: center
+    padding: 10px
+    padding-left: 20px
+    justify-content: space-between
+
+.header-buttons
+    display: flex
     background-repeat: no-repeat
     background-size: cover  
     background-position: center
@@ -10,7 +18,6 @@
 
 .star, .menu-icon
     z-index: 2
-    
 
 .imgContainer h2
     position: absolute
@@ -19,38 +26,25 @@
     bottom: 0
     color: white
     z-index: 0
+    text-overflow: ellipsis
+    white-space: nowrap
+    overflow: hidden
+    width:60%
+    text-align: left
 
 .highlighted
     font-weight: bold
-    
+
 p
     color:#888
 
-.iStar 
-    //color: #FF8C00
-    color: #ffffff
-    font-size: 2em
+
+p-card .pi
+    display: inline-block
     cursor: pointer
-
-.star 
-    display: block
-    width: 2em
-    position: absolute
-    top: 22px
-    bottom: 0
-    right: 45px
-
-.menu-icon
-    display: block
-    width: 2em
-    position: absolute
-    top: 22px
-    bottom: 0
-    right: 15px
-
-.menu-ellipsis 
-    color: #ffffff
     font-size: 2em
+
+.menu-ellipsis
     cursor: pointer
 
 .success
@@ -58,4 +52,24 @@ p
 
 .failed
     color: red
-    
+
+.ui-card
+    cursor: pointer
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24)
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1)
+    height: 100%
+
+.ui-card:hover
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)
+
+.ui-card .pi:hover
+    color: orange
+
+.title-ellipsis
+    overflow: hidden
+    white-space: nowrap
+    text-overflow: ellipsis
+
+.title-body
+    display: inline-block
+    overflow: hidden

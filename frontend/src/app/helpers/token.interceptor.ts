@@ -1,9 +1,8 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpSentEvent, HttpHeaderResponse,
-     HttpProgressEvent, HttpUserEvent, HttpResponse, HttpErrorResponse, HttpEvent } from '@angular/common/http';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { TokenService } from '../services/token.service/token.service';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, switchMap, finalize, filter, take } from 'rxjs/operators';
+import { catchError, switchMap, filter, take } from 'rxjs/operators';
 import { AccessTokenDTO } from '../models/DTO/Authentification/accessTokenDTO';
 
 
@@ -20,7 +19,7 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
             catchError(error => {
                 const tokenService = this.injector.get(TokenService);
                 if (error.status === 400) {
-                    tokenService.logout();
+                    // tokenService.logout();
                     return throwError(error);
                 }
                 if (error.status !== 401) {
@@ -51,12 +50,12 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
                             this.tokenSubject.next(accessToken.accessToken);
                             return next.handle(request);
                         }
-                        tokenService.logout();
+                        // tokenService.logout();
                         return throwError(accessToken);
                     }),
                     catchError(err => {
                         this.isRefreshingToken = false;
-                        tokenService.logout();
+                        // tokenService.logout();
                         return throwError(err);
                     }));
         } else {
