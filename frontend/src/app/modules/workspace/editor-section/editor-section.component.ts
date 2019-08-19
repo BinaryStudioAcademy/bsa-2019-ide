@@ -1,5 +1,5 @@
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 
 export interface TabFileWrapper {
@@ -17,8 +17,8 @@ export class EditorSectionComponent implements OnInit {
     @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
 
     public openedFiles: TabFileWrapper[];
-    editorOptions = { theme: 'vs-dark', language: 'javascript' };
-    code = 'function x() {\nconsole.log("Hello world!");\n}';
+    editorOptions = { theme: 'vs-dark', language: 'typescript' };
+    code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
     originalCode = 'function x() { // TODO }';
     options = {
         theme: 'vs-dark'
@@ -30,21 +30,34 @@ export class EditorSectionComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
+        
         this.openedFiles = [
-            { isChanged: false, innerFile: { id: '1', folder: 'Project', name: 'Main.cs', content: 'Hello World', updaterId: 0 } },
-            { isChanged: false, innerFile: { id: '2', folder: 'Project', name: 'Startup.cs', content: 'Hello World', updaterId: 0 } },
+            // { isChanged: false, innerFile: { id: '1', folder: 'Project', name: 'Main.cs', content: 'Hello World', updaterId: 0 } },
+            // { isChanged: false, innerFile: { id: '2', folder: 'Project', name: 'Startup.cs', content: 'Hello World', updaterId: 0 } },
         ];
         this.items = [
-            { label: this.openedFiles[0].innerFile.name, icon: 'fa fa-fw fa-file', id: '1' },
-            { label: this.openedFiles[1].innerFile.name, icon: 'fa fa-fw fa-file', id: '2' },
+            // { label: this.openedFiles[0].innerFile.name, icon: 'fa fa-fw fa-file', id: '1' },
+            // { label: this.openedFiles[1].innerFile.name, icon: 'fa fa-fw fa-file', id: '2' },
+//=======
+//            { isChanged: false, innerFile: { id: '5d5576e350e2ac1a54d9dcfe', folder: 'Project', name: 'Main.cs', content: 'Hello World', updaterId: 0 } },
+//            { isChanged: false, innerFile: { id: '5d5576e850e2ac1a54d9dd00', folder: 'Project', name: 'Startup.cs', content: 'Hello World', updaterId: 0 } },
+//        ];
+//        this.items = [
+//            { label: this.openedFiles[0].innerFile.name, icon: 'fa fa-fw fa-file', id: '5d5576e350e2ac1a54d9dcfe' },
+//            { label: this.openedFiles[1].innerFile.name, icon: 'fa fa-fw fa-file', id: '5d5576e850e2ac1a54d9dd00' },
+//>>>>>>> development
 
         ];
-        this.activeItem = this.items[1];
+        // this.activeItem = this.items[1];
 
     }
 
+    
+
     onChange(ev) {
-        this.getFileFromActiveItem(this.activeItem).isChanged = true;
+        const touchedFile = this.getFileFromActiveItem(this.activeItem);
+        touchedFile.isChanged = true;
+        touchedFile.innerFile.content = this.code;
     }
 
     public closeItem(event, index) {
@@ -60,6 +73,7 @@ export class EditorSectionComponent implements OnInit {
         event.preventDefault();
     }
     public onTabSelect(evt, index) {
+        this.activeItem = this.items[index];
         this.code = this.openedFiles[index].innerFile.content;
     }
 

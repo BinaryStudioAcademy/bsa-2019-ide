@@ -169,6 +169,7 @@ namespace IDE.BLL.Services
             targetProject.CountOfBuildAttempts = projectUpdateDTO.CountOfBuildAttempts;
             targetProject.CountOfSaveBuilds = projectUpdateDTO.CountOfSaveBuilds;
             targetProject.AccessModifier = projectUpdateDTO.AccessModifier;
+            targetProject.Color = projectUpdateDTO.Color;
 
             _context.Projects.Update(targetProject);
             await _context.SaveChangesAsync();

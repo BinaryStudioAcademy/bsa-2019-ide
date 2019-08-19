@@ -9,4 +9,5 @@ export interface ProjectUpdateDTO {
     countOfSaveBuilds: number;
     countOfBuildAttempts: number;
     accessModifier: AccessModifier;
+    color: string;
 }

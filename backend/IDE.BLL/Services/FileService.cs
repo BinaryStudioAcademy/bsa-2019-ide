@@ -77,13 +77,13 @@ namespace IDE.BLL.Services
             return await GetByIdAsync(createdFile.Id);
         }
 
-        public async Task UpdateAsync(FileUpdateDTO fileUpdateDTO)
+        public async Task UpdateAsync(FileUpdateDTO fileUpdateDTO, int updaterId)
         {
             var currentFileDto = await GetByIdAsync(fileUpdateDTO.Id);
             currentFileDto.Name = fileUpdateDTO.Name;
             currentFileDto.Folder = fileUpdateDTO.Folder;
             currentFileDto.Content = fileUpdateDTO.Content;
-            currentFileDto.UpdaterId = fileUpdateDTO.UpdaterId;
+            currentFileDto.UpdaterId = updaterId;
             currentFileDto.UpdatedAt = DateTime.Now;
 
             var fileUpdate = _mapper.Map<File>(currentFileDto);
@@ -95,7 +95,7 @@ namespace IDE.BLL.Services
                 Name = fileUpdateDTO.Name,
                 Folder = fileUpdateDTO.Folder,
                 Content = fileUpdateDTO.Content,
-                CreatorId = fileUpdateDTO.UpdaterId,
+                CreatorId = updaterId,
                 CreatedAt = currentFileDto.UpdatedAt.Value
             };
             await _fileHistoryService.CreateAsync(fileHistory);           

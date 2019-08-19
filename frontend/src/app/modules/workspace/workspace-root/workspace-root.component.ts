@@ -34,6 +34,7 @@ import { UserAccess } from 'src/app/models/Enums/userAccess';
 export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     public projectId: number;
+    public userId: number;
     public access: UserAccess;
     private routeSub: Subscription;
     private project: ProjectInfoDTO;
@@ -126,7 +127,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
-        const openedFiles = this.editor.openedFiles.map(x => x.innerFile);
+        const openedFiles: FileUpdateDTO[] = this.editor.openedFiles.map(x => x.innerFile);
+        openedFiles.forEach(file => {
+            // file.updaterId = 0;
+        });
         return this.saveFilesRequest(openedFiles);
     }
 
@@ -146,13 +150,16 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             error => this.tr.error("Can't save files", 'Error', { tapToDismiss: true }));
     }
 
-    public onFilesSave(ev: FileUpdateDTO[]) {
-        this.saveFilesRequest(ev)
+    public onFilesSave(files: FileUpdateDTO[]) {
+        files.forEach(file => {
+            //file.updaterId = 0;
+        });
+        this.saveFilesRequest(files)
             .subscribe(
                 success => {
                     if (success.every(x => x.ok)) {
                         this.tr.success("Files saved", 'Success', { tapToDismiss: true });
-                        this.editor.confirmSaving(ev.map(x => x.id));
+                        this.editor.confirmSaving(files.map(x => x.id));
                     } else {
                         this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
                     }

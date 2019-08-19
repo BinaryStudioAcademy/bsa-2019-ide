@@ -31,6 +31,7 @@ import { RefreshTokenInterceptor } from './helpers/token.interceptor';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormsModule } from '@angular/forms';
+import { ProjectSettingsRouteGuard } from './guards/project-settings-route.guard';
 import { AddCollaboratorsComponent } from './modules/collaborator/components/add-collaborators/add-collaborators.component';
 
 
@@ -84,6 +85,7 @@ import { AddCollaboratorsComponent } from './modules/collaborator/components/add
             multi: true
         },
         LoginGuard,
+        ProjectSettingsRouteGuard
     ],
     entryComponents: [
         AddCollaboratorsComponent

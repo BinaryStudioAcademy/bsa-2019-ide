@@ -58,14 +58,19 @@ export class AuthDialogComponent implements OnInit {
         this.tokenService
             .login({ email: this.email, password: this.password })
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(result => {this.isSpinner = false; this.ref.close(); },
-                error => {
-                    this.isSpinner = false;
-                    this.toast.error('The email or password is incorrect', 'Error Message');
+            .subscribe(
+                (result) => {
+                    this.isSpinner = false; 
+                    this.ref.close(); 
+                    this.toast.success('You have successfully signed in!', `Wellcome, ${result.firstName} ${result.lastName}!`);
+                    this.router.navigate(['dashboard']);
                 },
-                () => this.toast.success('You have successfully signed in!')
-            );
-        this.router.navigate(['/']);
+                (error) => {
+                    this.isSpinner = false;
+                    const message = !!error.message ? error.message : error.statusText;
+                    this.toast.error(message, 'Error Message');
+                }
+            );        
     }
 
     public signUp() {
@@ -80,8 +85,12 @@ export class AuthDialogComponent implements OnInit {
         this.tokenService
             .register(user)
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(result => this.ref.close(),
-                error => this.toast.error("Invalid input data", 'Error Message'),
+            .subscribe(
+                (result) => {
+                    this.ref.close();
+                    this.router.navigate(['dashboard']);
+                },
+                (error) => this.toast.error("Invalid input data", 'Error Message'),
                 () => this.toast.success('You have successfully registered!'));
                 
     }
