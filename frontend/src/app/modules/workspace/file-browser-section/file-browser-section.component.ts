@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FileCreateDTO } from 'src/app/models/DTO/File/fileCreateDTO';
 import { ProjectStructureFormaterService } from 'src/app/services/project-structure-formater.service';
 import { FileStructureDTO } from 'src/app/models/DTO/Workspace/fileStructureDTO';
+import { ɵBrowserPlatformLocation } from '@angular/platform-browser';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -23,6 +24,7 @@ export class FileBrowserSectionComponent implements OnInit {
     public files: TreeNode[];
     public selectedItem: TreeNode;
     public projectId: number;
+    public expand: boolean=false;
 
     private fileCounter: number = 0;
     private folderCounter: number = 0;
@@ -190,15 +192,18 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     public expandAll(){
-        this.files.forEach( node => {
-            this.expandRecursive(node, true);
-        } );
-    }
-
-    public collapseAll(){
-        this.files.forEach( node => {
-            this.expandRecursive(node, false);
-        } );
+        this.expand=!this.expand;
+        if(this.expand)
+        {
+            this.files.forEach( node => {
+                this.expandRecursive(node, true);
+            } );
+        }
+        else{
+            this.files.forEach( node => {
+                this.expandRecursive(node, false);
+            } );
+        }
     }
 
     private expandRecursive(node:TreeNode, isExpand:boolean){

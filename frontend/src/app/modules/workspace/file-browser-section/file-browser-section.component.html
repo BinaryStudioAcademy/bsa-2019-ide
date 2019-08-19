@@ -1,7 +1,7 @@
 <div class="tree-wrapper">
-    <div class="bottom-btns p-grid p-justify-around">
-        <p-button icon="pi pi-chevron-down" label="Expand" (click)="expandAll()"></p-button>
-        <p-button icon="pi pi-chevron-up" label="Collapse" (click)="collapseAll()"></p-button>
+    <div class="bottom-btns p-grid p-justify-end">
+        <p-button icon="pi pi-sort" (click)="expandAll()"></p-button>
+
     </div>
     <p-tree class="custom-tree" selectionMode="single" [value]="files"  [(selection)]="selectedItem"
             [contextMenu]="cm" (onNodeSelect)="nodeSelect($event)" [filter]="show" filterMode="strict">   
