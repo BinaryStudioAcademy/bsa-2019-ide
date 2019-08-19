@@ -31,6 +31,7 @@ import { RefreshTokenInterceptor } from './helpers/token.interceptor';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormsModule } from '@angular/forms';
+import { AddCollaboratorsComponent } from './modules/collaborator/components/add-collaborators/add-collaborators.component';
 
 
 @NgModule({
@@ -83,6 +84,9 @@ import { FormsModule } from '@angular/forms';
             multi: true
         },
         LoginGuard,
+    ],
+    entryComponents: [
+        AddCollaboratorsComponent
     ],
     bootstrap: [AppComponent]
 })

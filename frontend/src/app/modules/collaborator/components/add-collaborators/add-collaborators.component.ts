@@ -27,6 +27,7 @@ export class AddCollaboratorsComponent implements OnInit {
     public deleteCollaborators: CollaboratorDTO[] = [];
 
     private startCollaborators = [] as CollaboratorDTO[];
+    private area: string
 
     constructor(private route: ActivatedRoute,
         private userService: UserService,
@@ -38,7 +39,8 @@ export class AddCollaboratorsComponent implements OnInit {
         private toastService: ToastrService) { }
 
     public ngOnInit(): void {
-        this.projectId=this.config.data.id;
+        this.area="workspace";
+        this.projectId = this.config.data.id;
         this.projectService.getProjectCollaborators(this.projectId)
             .subscribe(
                 (resp) => {
@@ -72,19 +74,21 @@ export class AddCollaboratorsComponent implements OnInit {
             if (!this.IsSelected(deleteItem)) {
                 this.rightService.deleteCollaborator(deleteItem)
                     .subscribe(
-                        (resp)=>{},
+                        (resp) => {
+                            this.ref.close();
+                        },
                         (error) => {
                             this.toastService.error('Can\'t delete collacortors access', 'Error Message');
                         }
                     );
             }
         });
-        for (let i in this.newCollaborators) {
+        this.newCollaborators.forEach(item => {
             const update: UpdateUserRightDTO =
             {
                 projectId: this.projectId,
-                access: this.newCollaborators[i].access,
-                userId: this.newCollaborators[i].id
+                access: item.access,
+                userId: item.id
             }
             this.rightService.setUsersRigths(update)
                 .subscribe(
@@ -98,11 +102,14 @@ export class AddCollaboratorsComponent implements OnInit {
                         this.toastService.error('Can\'t save new collacortors access', 'Error Message');
                     }
                 );
-        }
+        });
     }
 
 
     public IsNotCollaboratorsChange(): boolean {
+        if (this.newCollaborators.length == 0 && this.startCollaborators.length == 0) {
+            return true;
+        }
         if (this.deleteCollaborators.length != 0) {
             return false;
         }

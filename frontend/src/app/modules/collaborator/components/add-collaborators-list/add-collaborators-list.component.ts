@@ -1,14 +1,17 @@
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output, Injectable } from '@angular/core';
 import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { SelectItem } from 'primeng/api';
 import { AddCollaboratorsComponent } from '../add-collaborators/add-collaborators.component';
+import { ProjectSettingsComponent} from '../../../project/components/project-settings/project-settings.component';
 
 @Component({
     selector: 'app-add-collaborators-list',
     templateUrl: './add-collaborators-list.component.html',
     styleUrls: ['./add-collaborators-list.component.sass']
 })
+
+@Injectable()
 export class AddCollaboratorsListComponent implements OnInit {
 
     selectedAccess: UserAccess
@@ -16,10 +19,12 @@ export class AddCollaboratorsListComponent implements OnInit {
     label: string;
 
     @Input() collaborators: CollaboratorDTO[];
+    @Input() area: string;
     @Output() onChanged = new EventEmitter<CollaboratorDTO[]>();
 
     constructor(
-        private addCollaboratorsComponent: AddCollaboratorsComponent
+        private addCollaboratorsComponent: AddCollaboratorsComponent,
+        private projectSettingComponent: ProjectSettingsComponent
     ) { }
 
     ngOnInit() {
@@ -32,12 +37,19 @@ export class AddCollaboratorsListComponent implements OnInit {
     }
 
     public delete(collaboratorId: number): void {
-        this.addCollaboratorsComponent.delete(collaboratorId);
+        console.log(this.area);
+        if(this.area=="workspace")
+        {
+            this.addCollaboratorsComponent.delete(collaboratorId);
+        }
+        else{
+            this.projectSettingComponent.delete(collaboratorId);
+        }
     }
 
-    public change() {
-        this.onChanged.emit(this.collaborators);
-    }
+    // public change() {
+    //     this.onChanged.emit(this.collaborators);
+    // }
 
     public getUserAccess(user: CollaboratorDTO): SelectItem {
         switch (user.access) {

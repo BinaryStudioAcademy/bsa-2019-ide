@@ -64,6 +64,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public isAuthor(): boolean {
+        if (!this.project)
+        {
+            return false;
+        }
         if (this.project.authorId == this.tokenService.getUserId()) {
             return true;
         }

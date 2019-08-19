@@ -30,6 +30,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
 
     private unsubscribe$ = new Subject<void>();
     private startCollaborators = [] as CollaboratorDTO[];
+    private area:string;
 
     public projectForm = this.fb.group({
         name: ['', Validators.required],
@@ -49,6 +50,7 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
+        this.area="projectSettings";
         this.projectId = Number(this.route.snapshot.paramMap.get('id'));
         if (!this.projectId) {
             console.error('Id in URL is not a number!');
@@ -96,9 +98,9 @@ export class ProjectSettingsComponent implements OnInit, OnDestroy {
             && this.IsCollaboratorChange();
     }
 
-    public onChanged(increase: CollaboratorDTO[]) {
-        this.collaborators = increase;
-    }
+    // public onChanged(increase: CollaboratorDTO[]) {
+    //     this.collaborators = increase;
+    // }
 
     public IsProjectNotChange(): boolean {
         return this.projectForm.get('name').value === this.projectStartState.name

@@ -7,6 +7,7 @@ import { ProjectRoutingModule } from './project-routing.module';
 import { CreateProjectComponent } from './components/create-project/create-project.component';
 import { ProjectDetailsInfoComponent } from './components/project-details-info/project-details-info.component';
 import { ProjectDetailsUserStatisticsComponent } from './components/project-details-user-statistics/project-details-user-statistics.component';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -19,9 +20,10 @@ import { KeyFilterModule } from 'primeng/keyfilter';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SharedModule } from '../shared/shared.module';
 import {TabViewModule} from 'primeng/tabview';
-import { CollaboratorsListComponent } from './components/collaborators-list/collaborators-list.component';
 import { FormsModule } from '@angular/forms';
 import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
+import { CollaboratorModule } from '../collaborator/collaborator.module';
+import { AddCollaboratorsComponent } from '../collaborator/components/add-collaborators/add-collaborators.component';
 
 @NgModule({
   declarations: [
@@ -30,8 +32,7 @@ import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdia
     ProjectDetailsComponent,
     ProjectDetailsInfoComponent,
     ProjectDetailsUserStatisticsComponent,
-    CreateProjectComponent,
-    CollaboratorsListComponent,
+    CreateProjectComponent
   ],
   imports: [
     FormsModule,
@@ -49,10 +50,13 @@ import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdia
     ProgressSpinnerModule,
     TabViewModule,
     SharedModule,
-    DynamicDialogModule
+    DynamicDialogModule,
+    CollaboratorModule
   ],
-  exports:[
-    CollaboratorsListComponent
+  providers:[
+    AddCollaboratorsComponent,
+    DynamicDialogRef,
+    DynamicDialogConfig    
   ]
 })
 export class ProjectModule { }

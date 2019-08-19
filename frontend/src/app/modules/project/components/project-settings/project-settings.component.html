@@ -68,8 +68,7 @@
               <div class="invalid" *ngIf="projectForm.get('countOfBuildAttempts').invalid">{{getErrorMessage('countOfBuildAttempts')}}</div>
 
               <div class="label">Collaborators:</div>
-              <app-collaborators-list [collaborators]="collaborators" (onChanged)="onChanged($event)"></app-collaborators-list>
-
+              <app-add-collaborators-list [collaborators]="collaborators" [area]="area"></app-add-collaborators-list>
 
               <div class="ui-g ui-fluid">
                   <div class="ui-g-12">
