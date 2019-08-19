@@ -85,8 +85,12 @@ export class AuthDialogComponent implements OnInit {
         this.tokenService
             .register(user)
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(result => this.ref.close(),
-                error => this.toast.error("Invalid input data", 'Error Message'),
+            .subscribe(
+                (result) => {
+                    this.ref.close();
+                    this.router.navigate(['dashboard']);
+                },
+                (error) => this.toast.error("Invalid input data", 'Error Message'),
                 () => this.toast.success('You have successfully registered!'));
                 
     }
