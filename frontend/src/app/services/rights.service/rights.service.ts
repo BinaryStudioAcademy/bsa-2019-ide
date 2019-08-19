@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
 import { DeleteCollaboratorRightDTO } from 'src/app/models/DTO/Common/deleteCollaboratorRightDTO';
+import { UserAccess } from 'src/app/models/Enums/userAccess';
 
 @Injectable({
     providedIn: 'root'
@@ -16,6 +17,12 @@ export class RightsService {
 
     public setUsersRigths(update: UpdateUserRightDTO): Observable<HttpResponse<[]>> {
         return this.httpClient.putRequest(this.address, update);
+    }
+
+    public getUserRightById(userId: number, projectId: number): Observable<HttpResponse<UserAccess>>
+    {
+        console.log("get");
+        return this.httpClient.getRequest(this.address+'/'+userId+'/'+projectId);
     }
 
     public deleteCollaborator(deleteCollaborator: DeleteCollaboratorRightDTO)

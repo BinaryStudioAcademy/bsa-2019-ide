@@ -23,9 +23,9 @@ namespace IDE.BLL.Services
             _context = context;
         }
 
-        public ProjectRightsDTO GetUserRightsForProject(int projectId, int userId)
+        public async Task<ProjectRightsDTO> GetUserRightsForProject(int projectId, int userId)
         {
-            var project = _context.Projects.FirstOrDefault(p => p.Id == projectId);
+            var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
             if (project.AuthorId == userId)
                 return new ProjectRightsDTO() { IsAuthor = true };
             
@@ -41,6 +41,13 @@ namespace IDE.BLL.Services
             {
                 return new ProjectRightsDTO() { Access = projectMember.UserAccess };
             }
+        }
+
+        public async Task<UserAccess> GetUserRightById(int userId, int projectId)
+        {
+            var access = await _context.ProjectMembers
+                .FirstOrDefaultAsync(item => item.UserId == userId && item.ProjectId == projectId); ;
+            return access.UserAccess;
         }
 
         public async Task DeleteRights(int userId,int projectId, int currentUserId)

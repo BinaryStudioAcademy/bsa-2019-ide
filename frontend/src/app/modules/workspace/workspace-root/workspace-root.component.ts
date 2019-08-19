@@ -20,6 +20,8 @@ import { ProjectService } from 'src/app/services/project.service/project.service
 import { CollaborateService } from 'src/app/services/collaborator.service/collaborate.service';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { TokenService } from 'src/app/services/token.service/token.service';
+import { RightsService } from 'src/app/services/rights.service/rights.service';
+import { UserAccess } from 'src/app/models/Enums/userAccess';
 
 
 
@@ -32,6 +34,7 @@ import { TokenService } from 'src/app/services/token.service/token.service';
 export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     public projectId: number;
+    public access: UserAccess;
     private routeSub: Subscription;
     private project: ProjectInfoDTO;
 
@@ -44,14 +47,22 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private ws: WorkspaceService,
         private saveOnExit: LeavePageDialogService,
         private fileService: FileService,
+        private rightService: RightsService,
         private collaborateService: CollaborateService,
         private projectService: ProjectService,
         private tokenService: TokenService) { }
 
     ngOnInit() {
+        const userId=this.tokenService.getUserId();
         this.routeSub = this.route.params.subscribe(params => {
             this.projectId = params['id'];
         });
+        this.rightService.getUserRightById(userId,this.projectId)
+        .subscribe(
+            (resp)=>{
+                this.access=resp.body;
+            }
+        )
         this.projectService.getProjectById(this.projectId)
         .subscribe(
             (resp) => {
@@ -61,6 +72,15 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                 this.tr.error("Can't load selected project.", 'Error Message');
             }
         );
+    }
+
+    public IsBigger(number: number)
+    {
+        if (this.access>=number)
+        {
+            return true;
+        }
+        return false;
     }
 
     public isAuthor(): boolean {

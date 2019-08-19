@@ -29,6 +29,12 @@ namespace IDE.API.Controllers
             return Ok();
         }
 
+        [HttpGet("{userId}/{projectId}")]
+        public async Task<IActionResult> GetUserRightById(int userId, int projectId)
+        {
+            return Ok(await _rightsService.GetUserRightById(userId, projectId));
+        }
+
         [HttpDelete("{userId}/{projectId}")]
         public async Task<IActionResult> DeleteRights(int userId, int projectId)
         {

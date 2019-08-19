@@ -11,7 +11,8 @@ namespace IDE.BLL.Interfaces
     public interface IRightsService
     {
         Task SetRightsToProject(UpdateUserRightDTO update, int userId);
-        ProjectRightsDTO GetUserRightsForProject(int projectId, int userId);
+        Task<ProjectRightsDTO> GetUserRightsForProject(int projectId, int userId);
+        Task<UserAccess> GetUserRightById(int userId, int projectId);
         Task DeleteRights(int userId, int projectId, int currentUserId);
     }
 }
