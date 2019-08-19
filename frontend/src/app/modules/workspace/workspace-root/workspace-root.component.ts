@@ -62,7 +62,7 @@ export class WorkspaceRootComponent implements OnInit {
                 (resp) => {
                     if (resp.ok) {
                         const { id, name, content, folder, updaterId } = resp.body as FileDTO;
-                        const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, updaterId };
+                        const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder };
                         this.editor.AddFileToOpened(fileUpdateDTO);
                         this.editor.items.push({ label: name, icon: 'fa fa-fw fa-file', id: id });
                         this.editor.activeItem = this.editor.items[this.editor.items.length - 1];
