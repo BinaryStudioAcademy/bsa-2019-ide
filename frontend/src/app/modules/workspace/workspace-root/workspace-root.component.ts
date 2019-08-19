@@ -104,7 +104,7 @@ export class WorkspaceRootComponent implements OnInit {
 
     public showSerachField()
     {
-        this.showSerachFiels=!this.showSerachField;
+        this.showSerachFiels=!this.showSerachFiels;
     }
 
     public onFilesSave(files: FileUpdateDTO[]) {

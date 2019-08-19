@@ -1,6 +1,6 @@
 import { MenuItem, TreeNode } from 'primeng/primeng';
 import { FileBrowserService } from './../../../services/file-browser.service';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { TreeNodeType } from "../../../models/Enums/treeNodeType"
 import { ActivatedRoute } from '@angular/router';
 import { FileService } from 'src/app/services/file.service/file.service';
@@ -16,8 +16,6 @@ import { FileStructureDTO } from 'src/app/models/DTO/Workspace/fileStructureDTO'
     styleUrls: ['./file-browser-section.component.sass']
 })
 export class FileBrowserSectionComponent implements OnInit {
-
-    
 
     @Output() fileSelected = new EventEmitter<string>();
     items: MenuItem[];
