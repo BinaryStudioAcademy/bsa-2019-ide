@@ -24,9 +24,9 @@ import { FileBrowserSectionComponent } from '../file-browser-section/file-browse
 export class WorkspaceRootComponent implements OnInit {
     public projectId: number;
     public userId: number;
-    public showFileBrowser:boolean=true;
-    public showSerachFiels:boolean=false;
-    public large: boolean=false;
+    public showFileBrowser=true;
+    public showSerachFiels=false;
+    public large=false;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
@@ -97,12 +97,12 @@ export class WorkspaceRootComponent implements OnInit {
             error => this.tr.error("Can't save files", 'Error', { tapToDismiss: true }));
     }
 
-    public hideFileBrowser()
+    public hideFileBrowser(): void
     {
         this.showFileBrowser=!this.showFileBrowser;
     }
 
-    public showSerachField()
+    public showSerachField(): void
     {
         this.showSerachFiels=!this.showSerachFiels;
     }

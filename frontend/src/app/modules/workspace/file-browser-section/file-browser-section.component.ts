@@ -53,7 +53,7 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'create file', icon: 'fa fa-file', command: (event) => this.createFile(this.selectedItem),  },
             { label: 'create folder', icon: 'fa fa-folder', command: (event) => this.createFolder(this.selectedItem) },
             { label: 'delete', icon: 'fa fa-remove', command: (event) => this.delete(this.selectedItem) },
-          { label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem), disabled: true},
+            { label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem), disabled: true},
             { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem), disabled : true }
         ];
     }
