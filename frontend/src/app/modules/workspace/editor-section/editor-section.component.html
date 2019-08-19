@@ -14,5 +14,6 @@
     </ng-template>
   </p-tabMenu>
 </div>
-<ngx-monaco-editor class="my-code-editor" [options]="editorOptions" [(ngModel)]="code" (ngModelChange)="onChange($event)">
+<ngx-monaco-editor *ngIf="openedFiles.length!=0" class="my-code-editor" [options]="editorOptions" [(ngModel)]="code" (ngModelChange)="onChange($event)">
 </ngx-monaco-editor>
+<i *ngIf="openedFiles.length==0" class="pi pi-users" style="font-size: 10em; display: flex; justify-content: center; margin-top: 25%"></i>
