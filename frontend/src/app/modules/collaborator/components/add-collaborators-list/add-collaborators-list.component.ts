@@ -14,9 +14,9 @@ import { ProjectSettingsComponent} from '../../../project/components/project-set
 @Injectable()
 export class AddCollaboratorsListComponent implements OnInit {
 
-    selectedAccess: UserAccess
-    userAccess: SelectItem[];
-    label: string;
+    public selectedAccess: UserAccess
+    public userAccess: SelectItem[];
+    public label: string;
 
     @Input() collaborators: CollaboratorDTO[];
     @Input() area: string;
@@ -37,7 +37,6 @@ export class AddCollaboratorsListComponent implements OnInit {
     }
 
     public delete(collaboratorId: number): void {
-        console.log(this.area);
         if(this.area=="workspace")
         {
             this.addCollaboratorsComponent.delete(collaboratorId);
@@ -46,27 +45,4 @@ export class AddCollaboratorsListComponent implements OnInit {
             this.projectSettingComponent.delete(collaboratorId);
         }
     }
-
-    // public change() {
-    //     this.onChanged.emit(this.collaborators);
-    // }
-
-    public getUserAccess(user: CollaboratorDTO): SelectItem {
-        switch (user.access) {
-            case 0:
-                this.label = "Can read"
-                break;
-            case 1:
-                this.label = "Can edit"
-                break;
-            case 2:
-                this.label = "Can edit and build"
-                break;
-            case 3:
-                this.label = "Provide all access rights"
-                break;
-        }
-        return { label: this.label, value: user.access };
-    }
-
 }

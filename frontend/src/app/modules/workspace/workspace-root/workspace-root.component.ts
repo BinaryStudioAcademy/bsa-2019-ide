@@ -38,13 +38,20 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     private routeSub: Subscription;
     private project: ProjectInfoDTO;
     private authorId: number;
+    public showFileBrowser = true;
+    public showSearch = false;
+    public large = false;
+    public canRun = false;
+    public canBuild = false;
+    public canEdit = false;
+    public expandFolder=false;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
-    @ViewChild('fileBrowser', {static: false})
+    @ViewChild('fileBrowser', { static: false })
     private fileBrowser: FileBrowserSectionComponent;
-    
+
     constructor(
         private route: ActivatedRoute,
         private tr: ToastrService,
@@ -63,10 +70,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         });
         this.projectService.getAuthorId(this.projectId)
             .subscribe(
-            (resp) => {
-                this.authorId = resp.body;
-                console.log(this.authorId);
-            });
+                (resp) => {
+                    this.authorId = resp.body;
+                    console.log(this.authorId);
+                });
         if (this.userId != this.authorId) {
             this.rightService.getUserRightById(userId, this.projectId)
                 .subscribe(
@@ -84,13 +91,26 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                     this.tr.error("Can't load selected project.", 'Error Message');
                 }
             );
+        this.setUserAccess();
     }
 
-    public IsBigger(number: number) {
-        if (this.access >= number) {
-            return true;
+    public setUserAccess() {
+        switch (this.access) {
+            case 1:
+                this.canEdit = true;
+                break;
+            case 2:
+                this.canEdit = true;
+                this.canBuild = true;
+                break;
+            case 3:
+                this.canEdit = true;
+                this.canBuild = true;
+                this.canRun = true;
+                break;
+            default:
+                break
         }
-        return false;
     }
 
     public isAuthor(): boolean {
@@ -155,6 +175,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             error => this.tr.error("Can't save files", 'Error', { tapToDismiss: true }));
     }
 
+    public hideFileBrowser(): void {
+        this.showFileBrowser = !this.showFileBrowser;
+    }
+
+    public hideSearchField(): void {
+        this.showSearch = !this.showSearch;
+    }
+
     public onFilesSave(files: FileUpdateDTO[]) {
         files.forEach(file => {
             //file.updaterId = 0;
@@ -170,14 +198,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                     }
                 },
                 error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
-    }
-
-    public expand(){
-        this.fileBrowser.expandAll();
-    }
-
-    public collapse(){
-        this.fileBrowser.collapseAll();        
     }
 
     private saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {

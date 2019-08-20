@@ -66,8 +66,8 @@ export class AddCollaboratorsComponent implements OnInit {
         this.deleteCollaborators.forEach(item => {
             const deleteItem: DeleteCollaboratorRightDTO =
             {
-                id: item.id,
                 access: item.access,
+                id: item.id,
                 nickName: item.nickName,
                 projectId: this.projectId
             }
@@ -126,28 +126,15 @@ export class AddCollaboratorsComponent implements OnInit {
 
     }
 
-    public addCollaborator(newCollaboratorsNickname: UserNicknameDTO) {
+    public addCollaborator(newCollaboratorsNickname: UserNicknameDTO): void {
         const newCollaborators: CollaboratorDTO =
         {
+            access: 0,
             id: newCollaboratorsNickname.id,
             nickName: newCollaboratorsNickname.nickName,
-            access: 0
         }
         this.newCollaborators.push(newCollaborators);
         this.collaborator = null;
-    }
-
-    private SetCollaboratorsFromResponse(resp: HttpResponse<CollaboratorDTO[]>): void {
-        this.newCollaborators = resp.body;
-        this.newCollaborators.forEach(element => {
-            let newElement: CollaboratorDTO =
-            {
-                id: element.id,
-                access: element.access,
-                nickName: element.nickName
-            }
-            this.startCollaborators.push(newElement);
-        });
     }
 
     public close(): void {
@@ -164,16 +151,6 @@ export class AddCollaboratorsComponent implements OnInit {
     public checkCollaborator(collaborator: UserNicknameDTO): void {
         this.collaborator = null;
         this.router.navigate([`/workspace/${this.projectId}`]);
-    }
-
-    private IsSelected(collaborator: UserNicknameDTO): boolean {
-        let result: boolean = false;
-        this.newCollaborators.forEach(element => {
-            if (element.id === collaborator.id) {
-                result = true;
-            }
-        });
-        return result;
     }
 
     public filter(query, collaborators: UserNicknameDTO[]): UserNicknameDTO[] {
@@ -195,5 +172,28 @@ export class AddCollaboratorsComponent implements OnInit {
             filtered.push(notFound);
         }
         return filtered;
+    }
+
+    private IsSelected(collaborator: UserNicknameDTO): boolean {
+        let result: boolean = false;
+        this.newCollaborators.forEach(element => {
+            if (element.id === collaborator.id) {
+                result = true;
+            }
+        });
+        return result;
+    }
+
+    private SetCollaboratorsFromResponse(resp: HttpResponse<CollaboratorDTO[]>): void {
+        this.newCollaborators = resp.body;
+        this.newCollaborators.forEach(element => {
+            let newElement: CollaboratorDTO =
+            {
+                id: element.id,
+                access: element.access,
+                nickName: element.nickName
+            }
+            this.startCollaborators.push(newElement);
+        });
     }
 }

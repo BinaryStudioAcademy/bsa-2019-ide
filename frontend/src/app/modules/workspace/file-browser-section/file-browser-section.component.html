@@ -1,6 +1,8 @@
 <div class="tree-wrapper">
+    <button pButton type="button" icon="pi pi-sort" title="Expand all" iconPos="left"
+            class="ui-button-primary expand-btn" (click)="expand()"></button>
     <p-tree class="custom-tree" selectionMode="single" [value]="files"  [(selection)]="selectedItem"
-            [contextMenu]="cm" (onNodeSelect)="nodeSelect($event)" [filter]="true" filterMode="strict">   
+            [contextMenu]="cm" (onNodeSelect)="nodeSelect($event)" [filter]="showSerachField" filterMode="strict">   
         </p-tree>
     <p-contextMenu #cm [model]="items"></p-contextMenu>
 </div>

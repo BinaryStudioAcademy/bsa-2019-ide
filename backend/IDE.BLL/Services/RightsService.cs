@@ -29,7 +29,7 @@ namespace IDE.BLL.Services
             if (project.AuthorId == userId)
                 return new ProjectRightsDTO() { IsAuthor = true };
             
-            var projectMember = _context.ProjectMembers.FirstOrDefault(pm => pm.UserId == userId && pm.ProjectId == projectId);
+            var projectMember = await _context.ProjectMembers.FirstOrDefaultAsync(pm => pm.UserId == userId && pm.ProjectId == projectId);
             if (projectMember == null)
             {
                 if (project.AccessModifier == AccessModifier.Private)
