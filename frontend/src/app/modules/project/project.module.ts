@@ -5,6 +5,7 @@ import { ProjectDetailsComponent } from './components/project-details/project-de
 import { ProjectRoutingModule } from './project-routing.module';
 import { ProjectDetailsInfoComponent } from './components/project-details-info/project-details-info.component';
 import { ProjectDetailsUserStatisticsComponent } from './components/project-details-user-statistics/project-details-user-statistics.component';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -18,6 +19,10 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SharedModule } from '../shared/shared.module';
 import {TabViewModule} from 'primeng/tabview';
 import { ProjectWindowComponent } from './components/project-window/project-window.component';
+import { FormsModule } from '@angular/forms';
+import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
+import { CollaboratorModule } from '../collaborator/collaborator.module';
+import { AddCollaboratorsComponent } from '../collaborator/components/add-collaborators/add-collaborators.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +33,7 @@ import { ProjectWindowComponent } from './components/project-window/project-wind
     ProjectWindowComponent
   ],
   imports: [
+    FormsModule,
     CommonModule,
     ProjectRoutingModule,
     ButtonModule,
@@ -41,10 +47,17 @@ import { ProjectWindowComponent } from './components/project-window/project-wind
     SharedModule,
     ProgressSpinnerModule,
     TabViewModule,
-    SharedModule
+    SharedModule,
+    DynamicDialogModule,
+    CollaboratorModule
   ],
   entryComponents: [
     ProjectWindowComponent
+  ],
+  providers:[
+    AddCollaboratorsComponent,
+    DynamicDialogRef,
+    DynamicDialogConfig    
   ]
 })
 export class ProjectModule { }

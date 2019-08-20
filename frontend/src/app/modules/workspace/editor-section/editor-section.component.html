@@ -15,7 +15,6 @@
     </p-tabMenu>
   </div>
   <!--Alexey merged this conflict and rest next two lines for not crash something-->
-  <div *ngIf="openedFiles.length === 0" class="editor-stub">No editor {{openedFiles.length}}</div>
   <i *ngIf="openedFiles.length === 0" class="editor-backgound pi pi-users"></i>
   <ngx-monaco-editor *ngIf="openedFiles.length > 0" class="my-code-editor" [options]="editorOptions" [(ngModel)]="code" (ngModelChange)="onChange($event)">
   </ngx-monaco-editor>

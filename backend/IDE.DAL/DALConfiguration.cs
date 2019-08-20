@@ -36,7 +36,7 @@ namespace IDE.DAL
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            UpdateDatabase(app);
+            UpdateDatabases(app);
         }
 
         private static void ConfigureElasticSearch(IServiceCollection services, IConfiguration configuration)
@@ -54,14 +54,15 @@ namespace IDE.DAL
                sp.GetRequiredService<IOptions<FileStorageNoSqlDbSettings>>().Value);
         }
 
-        private static void UpdateDatabase(IApplicationBuilder app)
+        private static void UpdateDatabases(IApplicationBuilder app)
         {
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 using (var context = serviceScope.ServiceProvider.GetService<IdeContext>())
                 {
+                    var fileStorageNoSqlDbSettings = serviceScope.ServiceProvider.GetService<IFileStorageNoSqlDbSettings>();
                     context.InitializeDatabase();
-                    context.EnsureSeeded();
+                    context.EnsureSeeded(fileStorageNoSqlDbSettings);
                 }
             }
         }

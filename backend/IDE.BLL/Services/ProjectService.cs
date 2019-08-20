@@ -5,6 +5,7 @@ using IDE.Common.DTO.Common;
 using IDE.Common.DTO.Project;
 using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Project;
+using IDE.Common.ModelsDTO.DTO.User;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -57,6 +58,20 @@ namespace IDE.BLL.Services
             var collection = await projects.ToListAsync();
 
             return MapAndGetLastBuildFinishedDate(collection, userId);
+        }
+
+        public async Task<ICollection<CollaboratorDTO>> GetProjectCollaborators(int projectId, int authorId)
+        {
+            var colaborators = await _context.ProjectMembers
+                .Where(a => a.ProjectId == projectId && a.UserId != authorId)
+                .Select(a => new CollaboratorDTO
+                {
+                    Id=a.UserId,
+                    NickName=a.User.NickName,
+                    Access=a.UserAccess
+                }).ToListAsync();
+
+            return colaborators;
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId)
@@ -150,6 +165,12 @@ namespace IDE.BLL.Services
             return await GetProjectById(projectUpdateDTO.Id);
         }
 
+        public async Task<int> GetAuthorId(int projectId)
+        {
+            var author = await _context.Projects.FirstOrDefaultAsync(item => item.Id == projectId);
+            return author.AuthorId;
+        }
+
         public async Task DeleteProjectAsync(int id, int ownerId)
         {
 
@@ -176,6 +197,7 @@ namespace IDE.BLL.Services
             return await _context.FavouriteProjects
                 .Include(x => x.Project)
                 .Include(x => x.Project.Author)
+                .Where(x => x.Project.AccessModifier != AccessModifier.Private)
                 .GroupBy(x => x.Project.Language)
                 .Select(x =>
                     new LikedProjectInLanguageDTO()
@@ -190,7 +212,7 @@ namespace IDE.BLL.Services
                                     ProjectName = z.FirstOrDefault().Project.Name,
                                     AuthorNickName = z.FirstOrDefault().Project.Author.NickName,
                                     LikesCount = z.Count()
-                                }).OrderBy(i => i.LikesCount).Take(5).ToArray()
+                                }).OrderByDescending(i => i.LikesCount).Take(5).ToArray()
                     })
                     .OrderBy(x => x.ProjectType).ToListAsync();
         }

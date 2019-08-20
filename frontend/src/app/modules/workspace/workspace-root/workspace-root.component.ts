@@ -2,19 +2,28 @@ import { LeavePageDialogService } from './../../../services/leave-page-dialog.se
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { ResizeEvent } from 'angular-resizable-element';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
 
 import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
+import { MenuItem } from 'primeng/api';
+import { catchError } from 'rxjs/internal/operators/catchError';
+import { ProjectService } from 'src/app/services/project.service/project.service';
+import { CollaborateService } from 'src/app/services/collaborator.service/collaborate.service';
+import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
 import { ProjectType } from '../../project/models/project-type';
+import { RightsService } from 'src/app/services/rights.service/rights.service';
+import { UserAccess } from 'src/app/models/Enums/userAccess';
+import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
 
 
@@ -26,30 +35,95 @@ import { FileBrowserSectionComponent } from '../file-browser-section/file-browse
     templateUrl: './workspace-root.component.html',
     styleUrls: ['./workspace-root.component.sass']
 })
-export class WorkspaceRootComponent implements OnInit {
+export class WorkspaceRootComponent implements OnInit, OnDestroy {
+
     public projectId: number;
     public userId: number;
-    public showFileBrowser=true;
-    public large=false;
+    public access: UserAccess;
+    private routeSub: Subscription;
+    private project: ProjectInfoDTO;
+    private authorId: number;
+    public showFileBrowser = true;
+    public showSearch = false;
+    public large = false;
+    public canRun = false;
+    public canBuild = false;
+    public canEdit = false;
+    public expandFolder=false;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
-    @ViewChild('fileBrowser', {static: false})
+    @ViewChild('fileBrowser', { static: false })
     private fileBrowser: FileBrowserSectionComponent;
-    
+
     constructor(
         private route: ActivatedRoute,
         private tr: ToastrService,
         private ws: WorkspaceService,
         private saveOnExit: LeavePageDialogService,
-        private tokenService: TokenService,
         private fileService: FileService,
+        private rightService: RightsService,
+        private collaborateService: CollaborateService,
+        private projectService: ProjectService,
+        private tokenService: TokenService,
         private projectEditService: ProjectDialogService) { }
 
     ngOnInit() {
-        this.projectId = Number(this.route.snapshot.paramMap.get('id'));
-        this.userId = this.tokenService.getUserId();
+        const userId = this.tokenService.getUserId();
+        this.routeSub = this.route.params.subscribe(params => {
+            this.projectId = params['id'];
+        });
+        this.projectService.getAuthorId(this.projectId)
+            .subscribe(
+                (resp) => {
+                    this.authorId = resp.body;
+                    console.log(this.authorId);
+                });
+        if (this.userId != this.authorId) {
+            this.rightService.getUserRightById(userId, this.projectId)
+                .subscribe(
+                    (resp) => {
+                        this.access = resp.body;
+                    }
+                )
+        }
+        this.projectService.getProjectById(this.projectId)
+            .subscribe(
+                (resp) => {
+                    this.project = resp.body;
+                },
+                (error) => {
+                    this.tr.error("Can't load selected project.", 'Error Message');
+                }
+            );
+        this.setUserAccess();
+    }
+
+    public setUserAccess() {
+        switch (this.access) {
+            case 1:
+                this.canEdit = true;
+                break;
+            case 2:
+                this.canEdit = true;
+                this.canBuild = true;
+                break;
+            case 3:
+                this.canEdit = true;
+                this.canBuild = true;
+                this.canRun = true;
+                break;
+            default:
+                break
+        }
+    }
+
+    public isAuthor(): boolean {
+        if (this.authorId == this.tokenService.getUserId()) {
+            return true;
+        }
+        return false;
     }
 
     public onFileSelected(fileId: string): void {
@@ -77,6 +151,11 @@ export class WorkspaceRootComponent implements OnInit {
                 }
             );
     }
+
+    public openModalWindow(): void {
+        console.log(this.projectId);
+        this.collaborateService.openDialogWindow(this.projectId);
+    }
    
     // FOR REFACTOR
     // onSaveButtonClick and onFilesSave do same things - need to create one method Save and calls it for this actions(save btn, tab close)
@@ -100,9 +179,13 @@ export class WorkspaceRootComponent implements OnInit {
             }
         );
     }
+    
+    public hideSearchField(): void {
+        this.showSearch = !this.showSearch;
+    }
+    
     // this one calls on tab close
     public onFilesSave(files: FileUpdateDTO[]) {
-
         this.saveFilesRequest(files)
             .subscribe(
                 success => {
@@ -125,22 +208,11 @@ export class WorkspaceRootComponent implements OnInit {
     {
         this.showFileBrowser= !this.showFileBrowser;
     }
-
-    public expand(){
-        this.fileBrowser.expandAll();
-    }
-
-    public collapse(){
-        this.fileBrowser.collapseAll();        
-    }
-
+    
     public editProjectSettings() {
         this.projectEditService.show(ProjectType.Update, this.projectId);
     }
 
-    // FOR REFACTOR
-    // saveFilesRequest and saveFiles do the same refactor for one method
-    // this one calls on save btn click
     private saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
         return this.ws.saveFilesRequest(files);
     }
@@ -158,6 +230,11 @@ export class WorkspaceRootComponent implements OnInit {
                 switchMap(
                     mustSave => mustSave ? this.saveFiles().pipe(map(result => result.every(x => x.ok) ? true : false)) : of(false)));
     }
+
+    ngOnDestroy() {
+        this.routeSub.unsubscribe();
+    }
+
 
     // *********code below for resizing blocks***************
     //   public style: object = {};

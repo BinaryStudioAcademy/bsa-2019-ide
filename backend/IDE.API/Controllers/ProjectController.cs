@@ -8,12 +8,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using IDE.Common.ModelsDTO.DTO.Project;
+using IDE.Common.ModelsDTO.DTO.User;
 
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
     //[AllowAnonymous]
-    [Authorize]
+    //[Authorize]
     [ApiController]
     public class ProjectController : ControllerBase
     {
@@ -37,6 +38,12 @@ namespace IDE.API.Controllers
         public async Task<ActionResult<ProjectDescriptionDTO>> GetProjectById(int projectId)
         {
             return Ok(await _projectService.GetProjectById(projectId));
+        }
+
+        [HttpGet("author/{projectId}")]
+        public async Task<ActionResult<int>> GetAuthorId(int projectId)
+        {
+            return Ok(await _projectService.GetAuthorId(projectId));
         }
 
         [HttpGet("name")]
@@ -63,6 +70,12 @@ namespace IDE.API.Controllers
             return Ok(await _projectService.GetFavouriteUserProjects(this.GetUserIdFromToken()));
         }
 
+        [HttpGet("collaborators/{projectId}")]
+        public async Task<ActionResult<IEnumerable<CollaboratorDTO>>> GetListOdProjectCollaborators(int projectId)
+        {
+            return Ok(await _projectService.GetProjectCollaborators(projectId, this.GetUserIdFromToken()));
+        }
+
         [HttpPost]
         public async Task<ActionResult> CreateProject(ProjectCreateDTO project)
         {
@@ -79,7 +92,7 @@ namespace IDE.API.Controllers
             });
 
             await _projectStructureService.CreateAsync(projectStructureDTO);
-            
+
             return Created("/project", projectId);
         }
 
