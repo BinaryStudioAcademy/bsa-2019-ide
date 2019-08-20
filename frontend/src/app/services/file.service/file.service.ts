@@ -6,11 +6,11 @@ import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { FileCreateDTO } from 'src/app/models/DTO/File/fileCreateDTO';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class FileService {
     private address: string = 'files';
-    
+
     constructor(private httpClient: HttpClientWrapperService) { }
 
     public getProjectById(id: string): Observable<HttpResponse<FileDTO>> {
@@ -21,7 +21,11 @@ export class FileService {
         return this.httpClient.postRequest(this.address, file);
     }
 
-    public deleteFile(id: string) : Observable<HttpResponse<any>> {
+    public deleteFile(id: string): Observable<HttpResponse<any>> {
         return this.httpClient.deleteRequest(this.address + '/' + id);
+    }
+
+    public getFileById(id: string): Observable<HttpResponse<FileDTO>> {
+        return this.httpClient.getRequest(this.address + '/' + id);
     }
 }

@@ -12,6 +12,8 @@ import { FileStructureDTO } from 'src/app/models/DTO/Workspace/fileStructureDTO'
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
 import { Meta } from '@angular/platform-browser';
 import { take } from 'rxjs/operators';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -37,7 +39,9 @@ export class FileBrowserSectionComponent implements OnInit {
                 private activateRoute: ActivatedRoute,
                 private fileService: FileService,
                 private toast: ToastrService,
-                private hotkeys: HotkeyService) {
+                private hotkeys: HotkeyService,
+                private fileBrowserService: FileBrowserService,
+                private tokenService: TokenService) {
         this.hotkeys.addShortcut({keys: 'shift.e'})
         .subscribe(()=>{
             this.expand();
@@ -63,6 +67,7 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'create file', icon: 'fa fa-file', command: (event) => this.createFile(this.selectedItem),  },
             { label: 'create folder', icon: 'fa fa-folder', command: (event) => this.createFolder(this.selectedItem) },
             { label: 'delete', icon: 'fa fa-remove', command: (event) => this.delete(this.selectedItem) },
+            { label: 'info', icon: 'fa fa-info', command: (event) => this.openInfoWindow(this.selectedItem)},
             { label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem), disabled: true},
             { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem), disabled : true }
         ];
@@ -70,6 +75,11 @@ export class FileBrowserSectionComponent implements OnInit {
 
     private download(node: TreeNode){
         console.log(`${node.label} should be downloaded`);
+    }
+
+    private openInfoWindow(node: TreeNode)
+    {
+        this.fileBrowserService.OpenModalWindow(node);
     }
 
     private getFolderName(node: TreeNode): string{
@@ -95,7 +105,9 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     private createFile(node: TreeNode) {
+        const authorId=this.tokenService.getUserId();
         var newFile : FileCreateDTO  = {
+            creatorId: authorId,
             name: `New File ${++this.fileCounter}`,
             content: "// Start code here:\n",
             projectId: this.projectId,

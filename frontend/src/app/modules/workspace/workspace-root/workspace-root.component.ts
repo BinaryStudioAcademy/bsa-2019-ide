@@ -160,7 +160,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             );
     }
 
-    public openModalWindow(): void {
+    public openCollaboratorModalWindow(): void {
         this.collaborateService.openDialogWindow(this.projectId);
     }
    
