@@ -7,6 +7,7 @@ import { HttpResponse } from '@angular/common/http';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { SearchProjectDTO } from 'src/app/models/DTO/Project/searchProjectDTO';
+import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 
 @Injectable({
     providedIn: 'root'
@@ -17,8 +18,14 @@ export class ProjectService {
 
     constructor(private httpClient: HttpClientWrapperService) { }
 
+
     public addProject(project: ProjectCreateDTO) {
         return this.httpClient.postRequest(this.address, project);
+    }
+
+    public getProjectCollaborators(projectId: number): Observable<HttpResponse<CollaboratorDTO[]>>
+    {
+        return this.httpClient.getRequest(this.address+'/collaborators/'+projectId);
     }
 
     public getProjectsName(): Observable<HttpResponse<SearchProjectDTO[]>>
@@ -28,6 +35,10 @@ export class ProjectService {
 
     public changeFavourity(projectId: number): Observable<HttpResponse<ProjectDescriptionDTO[]>> {
         return this.httpClient.putRequest(this.address + '/favourite', projectId);
+    }
+
+    public getAuthorId(projectId: number): Observable<HttpResponse<number>>{
+        return this.httpClient.getRequest(this.address+'/author/'+projectId)
     }
 
     public getProjectById(id: number): Observable<HttpResponse<ProjectInfoDTO>> {

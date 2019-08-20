@@ -36,6 +36,17 @@
               </div>
               <div class="invalid" *ngIf="projectForm.get('description').invalid">{{getErrorMessage('description')}}</div>
 
+                <!-- Access modifier -->
+                <div class="label">Access</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="">
+                            <p-dropdown [options]="access" placeholder="Select project access"
+                                formControlName="access" [(ngModel)]=project.accessModifier></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+
               <div class="label">Number of saved builds</div>
               <div class="ui-g ui-fluid">
                   <div class="ui-g-12">
@@ -55,6 +66,9 @@
                   </div>
               </div>
               <div class="invalid" *ngIf="projectForm.get('countOfBuildAttempts').invalid">{{getErrorMessage('countOfBuildAttempts')}}</div>
+
+              <div class="label">Collaborators:</div>
+              <app-add-collaborators-list [collaborators]="collaborators" [area]="area"></app-add-collaborators-list>
 
               <div class="label">Project color</div>
               <div class="ui-g ui-fluid">

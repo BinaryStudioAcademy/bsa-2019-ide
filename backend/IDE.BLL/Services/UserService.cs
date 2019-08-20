@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
 using IDE.Common.DTO.User;
+using IDE.Common.ModelsDTO.DTO.User;
 using IDE.Common.Security;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
@@ -25,7 +26,7 @@ namespace IDE.BLL.Services
         {
             var userEntity = _mapper.Map<User>(userDto);
             var user = await _context.Users.Where(a => a.Email == userEntity.Email).FirstOrDefaultAsync();
-            if(user!=null)
+            if (user != null)
             {
                 throw new ExistedUserLoginException();
             }
@@ -40,6 +41,19 @@ namespace IDE.BLL.Services
             await _context.SaveChangesAsync();
 
             return userEntity;
+        }
+
+        public async Task<UserNicknameDTO[]> GetUserListByNickNameParts(int currentUser)
+        {
+
+            return await _context.Users
+                .Where(item=>item.Id!=currentUser)
+                .Select(u => new UserNicknameDTO()
+            {
+                Id = u.Id,
+                NickName = u.NickName
+            }).ToArrayAsync();
+
         }
 
         public async Task<UserDetailsDTO> GetUserDetailsById(int id)

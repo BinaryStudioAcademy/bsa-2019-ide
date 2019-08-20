@@ -15,6 +15,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
     public languages: any;
     public projectTypes: any;
     public compilerTypes: any;
+    public access: any;
     public colors;
     private project: ProjectCreateDTO;
 
@@ -27,6 +28,7 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
     public projectForm = this.fb.group({
         name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32)]],
         description: ['', Validators.required],
+        access: ['', Validators.required],
         language: ['', Validators.required],
         projectType: ['', Validators.required],
         compilerType: ['', Validators.required],
@@ -45,7 +47,8 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
             compilerType: this.projectForm.get('compilerType').value,
             countOfSaveBuilds: this.projectForm.get('countOfSavedBuilds').value,
             countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value,
-            color: this.projectForm.get('color').value
+            color: this.projectForm.get('color').value,
+            access: this.projectForm.get('access').value
         };
 
         this.projectService.addProject(this.project)
@@ -110,12 +113,12 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
             { label: 'Black', value: '#000000' },
             { label: 'Blue', value: '#0080ff' },
             { label: 'Blueviolet', value: '#bf00ff'},
-            { label: 'Aqua', value: '#00ffff' },
             { label: 'Dark Magenta', value: '#8b008b' },
             { label: 'Dark Orange', value: '#ff8c00' },
             { label: 'Gold', value: '#ffd700' },
             { label: 'Green', value: '#008000' },
             { label: 'Light Slate Grey', value: '#778899' },
+            { label: 'Aqua', value: '#00ffff' }
         ]
 
         this.languages = [
@@ -124,6 +127,12 @@ export class CreateProjectComponent implements OnInit, OnDestroy {
             { label: 'JavaScript', value: 2 },
             { label: 'Go', value: 3}
         ];
+
+        this.access = [
+            { label: 'Public', value: 0 },
+            { label: 'Private', value: 1 }
+        ];
+        this.projectForm.get('access').setValue(0);
     }
 
     ngOnDestroy(): void {
