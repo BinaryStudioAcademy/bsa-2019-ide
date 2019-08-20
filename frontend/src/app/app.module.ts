@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 
 import { AuthorizationModule } from './modules/authorization/authorization.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import {CollaboratorModule} from './modules/collaborator/collaborator.module';
 import { LandingModule } from './modules/landing/landing.module';
 import { ProjectModule } from './modules/project/project.module';
 import { UserModule } from './modules/user/user.module';
@@ -31,6 +32,7 @@ import {SplitButtonModule} from 'primeng/splitbutton';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { ProjectSettingsRouteGuard } from './guards/project-settings-route.guard';
+import { AddCollaboratorsComponent } from './modules/collaborator/components/add-collaborators/add-collaborators.component';
 
 
 @NgModule({
@@ -39,6 +41,7 @@ import { ProjectSettingsRouteGuard } from './guards/project-settings-route.guard
         NavMenuComponent
     ],
     imports: [
+        CollaboratorModule,
         AutoCompleteModule,
         FormsModule,
         SplitButtonModule,
@@ -83,6 +86,9 @@ import { ProjectSettingsRouteGuard } from './guards/project-settings-route.guard
         },
         LoginGuard,
         ProjectSettingsRouteGuard
+    ],
+    entryComponents: [
+        AddCollaboratorsComponent
     ],
     bootstrap: [AppComponent]
 })

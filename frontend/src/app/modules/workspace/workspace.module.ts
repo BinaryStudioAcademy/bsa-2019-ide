@@ -13,7 +13,11 @@ import {TabMenuModule} from 'primeng/tabmenu';
 import { ContextMenuModule, MenuModule } from 'primeng/primeng';
 
 @NgModule({
-  declarations: [WorkspaceRootComponent, FileBrowserSectionComponent, EditorSectionComponent],
+  declarations: [
+      WorkspaceRootComponent, 
+      FileBrowserSectionComponent, 
+      EditorSectionComponent
+    ],
   imports: [
     MenuModule,
     ContextMenuModule,

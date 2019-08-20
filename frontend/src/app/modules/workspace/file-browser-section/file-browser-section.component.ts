@@ -20,12 +20,13 @@ import { take } from 'rxjs/operators';
 })
 export class FileBrowserSectionComponent implements OnInit {
 
+    @Input() showSerachField:boolean;
     @Output() fileSelected = new EventEmitter<string>();
     items: MenuItem[];
     public files: TreeNode[];
     public selectedItem: TreeNode;
     public projectId: number;
-    public expand=false;
+    public expandFolder=false;
 
     private fileCounter: number = 0;
     private folderCounter: number = 0;
@@ -201,16 +202,12 @@ export class FileBrowserSectionComponent implements OnInit {
             this.deleteFiles(child)
         }
     }
-
-    public expandAll(){
+    
+    public expand()
+    {
+        this.expandFolder=!this.expandFolder;
         this.files.forEach( node => {
-            this.expandRecursive(node, true);
-        } );
-    }
-
-    public collapseAll(){
-        this.files.forEach( node => {
-            this.expandRecursive(node, false);
+            this.expandRecursive(node, this.expandFolder);
         } );
     }
 
