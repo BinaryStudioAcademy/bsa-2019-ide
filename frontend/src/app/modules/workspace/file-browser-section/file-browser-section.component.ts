@@ -9,6 +9,9 @@ import { ToastrService } from 'ngx-toastr';
 import { FileCreateDTO } from 'src/app/models/DTO/File/fileCreateDTO';
 import { ProjectStructureFormaterService } from 'src/app/services/project-structure-formater.service';
 import { FileStructureDTO } from 'src/app/models/DTO/Workspace/fileStructureDTO';
+import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
+import { Meta } from '@angular/platform-browser';
+import { take } from 'rxjs/operators';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -32,7 +35,12 @@ export class FileBrowserSectionComponent implements OnInit {
                 private projectStructureFormaterService: ProjectStructureFormaterService,
                 private activateRoute: ActivatedRoute,
                 private fileService: FileService,
-                private toast: ToastrService) {
+                private toast: ToastrService,
+                private hotkeys: HotkeyService) {
+        this.hotkeys.addShortcut({keys: 'shift.e'})
+        .subscribe(()=>{
+            this.expandAll();
+        });
         this.projectId = activateRoute.snapshot.params['id'];
     }
 
