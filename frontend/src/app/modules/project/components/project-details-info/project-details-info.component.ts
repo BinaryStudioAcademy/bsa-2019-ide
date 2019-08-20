@@ -59,7 +59,7 @@ export class ProjectDetailsInfoComponent implements OnInit {
         } else {
         }
     }
-    showSettings() {
+    public showSettings() {
         this.projectSettingsService.show(ProjectType.Update, this.project.id);
     }
 }

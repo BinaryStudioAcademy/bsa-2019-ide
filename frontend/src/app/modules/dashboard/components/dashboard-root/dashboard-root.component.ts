@@ -11,7 +11,7 @@ import { ProjectType } from 'src/app/modules/project/models/project-type';
 })
 export class DashboardRootComponent implements OnInit {
     items: string[][];
-    isActive: number;
+    public isActive: number;
 
     constructor(private router: Router,
                 private projectDialogService: ProjectDialogService) { }
@@ -30,7 +30,7 @@ export class DashboardRootComponent implements OnInit {
         this.router.navigate([this.items[i][1]]);
     }
 
-    createProject() {
+    public createProject() {
         this.projectDialogService.show(ProjectType.Create);
     }
 }

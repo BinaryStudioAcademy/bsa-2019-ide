@@ -10,12 +10,12 @@ export class ProjectDialogService {
 
   constructor(private dialogService: DialogService) { }
 
-  show(projType: ProjectType, projectId: number = 0) {
+  public show(projType: ProjectType, projectId = 0) {
       const ref = this.dialogService.open(ProjectWindowComponent,
         {
             data: { 
-                projectType: projType,
-                projectId: projectId
+                projectId: projectId,
+                projectType: projType
             },
             width: '500px',
             style: {

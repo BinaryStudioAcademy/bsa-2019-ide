@@ -21,19 +21,18 @@ export class ProjectWindowComponent implements OnInit {
     public languages: any;
     public projectTypes: any;
     public compilerTypes: any;
-    public colors;
+    public colors: any;
     public projectForm: FormGroup;
-    //private project: ProjectEditDTO;
-    private projectType: ProjectType;
 
-    public projectId: number;
-    //public projectStartState = {} as ProjectEditDTO;
-    public isPageLoaded = false;
-    public hasDetailsSaveResponse = true;
+    public isPageLoaded: boolean = false;
+    public hasDetailsSaveResponse: boolean = true;
 
     public projectCreate: ProjectCreateDTO;
     public projectUpdate: ProjectUpdateDTO;
-    public projectUpdateStartState: ProjectUpdateDTO;
+
+    private projectUpdateStartState: ProjectUpdateDTO;
+    private projectType: ProjectType;
+    private projectId: number;
 
     constructor(private ref: DynamicDialogRef,
                 private config: DynamicDialogConfig,
@@ -125,28 +124,8 @@ export class ProjectWindowComponent implements OnInit {
             }
         }
     }
-    
-    private InitializeProject() {
-        this.projectForm.get('name').setValue(this.projectUpdateStartState.name);
-        this.projectForm.get('description').setValue(this.projectUpdateStartState.description);
-        this.projectForm.get('countOfSavedBuilds').setValue(this.projectUpdateStartState.countOfSaveBuilds);
-        this.projectForm.get('countOfBuildAttempts').setValue(this.projectUpdateStartState.countOfBuildAttempts);
-        this.projectForm.get('color').setValue(this.projectUpdateStartState.color);
-    }
 
-    private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectInfoDTO>): void {
-        const res = resp.body;
-        this.projectUpdateStartState = resp.body;
-        this.projectUpdate.id = res.id;
-        this.projectUpdate.name = res.name;
-        this.projectUpdate.description = res.description;
-        this.projectUpdate.countOfSaveBuilds = res.countOfSaveBuilds;
-        this.projectUpdate.countOfBuildAttempts = res.countOfBuildAttempts;
-        this.projectUpdate.color = res.color;
-        this.projectUpdate.accessModifier = res.accessModifier;
-    }
-
-    projectItemIsNotChange(): boolean {
+    public projectItemIsNotChange(): boolean {
         return this.projectForm.get('name').value === this.projectUpdateStartState.name
         && this.projectForm.get('description').value === this.projectUpdateStartState.description
         && this.projectForm.get('countOfSavedBuilds').value === this.projectUpdateStartState.countOfSaveBuilds
@@ -154,30 +133,11 @@ export class ProjectWindowComponent implements OnInit {
         && this.projectForm.get('color').value === this.projectUpdateStartState.color;
     }
 
-    isCreateForm() {
+    public isCreateForm() {
         return this.projectType === ProjectType.Create;
     }
 
-    getValuesForProjectUpdate() {
-        this.projectUpdate.name = this.projectForm.get('name').value;
-        this.projectUpdate.description = this.projectForm.get('description').value;
-        this.projectUpdate.countOfSaveBuilds = this.projectForm.get('countOfSavedBuilds').value;
-        this.projectUpdate.countOfBuildAttempts = this.projectForm.get('countOfBuildAttempts').value;
-        this.projectUpdate.color = this.projectForm.get('color').value;
-    }
-
-    getValuesForProjectCreate() {
-        this.projectCreate.name = this.projectForm.get('name').value;
-        this.projectCreate.color = this.projectForm.get('color').value;
-        this.projectCreate.compilerType = this.projectForm.get('compilerType').value;
-        this.projectCreate.countOfBuildAttempts = this.projectForm.get('countOfBuildAttempts').value;
-        this.projectCreate.countOfSaveBuilds = this.projectForm.get('countOfSavedBuilds').value;
-        this.projectCreate.description = this.projectForm.get('description').value;
-        this.projectCreate.language = this.projectForm.get('language').value;
-        this.projectCreate.projectType = this.projectForm.get('projectType').value;
-    }
-
-    onSubmit() {
+    public onSubmit() {
         if(this.isCreateForm()) {
             this.getValuesForProjectCreate();
             this.projectService.addProject(this.projectCreate)
@@ -279,7 +239,46 @@ export class ProjectWindowComponent implements OnInit {
         return errorMessage;
     }
 
-    close() {
+    public close() {
         this.ref.close();
+    }
+        
+    private InitializeProject() {
+        this.projectForm.get('name').setValue(this.projectUpdateStartState.name);
+        this.projectForm.get('description').setValue(this.projectUpdateStartState.description);
+        this.projectForm.get('countOfSavedBuilds').setValue(this.projectUpdateStartState.countOfSaveBuilds);
+        this.projectForm.get('countOfBuildAttempts').setValue(this.projectUpdateStartState.countOfBuildAttempts);
+        this.projectForm.get('color').setValue(this.projectUpdateStartState.color);
+    }
+
+    private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectInfoDTO>): void {
+        const res = resp.body;
+        this.projectUpdateStartState = resp.body;
+        this.projectUpdate.id = res.id;
+        this.projectUpdate.name = res.name;
+        this.projectUpdate.description = res.description;
+        this.projectUpdate.countOfSaveBuilds = res.countOfSaveBuilds;
+        this.projectUpdate.countOfBuildAttempts = res.countOfBuildAttempts;
+        this.projectUpdate.color = res.color;
+        this.projectUpdate.accessModifier = res.accessModifier;
+    }
+
+    private getValuesForProjectUpdate() {
+        this.projectUpdate.name = this.projectForm.get('name').value;
+        this.projectUpdate.description = this.projectForm.get('description').value;
+        this.projectUpdate.countOfSaveBuilds = this.projectForm.get('countOfSavedBuilds').value;
+        this.projectUpdate.countOfBuildAttempts = this.projectForm.get('countOfBuildAttempts').value;
+        this.projectUpdate.color = this.projectForm.get('color').value;
+    }
+
+    private getValuesForProjectCreate() {
+        this.projectCreate.name = this.projectForm.get('name').value;
+        this.projectCreate.color = this.projectForm.get('color').value;
+        this.projectCreate.compilerType = this.projectForm.get('compilerType').value;
+        this.projectCreate.countOfBuildAttempts = this.projectForm.get('countOfBuildAttempts').value;
+        this.projectCreate.countOfSaveBuilds = this.projectForm.get('countOfSavedBuilds').value;
+        this.projectCreate.description = this.projectForm.get('description').value;
+        this.projectCreate.language = this.projectForm.get('language').value;
+        this.projectCreate.projectType = this.projectForm.get('projectType').value;
     }
 }

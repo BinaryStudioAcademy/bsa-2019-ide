@@ -15,7 +15,7 @@
         <button pButton routerLink="/project/{{projectId}}" title="Project details" type="button" icon="pi pi-info"
             iconPos="left" class="ui-button-secondary"></button>
         <button pButton type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary"
-            routerLink="/project/{{projectId}}/settings"></button>
+            (click)="editProjectSettings()"></button>
         <button pButton type="button" icon="pi pi-search" iconPos="left" class="ui-button-secondary" disabled></button>
         <button pButton type="button" icon="pi pi pi-download" title="Download files" iconPos="left"
             class="ui-button-secondary" disabled></button>

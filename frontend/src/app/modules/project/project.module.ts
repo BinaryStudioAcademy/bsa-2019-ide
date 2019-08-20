@@ -43,7 +43,7 @@ import { ProjectWindowComponent } from './components/project-window/project-wind
     TabViewModule,
     SharedModule
   ],
-  entryComponents:[
+  entryComponents: [
     ProjectWindowComponent
   ]
 })

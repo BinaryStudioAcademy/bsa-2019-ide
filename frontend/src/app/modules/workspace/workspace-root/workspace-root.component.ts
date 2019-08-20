@@ -134,6 +134,10 @@ export class WorkspaceRootComponent implements OnInit {
         this.fileBrowser.collapseAll();        
     }
 
+    public editProjectSettings() {
+        this.projectEditService.show(ProjectType.Update, this.projectId);
+    }
+
     // FOR REFACTOR
     // saveFilesRequest and saveFiles do the same refactor for one method
     // this one calls on save btn click
@@ -153,10 +157,6 @@ export class WorkspaceRootComponent implements OnInit {
             .pipe(
                 switchMap(
                     mustSave => mustSave ? this.saveFiles().pipe(map(result => result.every(x => x.ok) ? true : false)) : of(false)));
-    }
-
-    editProjectSettings() {
-        this.projectEditService.show(ProjectType.Update, this.projectId);
     }
 
     // *********code below for resizing blocks***************
