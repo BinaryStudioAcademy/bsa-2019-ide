@@ -11,7 +11,6 @@ import { Observable, of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
 
-
 import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
 import { MenuItem } from 'primeng/api';
@@ -24,6 +23,10 @@ import { RightsService } from 'src/app/services/rights.service/rights.service';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
+
+
+// FOR REFACTOR
+// last and facultative superior wish - to review and rearrange duties of editor-section, workspace-root, file-browser and links between them
 
 @Component({
     selector: 'app-workspace-root',
@@ -150,61 +153,71 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         console.log(this.projectId);
         this.collaborateService.openDialogWindow(this.projectId);
     }
-
-    public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
-        const openedFiles: FileUpdateDTO[] = this.editor.openedFiles.map(x => x.innerFile);
-        openedFiles.forEach(file => {
-            // file.updaterId = 0;
-        });
-        return this.saveFilesRequest(openedFiles);
-    }
-
-    public onSaveButtonClick(event) {
+   
+    // FOR REFACTOR
+    // onSaveButtonClick and onFilesSave do same things - need to create one method Save and calls it for this actions(save btn, tab close)
+    // firsty BETTER to have method for save one file its more logical. And add than save all method. And for close tab use saveOne method!!!
+    // this one calls on save btn click
+    public onSaveButtonClick(ev) {
         if (!this.editor.anyFileChanged()) {
             return;
         }
         this.saveFiles().subscribe(
-            success => {
+            (success) => {
                 if (success.every(x => x.ok)) {
                     this.tr.success("Files saved", 'Success', { tapToDismiss: true });
                 } else {
                     this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
                 }
-
             },
-            error => this.tr.error("Can't save files", 'Error', { tapToDismiss: true }));
+            (error) => {
+                this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
+                console.error(error);
+            }
+        );
     }
-
-    public hideFileBrowser(): void {
-        this.showFileBrowser = !this.showFileBrowser;
-    }
-
+    
     public hideSearchField(): void {
         this.showSearch = !this.showSearch;
     }
-
+    
+    // this one calls on tab close
     public onFilesSave(files: FileUpdateDTO[]) {
-        files.forEach(file => {
-            //file.updaterId = 0;
-        });
         this.saveFilesRequest(files)
             .subscribe(
                 success => {
                     if (success.every(x => x.ok)) {
                         this.tr.success("Files saved", 'Success', { tapToDismiss: true });
-                        this.editor.confirmSaving(files.map(x => x.id));
+                        // FOR REFACTOR
+                        // "confirmSaving" method invert isChanged flag, 
+                        // but here in calls for closed tab, so it calls for undefind obj so it throw exeption
+                        // refactor it for call only for opened files and mabe rename it
+                        // this.editor.confirmSaving(files.map(x => x.id));
                     } else {
                         this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
                 },
                 error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
+    // FOR REFACTOR
+  
+    public hideFileBrowser(): void
+    {
+        this.showFileBrowser= !this.showFileBrowser;
+    }
 
     private saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
         return this.ws.saveFilesRequest(files);
     }
+    // this one calls on tab close
+    public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
+        const openedFiles: FileUpdateDTO[] = this.editor.openedFiles.map(x => x.innerFile);
 
-    public canDeactivate(): Observable<boolean> {
+        return this.saveFilesRequest(openedFiles);
+    }
+    // FOR REFACTOR
+
+    canDeactivate(): Observable<boolean> {
         return !this.editor.anyFileChanged() ? of(true) : this.saveOnExit.confirm('Save changes?')
             .pipe(
                 switchMap(
