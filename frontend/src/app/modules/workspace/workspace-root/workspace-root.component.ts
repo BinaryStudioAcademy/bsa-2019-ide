@@ -15,8 +15,9 @@ import { FileService } from 'src/app/services/file.service/file.service';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
 
+
 // FOR REFACTOR
-// last and facultavive superior wish - to review and rearange duties of editor-section, workspace-root, file-browser and links between them 
+// last and facultative superior wish - to review and rearrange duties of editor-section, workspace-root, file-browser and links between them
 
 @Component({
     selector: 'app-workspace-root',
@@ -26,6 +27,8 @@ import { FileBrowserSectionComponent } from '../file-browser-section/file-browse
 export class WorkspaceRootComponent implements OnInit {
     public projectId: number;
     public userId: number;
+    public showFileBrowser=true;
+    public large=false;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
@@ -114,6 +117,11 @@ export class WorkspaceRootComponent implements OnInit {
                 error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
     // FOR REFACTOR
+  
+    public hideFileBrowser(): void
+    {
+        this.showFileBrowser= !this.showFileBrowser;
+    }
 
     public expand(){
         this.fileBrowser.expandAll();
