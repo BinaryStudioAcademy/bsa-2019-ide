@@ -68,13 +68,13 @@ namespace IDE.BLL.Services
 
         public async Task SetRightsToProject(UpdateUserRightDTO update, int userId)
         {
-            var project = _context.Projects.FirstOrDefault(p => p.Id == update.ProjectId);
+            var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == update.ProjectId);
             if (project.AuthorId != userId)
                 throw new NonAuthorRightsChange();
             if (project.AuthorId == update.UserId)
                 throw new RightsChangeForProjectAuthorException();
 
-            var projectMember = _context.ProjectMembers.FirstOrDefault(pm => pm.UserId == update.UserId && pm.ProjectId == update.ProjectId);
+            var projectMember = await _context.ProjectMembers.FirstOrDefaultAsync(pm => pm.UserId == update.UserId && pm.ProjectId == update.ProjectId);
             if (projectMember == null)
             {
                 _context.Add(new ProjectMember()
