@@ -77,7 +77,7 @@ namespace IDE.BLL.Services
             var projectMember = await _context.ProjectMembers.FirstOrDefaultAsync(pm => pm.UserId == update.UserId && pm.ProjectId == update.ProjectId);
             if (projectMember == null)
             {
-                _context.Add(new ProjectMember()
+                await _context.AddAsync(new ProjectMember()
                 {
                     ProjectId = update.ProjectId,
                     UserId = update.UserId,
