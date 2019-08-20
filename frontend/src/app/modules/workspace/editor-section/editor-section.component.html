@@ -7,12 +7,13 @@
           {{item.label}}
         </div>
         <a tabindex="0" class="ui-menuitem-icon" (click)="closeItem($event, i)"
-          style="position: absolute; right: -0.8em; top: -.1em; padding: 0;" *ngIf="i !== 0">
+          style="position: absolute; right: -0.8em; top: -.1em; padding: 0;">
           <span class="pi pi-times"></span>
         </a>
       </div>
     </ng-template>
   </p-tabMenu>
 </div>
-<ngx-monaco-editor class="my-code-editor" [options]="editorOptions" [(ngModel)]="code" (ngModelChange)="onChange($event)">
+<div *ngIf="openedFiles.length === 0" class="editor-stub">No editor {{openedFiles.length}}</div>
+<ngx-monaco-editor *ngIf="openedFiles.length > 0" class="my-code-editor" [options]="editorOptions" [(ngModel)]="code" (ngModelChange)="onChange($event)">
 </ngx-monaco-editor>

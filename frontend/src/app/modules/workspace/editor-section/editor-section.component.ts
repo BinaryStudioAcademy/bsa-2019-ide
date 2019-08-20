@@ -15,44 +15,21 @@ export interface TabFileWrapper {
 export class EditorSectionComponent implements OnInit {
 
     @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
-
-    public openedFiles: TabFileWrapper[];
+    
+    // FOR REFACTOR
+    // think about agregaiting of TabFileWrapper(openedFiles) with MenuItem(tabs)
+    public items = [] as MenuItem[]; // maybe reneme on "tab"
+    public activeItem: MenuItem;
+    public openedFiles = [] as TabFileWrapper[];
+    
     editorOptions = { theme: 'vs-dark', language: 'typescript' };
     code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
     originalCode = 'function x() { // TODO }';
-    options = {
-        theme: 'vs-dark'
-    };
-
-    public items: MenuItem[];
-    public activeItem: MenuItem;
+    options = { theme: 'vs-dark' }; 
 
     constructor() { }
 
-    ngOnInit() {
-        
-        this.openedFiles = [
-            // { isChanged: false, innerFile: { id: '1', folder: 'Project', name: 'Main.cs', content: 'Hello World', updaterId: 0 } },
-            // { isChanged: false, innerFile: { id: '2', folder: 'Project', name: 'Startup.cs', content: 'Hello World', updaterId: 0 } },
-        ];
-        this.items = [
-            // { label: this.openedFiles[0].innerFile.name, icon: 'fa fa-fw fa-file', id: '1' },
-            // { label: this.openedFiles[1].innerFile.name, icon: 'fa fa-fw fa-file', id: '2' },
-//=======
-//            { isChanged: false, innerFile: { id: '5d5576e350e2ac1a54d9dcfe', folder: 'Project', name: 'Main.cs', content: 'Hello World', updaterId: 0 } },
-//            { isChanged: false, innerFile: { id: '5d5576e850e2ac1a54d9dd00', folder: 'Project', name: 'Startup.cs', content: 'Hello World', updaterId: 0 } },
-//        ];
-//        this.items = [
-//            { label: this.openedFiles[0].innerFile.name, icon: 'fa fa-fw fa-file', id: '5d5576e350e2ac1a54d9dcfe' },
-//            { label: this.openedFiles[1].innerFile.name, icon: 'fa fa-fw fa-file', id: '5d5576e850e2ac1a54d9dd00' },
-//>>>>>>> development
-
-        ];
-        // this.activeItem = this.items[1];
-
-    }
-
-    
+    ngOnInit() {  }
 
     onChange(ev) {
         const touchedFile = this.getFileFromActiveItem(this.activeItem);
@@ -67,11 +44,19 @@ export class EditorSectionComponent implements OnInit {
         this.items = this.items.filter((item, i) => i !== index);
         this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
 
+        // if 1st tab closed
+        if(this.openedFiles.length === 0) {
+            event.preventDefault();
+            this.code = '';
+            return;
+        }
+
         index = this.items.length === index ? index - 1 : index;
         this.code = this.openedFiles[index].innerFile.content;
         this.activeItem = this.items[index];
         event.preventDefault();
     }
+
     public onTabSelect(evt, index) {
         this.activeItem = this.items[index];
         this.code = this.openedFiles[index].innerFile.content;
@@ -89,6 +74,7 @@ export class EditorSectionComponent implements OnInit {
     public getFileFromActiveItem(item: MenuItem): TabFileWrapper {
         return this.openedFiles.find(x => x.innerFile.id === item.id);
     }
+
     public confirmSaving(fileIds: string[]) {
         fileIds.map(x => this.openedFiles.filter(f => f.innerFile.id == x)[0]).forEach(x => x.isChanged = false);
     }
