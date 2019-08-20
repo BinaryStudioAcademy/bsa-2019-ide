@@ -154,10 +154,6 @@ namespace IDE.API.Controllers
                 return BadRequest(e);
             }
 
-
-            //var returnFile = new PhysicalFileResult(Path.Combine(path,"project.zip"), "application/zip");
-            //returnFile.FileDownloadName = "project.zip";
-
         }
     }
 }
