@@ -3,7 +3,6 @@ import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ResizeEvent } from 'angular-resizable-element';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
@@ -11,17 +10,16 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
 
-
 import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
-import { MenuItem } from 'primeng/api';
-import { catchError } from 'rxjs/internal/operators/catchError';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
 import { ProjectType } from '../../project/models/project-type';
+import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
 
 
-
+// FOR REFACTOR
+// last and facultative superior wish - to review and rearrange duties of editor-section, workspace-root, file-browser and links between them
 
 @Component({
     selector: 'app-workspace-root',
@@ -31,10 +29,15 @@ import { ProjectType } from '../../project/models/project-type';
 export class WorkspaceRootComponent implements OnInit {
     public projectId: number;
     public userId: number;
+    public showFileBrowser=true;
+    public large=false;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
+    @ViewChild('fileBrowser', {static: false})
+    private fileBrowser: FileBrowserSectionComponent;
+    
     constructor(
         private route: ActivatedRoute,
         private tr: ToastrService,
@@ -74,52 +77,76 @@ export class WorkspaceRootComponent implements OnInit {
                 }
             );
     }
-
-    public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
-        const openedFiles: FileUpdateDTO[] = this.editor.openedFiles.map(x => x.innerFile);
-        openedFiles.forEach(file => {
-            // file.updaterId = 0;
-        });
-        return this.saveFilesRequest(openedFiles);
-    }
-
+   
+    // FOR REFACTOR
+    // onSaveButtonClick and onFilesSave do same things - need to create one method Save and calls it for this actions(save btn, tab close)
+    // firsty BETTER to have method for save one file its more logical. And add than save all method. And for close tab use saveOne method!!!
+    // this one calls on save btn click
     public onSaveButtonClick(ev) {
         if (!this.editor.anyFileChanged()) {
             return;
         }
         this.saveFiles().subscribe(
-            success => {
+            (success) => {
                 if (success.every(x => x.ok)) {
                     this.tr.success("Files saved", 'Success', { tapToDismiss: true });
                 } else {
                     this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
                 }
-
             },
-            error => this.tr.error("Can't save files", 'Error', { tapToDismiss: true }));
+            (error) => {
+                this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
+                console.error(error);
+            }
+        );
     }
-
+    // this one calls on tab close
     public onFilesSave(files: FileUpdateDTO[]) {
-        files.forEach(file => {
-            //file.updaterId = 0;
-        });
+
         this.saveFilesRequest(files)
             .subscribe(
                 success => {
                     if (success.every(x => x.ok)) {
                         this.tr.success("Files saved", 'Success', { tapToDismiss: true });
-                        this.editor.confirmSaving(files.map(x => x.id));
+                        // FOR REFACTOR
+                        // "confirmSaving" method invert isChanged flag, 
+                        // but here in calls for closed tab, so it calls for undefind obj so it throw exeption
+                        // refactor it for call only for opened files and mabe rename it
+                        // this.editor.confirmSaving(files.map(x => x.id));
                     } else {
                         this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
                 },
                 error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
+    // FOR REFACTOR
+  
+    public hideFileBrowser(): void
+    {
+        this.showFileBrowser= !this.showFileBrowser;
+    }
 
+    public expand(){
+        this.fileBrowser.expandAll();
+    }
 
+    public collapse(){
+        this.fileBrowser.collapseAll();        
+    }
+
+    // FOR REFACTOR
+    // saveFilesRequest and saveFiles do the same refactor for one method
+    // this one calls on save btn click
     private saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
         return this.ws.saveFilesRequest(files);
     }
+    // this one calls on tab close
+    public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
+        const openedFiles: FileUpdateDTO[] = this.editor.openedFiles.map(x => x.innerFile);
+
+        return this.saveFilesRequest(openedFiles);
+    }
+    // FOR REFACTOR
 
     canDeactivate(): Observable<boolean> {
         return !this.editor.anyFileChanged() ? of(true) : this.saveOnExit.confirm('Save changes?')
