@@ -30,7 +30,6 @@ export class EditorSectionComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
-        
         this.openedFiles = [
             // { isChanged: false, innerFile: { id: '1', folder: 'Project', name: 'Main.cs', content: 'Hello World', updaterId: 0 } },
             // { isChanged: false, innerFile: { id: '2', folder: 'Project', name: 'Startup.cs', content: 'Hello World', updaterId: 0 } },
