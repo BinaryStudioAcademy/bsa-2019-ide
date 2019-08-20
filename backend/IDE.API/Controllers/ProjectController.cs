@@ -138,7 +138,9 @@ namespace IDE.API.Controllers
             var path = Path.Combine(tempDir, Guid.NewGuid().ToString());
 
             bool result = await _projectService.MakeProjectZipFile(id, path);
-            if (!result) return BadRequest();
+            if (!result) {
+                return BadRequest();
+            }
             Uri uri;
             try
             {
