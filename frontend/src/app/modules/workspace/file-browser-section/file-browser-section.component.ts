@@ -40,7 +40,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 private hotkeys: HotkeyService) {
         this.hotkeys.addShortcut({keys: 'shift.e'})
         .subscribe(()=>{
-            this.expandAll();
+            this.expand();
         });
         this.projectId = activateRoute.snapshot.params['id'];
     }

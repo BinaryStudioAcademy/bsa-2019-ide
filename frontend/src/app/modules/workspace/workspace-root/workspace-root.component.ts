@@ -23,6 +23,7 @@ import { RightsService } from 'src/app/services/rights.service/rights.service';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
+import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
 
 
 // FOR REFACTOR
@@ -64,7 +65,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private rightService: RightsService,
         private collaborateService: CollaborateService,
         private projectService: ProjectService,
-        private tokenService: TokenService) { }
+        private tokenService: TokenService,
+        private hotkeys: HotkeyService) { 
+            this.hotkeys.addShortcut({keys: 'shift.h'})
+        .subscribe(()=>{
+            this.hideFileBrowser();
+        });
+        }
 
     ngOnInit() {
         const userId = this.tokenService.getUserId();
@@ -75,7 +82,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             .subscribe(
                 (resp) => {
                     this.authorId = resp.body;
-                    console.log(this.authorId);
                 });
         if (this.userId != this.authorId) {
             this.rightService.getUserRightById(userId, this.projectId)
@@ -95,6 +101,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                 }
             );
         this.setUserAccess();
+    }
+
+    public getProjectColor(): string
+    {
+        return this.project.color;
     }
 
     public setUserAccess() {
@@ -150,7 +161,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public openModalWindow(): void {
-        console.log(this.projectId);
         this.collaborateService.openDialogWindow(this.projectId);
     }
    
