@@ -88,8 +88,7 @@ export class ProjectWindowComponent implements OnInit {
             this.projectService.getProjectById(this.projectId)
                 .subscribe(
                     (resp) => {
-                        this.SetProjectObjectsFromResponse(resp);
-                        this.InitializeProject();
+                        this.InitializeProject(resp);
                         this.title = 'Edit project \"' + resp.body.name + '\"';
                         this.isPageLoaded = true;
                     },
@@ -171,8 +170,6 @@ export class ProjectWindowComponent implements OnInit {
         }
     }
 
-
-
     public changeLanguage(e: number) {
         switch(e){
             case 0:{
@@ -243,24 +240,15 @@ export class ProjectWindowComponent implements OnInit {
         this.ref.close();
     }
         
-    private InitializeProject() {
-        this.projectForm.get('name').setValue(this.projectUpdateStartState.name);
-        this.projectForm.get('description').setValue(this.projectUpdateStartState.description);
-        this.projectForm.get('countOfSavedBuilds').setValue(this.projectUpdateStartState.countOfSaveBuilds);
-        this.projectForm.get('countOfBuildAttempts').setValue(this.projectUpdateStartState.countOfBuildAttempts);
-        this.projectForm.get('color').setValue(this.projectUpdateStartState.color);
-    }
-
-    private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectInfoDTO>): void {
-        const res = resp.body;
+    private InitializeProject(resp: HttpResponse<ProjectInfoDTO>) {
         this.projectUpdateStartState = resp.body;
-        this.projectUpdate.id = res.id;
-        this.projectUpdate.name = res.name;
-        this.projectUpdate.description = res.description;
-        this.projectUpdate.countOfSaveBuilds = res.countOfSaveBuilds;
-        this.projectUpdate.countOfBuildAttempts = res.countOfBuildAttempts;
-        this.projectUpdate.color = res.color;
-        this.projectUpdate.accessModifier = res.accessModifier;
+        this.projectForm.setValue({ 
+            name: this.projectUpdateStartState.name,
+            description: this.projectUpdateStartState.description,
+            countOfSavedBuilds: this.projectUpdateStartState.countOfSaveBuilds,
+            countOfBuildAttempts: this.projectUpdateStartState.countOfBuildAttempts,
+            color: this.projectUpdateStartState.color
+        });
     }
 
     private getValuesForProjectUpdate() {
