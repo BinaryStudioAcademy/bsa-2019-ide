@@ -5,7 +5,15 @@
         <div class="title">{{ title }}</div>
     </div>
 </div>
-<div class="ui-g">
+
+<div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded || project">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+<div *ngIf="!isCreateForm() && !isPageLoaded && !project" class="error">
+    <p>Can't load project details</p>
+</div>
+  
+<div class="ui-g" *ngIf="isPageLoaded">
     <div class="ui-g-12">
         <form class="projectForm" [formGroup]="projectForm" (ngSubmit)="onSubmit()">
 
@@ -82,7 +90,7 @@
             <div class="invalid" *ngIf="projectForm.get('countOfSavedBuilds').invalid && projectForm.get('countOfSavedBuilds').dirty">{{getErrorMessage('countOfSavedBuilds')}}</div>
 
 
-            <!-- Number of saved builds -->
+            <!-- Number of build attempts builds -->
             <div class="label">Number of build attempts for user</div>
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
@@ -94,6 +102,20 @@
             </div>
             <div class="invalid" *ngIf="projectForm.get('countOfBuildAttempts').invalid && projectForm.get('countOfBuildAttempts').dirty">{{getErrorMessage('countOfBuildAttempts')}}</div>
 
+            <!-- Access modifier -->
+            <div class="label">Access</div>
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="">
+                        <p-dropdown [options]="access" placeholder="Select project access"
+                            formControlName="access"></p-dropdown>
+                    </div>
+                </div>
+            </div>
+
+            <!--Collaborators-->
+            <div class="label" *ngIf="!isCreateForm()">Collaborators:</div>
+            <app-add-collaborators-list [collaborators]="collaborators" [area]="area" *ngIf="!isCreateForm()"></app-add-collaborators-list>
 
             <!-- Color -->
             <div class="label">Project color</div>

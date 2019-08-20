@@ -6,10 +6,14 @@ import { Router } from '@angular/router';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
 import { ProjectType } from '../../models/project-type';
 import { HttpResponse } from '@angular/common/http';
-import { ProjectEditDTO } from 'src/app/models/DTO/Project/projectEditDTO';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { ProjectCreateDTO } from 'src/app/models/DTO/Project/projectCreateDTO';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
+import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
+import { RightsService } from 'src/app/services/rights.service/rights.service';
+import { UserNicknameDTO } from 'src/app/models/DTO/User/userNicknameDTO';
+import { DeleteCollaboratorRightDTO } from 'src/app/models/DTO/Common/deleteCollaboratorRightDTO';
+import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
 
 @Component({
   selector: 'app-project-window',
@@ -22,7 +26,9 @@ export class ProjectWindowComponent implements OnInit {
     public projectTypes: any;
     public compilerTypes: any;
     public colors: any;
+    public access: any;
     public projectForm: FormGroup;
+    public area: string;
 
     public isPageLoaded: boolean = false;
     public hasDetailsSaveResponse: boolean = true;
@@ -30,6 +36,10 @@ export class ProjectWindowComponent implements OnInit {
     public projectCreate: ProjectCreateDTO;
     public projectUpdate: ProjectUpdateDTO;
 
+    public collaborators: CollaboratorDTO[];
+    public deleteCollaborators: CollaboratorDTO[] = [];
+    
+    private startCollaborators = [] as CollaboratorDTO[];
     private projectUpdateStartState: ProjectUpdateDTO;
     private projectType: ProjectType;
     private projectId: number;
@@ -39,6 +49,7 @@ export class ProjectWindowComponent implements OnInit {
                 private fb: FormBuilder,
                 private projectService: ProjectService,
                 private toastrService: ToastrService,
+                private rightService: RightsService,
                 private router: Router) { }
 
     ngOnInit(): void { 
@@ -65,7 +76,13 @@ export class ProjectWindowComponent implements OnInit {
             { label: 'Go', value: 3}
         ];
 
+        this.access = [
+            { label: 'Public', value: 0 },
+            { label: 'Private', value: 1 }
+        ];
+
         if (this.isCreateForm()) {
+            this.isPageLoaded = true;
             this.projectForm = this.fb.group({
                 name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32)]],
                 description: ['', Validators.required],
@@ -74,16 +91,23 @@ export class ProjectWindowComponent implements OnInit {
                 compilerType: ['', Validators.required],
                 countOfSavedBuilds: ['', [Validators.required, Validators.max(10)]],
                 countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
+                access: ['', Validators.required],
                 color: ['', Validators.required]
             });
+            this.projectForm.get('access').setValue(0);
         } else {
             this.projectForm = this.fb.group({
                 name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32)]],
                 description: ['', Validators.required],
                 countOfSavedBuilds: ['', [Validators.required, Validators.max(10)]],
                 countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
+                access: ['', Validators.required],
                 color: ['', Validators.required]
             });
+        }
+
+        if (!this.isCreateForm()) {
+            this.area = "projectSettings";
             this.projectId = this.config.data.projectId;
             this.projectService.getProjectById(this.projectId)
                 .subscribe(
@@ -93,38 +117,30 @@ export class ProjectWindowComponent implements OnInit {
                         this.isPageLoaded = true;
                     },
                     (error) => {
-                        this.isPageLoaded = true;
                         this.toastrService.error('Can\'t load project details.', 'Error Message:');
                         console.error(error.message);
                     }
                 );
-        }
-
-        if (this.isCreateForm()) {
-            this.projectCreate = {
-                color: null,
-                compilerType: null,
-                countOfBuildAttempts: null,
-                countOfSaveBuilds: null,
-                description: null,
-                language: null,
-                name: null,
-                projectType: null
-            }
-        } else {
-            this.projectUpdate = {
-                color: null,
-                countOfBuildAttempts: null,
-                countOfSaveBuilds: null,
-                description: null,
-                name: null,
-                accessModifier: null,
-                id: null
-            }
+            this.projectService.getProjectCollaborators(this.projectId)
+                .subscribe(
+                    (resp) => {
+                        this.SetCollaboratorsFromResponse(resp);
+                        this.isPageLoaded = true;
+                    },
+                    (error) => {
+                        this.toastrService.error("'Can\'t load project collaborators.', 'Error Message:'");
+                        console.error(error.message);
+                    }
+                );
         }
     }
 
     public projectItemIsNotChange(): boolean {
+        return this.IsProjectNotChange()
+            && this.IsCollaboratorChange();
+    }
+
+    public IsProjectNotChange(): boolean {
         return this.projectForm.get('name').value === this.projectUpdateStartState.name
         && this.projectForm.get('description').value === this.projectUpdateStartState.description
         && this.projectForm.get('countOfSavedBuilds').value === this.projectUpdateStartState.countOfSaveBuilds
@@ -132,8 +148,30 @@ export class ProjectWindowComponent implements OnInit {
         && this.projectForm.get('color').value === this.projectUpdateStartState.color;
     }
 
+    public IsCollaboratorChange(): boolean {
+        if(this.deleteCollaborators.length!=0)
+        {
+            return false;
+        }
+        for (let i in this.collaborators) {
+            if (this.collaborators[i].access !== this.startCollaborators[i].access) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public isCreateForm() {
         return this.projectType === ProjectType.Create;
+    }
+
+    public delete(collaboratorId: number): void {
+        const deleteCollaborator = this.collaborators.find(item => item.id == collaboratorId);
+        this.deleteCollaborators.push(deleteCollaborator);
+        const index: number = this.collaborators.indexOf(deleteCollaborator);
+        if (index !== -1) {
+            this.collaborators.splice(index, 1);
+        }
     }
 
     public onSubmit() {
@@ -152,21 +190,67 @@ export class ProjectWindowComponent implements OnInit {
                         this.hasDetailsSaveResponse = true;
                     })
         } else {
-            this.getValuesForProjectUpdate();
             this.hasDetailsSaveResponse = false;
-            this.projectService.updateProject(this.projectUpdate)
-            .subscribe(
-                (resp) => {
-                    this.hasDetailsSaveResponse = true;
-                    this.toastrService.success('New details have successfully saved!');
-                    this.close();
-                },
-                (error) => {
-                    this.hasDetailsSaveResponse = true;
-                    this.toastrService.error('Can\'t save new project details', 'Error Message');
-                    console.error(error.message);
+            if (!this.IsProjectNotChange()) {
+                this.getValuesForProjectUpdate();
+                this.projectService.updateProject(this.projectUpdate)
+                .subscribe(
+                    (resp) => {
+                        this.hasDetailsSaveResponse = true;
+                        this.toastrService.success('New details have successfully saved!');
+                        this.close();
+                    },
+                    (error) => {
+                        this.hasDetailsSaveResponse = true;
+                        this.toastrService.error('Can\'t save new project details', 'Error Message');
+                        console.error(error.message);
+                    }
+                );
+            }
+            if (!this.IsCollaboratorChange()) {
+                this.deleteCollaborators.forEach(item => {
+                    const deleteItem: DeleteCollaboratorRightDTO =
+                    {
+                        id: item.id,
+                        access: item.access,
+                        nickName: item.nickName,
+                        projectId: this.projectId
+                    }
+                    if (!this.IsSelected(deleteItem)) {
+                        this.rightService.deleteCollaborator(deleteItem)
+                            .subscribe(
+                                (resp)=>
+                                {
+                                },
+                                (error) => {
+                                    this.toastrService.error('Can\'t delete collacortors access', 'Error Message');
+                                }
+                            );
+                    }
+                });
+                for (let i in this.collaborators) {
+                    if (this.collaborators[i].access !== this.startCollaborators[i].access) {
+                        const update: UpdateUserRightDTO =
+                        {
+                            projectId:this.projectId,
+                            access: this.collaborators[i].access,
+                            userId: this.collaborators[i].id
+                        }
+                        this.rightService.setUsersRigths(update)
+                        .subscribe(
+                            (resp) => {
+                                this.router.navigate([`project/${this.projectId}`]);
+                                this.hasDetailsSaveResponse = true;
+                                this.toastrService.success('New collacortors access have successfully saved!');
+                            },
+                            (error) => {
+                                this.hasDetailsSaveResponse = true;
+                                this.toastrService.error('Can\'t save new collacortors access', 'Error Message');
+                            }
+                        );
+                    }
                 }
-            );
+            }
         }
     }
 
@@ -240,6 +324,16 @@ export class ProjectWindowComponent implements OnInit {
         this.ref.close();
     }
         
+    private IsSelected(collaborator: UserNicknameDTO): boolean {
+        let result: boolean = false;
+        this.collaborators.forEach(element => {
+            if (element.id === collaborator.id) {
+                result = true;
+            }
+        });
+        return result;
+    }
+
     private InitializeProject(resp: HttpResponse<ProjectInfoDTO>) {
         this.projectUpdateStartState = resp.body;
         this.projectForm.setValue({ 
@@ -247,26 +341,46 @@ export class ProjectWindowComponent implements OnInit {
             description: this.projectUpdateStartState.description,
             countOfSavedBuilds: this.projectUpdateStartState.countOfSaveBuilds,
             countOfBuildAttempts: this.projectUpdateStartState.countOfBuildAttempts,
-            color: this.projectUpdateStartState.color
+            color: this.projectUpdateStartState.color,
+            access: this.projectUpdateStartState.accessModifier
         });
     }
 
     private getValuesForProjectUpdate() {
-        this.projectUpdate.name = this.projectForm.get('name').value;
-        this.projectUpdate.description = this.projectForm.get('description').value;
-        this.projectUpdate.countOfSaveBuilds = this.projectForm.get('countOfSavedBuilds').value;
-        this.projectUpdate.countOfBuildAttempts = this.projectForm.get('countOfBuildAttempts').value;
-        this.projectUpdate.color = this.projectForm.get('color').value;
+        this.projectUpdate = {
+            accessModifier: this.projectForm.get('access').value,
+            color: this.projectForm.get('color').value,
+            countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value,
+            countOfSaveBuilds: this.projectForm.get('countOfSavedBuilds').value,
+            description: this.projectForm.get('description').value,
+            id: this.projectId,
+            name: this.projectForm.get('name').value
+        }
     }
 
     private getValuesForProjectCreate() {
-        this.projectCreate.name = this.projectForm.get('name').value;
-        this.projectCreate.color = this.projectForm.get('color').value;
-        this.projectCreate.compilerType = this.projectForm.get('compilerType').value;
-        this.projectCreate.countOfBuildAttempts = this.projectForm.get('countOfBuildAttempts').value;
-        this.projectCreate.countOfSaveBuilds = this.projectForm.get('countOfSavedBuilds').value;
-        this.projectCreate.description = this.projectForm.get('description').value;
-        this.projectCreate.language = this.projectForm.get('language').value;
-        this.projectCreate.projectType = this.projectForm.get('projectType').value;
+        this.projectCreate = {
+            name: this.projectForm.get('name').value,
+            description: this.projectForm.get('description').value,
+            access: this.projectForm.get('access').value,
+            color: this.projectForm.get('color').value,
+            compilerType: this.projectForm.get('compilerType').value,
+            countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value,
+            countOfSaveBuilds: this.projectForm.get('countOfSavedBuilds').value,
+            language: this.projectForm.get('language').value,
+            projectType: this.projectForm.get('projectType').value
+        }
+    }
+    private SetCollaboratorsFromResponse(resp: HttpResponse<CollaboratorDTO[]>): void {
+        this.collaborators = resp.body;
+        this.collaborators.forEach(element => {
+            let newElement: CollaboratorDTO =
+            {
+                id: element.id,
+                access: element.access,
+                nickName: element.nickName
+            }
+            this.startCollaborators.push(newElement);
+        });
     }
 }
