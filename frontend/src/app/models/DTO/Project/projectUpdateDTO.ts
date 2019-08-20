@@ -1,3 +1,5 @@
+﻿/* Auto Generated */
+
 import { AccessModifier } from "./../../Enums/accessModifier"
 
 export interface ProjectUpdateDTO {

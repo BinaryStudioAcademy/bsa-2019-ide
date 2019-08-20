@@ -45,17 +45,6 @@ namespace IDE.BLL.Services
             return project;
         }
 
-        public async Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId)
-        {
-            //Maybe it can be a bit easier
-            var projects = await _context.Projects
-                .Include(x => x.Author)
-                .ToListAsync();
-
-
-            return MapAndGetLastBuildFinishedDate(projects, userId);
-        }
-
         public async Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId)
         {
             //Maybe it can be a bit easier

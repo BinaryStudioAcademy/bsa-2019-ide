@@ -20,8 +20,7 @@ export class DashboardRootComponent implements OnInit {
         this.items = [
             ['Favourite projects', '/dashboard'],
             ['My projects', '/dashboard/myProjects'],
-            ['Assigned projects', '/dashboard/assignedProjects'],
-            ['All projects', '/dashboard/all']
+            ['Assigned projects', '/dashboard/assignedProjects']
         ];
         this.isActive = this.items.findIndex(x => x[1] === this.router.url);
     }

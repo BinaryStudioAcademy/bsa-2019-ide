@@ -1,3 +1,5 @@
+﻿/* Auto Generated */
+
 import { Language } from "./../../Enums/language"
 import { ProjectType } from "./../../Enums/projectType"
 import { CompilerType } from "./../../Enums/compilerType"

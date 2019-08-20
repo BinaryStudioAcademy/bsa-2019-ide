@@ -135,7 +135,6 @@ export class ProjectWindowComponent implements OnInit {
     }
 
     private SetProjectObjectsFromResponse(resp: HttpResponse<ProjectInfoDTO>): void {
-        console.log(resp.body);
         const res = resp.body;
         this.projectUpdateStartState = resp.body;
         this.projectUpdate.id = res.id;
@@ -145,14 +144,6 @@ export class ProjectWindowComponent implements OnInit {
         this.projectUpdate.countOfBuildAttempts = res.countOfBuildAttempts;
         this.projectUpdate.color = res.color;
         this.projectUpdate.accessModifier = res.accessModifier;
-        console.log(this.projectUpdate);
-        // this.projectUpdateStartState.id = res.id;
-        // this.projectUpdateStartState.name = res.name;
-        // this.projectUpdateStartState.description = res.description;
-        // this.projectUpdateStartState.countOfSaveBuilds = res.countOfSaveBuilds;
-        // this.projectUpdateStartState.countOfBuildAttempts = res.countOfBuildAttempts;
-        // this.projectUpdateStartState.color = res.color;
-        // this.projectUpdateStartState.accessModifier = res.accessModifier;
     }
 
     projectItemIsNotChange(): boolean {
@@ -189,28 +180,24 @@ export class ProjectWindowComponent implements OnInit {
     onSubmit() {
         if(this.isCreateForm()) {
             this.getValuesForProjectCreate();
-            console.log(this.projectCreate);
-            return;
             this.projectService.addProject(this.projectCreate)
                 .subscribe(res => {
-                    this.toastrService.success("Project created");
-                    let projectId = res.body;
-                    this.hasDetailsSaveResponse = true;
-                    this.close();
-                    this.router.navigate([`/project/${projectId}`]);                },
+                        this.toastrService.success("Project created");
+                        let projectId = res.body;
+                        this.hasDetailsSaveResponse = true;
+                        this.close();
+                        this.router.navigate([`/project/${projectId}`]);   
+                    },
                     error => {
                         this.toastrService.error('error');                        
                         this.hasDetailsSaveResponse = true;
                     })
         } else {
             this.getValuesForProjectUpdate();
-            console.log(this.projectUpdate);
-            return;
             this.hasDetailsSaveResponse = false;
             this.projectService.updateProject(this.projectUpdate)
             .subscribe(
                 (resp) => {
-                    this.router.navigate([`project/${this.projectId}`]);
                     this.hasDetailsSaveResponse = true;
                     this.toastrService.success('New details have successfully saved!');
                     this.close();

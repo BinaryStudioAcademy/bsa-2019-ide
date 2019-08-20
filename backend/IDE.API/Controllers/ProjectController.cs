@@ -39,13 +39,6 @@ namespace IDE.API.Controllers
             return Ok(await _projectService.GetProjectById(projectId));
         }
 
-        [HttpGet("all")]
-        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAllUserProjects()
-        {
-            //Need to get userId from token
-            return Ok(await _projectService.GetAllProjects(this.GetUserIdFromToken()));
-        }
-
         [HttpGet("name")]
         public async Task<ActionResult<IEnumerable<SearchProjectDTO>>> GetProjectName()
         {
