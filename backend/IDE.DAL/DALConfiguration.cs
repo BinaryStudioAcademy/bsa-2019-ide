@@ -1,4 +1,5 @@
 ﻿using IDE.DAL.Context;
+using IDE.DAL.Entities.Elastic;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Factories;
 using IDE.DAL.Factories.Abstractions;
@@ -29,11 +30,19 @@ namespace IDE.DAL
                 option.UseSqlServer(configuration.GetConnectionString("IdeDBConnection")));
 
             ConfigureNoSqlDb(services, configuration);
+
+            ConfigureElasticSearch(services, configuration);
         }
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            UpdateDatabase(app);
+            UpdateDatabases(app);
+        }
+
+        private static void ConfigureElasticSearch(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddSingleton<ISearchClientFactory>(x => new SearchClientFactory(configuration.GetSection("ElasticSearch").Value)); //"amqp://admin:admin@localhost:5672"
+            services.AddScoped<ISearchRepository<TestDocument>, TestSearchRepository>();
         }
 
         private static void ConfigureNoSqlDb(IServiceCollection services, IConfiguration configuration)
@@ -45,14 +54,15 @@ namespace IDE.DAL
                sp.GetRequiredService<IOptions<FileStorageNoSqlDbSettings>>().Value);
         }
 
-        private static void UpdateDatabase(IApplicationBuilder app)
+        private static void UpdateDatabases(IApplicationBuilder app)
         {
             using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 using (var context = serviceScope.ServiceProvider.GetService<IdeContext>())
                 {
+                    var fileStorageNoSqlDbSettings = serviceScope.ServiceProvider.GetService<IFileStorageNoSqlDbSettings>();
                     context.InitializeDatabase();
-                    context.EnsureSeeded();
+                    context.EnsureSeeded(fileStorageNoSqlDbSettings);
                 }
             }
         }

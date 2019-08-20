@@ -2,37 +2,58 @@ import { LeavePageDialogService } from './../../../services/leave-page-dialog.se
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { ResizeEvent } from 'angular-resizable-element';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
 
-
 import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
+import { MenuItem } from 'primeng/api';
+import { catchError } from 'rxjs/internal/operators/catchError';
+import { ProjectService } from 'src/app/services/project.service/project.service';
+import { CollaborateService } from 'src/app/services/collaborator.service/collaborate.service';
+import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { TokenService } from 'src/app/services/token.service/token.service';
+import { RightsService } from 'src/app/services/rights.service/rights.service';
+import { UserAccess } from 'src/app/models/Enums/userAccess';
+import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 
 
-
+// FOR REFACTOR
+// last and facultative superior wish - to review and rearrange duties of editor-section, workspace-root, file-browser and links between them
 
 @Component({
     selector: 'app-workspace-root',
     templateUrl: './workspace-root.component.html',
     styleUrls: ['./workspace-root.component.sass']
 })
-export class WorkspaceRootComponent implements OnInit {
+export class WorkspaceRootComponent implements OnInit, OnDestroy {
+
     public projectId: number;
     public userId: number;
+    public access: UserAccess;
+    private routeSub: Subscription;
+    private project: ProjectInfoDTO;
+    private authorId: number;
+    public showFileBrowser = true;
+    public showSearch = false;
+    public large = false;
+    public canRun = false;
+    public canBuild = false;
+    public canEdit = false;
+    public expandFolder=false;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
-    @ViewChild('fileBrowser', {static: false})
+    @ViewChild('fileBrowser', { static: false })
     private fileBrowser: FileBrowserSectionComponent;
 
     constructor(
@@ -40,14 +61,67 @@ export class WorkspaceRootComponent implements OnInit {
         private tr: ToastrService,
         private ws: WorkspaceService,
         private saveOnExit: LeavePageDialogService,
-        private tokenService: TokenService,
-        private fileService: FileService) { }
+        private fileService: FileService,
+        private rightService: RightsService,
+        private collaborateService: CollaborateService,
+        private projectService: ProjectService,
+        private tokenService: TokenService) { }
 
     ngOnInit() {
+        const userId = this.tokenService.getUserId();
+        this.routeSub = this.route.params.subscribe(params => {
+            this.projectId = params['id'];
+        });
+        this.projectService.getAuthorId(this.projectId)
+            .subscribe(
+                (resp) => {
+                    this.authorId = resp.body;
+                    console.log(this.authorId);
+                });
+        if (this.userId != this.authorId) {
+            this.rightService.getUserRightById(userId, this.projectId)
+                .subscribe(
+                    (resp) => {
+                        this.access = resp.body;
+                    }
+                )
+        }
+        this.projectService.getProjectById(this.projectId)
+            .subscribe(
+                (resp) => {
+                    this.project = resp.body;
+                },
+                (error) => {
+                    this.tr.error("Can't load selected project.", 'Error Message');
+                }
+            );
+        this.setUserAccess();
+    }
 
-        this.projectId = +this.route.snapshot.paramMap.get('id');
+    public setUserAccess() {
+        switch (this.access) {
+            case 1:
+                this.canEdit = true;
+                break;
+            case 2:
+                this.canEdit = true;
+                this.canBuild = true;
+                break;
+            case 3:
+                this.canEdit = true;
+                this.canBuild = true;
+                this.canRun = true;
+                break;
+            default:
+                break
+        }
+    }
 
-        this.userId = this.tokenService.getUserId();
+    public isAuthor(): boolean {
+        if (this.authorId == this.tokenService.getUserId()) {
+            return true;
+        }
+        return false;
     }
 
     public onFileSelected(fileId: string): void {
@@ -78,64 +152,83 @@ export class WorkspaceRootComponent implements OnInit {
             );
     }
 
-    public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
-        const openedFiles: FileUpdateDTO[] = this.editor.openedFiles.map(x => x.innerFile);
-        openedFiles.forEach(file => {
-            // file.updaterId = 0;
-        });
-        return this.saveFilesRequest(openedFiles);
+    public openModalWindow(): void {
+        console.log(this.projectId);
+        this.collaborateService.openDialogWindow(this.projectId);
     }
 
+    // FOR REFACTOR
+    // onSaveButtonClick and onFilesSave do same things - need to create one method Save and calls it for this actions(save btn, tab close)
+    // firsty BETTER to have method for save one file its more logical. And add than save all method. And for close tab use saveOne method!!!
+    // this one calls on save btn click
     public onSaveButtonClick(ev) {
         if (!this.editor.anyFileChanged()) {
             return;
         }
         this.saveFiles().subscribe(
-            success => {
+            (success) => {
                 if (success.every(x => x.ok)) {
                     this.tr.success("Files saved", 'Success', { tapToDismiss: true });
                 } else {
                     this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
                 }
-
             },
-            error => this.tr.error("Can't save files", 'Error', { tapToDismiss: true }));
+            (error) => {
+                this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
+                console.error(error);
+            }
+        );
     }
 
+    public hideSearchField(): void {
+        this.showSearch = !this.showSearch;
+    }
+
+    // this one calls on tab close
     public onFilesSave(files: FileUpdateDTO[]) {
-        files.forEach(file => {
-            //file.updaterId = 0;
-        });
         this.saveFilesRequest(files)
             .subscribe(
                 success => {
                     if (success.every(x => x.ok)) {
                         this.tr.success("Files saved", 'Success', { tapToDismiss: true });
-                        this.editor.confirmSaving(files.map(x => x.id));
+                        // FOR REFACTOR
+                        // "confirmSaving" method invert isChanged flag,
+                        // but here in calls for closed tab, so it calls for undefind obj so it throw exeption
+                        // refactor it for call only for opened files and mabe rename it
+                        // this.editor.confirmSaving(files.map(x => x.id));
                     } else {
                         this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
                 },
                 error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
+    // FOR REFACTOR
 
-    public expand(){
-        this.fileBrowser.expandAll();
-    }
-
-    public collapse(){
-        this.fileBrowser.collapseAll();
+    public hideFileBrowser(): void
+    {
+        this.showFileBrowser= !this.showFileBrowser;
     }
 
     private saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
         return this.ws.saveFilesRequest(files);
     }
+    // this one calls on tab close
+    public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
+        const openedFiles: FileUpdateDTO[] = this.editor.openedFiles.map(x => x.innerFile);
+
+        return this.saveFilesRequest(openedFiles);
+    }
+    // FOR REFACTOR
 
     canDeactivate(): Observable<boolean> {
         return !this.editor.anyFileChanged() ? of(true) : this.saveOnExit.confirm('Save changes?')
             .pipe(
                 switchMap(
                     mustSave => mustSave ? this.saveFiles().pipe(map(result => result.every(x => x.ok) ? true : false)) : of(false)));
+    }
+
+    ngOnDestroy() {
+        this.routeSub.unsubscribe();
     }
 
 

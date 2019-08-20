@@ -3,6 +3,7 @@
 import { Language } from "./../../Enums/language"
 import { ProjectType } from "./../../Enums/projectType"
 import { CompilerType } from "./../../Enums/compilerType"
+import { AccessModifier } from "./../../Enums/accessModifier"
 
 export interface ProjectCreateDTO {
     name: string;
@@ -13,4 +14,5 @@ export interface ProjectCreateDTO {
     countOfSaveBuilds: number;
     countOfBuildAttempts: number;
     color: string;
+    access: AccessModifier;
 }

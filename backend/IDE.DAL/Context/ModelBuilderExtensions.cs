@@ -1,12 +1,15 @@
-﻿using IDE.Common.Enums;
+﻿using Bogus;
+using Humanizer;
+using IDE.Common.Enums;
 using IDE.Common.Security;
 using IDE.DAL.Entities;
+using IDE.DAL.Entities.NoSql;
+using IDE.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Bogus;
-using System.Data;
 
 namespace IDE.DAL.Context
 {
@@ -17,11 +20,11 @@ namespace IDE.DAL.Context
         private static DateTime DATE_TIME = new DateTime(2018, 1, 1);
         private static Random random = new Random(2048);
         
-        public static void EnsureSeeded(this IdeContext context)
+        public static void EnsureSeeded(this IdeContext context, IFileStorageNoSqlDbSettings settings)
         {
             if(context.Users.Count() == 0)
             {
-                context.Seed();
+                context.Seed(settings);
             }
         }
 
@@ -75,7 +78,7 @@ namespace IDE.DAL.Context
                 .OnDelete(DeleteBehavior.ClientSetNull);
         }
 
-        public static void Seed(this IdeContext context)
+        public static void Seed(this IdeContext context, IFileStorageNoSqlDbSettings settings)
         {
             Randomizer.Seed = new Random(2048);
 
@@ -91,9 +94,11 @@ namespace IDE.DAL.Context
             context.GitCredentials.AddRange(gits);
             context.SaveChanges();
 
-            var projects = GenerateRandomProjects(context.Users.ToList(), context.GitCredentials.ToList());
+            var projects = GenerateRandomProjects(context.Users.ToList(), context.GitCredentials.ToList(), settings);
             context.Projects.AddRange(projects);
             context.SaveChanges();
+
+            EnsureNoSqlDbSeeded(settings, context.Projects.ToList());
 
             var builds = GenerateRandomBuilds(context.Users.ToList(), context.Projects.ToList());
             context.Builds.AddRange(builds);
@@ -103,17 +108,31 @@ namespace IDE.DAL.Context
                 .GroupBy(x => x.ProjectId + " " + x.UserId).Select(x => x.First());
             context.ProjectMembers.AddRange(projectMembers);
             context.SaveChanges();
-
-            //modelBuilder.Entity<Image>().HasData(avatars);
-            //modelBuilder.Entity<User>().HasData(users);
-            //modelBuilder.Entity<GitCredential>().HasData(gits);
-            //modelBuilder.Entity<Project>().HasData(projects);
-            //modelBuilder.Entity<Build>().HasData(builds);
-            //modelBuilder.Entity<ProjectMember>().HasData(projectMembers);
         }
 
-        //Build
-        //ProjectMember
+        private static void EnsureNoSqlDbSeeded(IFileStorageNoSqlDbSettings settings, ICollection<Project> projects)
+        {
+            IMongoCollection<ProjectStructure> items;
+            var client = new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
+            var itemsCollectionName = GetItemsCollectionName();
+            items = database.GetCollection<ProjectStructure>(itemsCollectionName);
+
+            foreach (var project in projects)
+            {
+                var fileStructure = new FileStructure();
+                fileStructure.Type = Common.ModelsDTO.Enums.TreeNodeType.Folder;
+                fileStructure.Details = $"Super important details of file {project.Name}";
+                fileStructure.Name = project.Name;
+
+                var emptyStructure = new ProjectStructure();
+                emptyStructure.Id = project.Id.ToString();
+                emptyStructure.NestedFiles.Add(fileStructure);
+
+                items.InsertOne(emptyStructure);
+            }
+        }
+
         private static ICollection<ProjectMember> GenerateRandomProjectMembers(ICollection<User> users,
             ICollection<Project> projects)
         {
@@ -185,7 +204,7 @@ namespace IDE.DAL.Context
         }
 
         private static ICollection<Project> GenerateRandomProjects(ICollection<User> authors,
-            ICollection<GitCredential> gits)
+            ICollection<GitCredential> gits, IFileStorageNoSqlDbSettings settings)
         {
             var testProjectFake = new Faker<Project>()
                 .RuleFor(i => i.AccessModifier, f => f.PickRandom<AccessModifier>())
@@ -239,6 +258,13 @@ namespace IDE.DAL.Context
             for (int i = 0; i < length; i++)
                 bytes[i] = (byte)random.Next(255);
             return bytes;
+        }
+
+        private static string GetItemsCollectionName()
+        {
+            var itemClassName = typeof(ProjectStructure).ToString().Split('.').Last();
+            var itemsCollectionName = itemClassName.Pluralize();
+            return itemsCollectionName;
         }
     }
 }
