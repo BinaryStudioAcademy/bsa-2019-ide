@@ -35,10 +35,6 @@
     <ProjectReference Include="..\IDE.Common\IDE.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
   
 
 </Project>
