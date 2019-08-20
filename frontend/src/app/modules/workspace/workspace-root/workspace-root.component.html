@@ -1,11 +1,16 @@
 <div class="top-panel p-grid p-nogutter">
     <div class="hor-navbar p-col-12">
-        <button pButton type="button" icon="pi pi-play" iconPos="left" class="ui-button-secondary" label="Run"></button>
-        <button pButton type="button" icon="pi pi-arrow-down" iconPos="left" class="ui-button-secondary"
-            label="Build"></button>
-        <button pButton type="button" (click)="onSaveButtonClick($event)" icon="pi pi-save" iconPos="left"
+
+        <button pButton *ngIf="canRun || isAuthor()" type="button" icon="pi pi-play" iconPos="left"
+            class="ui-button-secondary" label="Run"></button>
+        <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-arrow-down" iconPos="left"
+            class="ui-button-secondary" label="Build"></button>
+        <button pButton *ngIf="canEdit || isAuthor()" type="button" (click)="onSaveButtonClick($event)" icon="pi pi-save" iconPos="left"
             class="ui-button-secondary" label="Save"></button>
+        <button pButton *ngIf="isAuthor()" (click)="openModalWindow()" type="button" icon="pi pi-comment" iconPos="left"
+            class="ui-button-secondary" label="Collaborators"></button>
     </div>
+
 </div>
 <div class="wks-wrapper p-grid p-nogutter">
     <div class="left-panel p-col-fixed">
@@ -14,22 +19,16 @@
         <button pButton type="button" icon="pi pi-file" iconPos="left" class="ui-button-secondary" disabled></button>
         <button pButton routerLink="/project/{{projectId}}" title="Project details" type="button" icon="pi pi-info"
             iconPos="left" class="ui-button-secondary"></button>
-        <button pButton type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary"
+        <button pButton *ngIf="isAuthor()" type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary"
             routerLink="/project/{{projectId}}/settings"></button>
-        <button pButton type="button" icon="pi pi-search" iconPos="left" class="ui-button-secondary" disabled></button>
-        <button pButton type="button" icon="pi pi pi-download" title="Download files" iconPos="left"
-            class="ui-button-secondary" disabled></button>
-        <button pButton type="button" icon="pi pi-upload" title="Upload filse" iconPos="left"
-            class="ui-button-secondary" disabled></button>
-        <button pButton type="button" icon="pi pi-chevron-down" title="Expand all" iconPos="left"
-            class="ui-button-secondary" (click)="expand()"></button>
-        <button pButton type="button" icon="pi pi-chevron-up" title="Collapse all" iconPos="left"
-            class="ui-button-secondary" (click)="collapse()"></button>
+        <button pButton type="button" icon="pi pi-search" iconPos="left" class="ui-button-secondary"
+            (click)="hideSearchField()"></button>        
     </div>
     <div class="p-col">
         <div class="inner-wrapper p-grid p-nogutter ">
             <div *ngIf="showFileBrowser" class="file-browser-content p-col-12 p-md-4 p-xl-2 p-align-stretch">
-                <app-file-browser-section #fileBrowser (fileSelected)="onFileSelected($event)">
+                <app-file-browser-section #fileBrowser (fileSelected)="onFileSelected($event)"
+                    [showSerachField]="showSearch">
                 </app-file-browser-section>
             </div>
             <div class="editor-content p-col-12 p-md-8 p-xl-10 p-align-stretch " [ngClass]="{large:!showFileBrowser}">

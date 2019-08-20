@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
 import { UserDTO } from 'src/app/models/DTO/User/userDTO';
 import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
+import { UserNicknameDTO } from 'src/app/models/DTO/User/userNicknameDTO';
+import { Observable } from 'rxjs';
+import { HttpResponse } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
@@ -14,6 +17,10 @@ export class UserService {
 
     public getUserFromToken() {
         return this.httpService.getRequest<UserDTO>(`${this.routePrefix}/fromToken`);
+    }
+
+    public getUsersNickName(): Observable<HttpResponse<UserNicknameDTO[]>>{
+        return this.httpService.getRequest<UserNicknameDTO[]>(`${this.routePrefix}/nickname`);
     }
 
     public getUserDetailsFromToken() {

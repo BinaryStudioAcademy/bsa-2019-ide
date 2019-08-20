@@ -7,6 +7,7 @@ import { CreateProjectComponent } from './components/create-project/create-proje
 import { ProjectInfoResolver } from 'src/app/resolvers/project-info.resolver';
 import { LoginGuard } from 'src/app/guards/login.guard';
 import { ProjectSettingsRouteGuard } from 'src/app/guards/project-settings-route.guard';
+import { AddCollaboratorsComponent } from '../collaborator/components/add-collaborators/add-collaborators.component';
 
 const projectRoutes: Routes = [
   {
@@ -22,7 +23,8 @@ const projectRoutes: Routes = [
         component: ProjectDetailsComponent,
         resolve: { project: ProjectInfoResolver } // What is it?
                                                   // I don't know bro.
-      },                                          // Gyus this is for loading data
+                                                  // Gyus this is for loading data
+      },                                         
       {
         path: ':id/settings',
         component: ProjectSettingsComponent,
