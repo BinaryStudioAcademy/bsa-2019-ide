@@ -6,6 +6,9 @@ import { TokenService } from 'src/app/services/token.service/token.service';
 import { MenuItem } from 'primeng/api';
 import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
 import { ProjectType } from 'src/app/modules/project/models/project-type';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { ProjDialogDataService } from 'src/app/services/proj-dialog-data.service/proj-dialog-data.service';
 
 @Component({
     selector: 'app-project-card',
@@ -19,15 +22,30 @@ export class ProjectCardComponent implements OnInit {
     DATE = new Date();
     currentUserId: number;
     contextMenu: MenuItem[];
+    private unsubscribe$ = new Subject<void>();
 
     constructor(
         private projectService: ProjectService,
         private tokenService: TokenService,
         private router: Router,
-        private projectEditDialog: ProjectDialogService) { }
+        private projectEditDialog: ProjectDialogService,
+        private projectData: ProjDialogDataService) { }
 
     ngOnInit() {
         this.currentUserId = this.tokenService.getUserId();
+
+        this.projectData.todos$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((proj) => {
+                if(proj === null) {
+                    return;
+                }
+                if (proj.id === this.project.id) {
+                    proj.lastBuild = this.project.lastBuild;
+                    proj.buildStatus = this.project.buildStatus;
+                    this.project = proj;
+                }
+            });
     }
 
     public favourite(event: Event): void {
@@ -96,5 +114,10 @@ export class ProjectCardComponent implements OnInit {
         this.prepCm();
         menu.show(event);
         return false;
+    }
+    
+    public ngOnDestroy() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 }

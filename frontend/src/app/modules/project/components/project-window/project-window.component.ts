@@ -14,6 +14,8 @@ import { RightsService } from 'src/app/services/rights.service/rights.service';
 import { UserNicknameDTO } from 'src/app/models/DTO/User/userNicknameDTO';
 import { DeleteCollaboratorRightDTO } from 'src/app/models/DTO/Common/deleteCollaboratorRightDTO';
 import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
+import { ProjectDescriptionDTO } from 'src/app/models/DTO/Project/projectDescriptionDTO';
+import { ProjDialogDataService } from 'src/app/services/proj-dialog-data.service/proj-dialog-data.service';
 
 @Component({
   selector: 'app-project-window',
@@ -50,7 +52,8 @@ export class ProjectWindowComponent implements OnInit {
                 private projectService: ProjectService,
                 private toastrService: ToastrService,
                 private rightService: RightsService,
-                private router: Router) { }
+                private router: Router,
+                private dialogService: ProjDialogDataService) { }
 
     ngOnInit(): void { 
         this.projectType = this.config.data.projectType;
@@ -198,6 +201,7 @@ export class ProjectWindowComponent implements OnInit {
                     (resp) => {
                         this.hasDetailsSaveResponse = true;
                         this.toastrService.success('New details have successfully saved!');
+                        this.dialogService.addProject(this.projectInfoToProjectDesc(resp.body));
                         this.close();
                     },
                     (error) => {
@@ -253,6 +257,18 @@ export class ProjectWindowComponent implements OnInit {
             }
         }
     }
+
+    private projectInfoToProjectDesc(project: ProjectInfoDTO): ProjectDescriptionDTO {
+        return {
+            color: project.color,
+            creatorId: project.authorId,
+            id: project.id,
+            created: project.createdAt,
+            creator: project.authorName,
+            favourite: true,
+            title: project.name
+        }
+    }    
 
     public changeLanguage(e: number) {
         switch(e){

@@ -7,10 +7,10 @@ import { ProjectType } from 'src/app/modules/project/models/project-type';
   providedIn: 'root'
 })
 export class ProjectDialogService {
+  
+    constructor(private dialogService: DialogService) { }
 
-  constructor(private dialogService: DialogService) { }
-
-  public show(projType: ProjectType, projectId = 0) {
+    public show(projType: ProjectType, projectId = 0) {
       const ref = this.dialogService.open(ProjectWindowComponent,
         {
             data: { 
@@ -28,5 +28,5 @@ export class ProjectDialogService {
             },
             showHeader: false
         })
-  }
+    }
 }
