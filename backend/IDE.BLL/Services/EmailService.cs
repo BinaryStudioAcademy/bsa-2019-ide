@@ -25,7 +25,7 @@ namespace IDE.BLL.Services
 
         public async Task SendPasswordRecoveryMail(string receiverEmail, string newPassword)
         {
-            var from = new EmailAddress("no-reply@bsa-ide.azurewebsites.net", "Online IDE");
+            var from = new EmailAddress(_senderEmail, "Online IDE");
             var to = new EmailAddress(receiverEmail, "Password recovery");
 
             var subject = "Recover password";
