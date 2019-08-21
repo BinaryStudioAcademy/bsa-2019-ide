@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
-import { ProjectCreateDTO } from '../../models/DTO/Project/projectCreateDTO';
 import { ProjectDescriptionDTO } from '../../models/DTO/Project/projectDescriptionDTO';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
-import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { SearchProjectDTO } from 'src/app/models/DTO/Project/searchProjectDTO';
+import { ProjectCreateDTO } from 'src/app/models/DTO/Project/projectCreateDTO';
+import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 
 @Injectable({

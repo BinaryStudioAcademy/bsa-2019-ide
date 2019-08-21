@@ -43,8 +43,8 @@ export class TokenService {
 
     public logout() {
         this.isAuthenticatedSubject.next(false);
-        this._removeTokensFromStorage();
         this._revokeTokens();
+        this._removeTokensFromStorage();
         this.router.navigate(['']);
     }
 
@@ -93,8 +93,8 @@ export class TokenService {
     }
     private _revokeTokens() {
         return this.httpService.postRequest<AccessTokenDTO>(`token/revoke`, {
-            refreshToken: localStorage.getItem('refreshToken')
-        });
+            refreshToken: JSON.parse(localStorage.getItem('refreshToken'))
+        }).subscribe();
     }
 
     public getUser(): UserDTO {
