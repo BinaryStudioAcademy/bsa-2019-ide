@@ -68,4 +68,8 @@ export class ProjectService {
     public deleteProject(projectId: number) {
         return this.httpClient.deleteRequest(this.address + '/' + projectId);
     }
+
+    public exportProject(projectId: number){
+        return this.httpClient.getBlobRequest(`${this.address}/Download/${projectId}`);
+    }
 }

@@ -1,3 +1,4 @@
+import { HttpClientWrapperService } from './../../../../services/http-client-wrapper.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { getLocaleDateTimeFormat } from '@angular/common';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
@@ -9,9 +10,9 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-project-details-info',
-  templateUrl: './project-details-info.component.html',
-  styleUrls: ['./project-details-info.component.sass']
+    selector: 'app-project-details-info',
+    templateUrl: './project-details-info.component.html',
+    styleUrls: ['./project-details-info.component.sass']
 })
 export class ProjectDetailsInfoComponent implements OnInit {
     private authorId: number;
@@ -19,10 +20,11 @@ export class ProjectDetailsInfoComponent implements OnInit {
     @Input() project: ProjectInfoDTO;
 
     constructor(
-      private tokenService: TokenService,
-      private projectService: ProjectService,
-      private router: Router,
-      private toastService: ToastrService
+        private tokenService: TokenService,
+        private projectService: ProjectService,
+        private router: Router,
+        private toastService: ToastrService,
+        private projSvc: ProjectService
     ) { }
 
     ngOnInit(): void {
@@ -38,22 +40,41 @@ export class ProjectDetailsInfoComponent implements OnInit {
     }
 
     getRemovingHeader() {
-      return 'Delete project "' + this.project.name + '"?';
+        return 'Delete project "' + this.project.name + '"?';
     }
 
+    onTriggerExport(ev) {
+        this.projSvc.exportProject(this.project.id)
+            .subscribe(result => {
+                const keys = result.headers.keys();
+
+                const contentDespoHeader = !!keys.find(x=> x == "content-disposition") ? result.headers.get(keys.find(x=> x == "content-disposition")): null;
+                const fileName = !!contentDespoHeader ? contentDespoHeader.split(';')[1].trim().split('=')[1] : "file.zip";
+                const blob = new Blob([result.body], {
+                    type: 'application/zip'
+                });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = fileName;
+                link.click();
+            },
+                error => { this.toastService.error("Error: can not download", 'Error'); console.log(error) });
+
+
+    }
     remove(event: boolean) {
-      if (event) {
-          this.projectService.deleteProject(this.project.id)
-              .subscribe(
-                  (resp) => {
-                    this.router.navigate(['/dashboard']);
-                    this.toastService.success('Project "' + this.project.name + '" was successfully deleted');
-                  },
-                  (error) => {
-                    this.toastService.error('Please, try again later', 'Ooops, smth goes wrong');
-                    console.error(error.message);
-                  });
-      } else {
-      }
-  }
+        if (event) {
+            this.projectService.deleteProject(this.project.id)
+                .subscribe(
+                    (resp) => {
+                        this.router.navigate(['/dashboard']);
+                        this.toastService.success('Project "' + this.project.name + '" was successfully deleted');
+                    },
+                    (error) => {
+                        this.toastService.error('Please, try again later', 'Ooops, smth goes wrong');
+                        console.error(error.message);
+                    });
+        } else {
+        }
+    }
 }

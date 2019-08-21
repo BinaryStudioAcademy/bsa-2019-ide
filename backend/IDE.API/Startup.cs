@@ -54,7 +54,7 @@ namespace IDE.API
             app.UseCors(builder => builder
                 .AllowAnyMethod()
                 .AllowAnyHeader()
-                .WithExposedHeaders("Token-Expired")
+                .WithExposedHeaders("Token-Expired", "Content-Disposition")
                 .AllowCredentials()
                 .AllowAnyOrigin());
 

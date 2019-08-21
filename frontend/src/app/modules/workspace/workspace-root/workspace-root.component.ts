@@ -212,7 +212,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     private saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
         return this.ws.saveFilesRequest(files);
     }
-    // this one calls on tab close
+    
     public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
         const openedFiles: FileUpdateDTO[] = this.editor.openedFiles.map(x => x.innerFile);
 
