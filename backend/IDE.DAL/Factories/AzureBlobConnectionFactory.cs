@@ -22,8 +22,12 @@ namespace IDE.DAL.Factories
         {
             return await GetBlobContainer("ArchiveArtifactsContainerName").ConfigureAwait(false);
         }
+        
+        public async Task<CloudBlobContainer> GetDownloadedProjectZipsBlobContainer(){
+            return await GetBlobContainer("DownloadProjectZipContainer").ConfigureAwait(false);
+        }
 
-        private async Task<CloudBlobContainer> GetBlobContainer(string containerNameKey)
+        public async Task<CloudBlobContainer> GetBlobContainer(string containerNameKey)
         {
             if (_blobContainer != null)
             {

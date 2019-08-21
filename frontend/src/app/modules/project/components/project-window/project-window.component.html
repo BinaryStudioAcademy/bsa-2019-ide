@@ -1,0 +1,148 @@
+<span class="modal-close-btn" (click)="close()">&times;</span>
+
+<div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+        <div class="title">{{ title }}</div>
+    </div>
+</div>
+
+<div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded || projectUpdate">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+<div *ngIf="!isCreateForm() && !isPageLoaded && !projectUpdate" class="error">
+    <p>Can't load project details</p>
+</div>
+  
+<div class="ui-g" *ngIf="isPageLoaded">
+    <div class="ui-g-12">
+        <form class="projectForm" [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+
+            <!-- Project Name -->
+            <div class="label">Project Name</div>
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="ui-inputgroup">
+                        <input type="text" pInputText pKeyFilter="alphanum" formControlName="name" placeholder="name">
+                    </div>
+                </div>
+            </div>
+            <div class="invalid" *ngIf="projectForm.get('name').invalid && projectForm.get('name').dirty">{{getErrorMessage('name')}}</div>
+
+            <!-- Project Description -->
+            <div class="label">Description</div>
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="ui-inputgroup">
+                        <textarea [rows]="3" pInputTextarea formControlName="description"
+                            placeholder="description"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="invalid" *ngIf="projectForm.get('description').invalid && projectForm.get('description').dirty">{{getErrorMessage('description')}}</div>
+
+
+            <!-- Project  Language -->
+            <div class="label" *ngIf="isCreateForm()">Language</div>
+            <div class="ui-g ui-fluid" *ngIf="isCreateForm()">
+                <div class="ui-g-12">
+                    <div class="">
+                        <p-dropdown [options]="languages" placeholder="Select a project language"
+                            formControlName="language" (ngModelChange)="changeLanguage($event)"></p-dropdown>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project  type -->
+            <div class="label" *ngIf="isCreateForm()">Project type</div>
+            <div class="ui-g ui-fluid" *ngIf="isCreateForm()">
+                <div class="ui-g-12">
+                    <div class="">
+                        <p-dropdown [options]="projectTypes" placeholder="Select a project type"
+                            formControlName="projectType"></p-dropdown>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Compiler type -->
+            <div class="label" *ngIf="isCreateForm()">Compiler Type</div>
+            <div class="ui-g ui-fluid" *ngIf="isCreateForm()">
+                <div class="ui-g-12">
+                    <div class="">
+                        <p-dropdown [options]="compilerTypes" placeholder="Select a compiler type"
+                            formControlName="compilerType"></p-dropdown>
+                        <!--<select required type="text" placeholder="compiler type" formControlName="compilerType">
+                            <option value="0">NetCore</option>
+                        </select>-->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Number of saved builds -->
+            <div class="label">Number of saved builds</div>
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="ui-inputgroup">
+                        <input type="text" pInputText pKeyFilter="pint" formControlName="countOfSavedBuilds"
+                            placeholder="builds">
+                    </div>
+                </div>
+            </div>
+            <div class="invalid" *ngIf="projectForm.get('countOfSavedBuilds').invalid && projectForm.get('countOfSavedBuilds').dirty">{{getErrorMessage('countOfSavedBuilds')}}</div>
+
+
+            <!-- Number of build attempts builds -->
+            <div class="label">Number of build attempts for user</div>
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="ui-inputgroup">
+                        <input type="text" pInputText pKeyFilter="pint" formControlName="countOfBuildAttempts"
+                            placeholder="build attempts">
+                    </div>
+                </div>
+            </div>
+            <div class="invalid" *ngIf="projectForm.get('countOfBuildAttempts').invalid && projectForm.get('countOfBuildAttempts').dirty">{{getErrorMessage('countOfBuildAttempts')}}</div>
+
+            <!-- Access modifier -->
+            <div class="label">Access</div>
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="">
+                        <p-dropdown [options]="access" placeholder="Select project access"
+                            formControlName="access"></p-dropdown>
+                    </div>
+                </div>
+            </div>
+
+            <!--Collaborators-->
+            <div class="label" *ngIf="!isCreateForm() && collaborators && collaborators.length > 0">Collaborators:</div>
+            <app-add-collaborators-list [collaborators]="collaborators" [area]="area" *ngIf="!isCreateForm() && collaborators && collaborators.length > 0"></app-add-collaborators-list>
+
+            <!-- Color -->
+            <div class="label">Project color</div>
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <p-dropdown [options]="colors" placeholder="Select project color" formControlName="color">
+                        <ng-template let-item pTemplate="selectedItem">
+                            <div style="position: relative; height: 20px;" [style.background]="item.value"></div>
+                        </ng-template>
+                        <ng-template let-color pTemplate="item">
+                            <div class="ui-helper-clearfix" style="position: relative; height: 20px;" [style.background]="color.value"></div>
+                        </ng-template>
+                    </p-dropdown>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <button *ngIf="isCreateForm()" type="submit" [disabled]="!projectForm.valid" pButton label="Create"></button>
+                    <button *ngIf="!isCreateForm() && hasDetailsSaveResponse" type="submit" [disabled]="!projectForm.valid || projectItemIsNotChange()" pButton label="Save"></button>
+                    <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
+                        <p-progressSpinner></p-progressSpinner>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
