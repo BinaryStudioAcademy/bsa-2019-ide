@@ -7,7 +7,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ButtonModule } from 'primeng/button';
 import { AddCollaboratorsListComponent } from './components/add-collaborators-list/add-collaborators-list.component';
 import { DropdownModule } from 'primeng/dropdown';
-import { ProjectSettingsComponent } from '../project/components/project-settings/project-settings.component';
+import { ProjectWindowComponent } from '../project/components/project-window/project-window.component';
 
 @NgModule({
     declarations: [
@@ -26,7 +26,7 @@ import { ProjectSettingsComponent } from '../project/components/project-settings
         AddCollaboratorsListComponent
     ],
     providers:[
-        ProjectSettingsComponent
+        ProjectWindowComponent
     ]
 })
 export class CollaboratorModule { }

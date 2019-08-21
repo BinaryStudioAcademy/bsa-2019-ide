@@ -22,7 +22,6 @@ export class AuthDialogComponent implements OnInit {
     public avatar: string;
     public email: string;
     public nickName: string;
-    private nav: NavMenuComponent;
 
     public display: boolean = false;
     public hidePass = true;
