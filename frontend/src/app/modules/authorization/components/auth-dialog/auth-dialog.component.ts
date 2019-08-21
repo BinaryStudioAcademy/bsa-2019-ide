@@ -7,6 +7,7 @@ import { NavMenuComponent } from 'src/app/nav-menu/nav-menu.component';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TokenService } from 'src/app/services/token.service/token.service';
+import { UserService } from 'src/app/services/user.service/user.service';
 
 @Component({
     selector: 'app-auth-dialog',
@@ -22,7 +23,9 @@ export class AuthDialogComponent implements OnInit {
     public avatar: string;
     public email: string;
     public nickName: string;
+    public isRecoverPassword: boolean = false;
     private nav: NavMenuComponent;
+    public emailRegexp = new RegExp('^[^.]{0}[a-zA-Z0-9._]{1,35}[^.]{0}@[^-]{0}[a-zA-Z0-9]{1,17}[^-]{0}[.]{1}[a-zA-Z]{1,17}$')
 
     public display: boolean = false;
     public hidePass = true;
@@ -35,7 +38,8 @@ export class AuthDialogComponent implements OnInit {
         public config: DynamicDialogConfig,
         private router: Router,
         private tokenService: TokenService,
-        private toast: ToastrService
+        private toast: ToastrService,
+        private userService: UserService
     ) { }
 
     public ngOnInit() {
@@ -96,5 +100,29 @@ export class AuthDialogComponent implements OnInit {
                     this.toast.info('Please, confirm your email');
                 });
                 
+    }
+
+    public recoverPassword() {
+        if(!this.isRecoverPassword) {
+            this.isRecoverPassword = true;
+            this.title = 'Recover password';
+        } else {
+            this.isSpinner = true;
+            if(!this.emailRegexp.test(this.email)){
+                this.toast.error('Please, enter correct email');
+                return;
+            }
+            this.userService.recoverPassword({ email: this.email })
+                .subscribe((data) => {
+                    this.toast.success('Letter with new password was sent to your mail!');
+                    this.ref.close();
+                    this.isSpinner = false;
+                }, 
+                (error) => {
+                    console.log(error);
+                    this.toast.error('User with such email doesn\'t exist');
+                    this.isSpinner = false;
+                })
+        }
     }
 }

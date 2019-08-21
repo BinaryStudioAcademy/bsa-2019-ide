@@ -127,6 +127,25 @@ namespace IDE.BLL.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task RecoverPassword(string email)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Email == email);
+            if (user == null)
+            {
+                throw new NotFoundException("User with such email was");
+            }
+
+            var salt = SecurityHelper.GetRandomBytes();
+            var password = GenerateSymbols.GenerateRandomSymbols(9);
+
+            user.PasswordSalt = Convert.ToBase64String(salt);
+            user.PasswordHash = SecurityHelper.HashPassword(password, salt);
+            _context.Users.Update(user);
+
+            await _emailService.SendPasswordRecoveryMail(email, password);
+            await _context.SaveChangesAsync();
+        }
+
         private async Task<User> GetUserByIdInternal(int id)
         {
             return await _context.Users

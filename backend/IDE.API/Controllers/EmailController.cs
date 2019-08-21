@@ -24,5 +24,12 @@ namespace IDE.API.Controllers
             await _userService.VerifyEmail(token.Token);
             return NoContent();
         }
+
+        [HttpPut("recover")]
+        public async Task<ActionResult> RecoverPassword([FromBody]EmailDTO email)
+        {
+            await _userService.RecoverPassword(email.Email);
+            return NoContent();
+        }
     }
 }
