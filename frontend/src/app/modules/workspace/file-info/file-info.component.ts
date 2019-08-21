@@ -47,7 +47,7 @@ export class FileInfoComponent implements OnInit {
         this.ref.close();
     }
 
-    public IsFilder(): boolean{
+    public isFolder(): boolean{
         return this.type=="1";
     }
 
