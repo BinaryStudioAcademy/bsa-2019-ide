@@ -92,8 +92,7 @@ export class FileBrowserSectionComponent implements OnInit {
             name: `New File ${++this.fileCounter}`,
             content: "// Start code here:\n",
             projectId: this.projectId,
-            folder : "",
-            creatorId: null
+            folder : ""
         }
         newFile.folder = this.getFolderName(node);
 
@@ -126,6 +125,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 name : element.label,
                 type : element.type === TreeNodeType.folder.toString() ?
                     TreeNodeType.folder : TreeNodeType.file,
+                size:0,
                 nestedFiles : []
             };
             file.nestedFiles = this.getFileStructure(element.children);
