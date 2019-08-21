@@ -6,10 +6,10 @@
     </div>
 </div>
 
-<div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded || project">
+<div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded || projectUpdate">
     <p-progressSpinner></p-progressSpinner>
 </div>
-<div *ngIf="!isCreateForm() && !isPageLoaded && !project" class="error">
+<div *ngIf="!isCreateForm() && !isPageLoaded && !projectUpdate" class="error">
     <p>Can't load project details</p>
 </div>
   
@@ -114,8 +114,8 @@
             </div>
 
             <!--Collaborators-->
-            <div class="label" *ngIf="!isCreateForm()">Collaborators:</div>
-            <app-add-collaborators-list [collaborators]="collaborators" [area]="area" *ngIf="!isCreateForm()"></app-add-collaborators-list>
+            <div class="label" *ngIf="!isCreateForm() && collaborators && collaborators.length > 0">Collaborators:</div>
+            <app-add-collaborators-list [collaborators]="collaborators" [area]="area" *ngIf="!isCreateForm() && collaborators && collaborators.length > 0"></app-add-collaborators-list>
 
             <!-- Color -->
             <div class="label">Project color</div>
