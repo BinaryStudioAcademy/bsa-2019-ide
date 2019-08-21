@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using IDE.BLL.Interfaces;
+using Microsoft.AspNetCore.Http;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -10,18 +11,21 @@ namespace IDE.BLL.Services
 {
     public class EmailService : IEmailService
     {
-        const string currentAddress = "https://bsa-ide.azurewebsites.net"; //How to set it
+        private readonly string _currentAddress;
+        private readonly string _senderEmail;
 
         private readonly SendGridClient client;
 
-        public EmailService(string apiKey)
+        public EmailService(string apiKey, string httpAddress, string senderEmail)
         {
             client = new SendGridClient(apiKey);
+            _currentAddress = httpAddress;
+            _senderEmail = senderEmail;
         }
 
         public async Task SendEmailVerificationMail(string receiverEmail, string verificationToken)
         {            
-            var from = new EmailAddress("no-reply@bsa-ide.azurewebsites.net", "Online IDE");
+            var from = new EmailAddress(_senderEmail, "Online IDE");
             var to = new EmailAddress(receiverEmail, "EmailConfirm");
 
             var subject = "Please, confirm your mail";
@@ -33,7 +37,7 @@ namespace IDE.BLL.Services
                                                 "<p style=\"color: #294661;\">By clicking on the following link, you are confirming your email address.</p>" +
                                                 "<a href=\"{0}/vf?vcd={1}\" style=\"text-decoration: none\">" +
                                                 "   <button style=\"width: 200px; padding: 20px; color: #f0f0f0; border: none; background: #5db4e9; font-size: 14px; margin: 20px auto; display: block; cursor: pointer!important;\">Confirm Email Address</button></a>" +
-                      "</div>", currentAddress, verificationToken);
+                      "</div>", _currentAddress, verificationToken);
 
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
