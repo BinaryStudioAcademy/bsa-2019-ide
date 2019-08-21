@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ProjectWindowComponent } from 'src/app/modules/project/components/project-window/project-window.component';
+import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
+import { ProjectType } from 'src/app/modules/project/models/project-type';
 
 @Component({
     selector: 'app-dashboard-root',
@@ -8,25 +11,26 @@ import { Router } from '@angular/router';
 })
 export class DashboardRootComponent implements OnInit {
     items: string[][];
-    isActive: Array<boolean>;
+    public isActive: number;
 
-    constructor(  private router: Router) { }
+    constructor(private router: Router,
+                private projectDialogService: ProjectDialogService) { }
 
     ngOnInit() {
         this.items = [
-        ['All projects', '/dashboard'],
-        ['My projects', '/dashboard/myProjects'],
-        ['Assigned projects', '/dashboard/assignedProjects'],
-        ['Favourite projects', '/dashboard/favouriteProjects']
+            ['Favourite projects', '/dashboard'],
+            ['My projects', '/dashboard/myProjects'],
+            ['Assigned projects', '/dashboard/assignedProjects']
         ];
-        const route = this.router.url;
-        this.isActive = [];
-        this.isActive[this.items.findIndex(x => x[1] === route)] = true;
+        this.isActive = this.items.findIndex(x => x[1] === this.router.url);
     }
 
     redirect(i: number) {
-        this.isActive = [];
-        this.isActive[i] = true;
+        this.isActive = i;
         this.router.navigate([this.items[i][1]]);
+    }
+
+    public createProject() {
+        this.projectDialogService.show(ProjectType.Create);
     }
 }

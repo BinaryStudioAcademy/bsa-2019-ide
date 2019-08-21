@@ -93,7 +93,7 @@ export class FileBrowserSectionComponent implements OnInit {
             content: "// Start code here:\n",
             projectId: this.projectId,
             folder : "",
-            
+            creatorId: null
         }
         newFile.folder = this.getFolderName(node);
 

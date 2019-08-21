@@ -7,6 +7,8 @@ import { TokenService } from 'src/app/services/token.service/token.service';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
+import { ProjectType } from '../../models/project-type';
 
 @Component({
   selector: 'app-project-details-info',
@@ -22,7 +24,8 @@ export class ProjectDetailsInfoComponent implements OnInit {
       private tokenService: TokenService,
       private projectService: ProjectService,
       private router: Router,
-      private toastService: ToastrService
+      private toastService: ToastrService,
+      private projectSettingsService: ProjectDialogService
     ) { }
 
     ngOnInit(): void {
@@ -42,18 +45,21 @@ export class ProjectDetailsInfoComponent implements OnInit {
     }
 
     remove(event: boolean) {
-      if (event) {
-          this.projectService.deleteProject(this.project.id)
-              .subscribe(
-                  (resp) => {
-                    this.router.navigate(['/dashboard']);
-                    this.toastService.success('Project "' + this.project.name + '" was successfully deleted');
-                  },
-                  (error) => {
-                    this.toastService.error('Please, try again later', 'Ooops, smth goes wrong');
-                    console.error(error.message);
-                  });
-      } else {
-      }
-  }
+        if (event) {
+            this.projectService.deleteProject(this.project.id)
+                .subscribe(
+                    (resp) => {
+                        this.router.navigate(['/dashboard']);
+                        this.toastService.success('Project "' + this.project.name + '" was successfully deleted');
+                    },
+                    (error) => {
+                        this.toastService.error('Please, try again later', 'Ooops, smth goes wrong');
+                        console.error(error.message);
+                    });
+        } else {
+        }
+    }
+    public showSettings() {
+        this.projectSettingsService.show(ProjectType.Update, this.project.id);
+    }
 }
