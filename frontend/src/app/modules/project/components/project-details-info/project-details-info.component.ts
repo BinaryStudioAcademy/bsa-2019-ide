@@ -47,7 +47,7 @@ export class ProjectDetailsInfoComponent implements OnInit {
     }
 
     onTriggerExport(ev) {
-        this.projSvc.exportProject(this.project.id)
+        this.projectService.exportProject(this.project.id)
             .subscribe(result => {
                 const keys = result.headers.keys();
 
