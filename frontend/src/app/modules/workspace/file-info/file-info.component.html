@@ -7,8 +7,8 @@
     </div>
     <div class="file-modal-item">
         <span class="highlighted">Type: </span>
-        <span *ngIf="type==1" class="item-font">File</span>
-        <span *ngIf="type==0" class="item-font">Folder</span>
+        <span *ngIf="!isFolder()" class="item-font">File</span>
+        <span *ngIf="isFolder()" class="item-font">Folder</span>
     </div>
     <div class="file-modal-item">
         <span class="highlighted">Path: </span>
