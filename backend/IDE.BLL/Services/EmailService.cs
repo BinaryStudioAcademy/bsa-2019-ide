@@ -22,7 +22,7 @@ namespace IDE.BLL.Services
         public async Task SendEmailVerificationMail(string receiverEmail, string verificationToken)
         {            
             var from = new EmailAddress("support@onlineIde.com", "Online IDE");
-            var to = new EmailAddress("anatolii.0700@gmail.com", "EmailConfirm");
+            var to = new EmailAddress(receiverEmail, "EmailConfirm");
 
             var subject = "Please, confirm your mail";
 
