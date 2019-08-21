@@ -73,10 +73,6 @@ export class FileBrowserSectionComponent implements OnInit {
         ];
     }
 
-    private download(node: TreeNode){
-        console.log(`${node.label} should be downloaded`);
-    }
-
     private openInfoWindow(node: TreeNode)
     {
         this.fileBrowserService.OpenModalWindow(node,this.projectId.toString());
