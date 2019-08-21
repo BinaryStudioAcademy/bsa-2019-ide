@@ -111,8 +111,7 @@ export class FileBrowserSectionComponent implements OnInit {
             name: `New File ${++this.fileCounter}`,
             content: "// Start code here:\n",
             projectId: this.projectId,
-            folder : "",
-            creatorId: null
+            folder : ""
         }
         newFile.folder = this.getFolderName(node);
 
