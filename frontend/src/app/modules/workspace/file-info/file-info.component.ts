@@ -48,7 +48,7 @@ export class FileInfoComponent implements OnInit {
     }
 
     public isFolder(): boolean{
-        return this.type=="1";
+        return this.type==="0";
     }
 
     public getItemPath(): void {

@@ -18,7 +18,7 @@
         <span class="highlighted">Size: </span>
         <span class="item-font">{{size}} bytes</span>
     </div>
-    <div *ngIf="type==0" class="file-modal-item">
+    <div *ngIf="isFolder()" class="file-modal-item">
         <span class="highlighted">Contains: </span>
         <span class="item-font">Folders({{countOfFolders}}); files({{countOfFiles}})</span>
     </div>

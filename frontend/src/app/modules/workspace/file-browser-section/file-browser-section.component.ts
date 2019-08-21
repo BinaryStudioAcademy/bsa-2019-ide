@@ -107,7 +107,6 @@ export class FileBrowserSectionComponent implements OnInit {
     private createFile(node: TreeNode) {
         const authorId=this.tokenService.getUserId();
         var newFile : FileCreateDTO  = {
-            creatorId: authorId,
             name: `New File ${++this.fileCounter}`,
             content: "// Start code here:\n",
             projectId: this.projectId,
