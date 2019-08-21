@@ -21,7 +21,7 @@ namespace IDE.BLL.Services
 
         public async Task SendEmailVerificationMail(string receiverEmail, string verificationToken)
         {            
-            var from = new EmailAddress("support@onlineIde.com", "Online IDE");
+            var from = new EmailAddress("no-reply@bsa-ide.azurewebsites.net", "Online IDE");
             var to = new EmailAddress(receiverEmail, "EmailConfirm");
 
             var subject = "Please, confirm your mail";
