@@ -177,10 +177,6 @@ export class FileBrowserSectionComponent implements OnInit {
         this.updateProjectStructure();
     }
 
-    private download(node: TreeNode){
-        console.log(`${node.label} should be downloaded`);
-    }
-
     public focusout(node: TreeNode){
         node.selectable = true;
         this.lastSelectedElement.disabled = true;

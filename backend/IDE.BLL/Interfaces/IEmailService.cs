@@ -8,5 +8,6 @@ namespace IDE.BLL.Interfaces
     public interface IEmailService
     {
         Task SendEmailVerificationMail(string receiverEmail, string confirmationToken);
+        Task SendPasswordRecoveryMail(string receiverEmail, string newPassword);
     }
 }
