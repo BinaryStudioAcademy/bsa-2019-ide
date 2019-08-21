@@ -9,6 +9,11 @@ import { ToastrService } from 'ngx-toastr';
 import { FileCreateDTO } from 'src/app/models/DTO/File/fileCreateDTO';
 import { ProjectStructureFormaterService } from 'src/app/services/project-structure-formater.service';
 import { FileStructureDTO } from 'src/app/models/DTO/Workspace/fileStructureDTO';
+import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
+import { Meta } from '@angular/platform-browser';
+import { take } from 'rxjs/operators';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -27,14 +32,20 @@ export class FileBrowserSectionComponent implements OnInit {
 
     private fileCounter: number = 0;
     private folderCounter: number = 0;
-
+    private lastSelectedElement: any;
 
     constructor(private projectStructureService: FileBrowserService,
                 private projectStructureFormaterService: ProjectStructureFormaterService,
                 private activateRoute: ActivatedRoute,
                 private fileService: FileService,
-                private toast: ToastrService) {
-                    console.log(this.showSerachField);
+                private toast: ToastrService,
+                private hotkeys: HotkeyService,
+                private fileBrowserService: FileBrowserService,
+                private tokenService: TokenService) {
+        this.hotkeys.addShortcut({keys: 'shift.e'})
+        .subscribe(()=>{
+            this.expand();
+        });
         this.projectId = activateRoute.snapshot.params['id'];
     }
 
@@ -56,7 +67,8 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'create file', icon: 'fa fa-file', command: (event) => this.createFile(this.selectedItem),  },
             { label: 'create folder', icon: 'fa fa-folder', command: (event) => this.createFolder(this.selectedItem) },
             { label: 'delete', icon: 'fa fa-remove', command: (event) => this.delete(this.selectedItem) },
-            { label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem), disabled: true},
+            { label: 'info', icon: 'fa fa-info', command: (event) => this.openInfoWindow(this.selectedItem)},
+            { label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem)},
             { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem), disabled : true }
         ];
     }
@@ -65,6 +77,11 @@ export class FileBrowserSectionComponent implements OnInit {
         console.log(`${node.label} should be downloaded`);
     }
 
+    private openInfoWindow(node: TreeNode)
+    {
+        this.fileBrowserService.OpenModalWindow(node,this.projectId.toString());
+    }
+  
     private getFolderName(node: TreeNode): string{
         if (node.type === TreeNodeType.file.toString()) {
             return node.parent.label;
@@ -88,12 +105,12 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     private createFile(node: TreeNode) {
+        const authorId=this.tokenService.getUserId();
         var newFile : FileCreateDTO  = {
             name: `New File ${++this.fileCounter}`,
             content: "// Start code here:\n",
             projectId: this.projectId,
-            folder : "",
-            creatorId: null
+            folder : ""
         }
         newFile.folder = this.getFolderName(node);
 
@@ -126,7 +143,8 @@ export class FileBrowserSectionComponent implements OnInit {
                 name : element.label,
                 type : element.type === TreeNodeType.folder.toString() ?
                     TreeNodeType.folder : TreeNodeType.file,
-                nestedFiles : []
+                nestedFiles : [],
+                size: 0
             };
             file.nestedFiles = this.getFileStructure(element.children);
             fileStructure.push(file);
@@ -163,9 +181,41 @@ export class FileBrowserSectionComponent implements OnInit {
         this.updateProjectStructure();
     }
 
+    private download(node: TreeNode){
+        console.log(`${node.label} should be downloaded`);
+    }
+
+    public focusout(node: TreeNode){
+        node.selectable = true;
+        this.lastSelectedElement.disabled = true;
+        const newName = this.lastSelectedElement.value.trim();
+        if (newName === '')
+        {
+            this.toast.error("Name couldn't be empty!", "Error Message", { tapToDismiss: true });
+            this.lastSelectedElement.value = node.label;
+            return;
+        }
+        if (node.parent.children.some(n => n.label === newName))
+        {
+            this.toast.error(`Name "${newName}" already exist!`, "Error Message", { tapToDismiss: true });
+            this.lastSelectedElement.value = node.label;
+            return;
+        }
+        node.label = newName;
+        this.toast.success(`Successfully renamed to "${newName}"`, "Success Message", { tapToDismiss: true })
+        this.updateProjectStructure();
+    }
+
     private rename(node: TreeNode) {
-        //TODO add rename implementation
-        console.log("rename");
+        if (!node.parent)
+        {
+            this.toast.error("Couldn't rename root folder", "Error Message", { tapToDismiss: true });
+            return;
+        }
+        this.lastSelectedElement.disabled = false;
+        node.selectable = false;
+        this.unselectNode();
+        this.lastSelectedElement.focus();
     }
 
     private delete(node: TreeNode){
@@ -213,11 +263,20 @@ export class FileBrowserSectionComponent implements OnInit {
         }
     }
 
-    unselectFile() {
+    unselectNode() {
         this.selectedItem = null;
     }
 
-    nodeSelect(evt: any): void {
+    private cacheElement($event: any){
+        this.lastSelectedElement = $event.originalEvent.srcElement;
+    }
+
+    nodeContextMenuSelect($event: any){
+        this.cacheElement($event);
+    }
+
+    nodeSelect(evt: any) {
+        this.cacheElement(evt);
         const nodeSelected: TreeNode = evt.node;
         if (nodeSelected.type === TreeNodeType.file.toString()) {
             this.fileSelected.emit(nodeSelected.key);

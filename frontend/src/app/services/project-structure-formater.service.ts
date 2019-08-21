@@ -59,7 +59,7 @@ export class ProjectStructureFormaterService {
     makeFolderNode(name: string, id: string) {
         const emptyFolder = this.getEmptyFolderNode();
         emptyFolder.label = name;
-        emptyFolder.key = (++this.itemId).toString();
+        emptyFolder.key = this.newGuid();
         return emptyFolder;
     }
     makeFileNode(name: string, id: string) {
@@ -67,5 +67,12 @@ export class ProjectStructureFormaterService {
         emptyFile.label = name;
         emptyFile.key = id;
         return emptyFile;
+    }
+
+    newGuid() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0, v = c === 'x' ? r : ( r & 0x3 | 0x8 );
+            return v.toString(16);
+        });
     }
 }
