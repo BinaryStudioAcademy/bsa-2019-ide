@@ -11,12 +11,13 @@ import {MonacoEditorModule} from '@materia-ui/ngx-monaco-editor';
 import { FormsModule } from '@angular/forms';
 import {TabMenuModule} from 'primeng/tabmenu';
 import { ContextMenuModule, MenuModule } from 'primeng/primeng';
+import { FileInfoComponent } from './file-info/file-info.component';
 
 @NgModule({
   declarations: [
       WorkspaceRootComponent, 
       FileBrowserSectionComponent, 
-      EditorSectionComponent
+      EditorSectionComponent, FileInfoComponent
     ],
   imports: [
     MenuModule,

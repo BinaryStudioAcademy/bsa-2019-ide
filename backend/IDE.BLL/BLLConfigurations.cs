@@ -21,7 +21,7 @@ namespace IDE.BLL
 
             services.AddScoped<AuthService>();
             services.AddScoped<UserService>();
-            services.AddScoped<IEmailService>(x => new EmailService(Environment.GetEnvironmentVariable("emailApiKey")));
+            services.AddScoped<IEmailService>(x => new EmailService(Environment.GetEnvironmentVariable("emailApiKey"), configuration["CurrentWebAPIAddressForMail"], configuration["websiteMail"]));
             services.AddScoped<IProjectMemberSettingsService, ProjectMemberSettingsService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ITokenService, TokenService>();

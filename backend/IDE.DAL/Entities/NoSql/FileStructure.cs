@@ -13,6 +13,8 @@ namespace IDE.DAL.Entities.NoSql
             NestedFiles = new List<FileStructure>();
         }
         public string Id { get; set; }
+
+        public int Size { get; set; }
         public TreeNodeType Type { get; set; }
         public string Name { get; set; }
         public string Details { get; set; }

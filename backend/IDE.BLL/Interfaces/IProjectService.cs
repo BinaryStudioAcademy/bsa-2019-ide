@@ -13,7 +13,6 @@ namespace IDE.BLL.Interfaces
         Task<ICollection<SearchProjectDTO>> GetProjectsName();
         Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId);
         Task<ICollection<ProjectDescriptionDTO>> GetFavouriteUserProjects(int userId);
-        Task<ICollection<ProjectDescriptionDTO>> GetAllProjects(int userId);
         Task<ICollection<CollaboratorDTO>> GetProjectCollaborators(int projectId, int authorId);
         Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId);
         Task<ProjectInfoDTO> UpdateProject(ProjectUpdateDTO project);

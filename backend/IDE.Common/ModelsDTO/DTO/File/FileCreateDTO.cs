@@ -6,6 +6,6 @@
         public string Content { get; set; }
         public string Folder { get; set; }
         public int ProjectId { get; set; }
-        public int CreatorId { get; set; }
+        
     }
 }

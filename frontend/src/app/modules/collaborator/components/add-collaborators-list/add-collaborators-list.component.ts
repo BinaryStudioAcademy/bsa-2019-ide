@@ -3,7 +3,7 @@ import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { SelectItem } from 'primeng/api';
 import { AddCollaboratorsComponent } from '../add-collaborators/add-collaborators.component';
-import { ProjectSettingsComponent} from '../../../project/components/project-settings/project-settings.component';
+import { ProjectWindowComponent } from '../../../project/components/project-window/project-window.component';
 
 @Component({
     selector: 'app-add-collaborators-list',
@@ -24,7 +24,7 @@ export class AddCollaboratorsListComponent implements OnInit {
 
     constructor(
         private addCollaboratorsComponent: AddCollaboratorsComponent,
-        private projectSettingComponent: ProjectSettingsComponent
+        private projectSettingComponent: ProjectWindowComponent
     ) { }
 
     ngOnInit() {

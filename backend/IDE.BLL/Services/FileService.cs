@@ -57,10 +57,17 @@ namespace IDE.BLL.Services
             return fileDto;
         }
 
-        public async Task<FileDTO> CreateAsync(FileCreateDTO fileCreateDto)
+        public async Task<int> GetFileSize(string id)
+        {
+            var file = await this.GetByIdAsync(id);
+            return file.Content.Length;
+        }
+
+        public async Task<FileDTO> CreateAsync(FileCreateDTO fileCreateDto, int creatorId)
         {
             var fileCreate = _mapper.Map<File>(fileCreateDto);
             fileCreate.CreatedAt = DateTime.Now;
+            fileCreate.CreatorId = creatorId;
             var createdFile = await _fileRepository.CreateAsync(fileCreate);
 
             var fileHistory = new FileHistoryDTO
@@ -69,7 +76,7 @@ namespace IDE.BLL.Services
                 Name = createdFile.Name,
                 Folder = createdFile.Folder,
                 Content = createdFile.Content,
-                CreatorId = createdFile.CreatorId,
+                CreatorId = creatorId,
                 CreatedAt = createdFile.CreatedAt
             };
             await _fileHistoryService.CreateAsync(fileHistory);
