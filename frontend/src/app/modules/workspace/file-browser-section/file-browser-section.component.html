@@ -1,8 +1,30 @@
 <div class="tree-wrapper">
     <button pButton type="button" icon="pi pi-sort" title="Expand all" iconPos="left"
-            class="ui-button-primary expand-btn" (click)="expand()"></button>
-    <p-tree class="custom-tree" selectionMode="single" [value]="files"  [(selection)]="selectedItem"
-            [contextMenu]="cm" (onNodeSelect)="nodeSelect($event)" [filter]="showSerachField" filterMode="strict">   
-        </p-tree>
+        class="ui-button-primary expand-btn" (click)="expand()"></button>
+    <p-tree class="custom-tree p-grid" selectionMode="single" [value]="files" [(selection)]="selectedItem"  [contextMenu]="cm"
+        (onNodeSelect)="nodeSelect($event)" (onNodeContextMenuSelect)="nodeContextMenuSelect($event)" [filter]="showSerachField"
+        filterMode="strict">
+        <ng-template let-node  pTemplate="0">
+                <input class="input-item" [class.selected-item]="selectedItem?.key === node.key" [textContent]="node.label" [value]="node.label"
+                (focusout)="focusout(node)" disabled>
+                   <!-- [attr.contenteditable]="node.data === 'contenteditable'"> -->
+        </ng-template>
+        <ng-template let-node  pTemplate="1">
+                <input class="input-item" [class.selected-item]="selectedItem?.key === node.key" [textContent]="node.label" [value]="node.label"
+                (focusout)="focusout(node)" disabled>
+                   <!-- [attr.contenteditable]="node.data === 'contenteditable'"> -->
+        </ng-template>
+    </p-tree>
     <p-contextMenu #cm [model]="items"></p-contextMenu>
 </div>
+
+
+
+<!-- <div class="ui-inputgroup">
+    <span class="ui-float-label">
+        <input id="float-input" type="text" size="10" pInputText>
+        <label for="float-input">New name</label>
+    </span>
+    <button pButton type="button" icon="pi pi-check" class="ui-button-success"></button>
+    <button pButton type="button" icon="pi pi-times" class="ui-button-danger"></button>
+</div> -->
