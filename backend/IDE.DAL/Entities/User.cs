@@ -24,6 +24,7 @@ namespace IDE.DAL.Entities
         public DateTime Birthday { get; set; }
         public DateTime RegisteredAt { get; set; }
         public DateTime LastActive { get; set; }
+        public bool EmailConfirmed { get; set; }
 
         public int? AvatarId { get; set; }
         public Image Avatar { get; set; }
