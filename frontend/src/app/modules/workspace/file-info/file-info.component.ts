@@ -21,8 +21,8 @@ export class FileInfoComponent implements OnInit {
     public projectId: number;
 
     constructor(private config: DynamicDialogConfig,
-        private ref: DynamicDialogRef,
-        private fileBrowserService: FileBrowserService) {
+        private fileBrowserService: FileBrowserService,
+        private ref: DynamicDialogRef) {
 
     }
 
@@ -47,6 +47,10 @@ export class FileInfoComponent implements OnInit {
         this.ref.close();
     }
 
+    public IsFilder(): boolean{
+        return this.type=="1";
+    }
+
     public getItemPath(): void {
         var item = this.fileInfoData.node;
         while (item) {
@@ -55,7 +59,7 @@ export class FileInfoComponent implements OnInit {
         }
     }
 
-    public getCountOfInternalItem(item: any) {
+    public getCountOfInternalItem(item: any): void {
         item.children.forEach(element => {
             if(element.type==0)
             {

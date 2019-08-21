@@ -42,9 +42,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public projectId: number;
     public userId: number;
     public access: UserAccess;
-    private routeSub: Subscription;
-    private project: ProjectInfoDTO;
-    private authorId: number;
     public showFileBrowser = true;
     public showSearch = false;
     public large = false;
@@ -52,6 +49,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public canBuild = false;
     public canEdit = false;
     public expandFolder=false;
+    public project: ProjectInfoDTO;
+
+    private routeSub: Subscription;
+    private authorId: number;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
