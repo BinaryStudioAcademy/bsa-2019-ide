@@ -4,7 +4,14 @@ using System.Text;
 
 namespace IDE.Common.ModelsDTO.DTO.Common
 {
-    class NotificationModel
+    public class NotificationModel
     {
+            public ICollection<int> Data { get; set; }
+            public string Label { get; set; }
+
+            public NotificationModel()
+            {
+                Data = new List<int>();
+            }
     }
 }

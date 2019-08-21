@@ -17,7 +17,7 @@ namespace IDE.API.Controllers
 {
     [Route("[controller]")]
     //[AllowAnonymous]
-    //[Authorize]
+    [Authorize]
     [ApiController]
     public class ProjectController : ControllerBase
     {
@@ -26,23 +26,28 @@ namespace IDE.API.Controllers
         private readonly IProjectStructureService _projectStructureService;
         private readonly FileService _fileService;
         private readonly IBlobRepository _blobRepo;
+        private readonly NotificationService _notificationService;
 
         public ProjectController(IProjectService projectService,
                                 IProjectMemberSettingsService projectMemberSettings,
                                 IProjectStructureService projectStructureService,
                                 FileService fileService,
-                                IBlobRepository blobRepo)
+                                IBlobRepository blobRepo,
+                                NotificationService notificationService)
         {
             _projectStructureService = projectStructureService;
             _projectService = projectService;
             _projectMemberSettings = projectMemberSettings;
             _fileService = fileService;
             _blobRepo = blobRepo;
+            _notificationService = notificationService;
         }
 
         [HttpGet("{projectId}")]
         public async Task<ActionResult<ProjectDescriptionDTO>> GetProjectById(int projectId)
         {
+            var userId = await _projectService.GetAuthorId(projectId);
+            await _notificationService.SentNotification(userId.ToString(), "create");
             return Ok(await _projectService.GetProjectById(projectId));
         }
 

@@ -1,6 +1,7 @@
 using FluentValidation.AspNetCore;
 using IDE.API.Extensions;
 using IDE.BLL;
+using IDE.BLL.HubConfig;
 using IDE.DAL;
 using IDE.DAL.Context;
 using Microsoft.AspNetCore.Builder;
@@ -28,7 +29,8 @@ namespace IDE.API
             services.ConfigureJwt(Configuration);
             services.RegisterCustomValidators();
 
-            services.AddCors();       
+            services.AddCors();   
+            services.AddSignalR();
 
             services.AddMvcCore()
                 .AddAuthorization()
@@ -50,13 +52,20 @@ namespace IDE.API
             }
 
             DALConfigurations.Configure(app, env);
-            
+            BLLConfigurations.Configure(app, env);
+
+
             app.UseCors(builder => builder
-                .AllowAnyMethod()
-                .AllowAnyHeader()
-                .WithExposedHeaders("Token-Expired")
-                .AllowCredentials()
-                .AllowAnyOrigin());
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .WithExposedHeaders("Token-Expired")
+               .AllowCredentials()
+               .WithOrigins("http://localhost:4200"));
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<NotificationHub>("/notification");
+            });
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

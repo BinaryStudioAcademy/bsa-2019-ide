@@ -27,6 +27,7 @@
     "chart.js": "^2.8.0",
     "font-awesome": "^4.7.0",
     "ng2-charts": "^2.3.0",
+    "ng2-signalr": "^8.0.2",
     "ngx-toastr": "^10.0.4",
     "primeflex": "^1.0.0-rc.1",
     "primeicons": "^2.0.0",

@@ -10,6 +10,7 @@ using IDE.BLL.Services;
 using IDE.BLL.Interfaces;
 using IDE.BLL.MappingProfiles;
 using System;
+using IDE.BLL.HubConfig;
 
 namespace IDE.BLL
 {
@@ -21,6 +22,7 @@ namespace IDE.BLL
 
             services.AddScoped<AuthService>();
             services.AddScoped<UserService>();
+            services.AddScoped<NotificationService>();
             services.AddScoped<IEmailService>(x => new EmailService(Environment.GetEnvironmentVariable("emailApiKey"), configuration["CurrentWebAPIAddressForMail"], configuration["websiteMail"]));
             services.AddScoped<IProjectMemberSettingsService, ProjectMemberSettingsService>();
             services.AddScoped<IProjectService, ProjectService>();
@@ -40,7 +42,7 @@ namespace IDE.BLL
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-
+          
         }
 
         private static void RegisterAutoMapper(IServiceCollection services)

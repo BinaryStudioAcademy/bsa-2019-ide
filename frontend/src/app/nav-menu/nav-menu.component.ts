@@ -8,6 +8,8 @@ import { takeUntil } from 'rxjs/operators';
 import { ProjectService } from '../services/project.service/project.service';
 import { TokenService } from '../services/token.service/token.service';
 import { SearchProjectDTO } from '../models/DTO/Project/searchProjectDTO'
+import { SignalRService } from '../services/signalr.service/signal-r.service';
+import { HttpClientWrapperService } from '../services/http-client-wrapper.service';
 
 @Component({
     selector: 'app-nav-menu',
@@ -29,11 +31,16 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         private authDialogService: AuthDialogService,
         private router: Router,
         private tokenService: TokenService,
-        private projectService: ProjectService
+        private projectService: ProjectService,
+        private signalRService: SignalRService,
+        private http: HttpClientWrapperService
     ) { }
 
     ngOnInit() {
+        this.signalRService.startConnection();
         this.getUser();
+        this.signalRService.addTransferChartDataListener();   
+        this.startHttpRequest();
         this.authUserItems = [
             { 
                 label: 'Home',
@@ -133,4 +140,11 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((auth) => this.isAuthorized = auth);
     }
+   
+      private startHttpRequest = () => {
+        this.http.getRequest('notification')
+          .subscribe(res => {
+            console.log(res);
+          })
+      }
 }

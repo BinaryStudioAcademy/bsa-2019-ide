@@ -73,6 +73,10 @@ export class FileBrowserSectionComponent implements OnInit {
         ];
     }
 
+    private download(node: TreeNode){
+        console.log(`${node.label} should be downloaded`);
+    }
+
     private openInfoWindow(node: TreeNode)
     {
         this.fileBrowserService.OpenModalWindow(node,this.projectId.toString());
@@ -175,10 +179,6 @@ export class FileBrowserSectionComponent implements OnInit {
         this.appendNewNode(node, newFolderNode);
         this.toast.success("Folder successfully created", "Success Message", { tapToDismiss: true })
         this.updateProjectStructure();
-    }
-
-    private download(node: TreeNode){
-        console.log(`${node.label} should be downloaded`);
     }
 
     public focusout(node: TreeNode){
