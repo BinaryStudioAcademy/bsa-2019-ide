@@ -1,6 +1,8 @@
 ﻿using IDE.BLL.Services;
 using IDE.Common.ModelsDTO.DTO.Workspace;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
@@ -26,14 +28,36 @@ namespace IDE.API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] ProjectStructureDTO projectStructureDTO)
         {
+            projectStructureDTO=await _projectStructureService.CalculateProjectStructureSize(projectStructureDTO);
             await _projectStructureService.UpdateAsync(projectStructureDTO);
             return NoContent();
+        }
+
+        [HttpGet("size/{projectStructureId}/{fileStructureId}")]
+        public async Task<ActionResult<int>> GetFileStructureSize(string projectStructureId, string fileStructureId)
+        {
+            return Ok(await GetSize(projectStructureId, fileStructureId));
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectStructureDTO>> GetByIdAsync(string id)
         {
             return Ok(await _projectStructureService.GetByIdAsync(id));
+        }
+
+        private async Task<int> GetSize(string projectStructureId, string fileStructureId )
+        {
+            var projectStructure = await _projectStructureService.GetByIdAsync(projectStructureId);
+            await _projectStructureService.CalculateProjectStructureSize(projectStructure);
+            foreach (var item in projectStructure.NestedFiles)
+            {
+                if (item.Id==fileStructureId)
+                {
+                    return item.Size;
+                }
+                    return await _projectStructureService.GetFileStructureSize(item, fileStructureId);
+            }
+            return 0;
         }
     }
 }

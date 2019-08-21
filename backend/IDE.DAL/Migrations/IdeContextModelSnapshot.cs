@@ -180,6 +180,8 @@ namespace IDE.DAL.Migrations
 
                     b.Property<string>("Email");
 
+                    b.Property<bool>("EmailConfirmed");
+
                     b.Property<string>("FirstName");
 
                     b.Property<string>("GitHubUrl");
@@ -201,6 +203,23 @@ namespace IDE.DAL.Migrations
                     b.HasIndex("AvatarId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("IDE.DAL.Entities.VerificationToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Token");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("VerificationTokens");
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.Build", b =>
@@ -264,6 +283,14 @@ namespace IDE.DAL.Migrations
                     b.HasOne("IDE.DAL.Entities.Image", "Avatar")
                         .WithMany()
                         .HasForeignKey("AvatarId");
+                });
+
+            modelBuilder.Entity("IDE.DAL.Entities.VerificationToken", b =>
+                {
+                    b.HasOne("IDE.DAL.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
