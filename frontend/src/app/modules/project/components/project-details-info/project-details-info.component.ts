@@ -22,12 +22,12 @@ export class ProjectDetailsInfoComponent implements OnInit {
     @Input() project: ProjectInfoDTO;
 
     constructor(
-      private tokenService: TokenService,
-      private projectService: ProjectService,
-      private router: Router,
-      private toastService: ToastrService,
-      private projectSettingsService: ProjectDialogService,
-      
+        private tokenService: TokenService,
+        private projectService: ProjectService,
+        private router: Router,
+        private toastService: ToastrService,
+        private projectSettingsService: ProjectDialogService,
+
     ) { }
 
     ngOnInit(): void {
@@ -46,13 +46,19 @@ export class ProjectDetailsInfoComponent implements OnInit {
         return 'Delete project "' + this.project.name + '"?';
     }
 
-    onTriggerExport(ev) {
+    public onTriggerExport() {
         this.projectService.exportProject(this.project.id)
             .subscribe(result => {
                 const keys = result.headers.keys();
 
-                const contentDespoHeader = !!keys.find(x=> x == "content-disposition") ? result.headers.get(keys.find(x=> x == "content-disposition")): null;
-                const fileName = !!contentDespoHeader ? contentDespoHeader.split(';')[1].trim().split('=')[1] : "file.zip";
+                const contentDespoHeader = !!keys.find(x => x == "content-disposition")
+                    ? result.headers.get(keys.find(x => x == "content-disposition"))
+                    : null;
+
+                const fileName = !!contentDespoHeader
+                    ? contentDespoHeader.split(';')[1].trim().split('=')[1] 
+                    : "file.zip";
+
                 const blob = new Blob([result.body], {
                     type: 'application/zip'
                 });

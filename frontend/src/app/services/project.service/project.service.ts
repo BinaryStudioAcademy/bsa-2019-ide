@@ -69,7 +69,7 @@ export class ProjectService {
         return this.httpClient.deleteRequest(this.address + '/' + projectId);
     }
 
-    public exportProject(projectId: number){
+    public exportProject(projectId: number): Observable<HttpResponse<Blob>>{
         return this.httpClient.getBlobRequest(`${this.address}/Download/${projectId}`);
     }
 }
