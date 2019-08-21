@@ -25,6 +25,7 @@ import { RightsService } from 'src/app/services/rights.service/rights.service';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
+import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 
 
 // FOR REFACTOR
@@ -137,10 +138,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             .subscribe(
                 (resp) => {
                     if (resp.ok) {
-                        this.editor.AddFileToOpened(resp.body as FileUpdateDTO);
-                        this.editor.items.push({ label: resp.body.name, icon: 'fa fa-fw fa-file', id: resp.body.id });
+                        const { id, name, content, folder, updaterId } = resp.body as FileDTO;
+                        const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder };
+                        this.editor.AddFileToOpened(fileUpdateDTO);
+                        this.editor.items.push({ label: name, icon: 'fa fa-fw fa-file', id: id });
                         this.editor.activeItem = this.editor.items[this.editor.items.length - 1];
-                        this.editor.code = resp.body.content;
+                        this.editor.code = content;
                     } else {
                         this.tr.error("Can't load selected file.", 'Error Message');
                     }
@@ -156,7 +159,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         console.log(this.projectId);
         this.collaborateService.openDialogWindow(this.projectId);
     }
-   
+
     // FOR REFACTOR
     // onSaveButtonClick and onFilesSave do same things - need to create one method Save and calls it for this actions(save btn, tab close)
     // firsty BETTER to have method for save one file its more logical. And add than save all method. And for close tab use saveOne method!!!
@@ -179,11 +182,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             }
         );
     }
-    
+
     public hideSearchField(): void {
         this.showSearch = !this.showSearch;
     }
-    
+
     // this one calls on tab close
     public onFilesSave(files: FileUpdateDTO[]) {
         this.saveFilesRequest(files)
@@ -192,7 +195,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                     if (success.every(x => x.ok)) {
                         this.tr.success("Files saved", 'Success', { tapToDismiss: true });
                         // FOR REFACTOR
-                        // "confirmSaving" method invert isChanged flag, 
+                        // "confirmSaving" method invert isChanged flag,
                         // but here in calls for closed tab, so it calls for undefind obj so it throw exeption
                         // refactor it for call only for opened files and mabe rename it
                         // this.editor.confirmSaving(files.map(x => x.id));
@@ -203,7 +206,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                 error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
     // FOR REFACTOR
-  
+
     public hideFileBrowser(): void
     {
         this.showFileBrowser= !this.showFileBrowser;
