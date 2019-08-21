@@ -57,6 +57,12 @@ namespace IDE.BLL.Services
             return fileDto;
         }
 
+        public async Task<int> GetFileSize(string id)
+        {
+            var file = await this.GetByIdAsync(id);
+            return file.Content.Length;
+        }
+
         public async Task<FileDTO> CreateAsync(FileCreateDTO fileCreateDto)
         {
             var fileCreate = _mapper.Map<File>(fileCreateDto);

@@ -79,7 +79,7 @@ export class FileBrowserSectionComponent implements OnInit {
 
     private openInfoWindow(node: TreeNode)
     {
-        this.fileBrowserService.OpenModalWindow(node);
+        this.fileBrowserService.OpenModalWindow(node,this.projectId.toString());
     }
 
     private getFolderName(node: TreeNode): string{
@@ -144,7 +144,8 @@ export class FileBrowserSectionComponent implements OnInit {
                 name : element.label,
                 type : element.type === TreeNodeType.folder.toString() ?
                     TreeNodeType.folder : TreeNodeType.file,
-                nestedFiles : []
+                nestedFiles : [],
+                size: 0
             };
             file.nestedFiles = this.getFileStructure(element.children);
             fileStructure.push(file);

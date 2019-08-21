@@ -7,6 +7,7 @@ export interface FileStructureDTO {
     id: string;
     type: TreeNodeType;
     name: string;
+    size: number;
     details: string;
     nestedFiles: FileStructureDTO[];
 }

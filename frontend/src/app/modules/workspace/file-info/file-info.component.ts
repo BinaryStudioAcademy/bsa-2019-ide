@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/api';
 import { FileService } from 'src/app/services/file.service/file.service';
+import { FileBrowserService } from 'src/app/services/file-browser.service';
 
 @Component({
     selector: 'app-file-info',
@@ -14,16 +15,32 @@ export class FileInfoComponent implements OnInit {
     public countOfFolders: number=0;
     public countOfFiles: number=0;
     public createAt;
+    public name: string;
+    public fileInfoData;
+    public size: number;
+    public projectId: number;
 
     constructor(private config: DynamicDialogConfig,
-        private ref: DynamicDialogRef) {
+        private ref: DynamicDialogRef,
+        private fileBrowserService: FileBrowserService) {
 
     }
 
     ngOnInit() {
+        this.fileInfoData=this.config.data;
+        this.name=this.fileInfoData.node.label;
         this.getItemPath();
-        this.type = this.config.data.node.type
-        this.getCountOfInternalItem(this.config.data.node);
+        this.type = this.fileInfoData.node.type
+        if(this.fileInfoData.node.children)
+        {
+            this.getCountOfInternalItem(this.fileInfoData.node);
+        }
+        this.fileBrowserService.getFileStructureSize(this.fileInfoData.projectId,this.fileInfoData.node.key).subscribe(
+            (resp)=>
+            {
+                this.size=resp.body;
+            }
+        )
     }
 
     public close(): void {
@@ -31,7 +48,7 @@ export class FileInfoComponent implements OnInit {
     }
 
     public getItemPath(): void {
-        var item = this.config.data.node;
+        var item = this.fileInfoData.node;
         while (item) {
             this.path=item.label+'/'+this.path;
             item = item.parent;
@@ -40,11 +57,13 @@ export class FileInfoComponent implements OnInit {
 
     public getCountOfInternalItem(item: any) {
         item.children.forEach(element => {
-            console.log(element);
             if(element.type==0)
             {
                 this.countOfFolders++;
-                this.getCountOfInternalItem(element);
+                if (element.children)
+                {
+                    this.getCountOfInternalItem(element);
+                }
             }
             else{
                 this.countOfFiles++;

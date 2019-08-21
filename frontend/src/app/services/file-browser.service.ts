@@ -26,12 +26,17 @@ export class FileBrowserService {
         return this.httpClient.putRequest(this.address, projectStructure);
     }
 
-    public OpenModalWindow(node: TreeNode)
+    public getFileStructureSize(projectStructureId: string, fileStructureId: string): Observable<HttpResponse<number>>{
+        return this.httpClient.getRequest(this.address+'size/'+projectStructureId+'/'+fileStructureId);
+    }
+
+    public OpenModalWindow(node: TreeNode, projectId: string)
     {
         const dialog = this.dialogService.open(FileInfoComponent,{
             data:
             {
-                node
+                node,
+                projectId
             },
             width: '30%',
             contentStyle: {

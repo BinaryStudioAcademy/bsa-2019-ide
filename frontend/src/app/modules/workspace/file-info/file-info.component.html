@@ -2,6 +2,10 @@
 <h2 class="title">Info</h2>
 <div class="file-modal-content">
     <div class="file-modal-item">
+        <span class="highlighted">Name: </span>
+        <span class="item-font">{{name}}</span>
+    </div>
+    <div class="file-modal-item">
         <span class="highlighted">Type: </span>
         <span *ngIf="type==1" class="item-font">File</span>
         <span *ngIf="type==0" class="item-font">Folder</span>
@@ -10,9 +14,13 @@
         <span class="highlighted">Path: </span>
         <span class="item-font">{{path}}</span>
     </div>
+    <div class="file-modal-item">
+        <span class="highlighted">Size: </span>
+        <span class="item-font">{{size}} bytes</span>
+    </div>
     <div *ngIf="type==0" class="file-modal-item">
         <span class="highlighted">Contains: </span>
-        <span class="item-font">Folders({{countOfFolders}});   files({{countOfFiles}})</span>
+        <span class="item-font">Folders({{countOfFolders}}); files({{countOfFiles}})</span>
     </div>
 </div>
 <div class="file-modal-close-btn">
