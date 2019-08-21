@@ -9,6 +9,11 @@ import { ToastrService } from 'ngx-toastr';
 import { FileCreateDTO } from 'src/app/models/DTO/File/fileCreateDTO';
 import { ProjectStructureFormaterService } from 'src/app/services/project-structure-formater.service';
 import { FileStructureDTO } from 'src/app/models/DTO/Workspace/fileStructureDTO';
+import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
+import { Meta } from '@angular/platform-browser';
+import { take } from 'rxjs/operators';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -33,8 +38,14 @@ export class FileBrowserSectionComponent implements OnInit {
                 private projectStructureFormaterService: ProjectStructureFormaterService,
                 private activateRoute: ActivatedRoute,
                 private fileService: FileService,
-                private toast: ToastrService) {
-                    console.log(this.showSerachField);
+                private toast: ToastrService,
+                private hotkeys: HotkeyService,
+                private fileBrowserService: FileBrowserService,
+                private tokenService: TokenService) {
+        this.hotkeys.addShortcut({keys: 'shift.e'})
+        .subscribe(()=>{
+            this.expand();
+        });
         this.projectId = activateRoute.snapshot.params['id'];
     }
 
@@ -56,11 +67,21 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'create file', icon: 'fa fa-file', command: (event) => this.createFile(this.selectedItem),  },
             { label: 'create folder', icon: 'fa fa-folder', command: (event) => this.createFolder(this.selectedItem) },
             { label: 'delete', icon: 'fa fa-remove', command: (event) => this.delete(this.selectedItem) },
-            { label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem) },
-            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem), disabled: true }
+            { label: 'info', icon: 'fa fa-info', command: (event) => this.openInfoWindow(this.selectedItem)},
+            { label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem)},
+            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem), disabled : true }
         ];
     }
 
+    private download(node: TreeNode){
+        console.log(`${node.label} should be downloaded`);
+    }
+
+    private openInfoWindow(node: TreeNode)
+    {
+        this.fileBrowserService.OpenModalWindow(node,this.projectId.toString());
+    }
+  
     private getFolderName(node: TreeNode): string{
         if (node.type === TreeNodeType.file.toString()) {
             return node.parent.label;
@@ -84,6 +105,7 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     private createFile(node: TreeNode) {
+        const authorId=this.tokenService.getUserId();
         var newFile : FileCreateDTO  = {
             name: `New File ${++this.fileCounter}`,
             content: "// Start code here:\n",
@@ -121,7 +143,8 @@ export class FileBrowserSectionComponent implements OnInit {
                 name : element.label,
                 type : element.type === TreeNodeType.folder.toString() ?
                     TreeNodeType.folder : TreeNodeType.file,
-                nestedFiles : []
+                nestedFiles : [],
+                size: 0
             };
             file.nestedFiles = this.getFileStructure(element.children);
             fileStructure.push(file);

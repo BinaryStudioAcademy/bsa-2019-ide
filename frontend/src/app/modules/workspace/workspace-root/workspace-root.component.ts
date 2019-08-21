@@ -26,6 +26,7 @@ import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
+import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
 
 
 // FOR REFACTOR
@@ -41,9 +42,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public projectId: number;
     public userId: number;
     public access: UserAccess;
-    private routeSub: Subscription;
-    private project: ProjectInfoDTO;
-    private authorId: number;
     public showFileBrowser = true;
     public showSearch = false;
     public large = false;
@@ -51,6 +49,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public canBuild = false;
     public canEdit = false;
     public expandFolder=false;
+    public project: ProjectInfoDTO;
+
+    private routeSub: Subscription;
+    private authorId: number;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
@@ -67,8 +69,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private rightService: RightsService,
         private collaborateService: CollaborateService,
         private projectService: ProjectService,
+        private projectEditService: ProjectDialogService,
         private tokenService: TokenService,
-        private projectEditService: ProjectDialogService) { }
+        private hotkeys: HotkeyService) { 
+            this.hotkeys.addShortcut({keys: 'shift.h'})
+        .subscribe(()=>{
+            this.hideFileBrowser();
+        });
+        }
 
     ngOnInit() {
         const userId = this.tokenService.getUserId();
@@ -79,7 +87,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             .subscribe(
                 (resp) => {
                     this.authorId = resp.body;
-                    console.log(this.authorId);
                 });
         if (this.userId != this.authorId) {
             this.rightService.getUserRightById(userId, this.projectId)
@@ -99,6 +106,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                 }
             );
         this.setUserAccess();
+    }
+
+    public getProjectColor(): string
+    {
+        return this.project.color;
     }
 
     public setUserAccess() {
@@ -155,8 +167,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             );
     }
 
-    public openModalWindow(): void {
-        console.log(this.projectId);
+    public openCollaboratorModalWindow(): void {
         this.collaborateService.openDialogWindow(this.projectId);
     }
 
