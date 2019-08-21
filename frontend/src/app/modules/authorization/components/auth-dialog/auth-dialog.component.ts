@@ -91,7 +91,10 @@ export class AuthDialogComponent implements OnInit {
                     this.router.navigate(['dashboard']);
                 },
                 (error) => this.toast.error("Invalid input data", 'Error Message'),
-                () => this.toast.success('You have successfully registered!'));
+                () => {
+                    this.toast.success('You have successfully registered!');
+                    this.toast.info('Please, confirm your email');
+                });
                 
     }
 }

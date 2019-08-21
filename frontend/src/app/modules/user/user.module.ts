@@ -8,16 +8,22 @@ import {DialogModule} from 'primeng/dialog';
 import {SlideMenuModule} from 'primeng/slidemenu';
 import {ButtonModule} from 'primeng/button';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import { EmailVerificationComponent } from './components/email-verification/email-verification.component';
 
 @NgModule({
-  declarations: [UserRootComponent, UserDetailsComponent, UserSettingsComponent],
-  imports: [
-    CommonModule,
-    UserRoutingModule,
-    DialogModule,
-    SlideMenuModule,
-    ButtonModule,
-    ProgressSpinnerModule
-  ]
+    declarations: [
+        UserRootComponent, 
+        UserDetailsComponent, 
+        UserSettingsComponent, 
+        EmailVerificationComponent
+    ],
+    imports: [
+        CommonModule,
+        UserRoutingModule,
+        DialogModule,
+        SlideMenuModule,
+        ButtonModule,
+        ProgressSpinnerModule
+    ]
 })
 export class UserModule { }

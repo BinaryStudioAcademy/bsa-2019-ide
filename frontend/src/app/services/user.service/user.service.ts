@@ -5,6 +5,7 @@ import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
 import { UserNicknameDTO } from 'src/app/models/DTO/User/userNicknameDTO';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
+import { VerificationTokenDTO } from 'src/app/models/DTO/Common/verificationTokenDTO';
 
 @Injectable({
     providedIn: 'root'
@@ -33,6 +34,10 @@ export class UserService {
 
     public updateUser(user: UserDTO) {
         return this.httpService.putRequest<UserDTO>(`${this.routePrefix}`, user);
+    }
+
+    public confirmEmail(token: VerificationTokenDTO) {
+        return this.httpService.putRequest("email", token);
     }
 
     public copyUser({ email, firstName, lastName, id, nickName }: UserDTO) {
