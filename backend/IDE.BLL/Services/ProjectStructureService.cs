@@ -6,19 +6,23 @@ using System.Threading.Tasks;
 using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
 using IDE.Common.ModelsDTO.Enums;
+using System.Collections.Generic;
 
 namespace IDE.BLL.Services
 {
     public class ProjectStructureService : IProjectStructureService
     {
         private readonly IProjectStructureRepository _projectStructureRepository;
+        private readonly FileService _fileService;
         private readonly IMapper _mapper;
 
         public ProjectStructureService(
             IProjectStructureRepository projectStructureRepository,
+            FileService fileService,
             IMapper mapper)
         {
             _projectStructureRepository = projectStructureRepository;
+            _fileService = fileService;
             _mapper = mapper;
         }
 
@@ -33,6 +37,23 @@ namespace IDE.BLL.Services
             var projectStructureDto = _mapper.Map<ProjectStructureDTO>(projectStructure);
 
             return projectStructureDto;
+        }
+
+        public async Task<int> GetFileStructureSize(FileStructureDTO projectStructureDTO, string fileStructureId)
+        {
+            foreach (var item in projectStructureDTO.NestedFiles)
+            {
+                if (item.Id == fileStructureId)
+                {
+                    return item.Size;
+                }
+                int size = await GetFileStructureSize(item, fileStructureId);
+                if(size!=0)
+                {
+                    return size;
+                }
+            }
+            return 0;
         }
 
         public async Task UpdateAsync(ProjectStructureDTO projectStructureDTO)
@@ -69,6 +90,35 @@ namespace IDE.BLL.Services
             var emptyStructure = _mapper.Map<ProjectStructure>(emptyStructureDTO);
             var createdProjectStructure = await _projectStructureRepository.CreateAsync(emptyStructure);
             return await GetByIdAsync(createdProjectStructure.Id);
+        }
+
+        public  async Task<ProjectStructureDTO> CalculateProjectStructureSize(ProjectStructureDTO projectStructureDTO)
+        {
+            List<FileStructureDTO> rootfolder = new List<FileStructureDTO>();
+            foreach (var item in projectStructureDTO.NestedFiles)
+            {
+                rootfolder.Add(await CalculateSize(item));
+            }
+            projectStructureDTO.NestedFiles = rootfolder;
+            return projectStructureDTO;
+        }
+
+        private async Task<FileStructureDTO> CalculateSize(FileStructureDTO projectStructureDTO)
+        {
+            foreach (var item in projectStructureDTO.NestedFiles)
+            {
+                if (item.Type == 0)
+                {
+                    item.Size = (await CalculateSize(item)).Size;
+                }
+                else
+                {
+                    item.Size = await _fileService.GetFileSize(item.Id);
+                }
+                projectStructureDTO.Size += item.Size;
+            }
+
+            return projectStructureDTO;
         }
     }
 }

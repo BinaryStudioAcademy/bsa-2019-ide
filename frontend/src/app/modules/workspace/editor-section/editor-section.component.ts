@@ -24,7 +24,6 @@ export class EditorSectionComponent implements OnInit {
     
     editorOptions = { theme: 'vs-dark', language: 'typescript' };
     code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
-    originalCode = 'function x() { // TODO }';
     options = { theme: 'vs-dark' }; 
 
     constructor() { }

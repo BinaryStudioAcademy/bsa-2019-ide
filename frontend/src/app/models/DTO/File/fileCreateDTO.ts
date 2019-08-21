@@ -5,5 +5,4 @@ export interface FileCreateDTO {
     content: string;
     folder: string;
     projectId: number;
-    creatorId: number;
 }
