@@ -27,7 +27,7 @@ export class FileBrowserSectionComponent implements OnInit {
 
     private fileCounter: number = 0;
     private folderCounter: number = 0;
-    
+
 
     constructor(private projectStructureService: FileBrowserService,
                 private projectStructureFormaterService: ProjectStructureFormaterService,
@@ -51,7 +51,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 console.log(error);
             }
         );
-        
+
         this.items = [
             { label: 'create file', icon: 'fa fa-file', command: (event) => this.createFile(this.selectedItem),  },
             { label: 'create folder', icon: 'fa fa-folder', command: (event) => this.createFolder(this.selectedItem) },
@@ -136,7 +136,7 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     private updateProjectStructure(){
-        
+
         let fileStructure : FileStructureDTO[];
         fileStructure = this.getFileStructure(this.files);
         let projectStructured : ProjectStructureDTO = {
@@ -160,7 +160,7 @@ export class FileBrowserSectionComponent implements OnInit {
         newFolderNode.parent = node;
         this.appendNewNode(node, newFolderNode);
         this.toast.success("Folder successfully created", "Success Message", { tapToDismiss: true })
-        this.updateProjectStructure();        
+        this.updateProjectStructure();
     }
 
     private rename(node: TreeNode) {
@@ -182,7 +182,7 @@ export class FileBrowserSectionComponent implements OnInit {
         debugger;
         if (node.type === TreeNodeType.file.toString()){
             this.fileService.deleteFile(node.key).subscribe(
-                (response) => {    
+                (response) => {
                 },
                 (error) => {
                     console.log(error);
@@ -195,7 +195,7 @@ export class FileBrowserSectionComponent implements OnInit {
             this.deleteFiles(child)
         }
     }
-    
+
     public expand()
     {
         this.expandFolder=!this.expandFolder;
