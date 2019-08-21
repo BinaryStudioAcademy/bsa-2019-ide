@@ -19,6 +19,8 @@ import { ProjectService } from 'src/app/services/project.service/project.service
 import { CollaborateService } from 'src/app/services/collaborator.service/collaborate.service';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { TokenService } from 'src/app/services/token.service/token.service';
+import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
+import { ProjectType } from '../../project/models/project-type';
 import { RightsService } from 'src/app/services/rights.service/rights.service';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
@@ -65,7 +67,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private rightService: RightsService,
         private collaborateService: CollaborateService,
         private projectService: ProjectService,
-        private tokenService: TokenService) { }
+        private tokenService: TokenService,
+        private projectEditService: ProjectDialogService) { }
 
     ngOnInit() {
         const userId = this.tokenService.getUserId();
@@ -207,6 +210,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public hideFileBrowser(): void
     {
         this.showFileBrowser= !this.showFileBrowser;
+    }
+    
+    public editProjectSettings() {
+        this.projectEditService.show(ProjectType.Update, this.projectId);
     }
 
     private saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {

@@ -35,8 +35,14 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.getUser();
         this.authUserItems = [
-            { label: 'Home', routerLink: [''] },
-            { label: 'Dashboard', routerLink: ['/dashboard'] }
+            { 
+                label: 'Home',
+                command: () => {
+                    if(!this.router.url.startsWith('/dashboard')) {
+                        this.router.navigate(['/dashboard'])
+                    }
+                } 
+            }
         ];
         this.unAuthUserItems = [
             {
@@ -115,7 +121,6 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public LogOut() {
         this.tokenService.logout();
         this.isAuthorized = undefined;
-        this.router.navigate(['/']);
     }
 
     private getUser() {

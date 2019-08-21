@@ -3,18 +3,13 @@
 <div class="container">
     <div class="menu">
         <ul>
-            <li (click)="redirect(0)" [class.active]="isActive[0]">{{items[0][0]}}
-            </li>
-            <li (click)="redirect(1)" [class.active]="isActive[1]">{{items[1][0]}}
-            </li>
-            <li (click)="redirect(2)" [class.active]="isActive[2]">{{items[2][0]}}
-            </li>
-            <li (click)="redirect(3)" [class.active]="isActive[3]">{{items[3][0]}}
-            </li>
+            <li *ngFor="let item of items; let i = index" 
+                (click)="redirect(i)" 
+                [class.active]="isActive === i">{{item[0]}}</li>
         </ul>
     </div>
     <div class="secondMenu">
-        <button icon="pi pi-plus" pButton type="button" class="ui-button-raised" [routerLink]="['/project/add']"
+        <button icon="pi pi-plus" pButton type="button" class="ui-button-raised" (click)="createProject()"
             label="Add"></button>
     </div>
     <router-outlet></router-outlet>
