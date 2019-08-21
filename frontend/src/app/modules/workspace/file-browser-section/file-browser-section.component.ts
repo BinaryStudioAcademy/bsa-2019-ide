@@ -27,7 +27,7 @@ export class FileBrowserSectionComponent implements OnInit {
 
     private fileCounter: number = 0;
     private folderCounter: number = 0;
-    
+    private lastSelectedElement: any;
 
     constructor(private projectStructureService: FileBrowserService,
                 private projectStructureFormaterService: ProjectStructureFormaterService,
@@ -56,13 +56,9 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'create file', icon: 'fa fa-file', command: (event) => this.createFile(this.selectedItem),  },
             { label: 'create folder', icon: 'fa fa-folder', command: (event) => this.createFolder(this.selectedItem) },
             { label: 'delete', icon: 'fa fa-remove', command: (event) => this.delete(this.selectedItem) },
-            { label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem), disabled: true},
-            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem), disabled : true }
+            { label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem) },
+            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem), disabled: true }
         ];
-    }
-
-    private download(node: TreeNode){
-        console.log(`${node.label} should be downloaded`);
     }
 
     private getFolderName(node: TreeNode): string{
@@ -162,9 +158,42 @@ export class FileBrowserSectionComponent implements OnInit {
         this.updateProjectStructure();        
     }
 
+    private download(node: TreeNode){
+        console.log(`${node.label} should be downloaded`);
+    }
+
+    public focusout(node: TreeNode){
+        node.selectable = true;
+        this.lastSelectedElement.disabled = true;
+        const newName = this.lastSelectedElement.value.trim();
+        if (newName === '')
+        {
+            this.toast.error("Name couldn't be empty!", "Error Message", { tapToDismiss: true });
+            this.lastSelectedElement.value = node.label;
+            return;
+        }
+        if (node.parent.children.some(n => n.label === newName))
+        {
+            this.toast.error(`Name "${newName}" already exist!`, "Error Message", { tapToDismiss: true });
+            this.lastSelectedElement.value = node.label;
+            return;
+        }
+        node.label = newName;
+        this.toast.success(`Successfully renamed to "${newName}"`, "Success Message", { tapToDismiss: true })
+        this.updateProjectStructure();
+    }
+
     private rename(node: TreeNode) {
-        //TODO add rename implementation
-        console.log("rename");
+        console.log(this.lastSelectedElement.textContent);
+        if (!node.parent)
+        {
+            this.toast.error("Couldn't rename root folder", "Error Message", { tapToDismiss: true });
+            return;
+        }
+        this.lastSelectedElement.disabled = false;
+        node.selectable = false;
+        this.unselectNode();
+        this.lastSelectedElement.focus();
     }
 
     private delete(node: TreeNode){
@@ -212,11 +241,21 @@ export class FileBrowserSectionComponent implements OnInit {
         }
     }
 
-    unselectFile() {
+    unselectNode() {
         this.selectedItem = null;
     }
 
-    nodeSelect(evt: any): void {
+    private cacheElement($event: any){
+        this.lastSelectedElement = $event.originalEvent.srcElement;
+        console.log(this.lastSelectedElement);
+    }
+
+    nodeContextMenuSelect($event: any){
+        this.cacheElement($event);
+    }
+
+    nodeSelect(evt: any) {
+        this.cacheElement(evt);
         const nodeSelected: TreeNode = evt.node;
         if (nodeSelected.type === TreeNodeType.file.toString()) {
             this.fileSelected.emit(nodeSelected.key);
