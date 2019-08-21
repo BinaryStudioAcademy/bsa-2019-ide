@@ -7,7 +7,7 @@
             class="ui-button-secondary" label="Build"></button>
         <button pButton *ngIf="canEdit || isAuthor()" type="button" (click)="onSaveButtonClick($event)" icon="pi pi-save" iconPos="left"
             class="ui-button-secondary" label="Save"></button>
-        <button pButton *ngIf="isAuthor()" (click)="openModalWindow()" type="button" icon="pi pi-comment" iconPos="left"
+        <button pButton *ngIf="isAuthor()" (click)="openCollaboratorModalWindow()" type="button" icon="pi pi-comment" iconPos="left"
             class="ui-button-secondary" label="Collaborators"></button>
     </div>
 
@@ -19,8 +19,8 @@
         <button pButton type="button" icon="pi pi-file" iconPos="left" class="ui-button-secondary" disabled></button>
         <button pButton routerLink="/project/{{projectId}}" title="Project details" type="button" icon="pi pi-info"
             iconPos="left" class="ui-button-secondary"></button>
-        <button pButton *ngIf="isAuthor()" type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary"
-            routerLink="/project/{{projectId}}/settings"></button>
+        <button pButton type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary"
+            (click)="editProjectSettings()"></button>
         <button pButton type="button" icon="pi pi-search" iconPos="left" class="ui-button-secondary"
             (click)="hideSearchField()"></button>        
     </div>
@@ -31,7 +31,7 @@
                     [showSerachField]="showSearch">
                 </app-file-browser-section>
             </div>
-            <div class="editor-content p-col-12 p-md-8 p-xl-10 p-align-stretch " [ngClass]="{large:!showFileBrowser}">
+            <div *ngIf="project" class="p-col-12 p-md-8 p-xl-10 p-align-stretch " [ngStyle]="{'background-color':getProjectColor()}" [ngClass]="{large:!showFileBrowser}">
                 <app-editor-section (filesSaveEvent)="onFilesSave($event)"></app-editor-section>
             </div>
         </div>

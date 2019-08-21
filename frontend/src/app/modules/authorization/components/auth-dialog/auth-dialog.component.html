@@ -65,7 +65,7 @@
       </div>
     </div>
   </div>
-  <div class="auth-field">
+  <div class="auth-field" *ngIf="!isRecoverPassword">
     <label>Your password</label>
     <input pPassword [(ngModel)]="password" name="password" type="password" minlength="8" #Password="ngModel" maxlength="16" required
     pattern="[а-яА-Яa-zA-Z0-9]{8,16}"/>
@@ -93,7 +93,12 @@
     <button type="submit" pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignUp && !isSpinner"
     (click)="signUp()">CREATE ACCOUNT</button>
     
-    <button pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignIn && !isSpinner" (click)="signIn()">LOG IN ACCOUNT</button>
+    <button pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignIn && !isSpinner && !isRecoverPassword" (click)="signIn()">LOG IN ACCOUNT</button>
+    <p class="auth-recover" *ngIf="!isRecoverPassword"><span (click)="recoverPassword()">Forgot password?</span></p>
+
+    <button pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignIn && !isSpinner && isRecoverPassword" (click)="recoverPassword()">Recover password</button>
 </div>
-<p class="auth-or">OR</p>
-<button type="submit" class="google-btn">Sing up with Google</button>
+<div *ngIf="!isRecoverPassword">
+    <p class="auth-or">OR</p>
+    <button type="submit" class="google-btn">Sing up with Google</button>
+</div>

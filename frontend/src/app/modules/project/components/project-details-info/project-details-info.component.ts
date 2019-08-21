@@ -8,6 +8,8 @@ import { TokenService } from 'src/app/services/token.service/token.service';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
+import { ProjectType } from '../../models/project-type';
 
 @Component({
     selector: 'app-project-details-info',
@@ -20,11 +22,12 @@ export class ProjectDetailsInfoComponent implements OnInit {
     @Input() project: ProjectInfoDTO;
 
     constructor(
-        private tokenService: TokenService,
-        private projectService: ProjectService,
-        private router: Router,
-        private toastService: ToastrService,
-        private projSvc: ProjectService
+      private tokenService: TokenService,
+      private projectService: ProjectService,
+      private router: Router,
+      private toastService: ToastrService,
+      private projectSettingsService: ProjectDialogService,
+      
     ) { }
 
     ngOnInit(): void {
@@ -76,5 +79,8 @@ export class ProjectDetailsInfoComponent implements OnInit {
                     });
         } else {
         }
+    }
+    public showSettings() {
+        this.projectSettingsService.show(ProjectType.Update, this.project.id);
     }
 }

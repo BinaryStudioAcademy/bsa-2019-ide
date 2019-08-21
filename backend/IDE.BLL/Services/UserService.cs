@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
+using IDE.BLL.Interfaces;
 using IDE.Common.DTO.User;
 using IDE.Common.ModelsDTO.DTO.User;
 using IDE.Common.Security;
@@ -8,7 +9,9 @@ using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using IDE.BLL.Helpers;
 
 namespace IDE.BLL.Services
 {
@@ -16,10 +19,13 @@ namespace IDE.BLL.Services
     {
         private readonly IdeContext _context;
         private readonly IMapper _mapper;
-        public UserService(IdeContext context, IMapper mapper)
+        private readonly IEmailService _emailService;
+
+        public UserService(IdeContext context, IEmailService emailService, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
+            _emailService = emailService;
         }
 
         public async Task<User> CreateUser(UserRegisterDTO userDto)
@@ -39,7 +45,7 @@ namespace IDE.BLL.Services
 
             _context.Users.Add(userEntity);
             await _context.SaveChangesAsync();
-
+            await SendConfirmationMail(userEntity.Id);
             return userEntity;
         }
 
@@ -49,10 +55,10 @@ namespace IDE.BLL.Services
             return await _context.Users
                 .Where(item=>item.Id!=currentUser)
                 .Select(u => new UserNicknameDTO()
-            {
-                Id = u.Id,
-                NickName = u.NickName
-            }).ToArrayAsync();
+                    {
+                        Id = u.Id,
+                        NickName = u.NickName
+                    }).ToArrayAsync();
 
         }
 
@@ -76,6 +82,68 @@ namespace IDE.BLL.Services
             }
 
             return _mapper.Map<UserDTO>(user);
+        }
+
+        public async Task SendConfirmationMail(int userId)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                throw new NotFoundException("user", userId);
+            }
+            if (user.EmailConfirmed)
+            {
+                throw new EmailConfirmedException();
+            }
+            string token = GenerateSymbols.GenerateRandomSymbols();
+            var verificationToken = new VerificationToken()
+            {
+                Token = token,
+                UserId = userId
+            };
+            _context.VerificationTokens.Add(verificationToken);
+            await _context.SaveChangesAsync();
+
+            await _emailService.SendEmailVerificationMail(user.Email, token);
+        }
+
+        public async Task VerifyEmail(string token)
+        {
+            var verToken = _context.VerificationTokens
+                .FirstOrDefault(t => t.Token == token);
+            if (verToken == null)
+            {
+                throw new NotFoundException("Such token");
+            }
+            var userTokens = _context.VerificationTokens.Where(u => u.UserId == verToken.UserId);
+            _context.VerificationTokens.RemoveRange(userTokens);
+
+            var user = _context.Users.FirstOrDefault(u => u.Id == verToken.Id);
+            if(user != null)
+            {
+                user.EmailConfirmed = true;
+                _context.Users.Update(user);
+            }
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RecoverPassword(string email)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Email == email);
+            if (user == null)
+            {
+                throw new NotFoundException("User with such email was");
+            }
+
+            var salt = SecurityHelper.GetRandomBytes();
+            var password = GenerateSymbols.GenerateRandomSymbols(9);
+
+            user.PasswordSalt = Convert.ToBase64String(salt);
+            user.PasswordHash = SecurityHelper.HashPassword(password, salt);
+            _context.Users.Update(user);
+
+            await _emailService.SendPasswordRecoveryMail(email, password);
+            await _context.SaveChangesAsync();
         }
 
         private async Task<User> GetUserByIdInternal(int id)

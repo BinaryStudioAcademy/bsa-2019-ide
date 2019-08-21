@@ -1,10 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProjectRootComponent } from './components/project-root/project-root.component';
-import { ProjectSettingsComponent } from './components/project-settings/project-settings.component';
 import { ProjectDetailsComponent } from './components/project-details/project-details.component';
 import { ProjectRoutingModule } from './project-routing.module';
-import { CreateProjectComponent } from './components/create-project/create-project.component';
 import { ProjectDetailsInfoComponent } from './components/project-details-info/project-details-info.component';
 import { ProjectDetailsUserStatisticsComponent } from './components/project-details-user-statistics/project-details-user-statistics.component';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
@@ -20,6 +18,7 @@ import { KeyFilterModule } from 'primeng/keyfilter';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { SharedModule } from '../shared/shared.module';
 import {TabViewModule} from 'primeng/tabview';
+import { ProjectWindowComponent } from './components/project-window/project-window.component';
 import { FormsModule } from '@angular/forms';
 import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
 import { CollaboratorModule } from '../collaborator/collaborator.module';
@@ -28,11 +27,10 @@ import { AddCollaboratorsComponent } from '../collaborator/components/add-collab
 @NgModule({
   declarations: [
     ProjectRootComponent,
-    ProjectSettingsComponent,
     ProjectDetailsComponent,
     ProjectDetailsInfoComponent,
     ProjectDetailsUserStatisticsComponent,
-    CreateProjectComponent
+    ProjectWindowComponent
   ],
   imports: [
     FormsModule,
@@ -52,6 +50,9 @@ import { AddCollaboratorsComponent } from '../collaborator/components/add-collab
     SharedModule,
     DynamicDialogModule,
     CollaboratorModule
+  ],
+  entryComponents: [
+    ProjectWindowComponent
   ],
   providers:[
     AddCollaboratorsComponent,

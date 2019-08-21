@@ -23,16 +23,17 @@ import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { GeneralModule } from './general/general.module';
 import { TreeModule } from 'primeng/tree';
 import { MenuModule,AutoCompleteModule } from 'primeng/primeng';
-import {MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
+import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { LoginGuard } from './guards/login.guard';
 import { JwtModule } from '@auth0/angular-jwt';
 import { TokenGetter } from './services/token.service/token.service';
 import { RefreshTokenInterceptor } from './helpers/token.interceptor';
-import {SplitButtonModule} from 'primeng/splitbutton';
+import { SplitButtonModule } from 'primeng/splitbutton';
 import { SharedModule } from './modules/shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { ProjectSettingsRouteGuard } from './guards/project-settings-route.guard';
 import { AddCollaboratorsComponent } from './modules/collaborator/components/add-collaborators/add-collaborators.component';
+import { FileInfoComponent } from './modules/workspace/file-info/file-info.component';
 
 
 @NgModule({
@@ -88,7 +89,8 @@ import { AddCollaboratorsComponent } from './modules/collaborator/components/add
         ProjectSettingsRouteGuard
     ],
     entryComponents: [
-        AddCollaboratorsComponent
+        AddCollaboratorsComponent,
+        FileInfoComponent
     ],
     bootstrap: [AppComponent]
 })

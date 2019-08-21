@@ -4,8 +4,12 @@ import { UserRootComponent } from './components/user-root/user-root.component';
 import { UserDetailsComponent } from './components/user-details/user-details.component';
 import { UserSettingsComponent } from './components/user-settings/user-settings.component';
 import { LoginGuard } from 'src/app/guards/login.guard';
-
+import { EmailVerificationComponent } from './components/email-verification/email-verification.component';
 const userRoutes: Routes = [
+    {
+        path: 'vf',
+        component: EmailVerificationComponent
+    },
     {
         path: 'user',
         component: UserRootComponent,
