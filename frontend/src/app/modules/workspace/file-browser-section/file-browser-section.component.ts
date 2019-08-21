@@ -88,8 +88,7 @@ export class FileBrowserSectionComponent implements OnInit {
             name: `New File ${++this.fileCounter}`,
             content: "// Start code here:\n",
             projectId: this.projectId,
-            folder : "",
-            creatorId: null
+            folder : ""
         }
         newFile.folder = this.getFolderName(node);
 
@@ -185,7 +184,6 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     private rename(node: TreeNode) {
-        console.log(this.lastSelectedElement.textContent);
         if (!node.parent)
         {
             this.toast.error("Couldn't rename root folder", "Error Message", { tapToDismiss: true });
@@ -248,7 +246,6 @@ export class FileBrowserSectionComponent implements OnInit {
 
     private cacheElement($event: any){
         this.lastSelectedElement = $event.originalEvent.srcElement;
-        console.log(this.lastSelectedElement);
     }
 
     nodeContextMenuSelect($event: any){
