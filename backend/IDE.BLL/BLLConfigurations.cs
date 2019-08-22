@@ -22,7 +22,7 @@ namespace IDE.BLL
 
             services.AddScoped<AuthService>();
             services.AddScoped<UserService>();
-            services.AddScoped<NotificationService>();
+            services.AddScoped<INotificationService,NotificationService>();
             services.AddScoped<IEmailService>(x => new EmailService(Environment.GetEnvironmentVariable("emailApiKey"), configuration["CurrentWebAPIAddressForMail"], configuration["websiteMail"]));
             services.AddScoped<IProjectMemberSettingsService, ProjectMemberSettingsService>();
             services.AddScoped<IProjectService, ProjectService>();
@@ -57,6 +57,7 @@ namespace IDE.BLL
                 cfg.AddProfile<FileHistoryProfile>();
                 cfg.AddProfile<GitCredentialProfile>();
                 cfg.AddProfile<ProjectStructureProfile>();
+                cfg.AddProfile<NotificationProfile>();
             });
         }
 

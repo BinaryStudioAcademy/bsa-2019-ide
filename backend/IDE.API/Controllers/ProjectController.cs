@@ -26,14 +26,14 @@ namespace IDE.API.Controllers
         private readonly IProjectStructureService _projectStructureService;
         private readonly FileService _fileService;
         private readonly IBlobRepository _blobRepo;
-        private readonly NotificationService _notificationService;
+        private readonly INotificationService _notificationService;
 
         public ProjectController(IProjectService projectService,
                                 IProjectMemberSettingsService projectMemberSettings,
                                 IProjectStructureService projectStructureService,
                                 FileService fileService,
                                 IBlobRepository blobRepo,
-                                NotificationService notificationService)
+                                INotificationService notificationService)
         {
             _projectStructureService = projectStructureService;
             _projectService = projectService;
@@ -46,8 +46,6 @@ namespace IDE.API.Controllers
         [HttpGet("{projectId}")]
         public async Task<ActionResult<ProjectDescriptionDTO>> GetProjectById(int projectId)
         {
-            var userId = await _projectService.GetAuthorId(projectId);
-            await _notificationService.SentNotification(userId.ToString(), "create");
             return Ok(await _projectService.GetProjectById(projectId));
         }
 

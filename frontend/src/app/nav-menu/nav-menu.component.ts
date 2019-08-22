@@ -40,7 +40,6 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.signalRService.startConnection();
         this.getUser();
         this.signalRService.addTransferChartDataListener();   
-        this.startHttpRequest();
         this.authUserItems = [
             { 
                 label: 'Home',
@@ -140,11 +139,4 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((auth) => this.isAuthorized = auth);
     }
-   
-      private startHttpRequest = () => {
-        this.http.getRequest('notification')
-          .subscribe(res => {
-            console.log(res);
-          })
-      }
 }
