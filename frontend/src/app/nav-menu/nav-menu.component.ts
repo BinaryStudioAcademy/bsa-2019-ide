@@ -10,6 +10,8 @@ import { TokenService } from '../services/token.service/token.service';
 import { SearchProjectDTO } from '../models/DTO/Project/searchProjectDTO'
 import { SignalRService } from '../services/signalr.service/signal-r.service';
 import { HttpClientWrapperService } from '../services/http-client-wrapper.service';
+import { NotificationDTO } from '../models/DTO/Common/notificationDTO';
+import { element } from 'protractor';
 
 @Component({
     selector: 'app-nav-menu',
@@ -25,6 +27,8 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public dialogType = DialogType;
     public isAuthorized: boolean;
     public items: MenuItem[];
+    public showNotification=false;
+    public data: NotificationDTO[];
     private unsubscribe$ = new Subject<void>();
 
     constructor(
@@ -39,7 +43,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.signalRService.startConnection();
         this.getUser();
-        this.signalRService.addTransferChartDataListener();   
+        this.data=this.signalRService.addTransferChartDataListener();   
         this.authUserItems = [
             { 
                 label: 'Home',
@@ -70,6 +74,17 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                 }
             }
         ];
+    }
+
+    public showNotificationPanel()
+    {
+        var deleteItem=this.data;
+        this.showNotification=!this.showNotification;
+        console.log(this.showNotification);
+        if(!this.showNotification)
+        {
+            
+        }
     }
 
     public filterProject(event): void {

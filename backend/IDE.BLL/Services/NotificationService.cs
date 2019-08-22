@@ -28,16 +28,6 @@ namespace IDE.BLL.Services
             _mapper = mapper;
         }
 
-        //public async Task SentNotification(int projectId, string message)
-        //{
-        //    var groupMembers = _context.ProjectMembers
-        //        .Where(item => item.ProjectId == projectId)
-        //        .ToListAsync();
-        //    await _hubContext.Groups.AddToGroupAsync(, projectId.ToString());
-        //    //_hubContext.Clients.Group(roomName).addChatMessage(_hubContext.User.Identity.Name + " joined.");
-            
-        //}
-
         public async Task<IEnumerable<NotificationDTO>> GetNotificationsByUserId(int userId)
         {
             var notifications = await _context.Notifications
@@ -46,16 +36,27 @@ namespace IDE.BLL.Services
             return notifications != null ? _mapper.Map<List<NotificationDTO>>(notifications) : null;
         }
 
-        public async Task SendNotification(NotificationDTO notificationDTO)
+        public async Task<NotificationDTO> SendNotification(int projectId, NotificationDTO notificationDTO)
         {
-            var notification = await _context.Notifications
-                .AddAsync(_mapper.Map<Notification>(notificationDTO));
+            var notification = _mapper.Map<Notification>(notificationDTO);
+            await _context.Notifications
+                .AddAsync(notification);
 
             await _context.SaveChangesAsync();
             if (notification != null)
             {
-                await _hubContext.Clients.All.SendAsync("transferchartdata", notificationDTO.Message);
+                await _hubContext.Clients.Groups(projectId.ToString()).SendAsync("transferchartdata", notificationDTO);
+                return _mapper.Map<NotificationDTO>(notification);
             }
+
+            return null;
+        }
+
+        public async Task DeleteNotificationAsync(int identifier)
+        {
+            var notification = await _context.Notifications.FirstOrDefaultAsync(item => item.Id == identifier);
+            _context.Remove(notification);
+            await _context.SaveChangesAsync();
         }
     }
 }

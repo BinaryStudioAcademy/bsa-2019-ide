@@ -163,7 +163,7 @@ namespace IDE.BLL.Services
                 UserId=1
             };
 
-            await _notificationService.SendNotification(notification);
+            await _notificationService.SendNotification(projectId, notification);
 
             return _mapper.Map<ProjectInfoDTO>(project);
         }

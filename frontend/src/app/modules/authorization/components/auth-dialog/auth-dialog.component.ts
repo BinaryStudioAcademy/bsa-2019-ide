@@ -7,6 +7,7 @@ import { NavMenuComponent } from 'src/app/nav-menu/nav-menu.component';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TokenService } from 'src/app/services/token.service/token.service';
+import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 
 @Component({
     selector: 'app-auth-dialog',
@@ -34,7 +35,8 @@ export class AuthDialogComponent implements OnInit {
         public config: DynamicDialogConfig,
         private router: Router,
         private tokenService: TokenService,
-        private toast: ToastrService
+        private toast: ToastrService,
+        private signalRService: SignalRService
     ) { }
 
     public ngOnInit() {
@@ -63,6 +65,7 @@ export class AuthDialogComponent implements OnInit {
                     this.ref.close(); 
                     this.toast.success('You have successfully signed in!', `Wellcome, ${result.firstName} ${result.lastName}!`);
                     this.router.navigate(['dashboard']);
+                    this.signalRService.addToGroup(this.tokenService.getUserId());
                 },
                 (error) => {
                     this.isSpinner = false;
@@ -88,6 +91,7 @@ export class AuthDialogComponent implements OnInit {
                 (result) => {
                     this.ref.close();
                     this.router.navigate(['dashboard']);
+                    this.signalRService.addToGroup(this.tokenService.getUserId());
                 },
                 (error) => this.toast.error("Invalid input data", 'Error Message'),
                 () => {

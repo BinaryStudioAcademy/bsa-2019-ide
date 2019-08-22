@@ -10,7 +10,9 @@ import { environment } from 'src/environments/environment';
 export class SignalRService {
 
     constructor(private tokenService: TokenService) { }
-    public data: NotificationDTO[];
+
+    private userConnections: [] = [];
+    public notifications: NotificationDTO[] = [];
 
     private hubConnection: signalR.HubConnection
 
@@ -26,10 +28,20 @@ export class SignalRService {
             .catch(err => console.log('Error while starting connection: ' + err))
     }
 
-    public addTransferChartDataListener = () => {
+    public getNotifications(): NotificationDTO[] {
+        return this.notifications;
+    }
+
+    public addToGroup(userId: number): void {
+        this.hubConnection.invoke("JoinGroup", userId)
+            .catch((error) => console.log(error));
+    }
+
+    public addTransferChartDataListener(): NotificationDTO[] {
         this.hubConnection.on('transferchartdata', (data) => {
-            this.data += data;
-            console.log(data);
+            this.notifications.push(data);
+            console.log(this.notifications);
         });
+        return this.notifications;
     }
 }

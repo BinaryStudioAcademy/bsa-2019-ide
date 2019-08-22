@@ -7,6 +7,6 @@ namespace IDE.BLL.Interfaces
     public interface INotificationService
     {
         Task<IEnumerable<NotificationDTO>> GetNotificationsByUserId(int userId);
-        Task SendNotification(NotificationDTO notificationDTO);
+        Task<NotificationDTO> SendNotification(int projectId, NotificationDTO notificationDTO);
     }
 }
