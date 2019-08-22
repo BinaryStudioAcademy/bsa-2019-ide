@@ -7,22 +7,18 @@
                 [minLength]="1" (onSelect)="checkProject(project)"></p-autoComplete>
             <p-splitButton label="My Profile" icon="pi pi-user" (onClick)="goToUserDetails()" [model]="items">
             </p-splitButton>
-            <!-- <div class="bell-wrapper">
-                <svg width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                    (click)="op1.toggle($event)">
-                    <path fill="none" d="M 0 0 h 24 v 24 H 0 Z"></path>
-                    <path
-                        d="M 22 20 H 2 v -2 h 1 v -6.969 C 3 6.043 7.03 2 12 2 s 9 4.043 9 9.031 V 18 h 1 v 2 Z M 5 18 h 14 v -6.969 C 19 7.148 15.866 4 12 4 s -7 3.148 -7 7.031 V 18 Z m 4.5 3 h 5 a 2.5 2.5 0 1 1 -5 0 Z">
-                    </path>
-                </svg>
-            </div> -->
-            <button class="bell-wrapper ui-button-secondary" pButton icon="pi pi-bell"
-                (click)="op1.toggle($event)" (click)="showNotificationPanel()">
+            <button class="bell-wrapper ui-button-secondary" pButton icon="pi pi-bell" (click)="op1.toggle($event)"
+                (click)="showNotificationPanel()">
                 <div *ngIf="data.length!=0" class="count-of-notification">{{data.length}}</div>
             </button>
             <p-overlayPanel #op1 class="notification">
-                <div *ngFor="let item of data">
-                    {{item.message}}
+                <div *ngIf="data.length!=0">
+                    <div class="notification-item" *ngFor="let item of data">
+                        {{item.message}}
+                    </div>
+                </div>
+                <div *ngIf="data.length==0">
+                        There is no notification for you
                 </div>
             </p-overlayPanel>
 

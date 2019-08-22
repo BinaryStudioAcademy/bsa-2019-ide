@@ -11,7 +11,6 @@ export class SignalRService {
 
     constructor(private tokenService: TokenService) { }
 
-    private userConnections: [] = [];
     public notifications: NotificationDTO[] = [];
 
     private hubConnection: signalR.HubConnection
@@ -32,6 +31,11 @@ export class SignalRService {
         return this.notifications;
     }
 
+    public creanData()
+    {
+        this.notifications=[];
+    }
+
     public addToGroup(userId: number): void {
         this.hubConnection.invoke("JoinGroup", userId)
             .catch((error) => console.log(error));
@@ -43,5 +47,10 @@ export class SignalRService {
             console.log(this.notifications);
         });
         return this.notifications;
+    }
+
+    public deleteTransferChartDataListener()
+    {
+        this.hubConnection.off('transferchartdata');
     }
 }

@@ -27,7 +27,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public dialogType = DialogType;
     public isAuthorized: boolean;
     public items: MenuItem[];
-    public showNotification=false;
+    public showNotification = false;
     public data: NotificationDTO[];
     private unsubscribe$ = new Subject<void>();
 
@@ -43,15 +43,16 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.signalRService.startConnection();
         this.getUser();
-        this.data=this.signalRService.addTransferChartDataListener();   
+        this.data = this.signalRService.addTransferChartDataListener();
+       
         this.authUserItems = [
-            { 
+            {
                 label: 'Home',
                 command: () => {
-                    if(!this.router.url.startsWith('/dashboard')) {
+                    if (!this.router.url.startsWith('/dashboard')) {
                         this.router.navigate(['/dashboard'])
                     }
-                } 
+                }
             }
         ];
         this.unAuthUserItems = [
@@ -74,16 +75,19 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                 }
             }
         ];
+
+        if (this.isAuthorized) {
+            const userId = this.tokenService.getUserId();
+            this.signalRService.addToGroup(userId);
+        }
     }
 
-    public showNotificationPanel()
-    {
-        var deleteItem=this.data;
-        this.showNotification=!this.showNotification;
-        console.log(this.showNotification);
-        if(!this.showNotification)
-        {
-            
+    public showNotificationPanel() {
+        this.showNotification = !this.showNotification;
+        if (!this.showNotification) {
+            this.signalRService.creanData();     
+            this.signalRService.deleteTransferChartDataListener();
+            this.data=this.signalRService.addTransferChartDataListener();
         }
     }
 
@@ -95,7 +99,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     }
 
     public checkProject(project: SearchProjectDTO): void {
-        this.project=null;
+        this.project = null;
         this.router.navigate([`/project/${project.id}`]);
     }
 
@@ -107,10 +111,9 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                 filtered.push(project);
             }
         }
-        if (filtered.length === 0)
-        {
-            const notFound:SearchProjectDTO = {
-                id:0,
+        if (filtered.length === 0) {
+            const notFound: SearchProjectDTO = {
+                id: 0,
                 name: "We couldn’t find any project matching " + query
             }
             filtered.push(notFound);

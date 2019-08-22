@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IDE.BLL.HubConfig
 {
-    public class NotificationHub: Hub
+    public class NotificationHub : Hub
     {
         public readonly IdeContext _context;
 
@@ -22,13 +22,19 @@ namespace IDE.BLL.HubConfig
             var project = await _context.ProjectMembers
                 .Where(item => item.UserId == userId)
                 .ToListAsync();
-            if (project.Count!=0)
+            var userProjects = await _context.Projects
+                .Where(item => item.AuthorId == userId)
+                .ToListAsync();
+            foreach (var item in project)
             {
-                foreach(var item in project)
-                {
-                    await Groups.AddToGroupAsync(Context.ConnectionId, item.ProjectId.ToString());
-                }
+                await Groups.AddToGroupAsync(Context.ConnectionId, item.ProjectId.ToString());
             }
+
+            foreach(var item in userProjects)
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, item.Id.ToString());
+            }
+
         }
 
 
