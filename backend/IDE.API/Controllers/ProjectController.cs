@@ -93,14 +93,6 @@ namespace IDE.API.Controllers
             var projectId = await _projectService.CreateProject(project, author);
 
             var projectStructureDTO = await _projectTemplateService.GenerateProjectTemplate(project.Name, projectId, author, project.Language);
-            //new ProjectStructureDTO();
-            //projectStructureDTO.Id = projectId.ToString();
-            //projectStructureDTO.NestedFiles.Add(new FileStructureDTO()
-            //{
-            //    Type = 0,
-            //    Details = $"Super important details of file {project.Name}",
-            //    Name = project.Name
-            //});
 
             await _projectStructureService.CreateAsync(projectStructureDTO);
 

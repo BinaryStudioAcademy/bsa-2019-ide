@@ -29,7 +29,7 @@ namespace IDE.BLL.Services
                 case Language.Go:
                     return await GenerateGoConsoleTemplate(projectName, projectId, authorId);
                 default:
-                    return await GenerateCSharpConsoleTemplate(projectName, projectId, authorId);
+                    throw new ExceptionsCustom.NotFoundException("invalid project language");
             }
         }
 
@@ -41,7 +41,7 @@ namespace IDE.BLL.Services
             var programFile = await _fileService.CreateAsync(new Common.DTO.File.FileCreateDTO()
             {
                 Name = "Program.cs",
-                Content = TemplateHelper.CSharpProgramTemplate(),
+                Content = TemplateHelper.CSharpProgramTemplate(projectName.Capitalize()),
                 Folder = projectName,
                 ProjectId = projectId
                 //FilenameExtension = "cs"//maybe better to use enums
@@ -91,7 +91,7 @@ namespace IDE.BLL.Services
             var programFile = await _fileService.CreateAsync(new Common.DTO.File.FileCreateDTO()
             {
                 Name = "main.go",
-                Content = "Hello World",//create helper with this code)
+                Content = TemplateHelper.GoProgramTemplate(),
                 Folder = projectName,
                 ProjectId = projectId
                 //FilenameExtension = "go"//maybe better to use enums
@@ -125,7 +125,7 @@ namespace IDE.BLL.Services
             var programFile = await _fileService.CreateAsync(new Common.DTO.File.FileCreateDTO()
             {
                 Name = "main.js",
-                Content = "Hello World",//create helper with this code)
+                Content = TemplateHelper.JsProgramTemplate(),
                 Folder = projectName,
                 ProjectId = projectId
                 //FilenameExtension = "js"//maybe better to use enums
@@ -159,7 +159,7 @@ namespace IDE.BLL.Services
             var programFile = await _fileService.CreateAsync(new Common.DTO.File.FileCreateDTO()
             {
                 Name = "main.ts",
-                Content = "Hello World",//create helper with this code)
+                Content = TemplateHelper.JsProgramTemplate(),
                 Folder = projectName,
                 ProjectId = projectId
                 //FilenameExtension = "ts"//maybe better to use enums
@@ -183,7 +183,7 @@ namespace IDE.BLL.Services
                 });
 
             return projectStructureDTO;
-        }
+        }   
 
     }
 }
