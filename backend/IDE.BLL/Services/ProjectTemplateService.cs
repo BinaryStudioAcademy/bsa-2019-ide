@@ -30,7 +30,6 @@ namespace IDE.BLL.Services
                     return await GenerateGoConsoleTemplate(projectName, projectId, authorId);
                 default:
                     return await GenerateCSharpConsoleTemplate(projectName, projectId, authorId);
-
             }
         }
 
@@ -42,22 +41,22 @@ namespace IDE.BLL.Services
             var programFile = await _fileService.CreateAsync(new Common.DTO.File.FileCreateDTO()
             {
                 Name = "Program.cs",
-                Content = "Hello World",//create helper with this code)
+                Content = TemplateHelper.CSharpProgramTemplate(),
                 Folder = projectName,
                 ProjectId = projectId
                 //FilenameExtension = "cs"//maybe better to use enums
             },
-            authorId);
+            authorId); ;
 
             var projectFile = await _fileService.CreateAsync(new Common.DTO.File.FileCreateDTO()
             {
                 Name = projectName.Capitalize() + ".csproj",//create helper with this code)
-                Content = "Hello World",
+                Content = TemplateHelper.CSharpCsprojTemplate(),
                 Folder = projectName,
                 ProjectId = projectId
                 //FilenameExtension = "csproj"//maybe better to use enums
             },
-            authorId);
+            authorId); ;
 
             projectStructureDTO.NestedFiles.Add(
                 new FileStructureDTO
