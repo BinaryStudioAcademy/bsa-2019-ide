@@ -69,7 +69,7 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'delete', icon: 'fa fa-remove', command: (event) => this.delete(this.selectedItem) },
             { label: 'info', icon: 'fa fa-info', command: (event) => this.openInfoWindow(this.selectedItem)},
             { label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem)},
-            { label: 'download', icon: 'pi pi-download', command: (event) => console.log(event) }//this.download(this.selectedItem), disabled : true }
+            { label: 'download', icon: 'pi pi-download', command: (event) => console.log(event), disabled : true, title : "Not suported yes!" }
         ];
     }
 
