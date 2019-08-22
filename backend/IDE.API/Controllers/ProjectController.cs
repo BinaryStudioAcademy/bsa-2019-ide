@@ -17,19 +17,22 @@ namespace IDE.API.Controllers
 {
     [Route("[controller]")]
     //[AllowAnonymous]
-    //[Authorize]
+    [Authorize]
     [ApiController]
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
         private readonly IProjectMemberSettingsService _projectMemberSettings;
         private readonly IProjectStructureService _projectStructureService;
+        private readonly IProjectTemplateService projectTemplateService;
         private readonly FileService _fileService;
         private readonly IBlobRepository _blobRepo;
+        private readonly IProjectTemplateService _projectTemplateService;
 
         public ProjectController(IProjectService projectService,
                                 IProjectMemberSettingsService projectMemberSettings,
                                 IProjectStructureService projectStructureService,
+                                IProjectTemplateService projectTemplateService,
                                 FileService fileService,
                                 IBlobRepository blobRepo)
         {
@@ -38,6 +41,7 @@ namespace IDE.API.Controllers
             _projectMemberSettings = projectMemberSettings;
             _fileService = fileService;
             _blobRepo = blobRepo;
+            _projectTemplateService = projectTemplateService;
         }
 
         [HttpGet("{projectId}")]
@@ -88,14 +92,15 @@ namespace IDE.API.Controllers
             var author = this.GetUserIdFromToken();
             var projectId = await _projectService.CreateProject(project, author);
 
-            var projectStructureDTO = new ProjectStructureDTO();
-            projectStructureDTO.Id = projectId.ToString();
-            projectStructureDTO.NestedFiles.Add(new FileStructureDTO()
-            {
-                Type = 0,
-                Details = $"Super important details of file {project.Name}",
-                Name = project.Name
-            });
+            var projectStructureDTO = await _projectTemplateService.GenerateProjectTemplate(project.Name, projectId, author, project.Language);
+            //new ProjectStructureDTO();
+            //projectStructureDTO.Id = projectId.ToString();
+            //projectStructureDTO.NestedFiles.Add(new FileStructureDTO()
+            //{
+            //    Type = 0,
+            //    Details = $"Super important details of file {project.Name}",
+            //    Name = project.Name
+            //});
 
             await _projectStructureService.CreateAsync(projectStructureDTO);
 
