@@ -22,12 +22,12 @@ namespace IDE.BLL.Services
             {
                 case Language.CSharp:
                     return await GenerateCSharpConsoleTemplate(projectName, projectId, authorId);
-                //case Language.TypeScript:
-                //    break;
-                //case Language.JavaScript:
-                //    break;
-                //case Language.Go:
-                //    break;
+                case Language.TypeScript:
+                    return await GenerateTypeScriptConsoleTemplate(projectName, projectId, authorId);
+                case Language.JavaScript:
+                    return await GenerateJavaScriptConsoleTemplate(projectName, projectId, authorId);
+                case Language.Go:
+                    return await GenerateGoConsoleTemplate(projectName, projectId, authorId);
                 default:
                     return await GenerateCSharpConsoleTemplate(projectName, projectId, authorId);
 
@@ -45,6 +45,7 @@ namespace IDE.BLL.Services
                 Content = "Hello World",//create helper with this code)
                 Folder = projectName,
                 ProjectId = projectId
+                //FilenameExtension = "cs"//maybe better to use enums
             },
             authorId);
 
@@ -54,6 +55,7 @@ namespace IDE.BLL.Services
                 Content = "Hello World",
                 Folder = projectName,
                 ProjectId = projectId
+                //FilenameExtension = "csproj"//maybe better to use enums
             },
             authorId);
 
@@ -69,19 +71,120 @@ namespace IDE.BLL.Services
                                 Id = programFile.Id,
                                 Name = programFile.Name,
                                 Type = TreeNodeType.File,
-                                //FilenameExtension = "cs"//maybe better to use enums
                             },
                             new FileStructureDTO()
                             {
                                 Id = projectFile.Id,
                                 Name = projectFile.Name,
                                 Type = TreeNodeType.File,
-                                //FilenameExtension = "csproj"//maybe better to use enums
                             }
                         }
                 });
 
             return projectStructureDTO;
         }
+
+        private async Task<ProjectStructureDTO> GenerateGoConsoleTemplate(string projectName, int projectId, int authorId)
+        {
+            var projectStructureDTO = new ProjectStructureDTO();
+            projectStructureDTO.Id = projectId.ToString();
+
+            var programFile = await _fileService.CreateAsync(new Common.DTO.File.FileCreateDTO()
+            {
+                Name = "main.go",
+                Content = "Hello World",//create helper with this code)
+                Folder = projectName,
+                ProjectId = projectId
+                //FilenameExtension = "go"//maybe better to use enums
+            },
+            authorId);
+
+            projectStructureDTO.NestedFiles.Add(
+                new FileStructureDTO
+                {
+                    Type = TreeNodeType.Folder,
+                    Name = projectName,
+                    NestedFiles = new List<FileStructureDTO>()
+                        {
+                            new FileStructureDTO()
+                            {
+                                Id = programFile.Id,
+                                Name = programFile.Name,
+                                Type = TreeNodeType.File,
+                            }
+                        }
+                });
+
+            return projectStructureDTO;
+        }
+
+        private async Task<ProjectStructureDTO> GenerateJavaScriptConsoleTemplate(string projectName, int projectId, int authorId)
+        {
+            var projectStructureDTO = new ProjectStructureDTO();
+            projectStructureDTO.Id = projectId.ToString();
+
+            var programFile = await _fileService.CreateAsync(new Common.DTO.File.FileCreateDTO()
+            {
+                Name = "main.js",
+                Content = "Hello World",//create helper with this code)
+                Folder = projectName,
+                ProjectId = projectId
+                //FilenameExtension = "js"//maybe better to use enums
+            },
+            authorId);
+
+            projectStructureDTO.NestedFiles.Add(
+                new FileStructureDTO
+                {
+                    Type = TreeNodeType.Folder,
+                    Name = projectName,
+                    NestedFiles = new List<FileStructureDTO>()
+                        {
+                            new FileStructureDTO()
+                            {
+                                Id = programFile.Id,
+                                Name = programFile.Name,
+                                Type = TreeNodeType.File,
+                            }
+                        }
+                });
+
+            return projectStructureDTO;
+        }
+
+        private async Task<ProjectStructureDTO> GenerateTypeScriptConsoleTemplate(string projectName, int projectId, int authorId)
+        {
+            var projectStructureDTO = new ProjectStructureDTO();
+            projectStructureDTO.Id = projectId.ToString();
+
+            var programFile = await _fileService.CreateAsync(new Common.DTO.File.FileCreateDTO()
+            {
+                Name = "main.ts",
+                Content = "Hello World",//create helper with this code)
+                Folder = projectName,
+                ProjectId = projectId
+                //FilenameExtension = "ts"//maybe better to use enums
+            },
+            authorId);
+
+            projectStructureDTO.NestedFiles.Add(
+                new FileStructureDTO
+                {
+                    Type = TreeNodeType.Folder,
+                    Name = projectName,
+                    NestedFiles = new List<FileStructureDTO>()
+                        {
+                            new FileStructureDTO()
+                            {
+                                Id = programFile.Id,
+                                Name = programFile.Name,
+                                Type = TreeNodeType.File,
+                            }
+                        }
+                });
+
+            return projectStructureDTO;
+        }
+
     }
 }
