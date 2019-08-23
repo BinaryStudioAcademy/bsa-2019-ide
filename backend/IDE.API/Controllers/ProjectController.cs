@@ -2,16 +2,14 @@
 using IDE.BLL.Interfaces;
 using IDE.BLL.Services;
 using IDE.Common.DTO.Project;
-using IDE.Common.ModelsDTO.DTO.Workspace;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using IDE.Common.ModelsDTO.DTO.Project;
-using System.IO;
-using System;
-using IDE.DAL.Interfaces;
 using IDE.Common.ModelsDTO.DTO.User;
+using IDE.DAL.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
 {
@@ -83,21 +81,16 @@ namespace IDE.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateProject(ProjectCreateDTO project)
+        public async Task<ActionResult> CreateProject([FromForm] ProjectCreateDTO project)
         {
             var author = this.GetUserIdFromToken();
             var projectId = await _projectService.CreateProject(project, author);
-
-            var projectStructureDTO = new ProjectStructureDTO();
-            projectStructureDTO.Id = projectId.ToString();
-            projectStructureDTO.NestedFiles.Add(new FileStructureDTO()
+            var projectStructure  = await _projectStructureService.CreateEmptyAsync(projectId, project.Name);
+            if (Request.Form.Files.Count > 0)
             {
-                Type = 0,
-                Details = $"Super important details of file {project.Name}",
-                Name = project.Name
-            });
-
-            await _projectStructureService.CreateAsync(projectStructureDTO);
+                var zipFile = Request.Form.Files[0];
+                await _projectStructureService.UnzipProject(projectStructure, zipFile, author, projectId);
+            }
 
             return Created("/project", projectId);
         }
@@ -131,7 +124,7 @@ namespace IDE.API.Controllers
 
             var path = Path.Combine(tempDir, Guid.NewGuid().ToString());
 
-            bool result = await _projectService.MakeProjectZipFile(id, path);
+            bool result = await _projectService.CreateProjectZipFile(id, path);
             if (!result) {
                 return BadRequest();
             }
