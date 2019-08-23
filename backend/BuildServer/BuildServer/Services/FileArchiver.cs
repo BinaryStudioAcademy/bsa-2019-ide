@@ -8,9 +8,9 @@ namespace BuildServer.Services
 {
     public class FileArchiver : IFileArchiver
     {
-        private string _outputDirectory;
-        private string _buildDirectory;
-        private string _inputDirectory;
+        private readonly string _outputDirectory;
+        private readonly string _buildDirectory;
+        private readonly string _inputDirectory;
 
         public FileArchiver(IConfiguration configuration)
         {
@@ -29,28 +29,31 @@ namespace BuildServer.Services
             ZipFile.ExtractToDirectory(_inputDirectory + project + ".zip", _buildDirectory + project);
         }
 
-
-        public void DeleteDirectory(string directoryName)
+        public void RemoveTemporaryFiles(string fileName)
         {
+            //from Build
             try
             {
-                Directory.Delete(_buildDirectory + directoryName, true);
+                Directory.Delete(_buildDirectory + fileName, true);
                 Console.WriteLine("Directory deleted");
             }
             catch (IOException ioExp)
             {
                 //Console.WriteLine(ioExp.Message);
             }
+            //from Input
+            DeleteFile(_inputDirectory + fileName);
+            DeleteFile(_outputDirectory + fileName);
         }
 
-        public void DeleteFile(string fileName)
+        private void DeleteFile(string filePath)
         {
             try
             {
-                if (File.Exists(Path.Combine(_outputDirectory, fileName + ".zip")))
+                if (File.Exists(Path.Combine(filePath + ".zip")))
                 {
                     // If file found, delete it    
-                    File.Delete(Path.Combine(_outputDirectory, fileName + ".zip"));
+                    File.Delete(Path.Combine(filePath + ".zip"));
                     Console.WriteLine("File deleted.");
                 }
                 else

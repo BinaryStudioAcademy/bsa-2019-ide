@@ -6,6 +6,7 @@ import { UserNicknameDTO } from 'src/app/models/DTO/User/userNicknameDTO';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { VerificationTokenDTO } from 'src/app/models/DTO/Common/verificationTokenDTO';
+import { EmailDTO } from 'src/app/models/DTO/Common/emailDTO';
 
 @Injectable({
     providedIn: 'root'
@@ -38,6 +39,10 @@ export class UserService {
 
     public confirmEmail(token: VerificationTokenDTO) {
         return this.httpService.putRequest("email", token);
+    }
+
+    public recoverPassword(email: EmailDTO) {
+        return this.httpService.putRequest("email/recover", email);
     }
 
     public copyUser({ email, firstName, lastName, id, nickName }: UserDTO) {

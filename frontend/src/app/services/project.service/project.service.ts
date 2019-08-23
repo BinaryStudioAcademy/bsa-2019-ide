@@ -19,8 +19,8 @@ export class ProjectService {
     constructor(private httpClient: HttpClientWrapperService) { }
 
 
-    public addProject(project: ProjectCreateDTO) {
-        return this.httpClient.postRequest(this.address, project);
+    public addProject(body) {
+        return this.httpClient.postRequest(this.address, body);
     }
 
     public getProjectCollaborators(projectId: number): Observable<HttpResponse<CollaboratorDTO[]>>
@@ -67,5 +67,9 @@ export class ProjectService {
 
     public deleteProject(projectId: number) {
         return this.httpClient.deleteRequest(this.address + '/' + projectId);
+    }
+
+    public exportProject(projectId: number): Observable<HttpResponse<Blob>>{
+        return this.httpClient.getBlobRequest(`${this.address}/Download/${projectId}`);
     }
 }

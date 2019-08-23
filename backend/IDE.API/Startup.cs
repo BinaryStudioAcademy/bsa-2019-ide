@@ -56,10 +56,10 @@ namespace IDE.API
 
 
             app.UseCors(builder => builder
-               .AllowAnyMethod()
-               .AllowAnyHeader()
-               .WithExposedHeaders("Token-Expired")
-               .AllowCredentials()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithExposedHeaders("Token-Expired", "Content-Disposition")
+                .AllowCredentials()
                .WithOrigins("http://localhost:4200"));
 
             app.UseSignalR(routes =>

@@ -25,10 +25,11 @@ namespace IDE.BLL
             services.AddScoped<INotificationService,NotificationService>();
             services.AddScoped<IEmailService>(x => new EmailService(Environment.GetEnvironmentVariable("emailApiKey"), configuration["CurrentWebAPIAddressForMail"], configuration["websiteMail"]));
             services.AddScoped<IProjectMemberSettingsService, ProjectMemberSettingsService>();
-            services.AddScoped<IProjectService, ProjectService>();
-            services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IProjectStructureService, ProjectStructureService>();
+            services.AddScoped<IProjectTemplateService, ProjectTemplateService>();
+            services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<IRightsService, RightsService>();
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddScoped<IQueueService, QueueService>();
 
