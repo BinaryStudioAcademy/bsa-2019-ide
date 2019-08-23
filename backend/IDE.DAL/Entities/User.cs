@@ -11,6 +11,7 @@ namespace IDE.DAL.Entities
             Builds = new List<Build>();
             ProjectMembers = new List<ProjectMember>();
             FavouriteProjects = new List<FavouriteProjects>();
+            Notifications = new List<Notification>();
         }
 
         public int Id { get; set; }

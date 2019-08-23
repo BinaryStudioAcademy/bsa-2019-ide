@@ -47,14 +47,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.getUser();
         const userId = this.tokenService.getUserId();
         this.signalRService.startConnection(this.isAuthorized,userId);
-        this.notificationService.getUserNotifications(userId)
-        .subscribe(
-            (resp)=>{
-                this.notReadNotification = resp.body;
-            }
-        );
-        this.data = this.signalRService.addTransferChartDataListener();
-       
+        this.loadNotifications(userId);
         this.authUserItems = [
             {
                 label: 'Home',
@@ -92,7 +85,18 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         }
     }
 
-    public showNotificationPanel() {
+    public loadNotifications(userId: number): void
+    {
+        this.notificationService.getUserNotifications(userId)
+        .subscribe(
+            (resp)=>{
+                this.notReadNotification = resp.body;
+            }
+        );
+        this.data = this.signalRService.addTransferChartDataListener();
+    }
+
+    public showNotificationPanel(): void {
         this.showNotification = !this.showNotification;
         const dataForDelete =this.data;
         if (!this.showNotification) {
@@ -163,6 +167,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public LogOut() {
         this.tokenService.logout();
         this.isAuthorized = undefined;
+        this.signalRService.crearData();
     }
 
     private getUser() {

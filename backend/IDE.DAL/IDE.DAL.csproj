@@ -12,6 +12,12 @@
     <Compile Remove="Migrations\20190813180153_update.Designer.cs" />
     <Compile Remove="Migrations\20190823070802_notification.cs" />
     <Compile Remove="Migrations\20190823070802_notification.Designer.cs" />
+    <Compile Remove="Migrations\20190823101742_notification.cs" />
+    <Compile Remove="Migrations\20190823101742_notification.Designer.cs" />
+    <Compile Remove="Migrations\20190823101912_notification.cs" />
+    <Compile Remove="Migrations\20190823101912_notification.Designer.cs" />
+    <Compile Remove="Migrations\20190823102443_ndkwhdc.cs" />
+    <Compile Remove="Migrations\20190823102443_ndkwhdc.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -50,6 +50,8 @@ namespace IDE.BLL.Services
             foreach (var item in users)
             {
                 item.Notifications.Add(notification);
+                _context.Update(item);
+                await _context.SaveChangesAsync();
             }
 
             notificationDTO = _mapper.Map<NotificationDTO>(notification);
@@ -59,13 +61,10 @@ namespace IDE.BLL.Services
 
         public async Task<IEnumerable<NotificationDTO>> GetNotificationByUserIs(int userId)
         {
-            var user = await _context.Users
-                .Where(item => item.Id == userId)
-                .FirstOrDefaultAsync();
-            var notifications = user.Notifications
-                .Where(item => item.IsRead == false)
+            var notifications = await _context.Notifications
+                .Where(item => item.IsRead == false && item.UserId==userId)
                 .Select(item => _mapper.Map<NotificationDTO>(item))
-                .ToList();
+                .ToListAsync();            
 
             return notifications;
         }
