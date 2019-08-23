@@ -16,6 +16,8 @@ import { DeleteCollaboratorRightDTO } from 'src/app/models/DTO/Common/deleteColl
 import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
 import { ProjectDescriptionDTO } from 'src/app/models/DTO/Project/projectDescriptionDTO';
 import { ProjDialogDataService } from 'src/app/services/proj-dialog-data.service/proj-dialog-data.service';
+import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
   selector: 'app-project-window',
@@ -57,7 +59,9 @@ export class ProjectWindowComponent implements OnInit {
                 private toastrService: ToastrService,
                 private rightService: RightsService,
                 private router: Router,
-                private dialogService: ProjDialogDataService) { }
+                private dialogService: ProjDialogDataService,
+                private signalRservice: SignalRService,
+                private tokenService: TokenService) { }
 
     ngOnInit(): void { 
         this.projectType = this.config.data.projectType;
@@ -207,6 +211,8 @@ export class ProjectWindowComponent implements OnInit {
                         let projectId = res.body;
                         this.hasDetailsSaveResponse = true;
                         this.close();
+                        const userId=this.tokenService.getUserId();
+                        this.signalRservice.addToGroup(userId);
                         this.router.navigate([`/project/${projectId}`]);   
                     },
                     error => {

@@ -11,6 +11,7 @@ import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DeleteCollaboratorRightDTO } from 'src/app/models/DTO/Common/deleteCollaboratorRightDTO';
 import { BlockUIModule } from 'primeng/primeng';
+import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 
 @Component({
     selector: 'app-add-collaborators',
@@ -36,7 +37,8 @@ export class AddCollaboratorsComponent implements OnInit {
         public ref: DynamicDialogRef,
         private router: Router,
         private rightService: RightsService,
-        private toastService: ToastrService) { }
+        private toastService: ToastrService,
+        private signalRService: SignalRService) { }
 
     public ngOnInit(): void {
         this.area="workspace";
