@@ -3,89 +3,89 @@
         <img class="project-logo" src={{project.logo}}>
     </p-header>
 <img class="project-logo" src={{project.logo}}>-->
-    <div class="project-description">
-        <div class="card">
-            <h2>Main</h2>
-            <p>
-                <span class="highlighted">Name: </span>
-                <span>{{project.name}}</span>
-            </p>
-            <p>
-                <span class="highlighted">Description: </span>
-                <span>{{project.description}}</span>
-            </p>
-            <p>
-                <span class="highlighted">Created: </span>
-                <span>{{project.createdAt |  date:'d MMMM yyyy'}}</span>
-            </p>
-            <p>
-                <span class="highlighted">Author: </span>
-                <span>{{project.authorName}}</span>
-            </p>
-        </div>
+<div class="project-description">
+    <div class="card">
+        <h2>Main</h2>
+        <p>
+            <span class="highlighted">Name: </span>
+            <span>{{project.name}}</span>
+        </p>
+        <p>
+            <span class="highlighted">Description: </span>
+            <span>{{project.description}}</span>
+        </p>
+        <p>
+            <span class="highlighted">Created: </span>
+            <span>{{project.createdAt |  date:'d MMMM yyyy'}}</span>
+        </p>
+        <p>
+            <span class="highlighted">Author: </span>
+            <span>{{project.authorName}}</span>
+        </p>
     </div>
-    <div class="project-description">
-        <div class="card">
-            <h2>Secondary</h2>
-             <p>
-                <span class="highlighted">Language: </span>
-                <span appLanguage [language]="project.language"></span>
-            </p>
-             <p>
-                <span class="highlighted">Project type: </span>
-                <span appProjectType [projectType]="project.projectType"></span>
-            </p>
-             <p>
-                <span class="highlighted">Compiler type: </span>
-                <span appCompilerType [compilerType]="project.compilerType"></span>
-            </p>
-            <!--here will be check(if project access modifier - public)-->
-            <p *ngIf="IsPublic()">
-                <span class="highlighted">ProjectLink: </span>
-                <span>{{project.projectLink}}</span>
-            </p>
-        </div>
+</div>
+<div class="project-description">
+    <div class="card">
+        <h2>Secondary</h2>
+        <p>
+            <span class="highlighted">Language: </span>
+            <span appLanguage [language]="project.language"></span>
+        </p>
+        <p>
+            <span class="highlighted">Project type: </span>
+            <span appProjectType [projectType]="project.projectType"></span>
+        </p>
+        <p>
+            <span class="highlighted">Compiler type: </span>
+            <span appCompilerType [compilerType]="project.compilerType"></span>
+        </p>
+        <!--here will be check(if project access modifier - public)-->
+        <p *ngIf="IsPublic()">
+            <span class="highlighted">ProjectLink: </span>
+            <span>{{project.projectLink}}</span>
+        </p>
     </div>
-    <div class="project-description">
-        <div class="card">
-            <h2>Additional</h2>
-             <p>
-                <span class="highlighted">Amount of saved builds: </span>
-                <span>{{project.countOfSaveBuilds}}</span>
-            </p>
-             <p>
-                <span class="highlighted">Amount of build attempts: </span>
-                <span>{{project.countOfBuildAttempts}}</span>
-            </p>
-        </div>
+</div>
+<div class="project-description">
+    <div class="card">
+        <h2>Additional</h2>
+        <p>
+            <span class="highlighted">Amount of saved builds: </span>
+            <span>{{project.countOfSaveBuilds}}</span>
+        </p>
+        <p>
+            <span class="highlighted">Amount of build attempts: </span>
+            <span>{{project.countOfBuildAttempts}}</span>
+        </p>
     </div>
-    <!--
-    <div *ngFor="let credential of project?.gitCredentials" class="project-description">
-        <p-card header="Credentials">
-             <p>
-                <span class="highlighted">Provider: </span>
-                <span>{{project?.provider}}</span>
-            </p>
-             <p>
-                <span class="highlighted">Url: </span>
-                <span>{{project?.credential?.url}}</span>
-            </p>
-        </p-card>
-    </div>
-    -->
+</div>
+<!-- <div *ngFor="let credential of project?.gitCredentials" class="project-description">
+    <p-card header="Credentials">
+        <p>
+            <span class="highlighted">Provider: </span>
+            <span>{{project?.provider}}</span>
+        </p>
+        <p>
+            <span class="highlighted">Url: </span>
+            <span>{{project?.credential?.url}}</span>
+        </p>
+    </p-card>
+</div> -->
+
 <div class="proj-info-button-wrapper p-grid">
-  <div *ngIf="IsAuthor()" class="p-col-9 p-col-align-start">
-    <div>
-      <button pButton icon="pi pi-pencil" routerLink="/project/{{project.id}}/settings" label="Edit"></button>
-      <app-confirmation-dialog buttonName="Delete" [header]="getRemovingHeader()"
-        message="Do you want to delete this project?" (IsConfirmed)="remove($event)"></app-confirmation-dialog>
+    <div *ngIf="IsAuthor()" class="p-col-9 p-col-align-start">
+        <div>
+            <button pButton icon="pi pi-pencil" routerLink="/project/{{project.id}}/settings" label="Edit"></button>
+            <app-confirmation-dialog buttonName="Delete" [header]="getRemovingHeader()"
+                message="Do you want to delete this project?" (IsConfirmed)="remove($event)"></app-confirmation-dialog>
+        </div>
     </div>
-  </div>
-  <div class="p-col-3 p-col-align-end p-grid">
-      <div class="empty"></div>
-      <div class="export-button">
-          <button pButton icon="pi pi-download" (click)="onTriggerExport()" label="Export" class="ui-button-success" ></button>
-      </div>
-  </div>
+    <div class="p-col-3 p-col-align-end p-grid">
+        <div class="empty"></div>
+        <div class="export-button">
+            <button pButton icon="pi pi-download" (click)="onTriggerExport()" label="Export"
+                class="ui-button-success"></button>
+        </div>
+    </div>
 </div>
 <!--</p-card>-->

@@ -16,7 +16,6 @@ import { FileService } from 'src/app/services/file.service/file.service';
 import { MenuItem } from 'primeng/api';
 import { catchError } from 'rxjs/internal/operators/catchError';
 import { ProjectService } from 'src/app/services/project.service/project.service';
-import { CollaborateService } from 'src/app/services/collaborator.service/collaborate.service';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
@@ -67,7 +66,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private saveOnExit: LeavePageDialogService,
         private fileService: FileService,
         private rightService: RightsService,
-        private collaborateService: CollaborateService,
         private projectService: ProjectService,
         private projectEditService: ProjectDialogService,
         private tokenService: TokenService,
@@ -165,10 +163,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                     console.error(error.message);
                 }
             );
-    }
-
-    public openCollaboratorModalWindow(): void {
-        this.collaborateService.openDialogWindow(this.projectId);
     }
 
     // FOR REFACTOR
