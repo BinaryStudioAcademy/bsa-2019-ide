@@ -16,14 +16,20 @@ export class SignalRService {
     private hubConnection: signalR.HubConnection
 
 
-    public startConnection = () => {
+    public startConnection = (isAuth: boolean, userId: number) => {
         this.hubConnection = new signalR.HubConnectionBuilder()
             .withUrl(environment.apiUrl + 'notification')
             .build();
 
         this.hubConnection
             .start()
-            .then(() => console.log('Connection started'))
+            .then(() => {
+                console.log('Connection started');
+                if (isAuth)
+                {
+                    this.addToGroup(userId);
+                }
+            })
             .catch(err => console.log('Error while starting connection: ' + err))
     }
 

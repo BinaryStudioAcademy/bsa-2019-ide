@@ -41,8 +41,9 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        this.signalRService.startConnection();
         this.getUser();
+        const userId = this.tokenService.getUserId();
+        this.signalRService.startConnection(this.isAuthorized,userId);
         this.data = this.signalRService.addTransferChartDataListener();
        
         this.authUserItems = [
@@ -75,9 +76,9 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                 }
             }
         ];
-
+        
         if (this.isAuthorized) {
-            const userId = this.tokenService.getUserId();
+            
             this.signalRService.addToGroup(userId);
         }
     }
