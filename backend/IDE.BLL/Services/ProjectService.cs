@@ -19,14 +19,6 @@ using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
 {
-    public class FakeFile
-    {
-        public string Id { get; set; }
-        public string Folder { get; set; }
-        public string Name { get; set; }
-        public string Content { get; set; }
-    }
-
     public class ProjectService : IProjectService
     {
         private readonly IdeContext _context;
@@ -42,7 +34,7 @@ namespace IDE.BLL.Services
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
         public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)
-        {
+        {            
             var project = await _context.Projects
                 .Include(p => p.Author)
                 .FirstOrDefaultAsync(p => p.Id == projectId);
@@ -228,7 +220,7 @@ namespace IDE.BLL.Services
                     .OrderBy(x => x.ProjectType).ToListAsync();
         }
 
-        public async Task<bool> MakeProjectZipFile(int projectId, string path)
+        public async Task<bool> CreateProjectZipFile(int projectId, string path)
         {
             ICollection<FileDTO> filesForProject = await _fileService.GetAllForProjectAsync(projectId);
             try
@@ -244,12 +236,14 @@ namespace IDE.BLL.Services
                     }
 
                 }
+
                 ZipFile.CreateFromDirectory(Path.Combine(path,"ProjectFolder"), Path.Combine(path, $"project_{projectId}.zip"));
                 var dirToDelete = Path.Combine(path, "ProjectFolder");
                 Directory.Delete(dirToDelete, true);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
             return true;
