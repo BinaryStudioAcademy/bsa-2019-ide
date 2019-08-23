@@ -1,30 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Auth0.AuthenticationApi;
 using Auth0.AuthenticationApi.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using IDE.Common.ModelsDTO.DTO.Authentification;
+using IDE.BLL.ExceptionsCustom;
 using IDE.Common.Enums;
+using IDE.Common.ModelsDTO.DTO.Authentification;
+using Microsoft.AspNetCore.Mvc;
 
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class GoogleSingInController : ControllerBase
+    public class SocialAuthController : ControllerBase
     {
         [HttpGet("google")]
-        public void GoogleAuth()
+        public IActionResult GoogleAuth()
         {
-            SocialAuth(SocialProvider.Google);
+            return SocialAuth(SocialProvider.Google);
         }
 
         [HttpGet("gitHub")]
-        public void GitHubAuth()
+        public IActionResult GitHubAuth()
         {
-            SocialAuth(SocialProvider.GitHub);
+            return SocialAuth(SocialProvider.GitHub);
         }
 
         [HttpPost("callback")]
@@ -52,7 +50,7 @@ namespace IDE.API.Controllers
                     socialProviderString = "github";
                     break;
                 default:
-                    return BadRequest();
+                    throw new NotFoundException(nameof(SocialProvider), socialProvider.ToString());
             }
 
             var authorizationUrl = client.BuildAuthorizationUrl()
@@ -60,12 +58,11 @@ namespace IDE.API.Controllers
                 .WithResponseMode(AuthorizationResponseMode.FormPost)
                 .WithClient("oDlrdb7kNboqqGbWPMzZvlxgHQul87Nh")
                 .WithConnection(socialProviderString)
-                .WithRedirectUrl("https://localhost:44352/GoogleSingIn/callback")
+                .WithRedirectUrl("https://localhost:44352/SocialAuth/callback")
                 .WithScope("openid profile email offline_access")
                 .Build();
 
             return Redirect(authorizationUrl.ToString());
         }
-
     }
 }
