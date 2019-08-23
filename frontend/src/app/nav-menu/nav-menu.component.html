@@ -7,11 +7,11 @@
                 [minLength]="1" (onSelect)="checkProject(project)"></p-autoComplete>
             <p-splitButton label="My Profile" icon="pi pi-user" (onClick)="goToUserDetails()" [model]="items">
             </p-splitButton>
-            <button class="bell-wrapper ui-button-secondary" pButton icon="pi pi-bell" (click)="op1.toggle($event)"
+            <button class="bell-wrapper ui-button-secondary" pButton icon="pi pi-bell" (click)="notifications.toggle($event)"
                 (click)="showNotificationPanel()">
                 <div *ngIf="data.length!=0 || notReadNotification.length!=0" class="count-of-notification">{{data.length+notReadNotification.length}}</div>
             </button>
-            <p-overlayPanel #op1 class="notification">
+            <p-overlayPanel #notifications class="notification">
                     <div *ngIf="notReadNotification.length!=0">
                             <div class="notification-item" *ngFor="let item of notReadNotification">
                                 {{item.message}}
