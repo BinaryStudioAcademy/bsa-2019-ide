@@ -7,7 +7,7 @@
     </div>
 </div>
 
-<app-add-collaborators-list [collaborators]="newCollaborators" [area]="area"></app-add-collaborators-list>
+<app-add-collaborators-list [collaborators]="newCollaborators"></app-add-collaborators-list>
 
 <button *ngIf="isCollaboratorsSaved" type="submit" icon="pi pi-save" pButton class="save-btn" [disabled]="IsNotCollaboratorsChange()"
     label="Save" (click)="save()"></button>
