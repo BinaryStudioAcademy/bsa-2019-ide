@@ -15,19 +15,22 @@ namespace IDE.API.Controllers
 {
     [Route("[controller]")]
     //[AllowAnonymous]
-    //[Authorize]
+    [Authorize]
     [ApiController]
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
         private readonly IProjectMemberSettingsService _projectMemberSettings;
         private readonly IProjectStructureService _projectStructureService;
+        private readonly IProjectTemplateService projectTemplateService;
         private readonly FileService _fileService;
         private readonly IBlobRepository _blobRepo;
+        private readonly IProjectTemplateService _projectTemplateService;
 
         public ProjectController(IProjectService projectService,
                                 IProjectMemberSettingsService projectMemberSettings,
                                 IProjectStructureService projectStructureService,
+                                IProjectTemplateService projectTemplateService,
                                 FileService fileService,
                                 IBlobRepository blobRepo)
         {
@@ -36,6 +39,7 @@ namespace IDE.API.Controllers
             _projectMemberSettings = projectMemberSettings;
             _fileService = fileService;
             _blobRepo = blobRepo;
+            _projectTemplateService = projectTemplateService;
         }
 
         [HttpGet("{projectId}")]
@@ -85,13 +89,19 @@ namespace IDE.API.Controllers
         {
             var author = this.GetUserIdFromToken();
             var projectId = await _projectService.CreateProject(project, author);
-            var projectStructure  = await _projectStructureService.CreateEmptyAsync(projectId, project.Name);
+
             if (Request.Form.Files.Count > 0)
             {
+                var projectStructure  = await _projectStructureService.CreateEmptyAsync(projectId, project.Name);
                 var zipFile = Request.Form.Files[0];
                 await _projectStructureService.UnzipProject(projectStructure, zipFile, author, projectId);
             }
-
+            else
+            {
+                var projectStructureDTO = await _projectTemplateService.GenerateProjectTemplate(project.Name, projectId, author, project.Language);
+                await _projectStructureService.CreateAsync(projectStructureDTO);
+            }
+            
             return Created("/project", projectId);
         }
 

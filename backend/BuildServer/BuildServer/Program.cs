@@ -26,15 +26,18 @@ namespace BuildServer
             services.Configure<Builder>(configuration);
             services.AddTransient<IFileArchiver, FileArchiver>();
             services.Configure<FileArchiver>(configuration);
+            services.AddTransient<IAzureService, AzureService>();
+            services.Configure<AzureService>(configuration);
 
             var serviceProvider = services.BuildServiceProvider();
 
             //will be endless cycle with queue
-            string fileName = "Test2";
+            string fileName = "HelloWorld";
 
             Worker worker = new Worker(
                 serviceProvider.GetService<IBuilder>(),
-                serviceProvider.GetService<IFileArchiver>());
+                serviceProvider.GetService<IFileArchiver>(),
+                serviceProvider.GetService<IAzureService>());
 
             worker.Work(fileName);
         }
