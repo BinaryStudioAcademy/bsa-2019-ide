@@ -118,10 +118,19 @@
                 </div>
             </div>
 
+            <div class="label">Collaborators:</div>
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="">
+                            <app-add-collaborators></app-add-collaborators>
+                    </div>
+                </div>
+            </div>
+
             <!--Collaborators-->
-            <div class="label" *ngIf="!isCreateForm() && collaborators && collaborators.length > 0">Collaborators:</div>
+            <!-- <div class="label" *ngIf="!isCreateForm() && collaborators && collaborators.length > 0">Collaborators:</div>
             <app-add-collaborators-list [collaborators]="collaborators" [area]="area"
-                *ngIf="!isCreateForm() && collaborators && collaborators.length > 0"></app-add-collaborators-list>
+                *ngIf="!isCreateForm() && collaborators && collaborators.length > 0"></app-add-collaborators-list> -->
 
             <!-- Color -->
             <div class="label">Project color</div>
