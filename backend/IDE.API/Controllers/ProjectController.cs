@@ -27,13 +27,15 @@ namespace IDE.API.Controllers
         private readonly FileService _fileService;
         private readonly IBlobRepository _blobRepo;
         private readonly IProjectTemplateService _projectTemplateService;
+        private readonly INotificationService _notificationService;
 
         public ProjectController(IProjectService projectService,
                                 IProjectMemberSettingsService projectMemberSettings,
                                 IProjectStructureService projectStructureService,
                                 IProjectTemplateService projectTemplateService,
                                 FileService fileService,
-                                IBlobRepository blobRepo)
+                                IBlobRepository blobRepo,
+                                INotificationService notificationService)
         {
             _projectStructureService = projectStructureService;
             _projectService = projectService;
@@ -41,6 +43,7 @@ namespace IDE.API.Controllers
             _fileService = fileService;
             _blobRepo = blobRepo;
             _projectTemplateService = projectTemplateService;
+            _notificationService = notificationService;
         }
 
         [HttpGet("{projectId}")]

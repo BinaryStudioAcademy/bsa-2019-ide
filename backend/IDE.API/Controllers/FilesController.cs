@@ -14,10 +14,13 @@ namespace IDE.API.Controllers
     public class FilesController : ControllerBase
     {
         private readonly FileService _fileService;
+        private readonly ProjectStructureService _projectStructureService;
 
-        public FilesController(FileService fileService)
+        public FilesController(FileService fileService,
+            ProjectStructureService projectStructureService)
         {
             _fileService = fileService;
+            _projectStructureService=projectStructureService;
         }
 
         [HttpGet("forProject/{projectId}")]
