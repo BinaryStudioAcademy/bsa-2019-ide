@@ -12,12 +12,13 @@ using System.IO;
 using System;
 using IDE.DAL.Interfaces;
 using IDE.Common.ModelsDTO.DTO.User;
+using Microsoft.Extensions.Logging;
 
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
     //[AllowAnonymous]
-    //[Authorize]
+    [Authorize]
     [ApiController]
     public class ProjectController : ControllerBase
     {
@@ -26,18 +27,20 @@ namespace IDE.API.Controllers
         private readonly IProjectStructureService _projectStructureService;
         private readonly FileService _fileService;
         private readonly IBlobRepository _blobRepo;
+        private readonly ILogger<ProjectController> _logger;
 
         public ProjectController(IProjectService projectService,
                                 IProjectMemberSettingsService projectMemberSettings,
                                 IProjectStructureService projectStructureService,
                                 FileService fileService,
-                                IBlobRepository blobRepo)
+                                IBlobRepository blobRepo, ILogger<ProjectController> logger)
         {
             _projectStructureService = projectStructureService;
             _projectService = projectService;
             _projectMemberSettings = projectMemberSettings;
             _fileService = fileService;
             _blobRepo = blobRepo;
+            _logger = logger;
         }
 
         [HttpGet("{projectId}")]

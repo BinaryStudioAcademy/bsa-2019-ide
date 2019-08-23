@@ -10,6 +10,7 @@ using IDE.BLL.Services;
 using IDE.BLL.Interfaces;
 using IDE.BLL.MappingProfiles;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace IDE.BLL
 {
@@ -21,7 +22,7 @@ namespace IDE.BLL
 
             services.AddScoped<AuthService>();
             services.AddScoped<UserService>();
-            services.AddScoped<IEmailService>(x => new EmailService(Environment.GetEnvironmentVariable("emailApiKey"), configuration["CurrentWebAPIAddressForMail"], configuration["websiteMail"]));
+            services.AddScoped<IEmailService>(x => new EmailService(Environment.GetEnvironmentVariable("emailApiKey"), configuration["CurrentWebAPIAddressForMail"], configuration["websiteMail"], x.GetService<ILogger<EmailService>>()));
             services.AddScoped<IProjectMemberSettingsService, ProjectMemberSettingsService>();
             services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ITokenService, TokenService>();

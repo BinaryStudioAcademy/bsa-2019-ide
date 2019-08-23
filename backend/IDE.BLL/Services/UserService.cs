@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IDE.BLL.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace IDE.BLL.Services
 {
@@ -20,12 +21,13 @@ namespace IDE.BLL.Services
         private readonly IdeContext _context;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
-
-        public UserService(IdeContext context, IEmailService emailService, IMapper mapper)
+        private readonly ILogger<UserService> _logger;
+        public UserService(IdeContext context, IEmailService emailService, IMapper mapper, ILogger<UserService> logger)
         {
             _context = context;
             _mapper = mapper;
             _emailService = emailService;
+            _logger = logger;
         }
 
         public async Task<User> CreateUser(UserRegisterDTO userDto)

@@ -9,15 +9,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Shared;
 
 namespace IDE.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly ILogger<Startup> _logger;
+
+        public Startup(IConfiguration configuration , ILogger<Startup> logger)
         {
             Configuration = configuration;
+            this._logger = logger;
         }
 
         public IConfiguration Configuration { get; }        
@@ -41,6 +45,7 @@ namespace IDE.API
         {
             if (env.IsDevelopment())
             {
+                _logger.LogInformation("In Development environment");
                 app.UseDeveloperExceptionPage();
             }
             else

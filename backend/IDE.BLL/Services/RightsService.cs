@@ -6,6 +6,7 @@ using IDE.Common.ModelsDTO.DTO.User;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,12 @@ namespace IDE.BLL.Services
     public class RightsService : IRightsService
     {
         private IdeContext _context;
+        private readonly ILogger<RightsService> _logger;
 
-        public RightsService(IdeContext context)
+        public RightsService(IdeContext context, ILogger<RightsService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<ProjectRightsDTO> GetUserRightsForProject(int projectId, int userId)

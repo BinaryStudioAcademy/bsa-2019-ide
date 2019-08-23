@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using IDE.DAL.Entities.Elastic;
 using IDE.DAL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace IDE.API.Controllers
 {
@@ -16,10 +17,11 @@ namespace IDE.API.Controllers
         // specific entry in the index - http://localhost:9200/test/_doc/1 
 
         private ISearchRepository<TestDocument> _searchRepository;
-
-        public TestElasticSearchController(ISearchRepository<TestDocument> serchRepository)
+        private readonly ILogger<TestElasticSearchController> _logger;
+        public TestElasticSearchController(ISearchRepository<TestDocument> serchRepository, ILogger<TestElasticSearchController> logger)
         {
             _searchRepository = serchRepository;
+            _logger = logger;
         }
 
         [HttpGet("addone")]

@@ -2,6 +2,7 @@
 using IDE.BLL.Interfaces;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Security.Claims;
 
@@ -10,13 +11,15 @@ namespace IDE.BLL.Services
     public class TokenService : ITokenService
     {
         private readonly IdeContext _context;
+        private readonly ILogger<TokenService> _logger;
         private int userId;
         public string FirstName { get; private set; }
         private User user;
 
-        public TokenService(IdeContext context)
+        public TokenService(IdeContext context, ILogger<TokenService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public User GetUser()

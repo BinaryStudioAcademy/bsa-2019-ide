@@ -10,6 +10,7 @@ using IDE.Common.ModelsDTO.DTO.User;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,12 +33,14 @@ namespace IDE.BLL.Services
         private readonly IdeContext _context;
         private readonly IMapper _mapper;
         private readonly FileService _fileService;
+        private readonly ILogger<ProjectService> _logger;
 
-        public ProjectService(IdeContext context, IMapper mapper, FileService fileService)
+        public ProjectService(IdeContext context, IMapper mapper, FileService fileService, ILogger<ProjectService> logger)
         {
             _context = context;
             _mapper = mapper;
             _fileService = fileService;
+            _logger = logger;
         }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO

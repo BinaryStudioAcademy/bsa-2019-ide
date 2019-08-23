@@ -7,6 +7,7 @@ using IDE.Common.Security;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,12 +18,13 @@ namespace IDE.BLL.Services
         private readonly IdeContext _context;
         private readonly JWTFactory _jwtFactory;
         private readonly IMapper _mapper;
-
-        public AuthService(IdeContext context, IMapper mapper, JWTFactory jwtFactory)
+        private readonly ILogger<AuthService> _logger;
+        public AuthService(IdeContext context, IMapper mapper, JWTFactory jwtFactory, ILogger<AuthService> logger)
         {
             _context = context;
             _jwtFactory = jwtFactory;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<AuthUserDTO> Authorize(UserLoginDTO userDto)

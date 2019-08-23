@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections;
 using IDE.Common.ModelsDTO.DTO.User;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace IDE.API.Controllers
 {
@@ -16,10 +17,11 @@ namespace IDE.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UserService _userService;
-
-        public UsersController(UserService userService)
+        private readonly ILogger<UsersController> _logger;
+        public UsersController(UserService userService, ILogger<UsersController> logger)
         {
             _userService = userService;
+            _logger = logger;
         }
 
         [HttpGet("fromToken")]

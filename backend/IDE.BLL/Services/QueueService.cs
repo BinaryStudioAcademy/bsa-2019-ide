@@ -1,4 +1,5 @@
 ﻿using IDE.BLL.Interfaces;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Shared.Interfaces;
@@ -10,8 +11,9 @@ namespace IDE.BLL.Services
     {
         private readonly IMessageProducerScope _messageProducerScope;
         private readonly IMessageConsumerScope _messageConsumerScope;
+        private readonly ILogger<QueueService> _logger;
 
-        public QueueService(IMessageProducerScopeFactory messageProducerScopeFactory, IMessageConsumerScopeFactory messageConsumerScopeFactory)
+        public QueueService(IMessageProducerScopeFactory messageProducerScopeFactory, IMessageConsumerScopeFactory messageConsumerScopeFactory, ILogger<QueueService> logger)
         {
             _messageProducerScope = messageProducerScopeFactory.Open(new RabbitMQ.Shared.Settings.MessageScopeSettings
             {
@@ -30,6 +32,7 @@ namespace IDE.BLL.Services
             });
 
             _messageConsumerScope.MessageConsumer.Received += MessageConsumer_Received; ; ;
+            _logger = logger;
         }
 
         private void MessageConsumer_Received(object sender, BasicDeliverEventArgs e)

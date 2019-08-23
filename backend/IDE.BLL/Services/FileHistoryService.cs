@@ -3,6 +3,7 @@ using IDE.BLL.ExceptionsCustom;
 using IDE.Common.DTO.File;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,17 +18,19 @@ namespace IDE.BLL.Services
         private readonly INoSqlRepository<File> _fileRepository;
         private readonly UserService _userService;
         private readonly IMapper _mapper;
+        private readonly ILogger<FileHistoryService> _logger;
 
         public FileHistoryService(
             INoSqlRepository<FileHistory> fileHistoryRepository,
             INoSqlRepository<File> fileRepository,
             UserService userService,
-            IMapper mapper)
+            IMapper mapper, ILogger<FileHistoryService> logger)
         {
             _fileHistoryRepository = fileHistoryRepository;
             _userService = userService;
             _fileRepository = fileRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ICollection<FileHistoryDTO>> GetAllForFileAsync(string fileId)

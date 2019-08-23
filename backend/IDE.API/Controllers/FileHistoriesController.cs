@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using IDE.BLL.Services;
 using IDE.Common.DTO.File;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace IDE.API.Controllers
 {
@@ -12,10 +13,11 @@ namespace IDE.API.Controllers
     public class FileHistoriesController : ControllerBase
     {
         private readonly FileHistoryService _fileHistoryService;
-
-        public FileHistoriesController(FileHistoryService fileHistoryService)
+        private readonly ILogger<FileHistoriesController> _logger;
+        public FileHistoriesController(FileHistoryService fileHistoryService, ILogger<FileHistoriesController> logger)
         {
             _fileHistoryService = fileHistoryService;
+            _logger = logger;
         }
 
         [HttpGet("forFile/{fileId:length(24)}")]

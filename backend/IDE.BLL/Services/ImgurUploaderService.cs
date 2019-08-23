@@ -1,4 +1,5 @@
 ﻿using IDE.BLL.Interfaces;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -12,10 +13,11 @@ namespace IDE.BLL.Services
     public class ImgurUploaderService : IImageUploader
     {
         private readonly HttpClient _client;
-
-        public ImgurUploaderService(HttpClient client)
+        private readonly ILogger<ImgurUploaderService> _logger;
+        public ImgurUploaderService(HttpClient client, ILogger<ImgurUploaderService> logger)
         {
             _client = client;
+            _logger = logger;
         }
 
         public async Task<string> UploadAsync(string imgSrc)

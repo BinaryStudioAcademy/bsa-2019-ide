@@ -1,6 +1,7 @@
 ﻿using IDE.BLL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace IDE.API.Controllers
 {
@@ -10,10 +11,11 @@ namespace IDE.API.Controllers
     public class TestRabbitMQController : ControllerBase
     {
         private readonly IQueueService _queue;
-
-        public TestRabbitMQController(IQueueService queue)
+        private readonly ILogger<TestRabbitMQController> _logger;
+        public TestRabbitMQController(IQueueService queue, ILogger<TestRabbitMQController> logger)
         {
             _queue = queue;
+            _logger = logger;
         }
 
         //just for test rabbitmq
