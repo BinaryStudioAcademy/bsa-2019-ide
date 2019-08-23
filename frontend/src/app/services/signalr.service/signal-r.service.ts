@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as signalR from "@aspnet/signalr";
 import { NotificationDTO } from 'src/app/models/DTO/Common/notificationDTO';
-import { TokenService } from '../token.service/token.service';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -9,7 +8,7 @@ import { environment } from 'src/environments/environment';
 })
 export class SignalRService {
 
-    constructor(private tokenService: TokenService) { }
+    constructor() { }
 
     public notifications: NotificationDTO[] = [];
 
@@ -18,7 +17,7 @@ export class SignalRService {
 
     public startConnection = (isAuth: boolean, userId: number) => {
         this.hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl(environment.apiUrl + 'notification')
+            .withUrl(`${environment.apiUrl}notification`)
             .build();
 
         this.hubConnection
@@ -48,15 +47,16 @@ export class SignalRService {
     }
 
     public addTransferChartDataListener(): NotificationDTO[] {
-        this.hubConnection.on('transferchartdata', (data) => {
-            this.notifications.push(data);
+        this.hubConnection.on('transferchartdata', (notification) => {
+            console.log(notification);
+            this.notifications.push(notification);
         });
         return this.notifications;
     }
 
-    public markNotificationIsRead(notificationId: number): void
+    public markNotificationAsRead(notificationId: number): void
     {
-        this.hubConnection.invoke("MarkRead", notificationId)
+        this.hubConnection.invoke("MarkAsRead", notificationId)
             .catch((error) => console.log(error));
     }
 

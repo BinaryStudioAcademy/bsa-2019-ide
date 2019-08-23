@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using IDE.BLL.Interfaces;
+﻿using IDE.BLL.Interfaces;
 using IDE.Common.ModelsDTO.DTO.Common;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
 {
@@ -25,7 +22,8 @@ namespace IDE.API.Controllers
         [HttpGet("getUserNotification/{userId}")]
         public async Task<IEnumerable<NotificationDTO>> GetNotificationByUserIs(int userId)
         {
-            return await this._notificationService.GetNotificationByUserIs(userId);
+            return await _notificationService.GetNotificationByUserId(userId)
+                .ConfigureAwait(false);
         }
     }
 }

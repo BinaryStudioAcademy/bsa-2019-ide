@@ -2,10 +2,7 @@
 using IDE.DAL.Context;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.HubConfig
@@ -21,30 +18,31 @@ namespace IDE.BLL.HubConfig
             _context = context;
             _notificationService = notificationService;
         }
+
         public async Task JoinGroup(int userId)
         {
-            var project = await _context.ProjectMembers
+            var projectMembers = await _context.ProjectMembers
                 .Where(item => item.UserId == userId)
-                .ToListAsync();
+                .ToListAsync().ConfigureAwait(false);
+
             var userProjects = await _context.Projects
                 .Where(item => item.AuthorId == userId)
-                .ToListAsync();
-            foreach (var item in project)
+                .ToListAsync().ConfigureAwait(false);
+
+            foreach (var member in projectMembers)
             {
-                await Groups.AddToGroupAsync(Context.ConnectionId, item.ProjectId.ToString());
+                await Groups.AddToGroupAsync(Context.ConnectionId, member.ProjectId.ToString()).ConfigureAwait(false);
             }
 
-            foreach(var item in userProjects)
+            foreach(var userProject in userProjects)
             {
-                await Groups.AddToGroupAsync(Context.ConnectionId, item.Id.ToString());
+                await Groups.AddToGroupAsync(Context.ConnectionId, userProject.Id.ToString()).ConfigureAwait(false);
             }
         }
 
-        public async Task MarkRead(int notificationId)
+        public async Task MarkAsRead(int notificationId)
         {
-            await this._notificationService.MarkRead(notificationId);
+            await _notificationService.MarkAsRead(notificationId).ConfigureAwait(false);
         }
-
-
     }
 }

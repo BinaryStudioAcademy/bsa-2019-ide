@@ -9,9 +9,7 @@ import { ProjectService } from '../services/project.service/project.service';
 import { TokenService } from '../services/token.service/token.service';
 import { SearchProjectDTO } from '../models/DTO/Project/searchProjectDTO'
 import { SignalRService } from '../services/signalr.service/signal-r.service';
-import { HttpClientWrapperService } from '../services/http-client-wrapper.service';
 import { NotificationDTO } from '../models/DTO/Common/notificationDTO';
-import { element } from 'protractor';
 import { NotificationService } from '../services/notification.service/notification.service';
 
 @Component({
@@ -39,7 +37,6 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         private tokenService: TokenService,
         private projectService: ProjectService,
         private signalRService: SignalRService,
-        private http: HttpClientWrapperService,
         private notificationService: NotificationService
     ) { }
 
@@ -96,18 +93,18 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.data = this.signalRService.addTransferChartDataListener();
     }
 
-    public showNotificationPanel(): void {
+    public showNotificationPanel() {
         this.showNotification = !this.showNotification;
         const dataForDelete =this.data;
         if (!this.showNotification) {
             this.signalRService.crearData();     
             this.signalRService.deleteTransferChartDataListener();
-            this.data=this.signalRService.addTransferChartDataListener();
+            this.data = this.signalRService.addTransferChartDataListener();
             dataForDelete.forEach(element => {
-                this.signalRService.markNotificationIsRead(element.id);
+                this.signalRService.markNotificationAsRead(element.id);
             });
             this.notReadNotification.forEach(element=>{
-                this.signalRService.markNotificationIsRead(element.id);
+                this.signalRService.markNotificationAsRead(element.id);
             })
             this.notReadNotification=[];
         }
