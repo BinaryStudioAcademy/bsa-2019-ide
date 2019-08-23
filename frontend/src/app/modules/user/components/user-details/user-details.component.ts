@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service/user.service';
 import { MenuItem } from 'primeng/api';
 import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
+import { UserDialogType } from '../models/project-dialog-type';
+import { UserDetailsDialogService } from 'src/app/services/user-dialog/user-details-dialog.service';
 
 @Component({
   selector: 'app-user-details',
@@ -16,7 +18,10 @@ export class UserDetailsComponent implements OnInit {
   actions: MenuItem[];
 
 
-  constructor(private userService: UserService) { }
+  constructor(
+      private userService: UserService,
+      private userDialogService: UserDetailsDialogService) { }
+
   ngOnInit() {
       this.userService.getUserDetailsFromToken().subscribe(response =>{
         this.user = response.body;
@@ -37,7 +42,7 @@ export class UserDetailsComponent implements OnInit {
             // this.delete();
         }},
         {label: 'Update Info', icon: 'pi pi-refresh', command: () => {
-            // this.delete();
+            this.userInfoUpdate();
         }},
         {label: 'Change password', icon: 'pi pi-key ', command: () => {
             // this.delete();
@@ -47,4 +52,8 @@ export class UserDetailsComponent implements OnInit {
   expandImage(imageUrl : string){
       this.isImageExpended = true;
   }
+
+  public userInfoUpdate() {
+    this.userDialogService.show(UserDialogType.UpdateInfo);
+}
 }

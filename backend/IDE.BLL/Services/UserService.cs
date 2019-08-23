@@ -62,6 +62,26 @@ namespace IDE.BLL.Services
 
         }
 
+        public async Task<UserDTO> UpdateUser(UserUpdateDTO userUpdateDto)
+        {
+            var targetUser = await _context.Users.SingleOrDefaultAsync(p => p.Id == userUpdateDto.Id);
+
+            if (targetUser == null)
+            {
+                throw new NotFoundException(nameof(targetUser), targetUser.Id);
+            }
+
+            targetUser.FirstName = userUpdateDto.FirstName;
+            targetUser.LastName = userUpdateDto.LastName;
+            targetUser.NickName = userUpdateDto.NickName;
+            targetUser.GitHubUrl = userUpdateDto.GitHubUrl;
+
+            _context.Users.Update(targetUser);
+            await _context.SaveChangesAsync();
+
+            return await GetUserById(targetUser.Id);
+        }
+
         public async Task<UserDetailsDTO> GetUserDetailsById(int id)
         {
             var user = await GetUserByIdInternal(id);

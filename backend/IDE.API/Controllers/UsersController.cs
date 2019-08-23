@@ -45,6 +45,13 @@ namespace IDE.API.Controllers
         public async Task<IEnumerable<UserNicknameDTO>> GetUsersNickByNickname()
         {
             return await _userService.GetUserListByNickNameParts(this.GetUserIdFromToken());
-        } 
+        }
+        
+        [HttpPut]
+        public async Task<ActionResult<UserUpdateDTO>> UpdateUser([FromBody] UserUpdateDTO user)
+        {
+            var updatedUser = await _userService.UpdateUser(user);
+            return Ok(updatedUser);
+        }
     }
 }

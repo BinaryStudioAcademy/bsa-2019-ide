@@ -1,0 +1,80 @@
+<span class="modal-close-btn" (click)="close()">&times;</span>
+
+<div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+        <div class="title">{{ title }}</div>
+    </div>
+</div>
+
+<div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+<div *ngIf="!IsUpdateInfo() && !isPageLoaded" class="error">
+    <p>Can't load user details</p>
+</div>
+  
+<div class="ui-g" *ngIf="isPageLoaded">
+    <div class="ui-g-12">
+        <form class="userForm" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+            <!-- User FirstName -->
+            <div class="label">FirstName</div>
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="ui-inputgroup">
+                        <input type="text" pInputText pKeyFilter="alphanum" formControlName="firstName" placeholder="firstname">
+                    </div>
+                </div>
+            </div>
+
+            <div class="invalid" *ngIf="userForm.get('firstName').invalid && userForm.get('firstName').dirty">Invalid firstName</div>
+
+            <!-- User LastName -->
+            <div class="label">LastName</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="ui-inputgroup">
+                            <input type="text" pInputText pKeyFilter="alphanum" formControlName="lastName" placeholder="lastname">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="invalid" *ngIf="userForm.get('lastName').invalid && userForm.get('lastName').dirty">Invalid lastName</div>
+
+            <!-- User NickName -->
+            <div class="label">NickName</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="ui-inputgroup">
+                            <input type="text" pInputText pKeyFilter="alphanum" formControlName="nickName" placeholder="nickName">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="invalid" *ngIf="userForm.get('nickName').invalid && userForm.get('nickName').dirty">Invalid nickName</div>
+
+            <!-- User GitHub -->
+            <div class="label">GitHubUrl</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="ui-inputgroup">
+                            <input type="text" pInputText pKeyFilter="alphanum" formControlName="gitHubUrl" placeholder="gitHubUrl">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="invalid" *ngIf="userForm.get('gitHubUrl').invalid && userForm.get('gitHubUrl').dirty">Invalid GitHubUrl</div>
+
+            <!-- Submit -->
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <button *ngIf="IsUpdateInfo()" type="submit" [disabled]="!userForm.valid" pButton label="Update"></button>
+                    <!--<button *ngIf="!isCreateForm() && hasDetailsSaveResponse" type="submit" [disabled]="!userForm.valid || projectItemIsNotChange()" pButton label="Save"></button>-->
+                    <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
+                        <p-progressSpinner></p-progressSpinner>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

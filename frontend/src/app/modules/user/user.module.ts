@@ -9,13 +9,17 @@ import {SlideMenuModule} from 'primeng/slidemenu';
 import {ButtonModule} from 'primeng/button';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import { EmailVerificationComponent } from './components/email-verification/email-verification.component';
+import { UserDialogWindowComponent } from './components/user-dialog-window/user-dialog-window.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { InputTextModule, KeyFilterModule } from 'primeng/primeng';
+import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
 
 @NgModule({
     declarations: [
         UserRootComponent, 
         UserDetailsComponent, 
         UserSettingsComponent, 
-        EmailVerificationComponent
+        EmailVerificationComponent, UserDialogWindowComponent
     ],
     imports: [
         CommonModule,
@@ -23,7 +27,15 @@ import { EmailVerificationComponent } from './components/email-verification/emai
         DialogModule,
         SlideMenuModule,
         ButtonModule,
-        ProgressSpinnerModule
-    ]
+        ProgressSpinnerModule,
+        ButtonModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        KeyFilterModule,
+        DynamicDialogModule,
+    ],
+    entryComponents: [
+        UserDialogWindowComponent
+      ],
 })
 export class UserModule { }
