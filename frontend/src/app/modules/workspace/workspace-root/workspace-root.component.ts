@@ -141,7 +141,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     public onFileSelected(fileId: string): void {
         if (this.editor.openedFiles.some(f => f.innerFile.id === fileId)) {
-            this.editor.activeItem = this.editor.items.find(i => i.id === fileId);
+            this.editor.activeItem = this.editor.tabs.find(i => i.id === fileId);
             this.editor.code = this.editor.openedFiles.find(f => f.innerFile.id === fileId).innerFile.content;
             return;
         }
@@ -153,8 +153,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                         const { id, name, content, folder, updaterId } = resp.body as FileDTO;
                         const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder };
                         this.editor.AddFileToOpened(fileUpdateDTO);
-                        this.editor.items.push({ label: name, icon: 'fa fa-fw fa-file', id: id });
-                        this.editor.activeItem = this.editor.items[this.editor.items.length - 1];
+                        this.editor.tabs.push({ label: name, icon: 'fa fa-fw fa-file', id: id });
+                        this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
                         this.editor.code = content;
                     } else {
                         this.tr.error("Can't load selected file.", 'Error Message');

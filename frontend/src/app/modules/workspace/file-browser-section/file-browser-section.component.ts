@@ -10,10 +10,12 @@ import { FileCreateDTO } from 'src/app/models/DTO/File/fileCreateDTO';
 import { ProjectStructureFormaterService } from 'src/app/services/project-structure-formater.service';
 import { FileStructureDTO } from 'src/app/models/DTO/Workspace/fileStructureDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
-import { Meta } from '@angular/platform-browser';
-import { take } from 'rxjs/operators';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { TokenService } from 'src/app/services/token.service/token.service';
+import { Extension } from '../model/extension';
+import { ProjectService } from 'src/app/services/project.service/project.service';
+import filesExtensions from '../../../assets/file-extensions.json';
+import defaultExtensions from '../../../assets/newFilesDefaultExtensions.json';
+import { FileUpdateDTO } from 'src/app/models/DTO/File/fileUpdateDTO';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -22,26 +24,29 @@ import { TokenService } from 'src/app/services/token.service/token.service';
 })
 export class FileBrowserSectionComponent implements OnInit {
 
-    @Input() showSerachField:boolean;
+    @Input() showSearchField:boolean;
     @Output() fileSelected = new EventEmitter<string>();
     items: MenuItem[];
     public files: TreeNode[];
     public selectedItem: TreeNode;
     public projectId: number;
-    public expandFolder=false;
+    public expandFolder = false;
 
     private fileCounter: number = 0;
     private folderCounter: number = 0;
     private lastSelectedElement: any;
+    private extensions: Extension[];
+    private defaultExtension: string;
 
     constructor(private projectStructureService: FileBrowserService,
                 private projectStructureFormaterService: ProjectStructureFormaterService,
-                private activateRoute: ActivatedRoute,
+                activateRoute: ActivatedRoute,
                 private fileService: FileService,
                 private toast: ToastrService,
                 private hotkeys: HotkeyService,
                 private fileBrowserService: FileBrowserService,
-                private tokenService: TokenService) {
+                private tokenService: TokenService,
+                private projectService: ProjectService) {
         this.hotkeys.addShortcut({keys: 'shift.e'})
         .subscribe(()=>{
             this.expand();
@@ -57,19 +62,29 @@ export class FileBrowserSectionComponent implements OnInit {
             (response) => {
                 this.files = [];
                 this.files.push(this.projectStructureFormaterService.toTreeView(response.body));
+                this.setTreeIcons(this.files[0]);
+                this.files[0].expanded = true;
             },
             (error) => {
                 console.log(error);
             }
         );
+        
+        this.extensions = filesExtensions;
+        this.projectService.getProjectLanguage(this.projectId).subscribe(
+            (response) => {
+                const lang = response.body.toString();
+                this.defaultExtension = defaultExtensions.find(x => x.language === lang).extension;
+            }
+        );
 
         this.items = [
-            { label: 'create file', icon: 'fa fa-file', command: (event) => this.createFile(this.selectedItem),  },
-            { label: 'create folder', icon: 'fa fa-folder', command: (event) => this.createFolder(this.selectedItem) },
-            { label: 'delete', icon: 'fa fa-remove', command: (event) => this.delete(this.selectedItem) },
-            { label: 'info', icon: 'fa fa-info', command: (event) => this.openInfoWindow(this.selectedItem)},
-            { label: 'rename', icon: 'fa fa-refresh', command: (event) => this.rename(this.selectedItem)},
-            { label: 'download', icon: 'pi pi-download', command: (event) => console.log(event), disabled : true, title : "Not suported yes!" }
+            { label: 'create file', icon: 'fa fa-file', command: () => this.createFile(this.selectedItem),  },
+            { label: 'create folder', icon: 'fa fa-folder', command: () => this.createFolder(this.selectedItem) },
+            { label: 'delete', icon: 'fa fa-remove', command: () => this.delete(this.selectedItem) },
+            { label: 'info', icon: 'fa fa-info', command: () => this.openInfoWindow(this.selectedItem)},
+            { label: 'rename', icon: 'fa fa-refresh', command: () => this.rename(this.selectedItem)},
+            { label: 'download', icon: 'pi pi-download', command: (event) => console.log(event) }//this.download(this.selectedItem), disabled : true }
         ];
     }
 
@@ -101,7 +116,6 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     private createFile(node: TreeNode) {
-        const authorId=this.tokenService.getUserId();
         var newFile : FileCreateDTO  = {
             name: `New File ${++this.fileCounter}`,
             content: "// Start code here:\n",
@@ -112,9 +126,10 @@ export class FileBrowserSectionComponent implements OnInit {
 
         this.fileService.addFile(newFile).subscribe(
             (response) =>{
-                let newFileNode = this.projectStructureFormaterService.makeFileNode(`New File ${this.fileCounter}`, response.body.id);
+                let newFileNode = this.projectStructureFormaterService.makeFileNode(`New File ${this.fileCounter}${this.defaultExtension}`, response.body.id);
                 newFileNode.type = TreeNodeType.file.toString();
                 newFileNode.parent = node;
+                newFileNode.icon = this.getExtensionImage(this.defaultExtension);
                 this.appendNewNode(node, newFileNode);
                 this.updateProjectStructure();
                 this.toast.success("File successfully created", "Success Message", { tapToDismiss: true })
@@ -178,9 +193,15 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     public focusout(node: TreeNode){
+        if (this.lastSelectedElement.disabled) {
+            return;
+        }
         node.selectable = true;
         this.lastSelectedElement.disabled = true;
         const newName = this.lastSelectedElement.value.trim();
+        if (node.label === newName) {
+            return;
+        }
         if (newName === '')
         {
             this.toast.error("Name couldn't be empty!", "Error Message", { tapToDismiss: true });
@@ -198,12 +219,46 @@ export class FileBrowserSectionComponent implements OnInit {
         this.updateProjectStructure();
     }
 
+    public setIcon(node: TreeNode) {
+        const label = this.lastSelectedElement.value.trim();
+        this.setLocalIcon(node, label);
+    }
+
+    private setTreeIcons(node: TreeNode) {
+        if (node.type === TreeNodeType.file.toString()) {
+            this.setLocalIcon(node, node.label);
+        } else if (node.type === TreeNodeType.folder.toString()) {
+            if(node.children !== undefined) {
+                node.children.forEach(node => this.setTreeIcons(node));
+            }
+        }
+    }
+
+    private setLocalIcon(node: TreeNode, label: string) {
+        const lastIndex = label.lastIndexOf('.');
+        if (lastIndex > 0) {
+            const exc = label.substring(lastIndex);
+            node.icon = this.getExtensionImage(exc);
+        } else {
+            this.getExtensionImage('default');
+        }
+    }
+
+    private getExtensionImage(exc: string) {
+        const extension = this.extensions.find(ex => ex.extension === exc);
+        if(extension !== undefined) {
+            return extension.extensionInfo.imageClass;
+        } else {
+            return this.extensions[0].extensionInfo.imageClass;
+        }
+    }
+
     private rename(node: TreeNode) {
         if (!node.parent)
         {
             this.toast.error("Couldn't rename root folder", "Error Message", { tapToDismiss: true });
             return;
-        }
+        }        
         this.lastSelectedElement.disabled = false;
         node.selectable = false;
         this.unselectNode();
@@ -224,7 +279,7 @@ export class FileBrowserSectionComponent implements OnInit {
         debugger;
         if (node.type === TreeNodeType.file.toString()){
             this.fileService.deleteFile(node.key).subscribe(
-                (response) => {
+                () => {
                 },
                 (error) => {
                     console.log(error);
