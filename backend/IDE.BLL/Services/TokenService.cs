@@ -1,5 +1,6 @@
 ﻿using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
+using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.Extensions.Logging;
@@ -86,6 +87,7 @@ namespace IDE.BLL.Services
 
         private void ThrowException()
         {
+            _logger.LogWarning(LoggingEvents.HaveException, $"invalid token exception");
             throw new InvalidTokenException("access");
         }
     }

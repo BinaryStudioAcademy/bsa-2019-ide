@@ -10,5 +10,7 @@ export interface LoggingEvents {
     getItemNotFound: number;
     updateItemNotFound: number;
     deleteItemNotFound: number;
+    operationFailed: number;
     haveException: number;
+    optionInfo: number;
 }

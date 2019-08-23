@@ -3,6 +3,7 @@ using IDE.BLL.Interfaces;
 using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Common;
 using IDE.Common.ModelsDTO.DTO.User;
+using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -65,6 +66,7 @@ namespace IDE.BLL.Services
             }
             else
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"NonAuthorRightsChange");
                 throw new NonAuthorRightsChange();
             }
         }
@@ -73,9 +75,15 @@ namespace IDE.BLL.Services
         {
             var project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == update.ProjectId);
             if (project.AuthorId != userId)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"NonAuthorRightsChange");
                 throw new NonAuthorRightsChange();
+            }
             if (project.AuthorId == update.UserId)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"RightsChangeForProjectAuthorException");
                 throw new RightsChangeForProjectAuthorException();
+            }
 
             var projectMember = await _context.ProjectMembers.FirstOrDefaultAsync(pm => pm.UserId == update.UserId && pm.ProjectId == update.ProjectId);
             if (projectMember == null)

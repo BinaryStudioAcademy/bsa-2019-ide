@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
 using IDE.Common.DTO.File;
+using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -38,6 +39,7 @@ namespace IDE.BLL.Services
             var file = await _fileRepository.GetByIdAsync(fileId);
             if (file == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"Not found file");
                 throw new NotFoundException(nameof(File), fileId);
             }
 
@@ -51,6 +53,7 @@ namespace IDE.BLL.Services
             var fileHistory = await _fileHistoryRepository.GetByIdAsync(id);            
             if (fileHistory == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"Not found file history");
                 throw new NotFoundException(nameof(FileHistory), id);
             }
 
@@ -70,6 +73,7 @@ namespace IDE.BLL.Services
             var fileHistory = await _fileHistoryRepository.GetByIdAsync(id);
             if (fileHistory == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"Not found deleting file");
                 throw new NotFoundException(nameof(FileHistory), id);
             }
 

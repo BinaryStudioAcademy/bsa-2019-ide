@@ -13,6 +13,7 @@ using System;
 using IDE.DAL.Interfaces;
 using IDE.Common.ModelsDTO.DTO.User;
 using Microsoft.Extensions.Logging;
+using IDE.Common.ModelsDTO.Enums;
 
 namespace IDE.API.Controllers
 {
@@ -46,6 +47,7 @@ namespace IDE.API.Controllers
         [HttpGet("{projectId}")]
         public async Task<ActionResult<ProjectDescriptionDTO>> GetProjectById(int projectId)
         {
+            _logger.LogInformation(LoggingEvents.GetItem, $"Get project id {projectId}");
             return Ok(await _projectService.GetProjectById(projectId));
         }
 
@@ -90,7 +92,7 @@ namespace IDE.API.Controllers
         {
             var author = this.GetUserIdFromToken();
             var projectId = await _projectService.CreateProject(project, author);
-
+            _logger.LogInformation(LoggingEvents.InsertItem, $"Created project {projectId}");
             var projectStructureDTO = new ProjectStructureDTO();
             projectStructureDTO.Id = projectId.ToString();
             projectStructureDTO.NestedFiles.Add(new FileStructureDTO()
@@ -109,6 +111,7 @@ namespace IDE.API.Controllers
         public async Task<ActionResult<ProjectInfoDTO>> UpdateProject([FromBody] ProjectUpdateDTO project)
         {
             var updatedProject = await _projectService.UpdateProject(project);
+            _logger.LogInformation(LoggingEvents.UpdateItem, $"Project updated {project.Id}");
             return Ok(updatedProject);
         }
 
@@ -117,6 +120,7 @@ namespace IDE.API.Controllers
         {
             int userId = this.GetUserIdFromToken();
             await _projectService.DeleteProjectAsync(id, userId);
+            _logger.LogInformation(LoggingEvents.DeleteItem, $"Project deleted {id}");
             return NoContent();
         }
 
@@ -136,6 +140,7 @@ namespace IDE.API.Controllers
 
             bool result = await _projectService.MakeProjectZipFile(id, path);
             if (!result) {
+                _logger.LogInformation(LoggingEvents.OperationFailed, $"Making project zip failed");
                 return BadRequest();
             }
             Uri uri;
@@ -145,7 +150,7 @@ namespace IDE.API.Controllers
             }
             catch (FileNotFoundException)
             {
-
+                _logger.LogWarning(LoggingEvents.GetItemNotFound, $"File on server not found");
                 return NotFound();
             }
 
@@ -163,6 +168,7 @@ namespace IDE.API.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogWarning(LoggingEvents.OperationFailed, $"Downloading project zip from blob storage failed");
                 return BadRequest(e);
             }
 

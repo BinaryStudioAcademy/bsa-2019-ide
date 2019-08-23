@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IDE.BLL.Services;
 using IDE.Common.DTO.User;
+using IDE.Common.ModelsDTO.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -32,7 +33,7 @@ namespace IDE.API.Controllers
         {
             var createdUser = await _userService.CreateUser(user);
             var token = await _authService.GenerateAccessToken(createdUser);
-
+            _logger.LogInformation(LoggingEvents.InsertItem, $"User created {createdUser.Id}");
             var result = new AuthUserDTO
             {
                 User = _mapper.Map<UserDTO>(createdUser),

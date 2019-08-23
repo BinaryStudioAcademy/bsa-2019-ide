@@ -13,7 +13,8 @@ namespace IDE.Common.ModelsDTO.Enums
         public const int GetItemNotFound = 4000;
         public const int UpdateItemNotFound = 4001;
         public const int DeleteItemNotFound = 4002;
+        public const int OperationFailed = 4003;
         public const int HaveException = 5000;
-        public const int CheckInfo = 6000;
+        public const int OptionInfo = 6000;
     }
 }

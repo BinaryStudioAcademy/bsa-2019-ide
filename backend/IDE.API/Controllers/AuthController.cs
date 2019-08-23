@@ -1,5 +1,6 @@
 ﻿using IDE.BLL.Services;
 using IDE.Common.DTO.User;
+using IDE.Common.ModelsDTO.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -23,6 +24,7 @@ namespace IDE.API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<AuthUserDTO>> Login([FromBody] UserLoginDTO dto)
         {
+            _logger.LogInformation(LoggingEvents.OptionInfo, $"Login");
             return Ok(await _authService.Authorize(dto));
         }
     }
