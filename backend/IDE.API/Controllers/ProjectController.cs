@@ -106,13 +106,6 @@ namespace IDE.API.Controllers
             return Created("/project", projectId);
         }
 
-        [HttpGet("language/{id}")]
-        public async Task<ActionResult> GetProjectLanguage(int id)
-        {
-            var project = await _projectService.GetProjectById(id);
-            return Ok(project.Language);
-        }
-
         [HttpPut]
         public async Task<ActionResult<ProjectInfoDTO>> UpdateProject([FromBody] ProjectUpdateDTO project)
         {

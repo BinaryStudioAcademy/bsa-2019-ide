@@ -8,7 +8,7 @@
                 <input class="input-item" [value]="node.label" (focusout)="focusout(node)" disabled>
         </ng-template>
         <ng-template let-node  pTemplate="1">
-                <input class="input-item" type="text" [ngModel]="node.label" (focusout)="focusout(node)" (input)="setIcon(node)" (keyup.enter)="focusout(node)" disabled>
+            <input class="input-item" type="text" [ngModel]="node.label" (focusout)="focusout(node)" (input)="setIcon(node)" (keyup.enter)="focusout(node)" disabled>
         </ng-template>
     </p-tree>
     <p-contextMenu #cm [model]="items"></p-contextMenu>

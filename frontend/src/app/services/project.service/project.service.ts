@@ -73,8 +73,4 @@ export class ProjectService {
     public exportProject(projectId: number): Observable<HttpResponse<Blob>>{
         return this.httpClient.getBlobRequest(`${this.address}/Download/${projectId}`);
     }
-
-    public getProjectLanguage(projectId: number): Observable<HttpResponse<Language>> {
-        return this.httpClient.getRequest(this.address + `/language/${projectId}`);
-    }
 }

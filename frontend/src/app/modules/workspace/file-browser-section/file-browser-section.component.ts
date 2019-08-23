@@ -16,6 +16,7 @@ import { ProjectService } from 'src/app/services/project.service/project.service
 import filesExtensions from '../../../assets/file-extensions.json';
 import defaultExtensions from '../../../assets/newFilesDefaultExtensions.json';
 import { FileUpdateDTO } from 'src/app/models/DTO/File/fileUpdateDTO';
+import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -23,7 +24,7 @@ import { FileUpdateDTO } from 'src/app/models/DTO/File/fileUpdateDTO';
     styleUrls: ['./file-browser-section.component.sass']
 })
 export class FileBrowserSectionComponent implements OnInit {
-
+    @Input() project: ProjectInfoDTO;
     @Input() showSearchField:boolean;
     @Output() fileSelected = new EventEmitter<string>();
     items: MenuItem[];
@@ -45,7 +46,6 @@ export class FileBrowserSectionComponent implements OnInit {
                 private toast: ToastrService,
                 private hotkeys: HotkeyService,
                 private fileBrowserService: FileBrowserService,
-                private tokenService: TokenService,
                 private projectService: ProjectService) {
         this.hotkeys.addShortcut({keys: 'shift.e'})
         .subscribe(()=>{
@@ -69,14 +69,8 @@ export class FileBrowserSectionComponent implements OnInit {
                 console.log(error);
             }
         );
-        
+
         this.extensions = filesExtensions;
-        this.projectService.getProjectLanguage(this.projectId).subscribe(
-            (response) => {
-                const lang = response.body.toString();
-                this.defaultExtension = defaultExtensions.find(x => x.language === lang).extension;
-            }
-        );
 
         this.items = [
             { label: 'create file', icon: 'fa fa-file', command: () => this.createFile(this.selectedItem),  },
@@ -116,6 +110,10 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     private createFile(node: TreeNode) {
+        if (this.defaultExtension === undefined) {
+            const lang = this.project.language.toString();
+            this.defaultExtension = defaultExtensions.find(x => x.language === lang).extension;
+        }
         var newFile : FileCreateDTO  = {
             name: `New File ${++this.fileCounter}`,
             content: "// Start code here:\n",
@@ -125,7 +123,7 @@ export class FileBrowserSectionComponent implements OnInit {
         newFile.folder = this.getFolderName(node);
 
         this.fileService.addFile(newFile).subscribe(
-            (response) =>{
+            (response) => {
                 let newFileNode = this.projectStructureFormaterService.makeFileNode(`New File ${this.fileCounter}${this.defaultExtension}`, response.body.id);
                 newFileNode.type = TreeNodeType.file.toString();
                 newFileNode.parent = node;
@@ -140,7 +138,6 @@ export class FileBrowserSectionComponent implements OnInit {
             }
         );
     }
-
 
     private getFileStructure(files : TreeNode[]) : FileStructureDTO[] {
         let fileStructure : FileStructureDTO[] = [];
@@ -276,7 +273,6 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     private deleteFiles(node : TreeNode){
-        debugger;
         if (node.type === TreeNodeType.file.toString()){
             this.fileService.deleteFile(node.key).subscribe(
                 () => {
