@@ -8,6 +8,8 @@ using IDE.Common.DTO.User;
 using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Authentification;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http;
 
 namespace IDE.API.Controllers
 {
@@ -17,10 +19,12 @@ namespace IDE.API.Controllers
     {
         private readonly ISocialAuthService _socialAuthService;
         private SocialProvider _socialProvider;
+        private Uri _authUri;
 
-        public SocialAuthController(ISocialAuthService socialAuthService)
+        public SocialAuthController(ISocialAuthService socialAuthService, IConfiguration configuration)
         {
             _socialAuthService = socialAuthService;
+            _authUri = new Uri(configuration["Auth0:Domain"]);
         }
 
 
@@ -43,8 +47,7 @@ namespace IDE.API.Controllers
         {
             if (token.access_token == null)
                 return BadRequest();
-
-            var apiClient = new AuthenticationApiClient(new Uri("https://bsa-ide.eu.auth0.com"));
+            var apiClient = new AuthenticationApiClient(_authUri);
             var userInfo = await apiClient.GetUserInfoAsync(token.access_token);
 
             var socialAuthUserDetailsDTO = new SocialAuthUserDetailsDTO
@@ -66,7 +69,7 @@ namespace IDE.API.Controllers
 
         private IActionResult SocialAuth(SocialProvider socialProvider)
         {
-            var client = new AuthenticationApiClient(new Uri("https://bsa-ide.eu.auth0.com"));
+            var client = new AuthenticationApiClient(_authUri);
             var socialProviderString = string.Empty;
             switch (socialProvider)
             {
@@ -83,10 +86,10 @@ namespace IDE.API.Controllers
             var authorizationUrl = client.BuildAuthorizationUrl()
                 .WithResponseType(AuthorizationResponseType.Token)
                 .WithResponseMode(AuthorizationResponseMode.FormPost)
-                .WithClient("oDlrdb7kNboqqGbWPMzZvlxgHQul87Nh")
+                .WithClient("Dhw2JmB6zMwZtI6FWsrqktAt4UlvQWle") // move to envirenment
                 .WithConnection(socialProviderString)
-                .WithRedirectUrl("https://localhost:44352/SocialAuth/callback")
-                .WithScope("openid profile email offline_access")
+                .WithRedirectUrl($"{Request.Scheme}://{Request.Host}/SocialAuth/callback")
+                .WithScope("openid profile email")
                 .Build();
 
             return Redirect(authorizationUrl.ToString());
