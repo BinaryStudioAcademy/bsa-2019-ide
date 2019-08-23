@@ -20,7 +20,6 @@ export class AddCollaboratorsListComponent implements OnInit {
 
     @Input() collaborators: CollaboratorDTO[];
     @Input() area: string;
-    @Output() onChanged = new EventEmitter<CollaboratorDTO[]>();
 
     constructor(
         private addCollaboratorsComponent: AddCollaboratorsComponent,

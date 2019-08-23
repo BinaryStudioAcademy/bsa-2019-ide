@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { UserNicknameDTO } from '../../../../models/DTO/User/userNicknameDTO';
 import { UserService } from 'src/app/services/user.service/user.service';
 import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 import { ProjectService } from 'src/app/services/project.service/project.service';
-import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
 import { ToastrService } from 'ngx-toastr';
 import { HttpResponse } from '@angular/common/http';
 import { RightsService } from 'src/app/services/rights.service/rights.service'
@@ -11,36 +10,38 @@ import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DeleteCollaboratorRightDTO } from 'src/app/models/DTO/Common/deleteCollaboratorRightDTO';
 import { BlockUIModule } from 'primeng/primeng';
+import { element } from 'protractor';
 
 @Component({
     selector: 'app-add-collaborators',
     templateUrl: './add-collaborators.component.html',
     styleUrls: ['./add-collaborators.component.sass']
 })
+
 export class AddCollaboratorsComponent implements OnInit {
+
+    @Input() projectId: number
 
     public collaborator: UserNicknameDTO;
     public filterCollaborators: UserNicknameDTO[];
     public newCollaborators: CollaboratorDTO[] = [];
     public isCollaboratorsSaved: boolean = true;
-    public projectId: number;
     public deleteCollaborators: CollaboratorDTO[] = [];
     public area: string
+    public isCollaboratorChange = false;
 
     private startCollaborators = [] as CollaboratorDTO[];
+
 
     constructor(private route: ActivatedRoute,
         private userService: UserService,
         private projectService: ProjectService,
-        public config: DynamicDialogConfig,
-        public ref: DynamicDialogRef,
         private router: Router,
         private rightService: RightsService,
         private toastService: ToastrService) { }
 
     public ngOnInit(): void {
-        this.area="workspace";
-        this.projectId = this.config.data.id;
+        this.area = "workspace";
         this.projectService.getProjectCollaborators(this.projectId)
             .subscribe(
                 (resp) => {
@@ -75,7 +76,7 @@ export class AddCollaboratorsComponent implements OnInit {
                 this.rightService.deleteCollaborator(deleteItem)
                     .subscribe(
                         (resp) => {
-                            this.ref.close();
+                            //this.ref.close();
                         },
                         (error) => {
                             this.toastService.error('Can\'t delete collacortors access', 'Error Message');
@@ -93,8 +94,18 @@ export class AddCollaboratorsComponent implements OnInit {
             this.rightService.setUsersRigths(update)
                 .subscribe(
                     (resp) => {
+                        this.deleteCollaborators = [];
+                        this.startCollaborators = [];
+                        this.newCollaborators.forEach(element => {
+                            var colaborator: CollaboratorDTO = {
+                                id: element.access,
+                                nickName: element.nickName,
+                                access: element.access
+                            }
+                            this.startCollaborators.push(colaborator);
+                        })
                         this.isCollaboratorsSaved = true;
-                        this.ref.close();
+                        this.isCollaboratorChange = true;
                         this.toastService.success('New collacortors access have successfully saved!');
                     },
                     (error) => {
@@ -113,6 +124,7 @@ export class AddCollaboratorsComponent implements OnInit {
         if (this.deleteCollaborators.length != 0) {
             return false;
         }
+
         if (this.newCollaborators.length != this.startCollaborators.length) {
             return false;
         }
@@ -135,10 +147,6 @@ export class AddCollaboratorsComponent implements OnInit {
         }
         this.newCollaborators.push(newCollaborators);
         this.collaborator = null;
-    }
-
-    public close(): void {
-        this.ref.close();
     }
 
     public filterCollarator(event): void {

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { ToastrService } from 'ngx-toastr';
@@ -23,9 +23,6 @@ import { ProjDialogDataService } from 'src/app/services/proj-dialog-data.service
   styleUrls: ['./project-window.component.sass']
 })
 export class ProjectWindowComponent implements OnInit {
-    @ViewChild("uploadElement", {static: false})
-    uploadElement: ElementRef | any;
-    
     public title: string;
     public languages: any;
     public projectTypes: any;
@@ -34,7 +31,6 @@ export class ProjectWindowComponent implements OnInit {
     public access: any;
     public projectForm: FormGroup;
     public area: string;
-    public isFileSelected: boolean = false; 
 
     public isPageLoaded: boolean = false;
     public hasDetailsSaveResponse: boolean = true;
@@ -141,14 +137,7 @@ export class ProjectWindowComponent implements OnInit {
                 );
         }
     }
-    public resetSelection(){
-        this.uploadElement.clear();
-        this.isFileSelected = false;
-    }
-    public selectHandler(){
-        this.isFileSelected = true;
-    }
-    
+
     public projectItemIsNotChange(): boolean {
         return this.IsProjectNotChange()
             && this.IsCollaboratorChange();
@@ -191,17 +180,7 @@ export class ProjectWindowComponent implements OnInit {
     public onSubmit() {
         if(this.isCreateForm()) {
             this.getValuesForProjectCreate();
-            const formData = new FormData();
-
-            for (let [key, value] of Object.entries(this.projectCreate)) {
-                formData.append(key, value.toString());                
-            }
-
-            if (this.isFileSelected){
-                formData.append(this.uploadElement.files[0].name, this.uploadElement.files[0]);                
-            }
-
-            this.projectService.addProject(formData)
+            this.projectService.addProject(this.projectCreate)
                 .subscribe(res => {
                         this.toastrService.success("Project created");
                         let projectId = res.body;

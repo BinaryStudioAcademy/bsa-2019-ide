@@ -59,34 +59,19 @@
         </p>
     </div>
 </div>
-<div *ngIf="collaborators && collaborators.length > 0" class="project-description">
-    <div class="card">
-        <!-- <app-add-collaborators-list></app-add-collaborators-list> -->
-        <h2>Collaborators:</h2>
-        <div *ngFor="let collaborator of collaborators" class="collaborators">
-            <p>
-                <span>{{collaborator.nickName}}</span>
-            </p>
-            <p>
-                <span appUserAccess [userAccess]="collaborator.access"></span>
-            </p>
-        </div>
-    </div>
+<div *ngFor="let credential of project?.gitCredentials" class="project-description">
+    <p-card header="Credentials">
+        <p>
+            <span class="highlighted">Provider: </span>
+            <span>{{project?.provider}}</span>
+        </p>
+        <p>
+            <span class="highlighted">Url: </span>
+            <span>{{project?.credential?.url}}</span>
+        </p>
+    </p-card>
 </div>
-<!--
-    <div *ngFor="let credential of project?.gitCredentials" class="project-description">
-        <p-card header="Credentials">
-             <p>
-                <span class="highlighted">Provider: </span>
-                <span>{{project?.provider}}</span>
-            </p>
-             <p>
-                <span class="highlighted">Url: </span>
-                <span>{{project?.credential?.url}}</span>
-            </p>
-        </p-card>
-    </div>
-    -->
+-->
 <div class="proj-info-button-wrapper p-grid">
     <div *ngIf="IsAuthor()" class="p-col-9 p-col-align-start">
         <div>

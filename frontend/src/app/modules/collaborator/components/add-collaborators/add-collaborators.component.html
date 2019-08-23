@@ -1,5 +1,13 @@
-<p-autoComplete class="collaborator-auto-complete" [(ngModel)]="collaborator" [suggestions]="filterCollaborators"
-    (completeMethod)="filterCollarator($event)" field="nickName" [size]="30" placeholder="User nickname..."
-    [minLength]="1" (onSelect)="addCollaborator(collaborator)"></p-autoComplete>
+<h2>Search and add new collaborators:</h2>
+<div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+        <p-autoComplete class="collaborator-auto-complete" [(ngModel)]="collaborator"
+            [suggestions]="filterCollaborators" (completeMethod)="filterCollarator($event)" field="nickName" [size]="30"
+            placeholder="User nickname..." [minLength]="1" (onSelect)="addCollaborator(collaborator)"></p-autoComplete>
+    </div>
+</div>
 
 <app-add-collaborators-list [collaborators]="newCollaborators" [area]="area"></app-add-collaborators-list>
+
+<button *ngIf="isCollaboratorsSaved" type="submit" icon="pi pi-save" pButton class="save-btn" [disabled]="IsNotCollaboratorsChange()"
+    label="Save" (click)="save()"></button>
