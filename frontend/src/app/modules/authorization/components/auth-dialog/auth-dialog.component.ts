@@ -102,6 +102,25 @@ export class AuthDialogComponent implements OnInit {
                 
     }
 
+    public signInViaGoogle() {
+        this.tokenService
+            .loginViaGoogle()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(
+                (result) => {
+                    this.isSpinner = false; 
+                    this.ref.close(); 
+                    this.toast.success('You have successfully signed in!', `Wellcome, ${result.firstName} ${result.lastName}!`);
+                    this.router.navigate(['dashboard']);
+                },
+                (error) => {
+                    this.isSpinner = false;
+                    const message = !!error.message ? error.message : error.statusText;
+                    this.toast.error(message, 'Error Message');
+                }
+            );   
+    }
+
     public recoverPassword() {
         if(!this.isRecoverPassword) {
             this.isRecoverPassword = true;

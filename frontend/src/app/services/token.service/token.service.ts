@@ -37,6 +37,10 @@ export class TokenService {
         return this._handleAuthResponse(this.httpService.postRequest<AuthUserDTO>(`auth/login`, user));
     }
 
+    public loginViaGoogle() {
+        return this._handleAuthResponse(this.httpService.getRequest<AuthUserDTO>(`socialAuth/google`));
+    }
+
     IsAuthorized(): Observable<boolean> {
         return this.isAuthenticatedEvent$;
     }

@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Auth0.AuthenticationApi;
 using Auth0.AuthenticationApi.Models;
 using IDE.BLL.ExceptionsCustom;
+using IDE.BLL.Interfaces;
+using IDE.Common.DTO.User;
 using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Authentification;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +15,27 @@ namespace IDE.API.Controllers
     [ApiController]
     public class SocialAuthController : ControllerBase
     {
+        private readonly ISocialAuthService _socialAuthService;
+        private SocialProvider _socialProvider;
+
+        public SocialAuthController(ISocialAuthService socialAuthService)
+        {
+            _socialAuthService = socialAuthService;
+        }
+
+
         [HttpGet("google")]
         public IActionResult GoogleAuth()
         {
-            return SocialAuth(SocialProvider.Google);
+            _socialProvider = SocialProvider.Google;
+            return SocialAuth(_socialProvider);
         }
 
         [HttpGet("gitHub")]
         public IActionResult GitHubAuth()
         {
-            return SocialAuth(SocialProvider.GitHub);
+            _socialProvider = SocialProvider.GitHub;
+            return SocialAuth(_socialProvider);
         }
 
         [HttpPost("callback")]
@@ -34,7 +47,21 @@ namespace IDE.API.Controllers
             var apiClient = new AuthenticationApiClient(new Uri("https://bsa-ide.eu.auth0.com"));
             var userInfo = await apiClient.GetUserInfoAsync(token.access_token);
 
-            return Ok(userInfo);
+            var socialAuthUserDetailsDTO = new SocialAuthUserDetailsDTO
+            {
+                AccountId = userInfo.UserId,
+                Provider = _socialProvider,
+                FirstName = userInfo.FirstName,
+                LastName = userInfo.LastName,
+                FullName = userInfo.FullName,
+                NickName = userInfo.NickName,
+                Picture = userInfo.Picture,
+                Email = userInfo.Email
+            };
+
+            var authUserDto =  await _socialAuthService.LogInAsync(socialAuthUserDetailsDTO);
+
+            return Ok(authUserDto);
         }
 
         private IActionResult SocialAuth(SocialProvider socialProvider)

@@ -27,6 +27,7 @@ namespace IDE.BLL
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IProjectStructureService, ProjectStructureService>();
             services.AddScoped<IRightsService, RightsService>();
+            services.AddScoped<ISocialAuthService, SocialAuthService>();
 
             services.AddScoped<IQueueService, QueueService>();
 
