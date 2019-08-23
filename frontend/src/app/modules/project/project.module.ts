@@ -23,6 +23,7 @@ import { FormsModule } from '@angular/forms';
 import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
 import { CollaboratorModule } from '../collaborator/collaborator.module';
 import { AddCollaboratorsComponent } from '../collaborator/components/add-collaborators/add-collaborators.component';
+import {FileUploadModule} from 'primeng/fileupload';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { AddCollaboratorsComponent } from '../collaborator/components/add-collab
     TabViewModule,
     SharedModule,
     DynamicDialogModule,
-    CollaboratorModule
+    CollaboratorModule,
+    FileUploadModule
   ],
   entryComponents: [
     ProjectWindowComponent
