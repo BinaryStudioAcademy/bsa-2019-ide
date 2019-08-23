@@ -76,6 +76,10 @@ namespace IDE.DAL.Context
                 .WithMany(u => u.Builds)
                 .HasForeignKey(pm => pm.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<SocialAuthAccount>()
+                .Property(sa => sa.AccountId)
+                .IsRequired();
         }
 
         public static void Seed(this IdeContext context, IFileStorageNoSqlDbSettings settings)

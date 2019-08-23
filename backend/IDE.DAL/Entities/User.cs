@@ -21,7 +21,7 @@ namespace IDE.DAL.Entities
         public string PasswordHash { get; set; }
         public string PasswordSalt { get; set; }
         public string GitHubUrl { get; set; }
-        public DateTime Birthday { get; set; }
+        public DateTime? Birthday { get; set; }
         public DateTime RegisteredAt { get; set; }
         public DateTime LastActive { get; set; }
         public bool EmailConfirmed { get; set; }
