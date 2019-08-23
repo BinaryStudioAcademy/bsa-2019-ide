@@ -9,15 +9,20 @@
             </p-splitButton>
             <button class="bell-wrapper ui-button-secondary" pButton icon="pi pi-bell" (click)="op1.toggle($event)"
                 (click)="showNotificationPanel()">
-                <div *ngIf="data.length!=0" class="count-of-notification">{{data.length}}</div>
+                <div *ngIf="data.length!=0 || notReadNotification.length!=0" class="count-of-notification">{{data.length+notReadNotification.length}}</div>
             </button>
             <p-overlayPanel #op1 class="notification">
+                    <div *ngIf="notReadNotification.length!=0">
+                            <div class="notification-item" *ngFor="let item of notReadNotification">
+                                {{item.message}}
+                            </div>
+                        </div>
                 <div *ngIf="data.length!=0">
                     <div class="notification-item" *ngFor="let item of data">
                         {{item.message}}
                     </div>
                 </div>
-                <div *ngIf="data.length==0">
+                <div *ngIf="data.length==0 && notReadNotification.length==0">
                         There is no notification for you
                 </div>
             </p-overlayPanel>

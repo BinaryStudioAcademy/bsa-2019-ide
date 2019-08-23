@@ -12,6 +12,7 @@ import { SignalRService } from '../services/signalr.service/signal-r.service';
 import { HttpClientWrapperService } from '../services/http-client-wrapper.service';
 import { NotificationDTO } from '../models/DTO/Common/notificationDTO';
 import { element } from 'protractor';
+import { NotificationService } from '../services/notification.service/notification.service';
 
 @Component({
     selector: 'app-nav-menu',
@@ -29,6 +30,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public items: MenuItem[];
     public showNotification = false;
     public data: NotificationDTO[];
+    public notReadNotification: NotificationDTO[]=[];
     private unsubscribe$ = new Subject<void>();
 
     constructor(
@@ -37,13 +39,20 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         private tokenService: TokenService,
         private projectService: ProjectService,
         private signalRService: SignalRService,
-        private http: HttpClientWrapperService
+        private http: HttpClientWrapperService,
+        private notificationService: NotificationService
     ) { }
 
     ngOnInit() {
         this.getUser();
         const userId = this.tokenService.getUserId();
         this.signalRService.startConnection(this.isAuthorized,userId);
+        this.notificationService.getUserNotifications(userId)
+        .subscribe(
+            (resp)=>{
+                this.notReadNotification = resp.body;
+            }
+        );
         this.data = this.signalRService.addTransferChartDataListener();
        
         this.authUserItems = [
@@ -85,10 +94,18 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
     public showNotificationPanel() {
         this.showNotification = !this.showNotification;
+        const dataForDelete =this.data;
         if (!this.showNotification) {
-            this.signalRService.creanData();     
+            this.signalRService.crearData();     
             this.signalRService.deleteTransferChartDataListener();
             this.data=this.signalRService.addTransferChartDataListener();
+            dataForDelete.forEach(element => {
+                this.signalRService.markNotificationIsRead(element.id);
+            });
+            this.notReadNotification.forEach(element=>{
+                this.signalRService.markNotificationIsRead(element.id);
+            })
+            this.notReadNotification=[];
         }
     }
 

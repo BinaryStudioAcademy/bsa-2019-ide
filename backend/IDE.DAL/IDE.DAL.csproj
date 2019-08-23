@@ -10,6 +10,8 @@
     <Compile Remove="Migrations\20190813174307_favorite-prokects.Designer.cs" />
     <Compile Remove="Migrations\20190813180153_update.cs" />
     <Compile Remove="Migrations\20190813180153_update.Designer.cs" />
+    <Compile Remove="Migrations\20190823070802_notification.cs" />
+    <Compile Remove="Migrations\20190823070802_notification.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

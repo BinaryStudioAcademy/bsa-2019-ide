@@ -1,4 +1,5 @@
-﻿using IDE.DAL.Context;
+﻿using IDE.BLL.Interfaces;
+using IDE.DAL.Context;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,10 +13,13 @@ namespace IDE.BLL.HubConfig
     public class NotificationHub : Hub
     {
         public readonly IdeContext _context;
+        public readonly INotificationService _notificationService;
 
-        public NotificationHub(IdeContext context)
+        public NotificationHub(IdeContext context,
+            INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
         public async Task JoinGroup(int userId)
         {
@@ -34,7 +38,11 @@ namespace IDE.BLL.HubConfig
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, item.Id.ToString());
             }
+        }
 
+        public async Task MarkRead(int notificationId)
+        {
+            await this._notificationService.MarkRead(notificationId);
         }
 
 

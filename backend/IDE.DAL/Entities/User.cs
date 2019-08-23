@@ -33,5 +33,6 @@ namespace IDE.DAL.Entities
         public IList<Build> Builds { get; set; }
         public IList<ProjectMember> ProjectMembers { get; set; }
         public IList<FavouriteProjects> FavouriteProjects { get; set; }
+        public IList<Notification> Notifications { get; set; }
     }
 }

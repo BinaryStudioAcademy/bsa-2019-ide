@@ -37,7 +37,7 @@ export class SignalRService {
         return this.notifications;
     }
 
-    public creanData()
+    public crearData()
     {
         this.notifications=[];
     }
@@ -50,9 +50,14 @@ export class SignalRService {
     public addTransferChartDataListener(): NotificationDTO[] {
         this.hubConnection.on('transferchartdata', (data) => {
             this.notifications.push(data);
-            console.log(this.notifications);
         });
         return this.notifications;
+    }
+
+    public markNotificationIsRead(notificationId: number): void
+    {
+        this.hubConnection.invoke("MarkRead", notificationId)
+            .catch((error) => console.log(error));
     }
 
     public deleteTransferChartDataListener()

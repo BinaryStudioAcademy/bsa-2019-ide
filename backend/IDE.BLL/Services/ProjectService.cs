@@ -159,8 +159,7 @@ namespace IDE.BLL.Services
 
             NotificationDTO notification = new NotificationDTO
             {
-                Message = "get project",
-                UserId=1
+                Message = "get project"
             };
 
             await _notificationService.SendNotification(projectId, notification);
