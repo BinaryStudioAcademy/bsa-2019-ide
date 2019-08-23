@@ -2,18 +2,20 @@
 using IDE.BLL.Interfaces;
 using IDE.BLL.Services;
 using IDE.Common.DTO.Project;
-using IDE.Common.ModelsDTO.DTO.Workspace;
+using IDE.Common.ModelsDTO.DTO.Project;
+
+using IDE.DAL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using IDE.Common.ModelsDTO.DTO.Project;
 using System.IO;
 using System;
 using IDE.DAL.Interfaces;
 using IDE.Common.ModelsDTO.DTO.User;
 using Microsoft.Extensions.Logging;
 using IDE.Common.ModelsDTO.Enums;
+using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
 {
@@ -26,21 +28,29 @@ namespace IDE.API.Controllers
         private readonly IProjectService _projectService;
         private readonly IProjectMemberSettingsService _projectMemberSettings;
         private readonly IProjectStructureService _projectStructureService;
+        private readonly IProjectTemplateService projectTemplateService;
         private readonly FileService _fileService;
         private readonly IBlobRepository _blobRepo;
+        private readonly IProjectTemplateService _projectTemplateService;
+        private readonly INotificationService _notificationService;
         private readonly ILogger<ProjectController> _logger;
 
         public ProjectController(IProjectService projectService,
                                 IProjectMemberSettingsService projectMemberSettings,
                                 IProjectStructureService projectStructureService,
+                                IProjectTemplateService projectTemplateService,
                                 FileService fileService,
-                                IBlobRepository blobRepo, ILogger<ProjectController> logger)
+                                IBlobRepository blobRepo,
+                                INotificationService notificationService,
+                                ILogger<ProjectController> logger)
         {
             _projectStructureService = projectStructureService;
             _projectService = projectService;
             _projectMemberSettings = projectMemberSettings;
             _fileService = fileService;
             _blobRepo = blobRepo;
+            _projectTemplateService = projectTemplateService;
+            _notificationService = notificationService;
             _logger = logger;
         }
 
@@ -88,21 +98,23 @@ namespace IDE.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateProject(ProjectCreateDTO project)
+        public async Task<ActionResult> CreateProject([FromForm] ProjectCreateDTO project)
         {
             var author = this.GetUserIdFromToken();
             var projectId = await _projectService.CreateProject(project, author);
             _logger.LogInformation(LoggingEvents.InsertItem, $"Created project {projectId}");
-            var projectStructureDTO = new ProjectStructureDTO();
-            projectStructureDTO.Id = projectId.ToString();
-            projectStructureDTO.NestedFiles.Add(new FileStructureDTO()
-            {
-                Type = 0,
-                Details = $"Super important details of file {project.Name}",
-                Name = project.Name
-            });
 
-            await _projectStructureService.CreateAsync(projectStructureDTO);
+            if (Request.Form.Files.Count > 0)
+            {
+                var projectStructure  = await _projectStructureService.CreateEmptyAsync(projectId, project.Name);
+                var zipFile = Request.Form.Files[0];
+                await _projectStructureService.UnzipProject(projectStructure, zipFile, author, projectId);
+            }
+            else
+            {
+                var projectStructureDTO = await _projectTemplateService.GenerateProjectTemplate(project.Name, projectId, author, project.Language);
+                await _projectStructureService.CreateAsync(projectStructureDTO);
+            }
 
             return Created("/project", projectId);
         }
@@ -138,7 +150,7 @@ namespace IDE.API.Controllers
 
             var path = Path.Combine(tempDir, Guid.NewGuid().ToString());
 
-            bool result = await _projectService.MakeProjectZipFile(id, path);
+            bool result = await _projectService.CreateProjectZipFile(id, path);
             if (!result) {
                 _logger.LogInformation(LoggingEvents.OperationFailed, $"Making project zip failed");
                 return BadRequest();

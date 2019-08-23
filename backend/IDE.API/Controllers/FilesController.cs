@@ -16,10 +16,13 @@ namespace IDE.API.Controllers
     public class FilesController : ControllerBase
     {
         private readonly FileService _fileService;
+        private readonly ProjectStructureService _projectStructureService;
         private readonly ILogger<FilesController> _logger;
-        public FilesController(FileService fileService, ILogger<FilesController> logger)
+        public FilesController(FileService fileService,
+            ProjectStructureService projectStructureService, ILogger<FilesController> logger)
         {
             _fileService = fileService;
+            _projectStructureService=projectStructureService;
             _logger = logger;
         }
 

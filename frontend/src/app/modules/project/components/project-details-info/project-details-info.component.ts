@@ -48,7 +48,8 @@ export class ProjectDetailsInfoComponent implements OnInit {
 
     public onTriggerExport() {
         this.projectService.exportProject(this.project.id)
-            .subscribe(result => {
+            .subscribe(
+            (result) => {
                 const keys = result.headers.keys();
 
                 const contentDespoHeader = !!keys.find(x => x == "content-disposition")
@@ -67,7 +68,10 @@ export class ProjectDetailsInfoComponent implements OnInit {
                 link.download = fileName;
                 link.click();
             },
-                error => { this.toastService.error("Error: can not download", 'Error'); console.log(error) });
+            (error) => {
+                    this.toastService.error("Error: can not download", 'Error');
+                    console.log(error);
+            });
 
 
     }

@@ -8,19 +8,22 @@ namespace BuildServer
     {
         private readonly IBuilder _builder;
         private readonly IFileArchiver _fileArchiver;
+        private readonly IAzureService _azureService;
 
-        public Worker(IBuilder builder, IFileArchiver fileArchiver)
+        public Worker(
+            IBuilder builder,
+            IFileArchiver fileArchiver,
+            IAzureService azureService)
         {
             _builder = builder;
             _fileArchiver = fileArchiver;
+            _azureService = azureService;
         }
 
         public void Work(string projectName)
         {
-            //Delete from build and output file with name projectName. After BlobStorage integration,
-            //these files will be deteled at the end of the Work(after uploading to the blobstorge)
-            _fileArchiver.DeleteFile(projectName);
-            _fileArchiver.DeleteDirectory(projectName);
+            Console.WriteLine("Downloading...");
+            _azureService.Download(projectName);
 
             _fileArchiver.UnZip(projectName);
 
@@ -33,6 +36,12 @@ namespace BuildServer
             FileHelper.WriteToFile($"..\\..\\..\\..\\Build\\{projectName}\\Output.txt", executeResult);
 
             _fileArchiver.CreateArchive(projectName);
+
+            _azureService.Upload(projectName);
+            Console.WriteLine("uploading...");
+            
+            _fileArchiver.RemoveTemporaryFiles(projectName);
+
 
             Console.WriteLine(buildResult);
             Console.WriteLine("program output:");
