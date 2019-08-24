@@ -3,24 +3,20 @@ using IDE.BLL.Interfaces;
 using IDE.BLL.Services;
 using IDE.Common.DTO.Project;
 using IDE.Common.ModelsDTO.DTO.Project;
-
+using IDE.Common.ModelsDTO.DTO.User;
+using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System;
-using IDE.DAL.Interfaces;
-using IDE.Common.ModelsDTO.DTO.User;
-using Microsoft.Extensions.Logging;
-using IDE.Common.ModelsDTO.Enums;
 using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
-    //[AllowAnonymous]
     [Authorize]
     [ApiController]
     public class ProjectController : ControllerBase
