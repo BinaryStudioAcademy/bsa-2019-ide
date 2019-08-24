@@ -35,6 +35,12 @@ namespace IDE.API.Controllers
             return Ok(await _userService.GetUserDetailsById(this.GetUserIdFromToken()));
         }
 
+        [HttpGet("information/{id}")]
+        public async Task<ActionResult<UserDetailsDTO>> GetUserDetails(int id)
+        {
+            return Ok(await _userService.GetUserInformationById(id));
+        }
+
         [HttpGet("{id}")]
         [AllowAnonymous]
         public async Task<ActionResult<UserDTO>> GetById(int id)
@@ -61,6 +67,14 @@ namespace IDE.API.Controllers
             var author = this.GetUserIdFromToken();
 
             await _userService.UpdateUserAvatar(imageUploadBase64DTO, author);
+        }
+
+        [HttpPut("password")]
+        public async Task UpdatePassword([FromBody]UserChangePasswordDTO userChangePasswordDTO)
+        {
+            var userId = this.GetUserIdFromToken();
+
+            await _userService.ChangePassword(userChangePasswordDTO, userId);
         }
 
         [HttpDelete("photo/del")]

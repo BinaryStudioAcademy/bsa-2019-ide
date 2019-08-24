@@ -9,6 +9,7 @@ import { VerificationTokenDTO } from 'src/app/models/DTO/Common/verificationToke
 import { EmailDTO } from 'src/app/models/DTO/Common/emailDTO';
 import { UserUpdateDTO } from 'src/app/models/DTO/User/userUpdateDTO';
 import { ImageUploadBase64DTO } from 'src/app/models/DTO/Image/imageUploadBase64DTO';
+import { UserChangePasswordDTO } from 'src/app/models/DTO/User/userChangePasswordDTO';
 
 @Injectable({
     providedIn: 'root'
@@ -35,6 +36,10 @@ export class UserService {
         return this.httpService.getRequest<UserDTO>(`${this.routePrefix}`, { id });
     }
 
+    public getUserInformationById(id: number) {
+        return this.httpService.getRequest<UserDetailsDTO>(`${this.routePrefix}/information/${id}`);
+    }
+
     public updateUser(user: UserUpdateDTO) {
         return this.httpService.putRequest<UserDTO>(`${this.routePrefix}`, user);
     }
@@ -53,6 +58,10 @@ export class UserService {
 
     public deleteProfilePhoto(){
         return this.httpService.deleteRequest(`${this.routePrefix}/photo/del`);
+    }
+
+    public updatePassword(pass:UserChangePasswordDTO){
+        return this.httpService.putRequest(`${this.routePrefix}/password`, pass);
     }
 
     public copyUser({ email, firstName, lastName, id, nickName }: UserDTO) {

@@ -17,7 +17,7 @@
         <p class="property-name">Registred At:</p>
         <p class="property-value p-col-align-center">{{user.registeredAt | date:'MMM d, y'}}</p>
         <p-slideMenu #menu [model]="actions" [popup]="true" [viewportHeight]="200"></p-slideMenu>
-        <button #btn type="button" pButton icon="pi pi-pencil" label="Edit Profile" (click)="menu.toggle($event)"></button>
+        <button *ngIf="isAuthor" #btn type="button" pButton icon="pi pi-pencil" label="Edit Profile" (click)="menu.toggle($event)"></button>
     </div>
     <div *ngIf="!user" class="panel p-col-10 p-md-4 p-lg-3 p-grid  p-justify-center">
         <p-progressSpinner></p-progressSpinner>

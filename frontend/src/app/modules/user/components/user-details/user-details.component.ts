@@ -7,6 +7,8 @@ import { UserDetailsDialogService } from 'src/app/services/user-dialog/user-deta
 import { ImageCropperComponent, ImageCroppedEvent } from 'ngx-image-cropper';
 import { ImageUploadBase64DTO } from 'src/app/models/DTO/Image/imageUploadBase64DTO';
 import { ToastrService } from 'ngx-toastr';
+import { TokenService } from 'src/app/services/token.service/token.service';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-user-details',
@@ -19,6 +21,7 @@ export class UserDetailsComponent implements OnInit {
   user : UserDetailsDTO;
   image : ImageUploadBase64DTO;
   isImageExpended: boolean = false;
+  isAuthor: boolean = false;
   actions: MenuItem[];
 
   imageChangedEvent: any = '';
@@ -33,13 +36,18 @@ export class UserDetailsComponent implements OnInit {
   
   constructor(
       private userService: UserService,
+      private tokenService: TokenService,
+      private activateRoute: ActivatedRoute,
       private toastrService: ToastrService,
       private userDialogService: UserDetailsDialogService) { }
 
   ngOnInit() {
+      let id = this.activateRoute.snapshot.params['id'];
 
-      this.userService.getUserDetailsFromToken().subscribe(response =>{
+      this.userService.getUserInformationById(id).subscribe(response =>{
         this.user = response.body;
+        this.isAuthor = id == this.tokenService.getUserId()? true : false;
+
         if (!this.user.url){
             this.user.url = './assets/img/user-default-avatar.png';
         }
@@ -49,6 +57,7 @@ export class UserDetailsComponent implements OnInit {
             this.user.birthday==null;
         }
       });
+     
       this.actions = [
         {label: 'Change Image', icon: 'pi pi-cloud-upload', command: () => {
             this.userPhotoUpdate();
@@ -60,7 +69,7 @@ export class UserDetailsComponent implements OnInit {
             this.userInfoUpdate();
         }},
         {label: 'Change password', icon: 'pi pi-key ', command: () => {
-            // this.delete();
+            this.userPasswordUpdate();
         }}
     ];
   }
@@ -74,6 +83,10 @@ export class UserDetailsComponent implements OnInit {
 
   public userInfoUpdate() {
     this.userDialogService.show(UserDialogType.UpdateInfo);
+  }
+
+  public userPasswordUpdate() {
+    this.userDialogService.show(UserDialogType.UpdatePassword);
   }
 
   fileChangeEvent($event){

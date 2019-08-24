@@ -14,6 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule, KeyFilterModule } from 'primeng/primeng';
 import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { PasswordModule } from 'primeng/password';
 
 @NgModule({
     declarations: [
@@ -35,7 +36,8 @@ import { ImageCropperModule } from 'ngx-image-cropper';
         InputTextModule,
         KeyFilterModule,
         DynamicDialogModule,
-        ImageCropperModule
+        ImageCropperModule,
+        PasswordModule
     ],
     entryComponents: [
         UserDialogWindowComponent

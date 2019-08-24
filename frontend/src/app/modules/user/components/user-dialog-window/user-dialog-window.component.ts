@@ -11,6 +11,7 @@ import { UserDTO } from 'src/app/models/DTO/User/userDTO';
 import { UserService } from 'src/app/services/user.service/user.service';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
+import { UserChangePasswordDTO } from 'src/app/models/DTO/User/userChangePasswordDTO';
 
 @Component({
   selector: 'app-user-dialog-window',
@@ -30,7 +31,7 @@ export class UserDialogWindowComponent implements OnInit {
     public isPageLoaded: boolean = false;
     public hasDetailsSaveResponse: boolean = true;
 
-    //public updatePassword: UserUpdatePhotoDTO;
+    public userUpdatePassword: UserChangePasswordDTO;
     public userUpdateInfo: UserUpdateDTO;
 
     private userUpdateStartState: UserUpdateDTO;
@@ -41,20 +42,19 @@ export class UserDialogWindowComponent implements OnInit {
         private fb: FormBuilder,
         private tokenService: TokenService,
         private userService: UserService,
-        private toastrService: ToastrService,
-        private dialogService: UserDetailsDialogDataService) { }
+        private toastrService: ToastrService) { }
 
   ngOnInit(): void {
         this.userDialogType = this.config.data.userDialogType;
         this.title = this.userDialogType === UserDialogType.UpdateInfo ? 'Edit profile info' : 'Change password';
 
-        if (this.IsUpdateInfo()) {
+        if (this.isUpdateInfo()) {
 
             this.userForm = this.fb.group({
                 firstName: ['', [Validators.required]],
                 lastName: ['', Validators.required],
                 nickName: ['', Validators.required],
-                gitHubUrl: ['', Validators.required]
+                gitHubUrl: ['']
             });
 
             this.userService.getUserDetailsFromToken()
@@ -67,8 +67,15 @@ export class UserDialogWindowComponent implements OnInit {
                         this.toastrService.error('Can\'t load user details.', 'Error Message:');
                         console.error(error.message);
                     });
-        } else {
-            //update photo
+        }
+
+        if(this.isUpdatePassword()){
+            this.userForm = this.fb.group({
+                password: ['', [Validators.required]],
+                newPassword: ['', Validators.required]
+            });
+
+            this.isPageLoaded = true;
         }
     }
 
@@ -83,12 +90,16 @@ export class UserDialogWindowComponent implements OnInit {
         && this.userForm.get('gitHubUrl').value === this.userUpdateStartState.gitHubUrl;
     }
 
-    public IsUpdateInfo() {
+    public isUpdateInfo() {
         return this.userDialogType === UserDialogType.UpdateInfo;
     }
 
+    public isUpdatePassword(){
+        return this.userDialogType === UserDialogType.UpdatePassword;
+    }
+
     public onSubmit() {
-        if(this.IsUpdateInfo()) {
+        if(this.isUpdateInfo()) {
             this.getValuesForUpdateInfo();
             this.userService.updateUser(this.userUpdateInfo)
                 .subscribe(res => {
@@ -101,7 +112,24 @@ export class UserDialogWindowComponent implements OnInit {
                         this.toastrService.error('error');                        
                         this.hasDetailsSaveResponse = true;
                     })
-        } else {
+        }
+        
+        if(this.isUpdatePassword()){
+            this.getValuesForUpdatePassword();
+            console.log(this.userForm);
+            this.userService.updatePassword(this.userUpdatePassword)
+            .subscribe(res => {
+                this.toastrService.success("Your password was updated");
+                this.hasDetailsSaveResponse = true;
+                this.close();
+            },
+            error => {
+                this.toastrService.error('error');                        
+                this.hasDetailsSaveResponse = true;
+            })
+        }
+
+        else {
             this.hasDetailsSaveResponse = false;
             /*
             if (!this.IsUserNotChange()) {
@@ -145,6 +173,13 @@ export class UserDialogWindowComponent implements OnInit {
             lastName: this.userForm.get('lastName').value,
             nickName: this.userForm.get('nickName').value,
             gitHubUrl: this.userForm.get('gitHubUrl').value,
+        }
+    }
+
+    private getValuesForUpdatePassword(){
+        this.userUpdatePassword = {
+            password: this.userForm.get('password').value,
+            newPassword: this.userForm.get('newPassword').value
         }
     }
 }

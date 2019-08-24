@@ -9,13 +9,15 @@
 <div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded">
     <p-progressSpinner></p-progressSpinner>
 </div>
-<div *ngIf="!IsUpdateInfo() && !isPageLoaded" class="error">
+<div *ngIf="!isPageLoaded" class="error">
     <p>Can't load user details</p>
 </div>
   
 <div class="ui-g" *ngIf="isPageLoaded">
     <div class="ui-g-12">
         <form class="userForm" [formGroup]="userForm" (ngSubmit)="onSubmit()">
+
+            <div *ngIf="isUpdateInfo()">
 
             <!-- User FirstName -->
             <div class="label">FirstName</div>
@@ -65,11 +67,67 @@
 
                 <div class="invalid" *ngIf="userForm.get('gitHubUrl').invalid && userForm.get('gitHubUrl').dirty">Invalid GitHubUrl</div>
 
+
+            </div>
+
+            <div *ngIf="isUpdatePassword()">
+
+                <!-- Current password -->
+                <div class="label">Current password</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="ui-inputgroup">
+                            <input  type="password" pPassword name="password" formControlName="password" minlength="8"  maxlength="16" required
+                                pattern="[а-яА-Яa-zA-Z0-9]{8,16}"/>
+                                <div class="invalid" *ngIf="userForm.get('password').invalid && (userForm.get('password').dirty || userForm.get('password').touched)">
+                                    <div *ngIf="userForm.get('password').errors.pattern">
+                                        Password can contain latin letters (upper\lowercase), digits.
+                                    </div>
+                                    <div *ngIf="userForm.get('password').errors.required">
+                                        Password is required.
+                                    </div>
+                                    <div *ngIf="userForm.get('password').errors.minlength">
+                                        Password mininum length is 8.
+                                    </div>
+                                    <div *ngIf="userForm.get('password').errors.maxlength">
+                                        Password maximun length is 16.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- New password -->
+                <div class="label">New password</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="ui-inputgroup">
+                            <input type="password" pPassword formControlName="newPassword" placeholder="new password" minlength="8"  maxlength="16" required
+                            pattern="[а-яА-Яa-zA-Z0-9]{8,16}"/>
+                            <div class="invalid" *ngIf="userForm.get('newPassword').invalid && (userForm.get('newPassword').dirty || userForm.get('newPassword').touched)">
+                                <div *ngIf="userForm.get('newPassword').errors.pattern">
+                                    Password can contain latin letters (upper\lowercase), digits.
+                                </div>
+                                <div *ngIf="userForm.get('newPassword').errors.required">
+                                    Password is required.
+                                </div>
+                                <div *ngIf="userForm.get('newPassword').errors.minlength">
+                                    Password mininum length is 8.
+                                </div>
+                                <div *ngIf="userForm.get('newPassword').errors.maxlength">
+                                    Password maximun length is 16.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+
             <!-- Submit -->
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
-                    <button *ngIf="IsUpdateInfo()" type="submit" [disabled]="!userForm.valid" pButton label="Update"></button>
-                    <!--<button *ngIf="!isCreateForm() && hasDetailsSaveResponse" type="submit" [disabled]="!userForm.valid || projectItemIsNotChange()" pButton label="Save"></button>-->
+                    <button *ngIf="isUpdateInfo()" type="submit" [disabled]="!userForm.valid" pButton label="Update"></button>
+                    <button *ngIf="isUpdatePassword()" type="submit" [disabled]="!userForm.valid" pButton label="Change"></button>
                     <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
                         <p-progressSpinner></p-progressSpinner>
                     </div>

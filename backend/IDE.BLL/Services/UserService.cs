@@ -96,6 +96,20 @@ namespace IDE.BLL.Services
             return _mapper.Map<UserDetailsDTO>(user);
         }
 
+        public async Task<UserDetailsDTO> GetUserInformationById(int id)
+        {
+            var user = await _context.Users
+                .Include(u => u.Avatar)
+                .SingleOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
+            {
+                throw new NotFoundException(nameof(User), id);
+            }
+
+            return _mapper.Map<UserDetailsDTO>(user);
+        }
+
         public async Task<UserDTO> GetUserById(int id)
         {
             var user = await GetUserByIdInternal(id);
@@ -179,27 +193,44 @@ namespace IDE.BLL.Services
         public async Task UpdateUserAvatar(ImageUploadBase64DTO imageUploadBase64DTO, int userId)
         {
             var imgSrc = await _imageUploader.UploadAsync(imageUploadBase64DTO.Base64);
-            var targetUser = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
+            var userEntity = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
 
             await _context.Images.AddAsync(new Image { Url = imgSrc });
             await _context.SaveChangesAsync();
 
             var imageId = await _context.Images.LastAsync();
 
-            targetUser.AvatarId = imageId.Id;
+            userEntity.AvatarId = imageId.Id;
 
-            _context.Users.Update(targetUser);
+            _context.Users.Update(userEntity);
             await _context.SaveChangesAsync();
         }
 
 
         public async Task DeleteAvatar(int userId)
         {
-            var targetUser = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
-            var tarhetImage = await _context.Images.SingleOrDefaultAsync(i => i.Id == targetUser.AvatarId);
+            var userEntity = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
+            var tarhetImage = await _context.Images.SingleOrDefaultAsync(i => i.Id == userEntity.AvatarId);
 
-            targetUser.AvatarId = null;
+            userEntity.AvatarId = null;
             _context.Images.Remove(tarhetImage);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task ChangePassword(UserChangePasswordDTO userChangePasswordDTO, int userId)
+        {
+            var userEntity = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
+
+            if (!SecurityHelper.ValidatePassword(userChangePasswordDTO.Password, userEntity.PasswordHash, userEntity.PasswordSalt))
+            {
+                throw new InvalidUsernameOrPasswordException("wrong password");
+            }
+            
+            var salt = SecurityHelper.GetRandomBytes();
+
+            userEntity.PasswordSalt = Convert.ToBase64String(salt);
+            userEntity.PasswordHash = SecurityHelper.HashPassword(userChangePasswordDTO.NewPassword, salt);
 
             await _context.SaveChangesAsync();
         }
