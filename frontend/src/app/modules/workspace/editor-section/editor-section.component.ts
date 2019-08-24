@@ -18,7 +18,7 @@ export class EditorSectionComponent implements OnInit {
     
     // FOR REFACTOR
     // think about agregaiting of TabFileWrapper(openedFiles) with MenuItem(tabs)
-    public items = [] as MenuItem[]; // maybe reneme on "tab"
+    public tabs = [] as MenuItem[]; // maybe reneme on "tab"
     public activeItem: MenuItem;
     public openedFiles = [] as TabFileWrapper[];
     
@@ -40,7 +40,7 @@ export class EditorSectionComponent implements OnInit {
         if (this.openedFiles[index].isChanged) {
             this.saveFiles([this.openedFiles[index].innerFile]);
         }
-        this.items = this.items.filter((item, i) => i !== index);
+        this.tabs = this.tabs.filter((item, i) => i !== index);
         this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
 
         // if 1st tab closed
@@ -50,14 +50,14 @@ export class EditorSectionComponent implements OnInit {
             return;
         }
 
-        index = this.items.length === index ? index - 1 : index;
+        index = this.tabs.length === index ? index - 1 : index;
         this.code = this.openedFiles[index].innerFile.content;
-        this.activeItem = this.items[index];
+        this.activeItem = this.tabs[index];
         event.preventDefault();
     }
 
     public onTabSelect(evt, index) {
-        this.activeItem = this.items[index];
+        this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
     }
 

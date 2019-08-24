@@ -23,6 +23,7 @@ export class ProjectStructureFormaterService {
     private itemId : number = 0;
     
     constructor() { }
+    
     toTreeView(projectStructure: ProjectStructureDTO) : TreeNode {
         let root : TreeNode;
         root = this.toTreeNode(projectStructure.nestedFiles[0]);
