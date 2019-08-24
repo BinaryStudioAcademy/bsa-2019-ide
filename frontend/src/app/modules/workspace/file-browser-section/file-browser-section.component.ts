@@ -10,13 +10,12 @@ import { FileCreateDTO } from 'src/app/models/DTO/File/fileCreateDTO';
 import { ProjectStructureFormaterService } from 'src/app/services/project-structure-formater.service';
 import { FileStructureDTO } from 'src/app/models/DTO/Workspace/fileStructureDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
-import { TokenService } from 'src/app/services/token.service/token.service';
 import { Extension } from '../model/extension';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import filesExtensions from '../../../assets/file-extensions.json';
 import defaultExtensions from '../../../assets/newFilesDefaultExtensions.json';
-import { FileUpdateDTO } from 'src/app/models/DTO/File/fileUpdateDTO';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
+import {ProgressBarModule} from 'primeng/progressbar';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -58,8 +57,7 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     contextMenuSaveButton: MenuItem[];
-
-
+    
     ngOnInit() {
         this.projectStructureService.getProjectStructureById(this.projectId).subscribe(
             (response) => {
