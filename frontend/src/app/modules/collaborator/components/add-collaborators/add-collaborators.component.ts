@@ -74,6 +74,16 @@ export class AddCollaboratorsComponent implements OnInit {
         }
     }
 
+    public wasInStartList(deleteItem: DeleteCollaboratorRightDTO): boolean{
+        this.startCollaborators.forEach(element => {
+            if(deleteItem.id==element.id)
+            {
+                return true;
+            }
+        });
+        return false;
+    }
+
     public save(): void {
         this.isCollaboratorsSaved = false;
         this.deleteCollaborators.forEach(item => {
@@ -84,7 +94,7 @@ export class AddCollaboratorsComponent implements OnInit {
                 nickName: item.nickName,
                 projectId: this.projectId
             }
-            if (!this.IsSelected(deleteItem)) {
+            if (!this.IsSelected(deleteItem) && this.wasInStartList(deleteItem)) {
                 this.rightService.deleteCollaborator(deleteItem)
                     .subscribe(
                         (resp) => {
