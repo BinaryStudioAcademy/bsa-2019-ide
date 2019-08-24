@@ -27,10 +27,6 @@ import { FileBrowserSectionComponent } from '../file-browser-section/file-browse
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
 
-
-// FOR REFACTOR
-// last and facultative superior wish - to review and rearrange duties of editor-section, workspace-root, file-browser and links between them
-
 @Component({
     selector: 'app-workspace-root',
     templateUrl: './workspace-root.component.html',
@@ -206,7 +202,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         return !this.editor.anyFileChanged() ? of(true) : this.saveOnExit.confirm('Save changes?')
             .pipe(
                 switchMap(
-                    mustSave => mustSave ? this.saveFiles().pipe(map(result => result.every(x => x.ok) ? true : false)) : of(false)));
+                    mustSave => mustSave ? this.saveFilesRequest().pipe(map(result => result.every(x => x.ok) ? true : false)) : of(false)));
     }
 
     ngOnDestroy() {
