@@ -26,7 +26,7 @@
         <div class="inner-wrapper p-grid p-nogutter ">
             <div *ngIf="showFileBrowser" class="file-browser-content p-col-12 p-md-4 p-xl-2 p-align-stretch">
                 <app-file-browser-section #fileBrowser (fileSelected)="onFileSelected($event)"
-                    [showSerachField]="showSearch">
+                    [showSearchField]="showSearch" [project]="project">
                 </app-file-browser-section>
             </div>
             <div *ngIf="project" class="p-col-12 p-md-8 p-xl-10 p-align-stretch " [ngStyle]="{'background-color':getProjectColor()}" [ngClass]="{large:!showFileBrowser}">

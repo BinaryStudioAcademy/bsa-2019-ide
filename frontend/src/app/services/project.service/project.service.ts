@@ -8,6 +8,7 @@ import { SearchProjectDTO } from 'src/app/models/DTO/Project/searchProjectDTO';
 import { ProjectCreateDTO } from 'src/app/models/DTO/Project/projectCreateDTO';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
+import { Language } from 'src/app/models/Enums/language';
 
 @Injectable({
     providedIn: 'root'
