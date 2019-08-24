@@ -26,6 +26,7 @@ import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
+import { FileRenameDTO } from 'src/app/models/DTO/File/FileRenameDTO';
 
 
 // FOR REFACTOR
@@ -135,6 +136,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             return true;
         }
         return false;
+    }
+
+    public onFileRenaming(fileUpdate: FileRenameDTO) {
+        const tab = this.editor.tabs.find(x => x.id === fileUpdate.id);
+        if (tab !== undefined) {
+            tab.label = fileUpdate.name;
+        }
     }
 
     public onFileSelected(fileId: string): void {
