@@ -19,6 +19,7 @@ import { delay } from 'rxjs/operators';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 import {ProgressBarModule} from 'primeng/progressbar';
+import { saveAs } from 'file-saver';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -82,12 +83,30 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'delete', icon: 'fa fa-remove', command: () => this.delete(this.selectedItem) },
             { label: 'info', icon: 'fa fa-info', command: () => this.openInfoWindow(this.selectedItem)},
             { label: 'rename', icon: 'fa fa-refresh', command: () => this.rename(this.selectedItem)},
-            { label: 'download', icon: 'pi pi-download', command: (event) => console.log(event) }//this.download(this.selectedItem), disabled : true }
+            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) }
         ];
     }
 
     private download(node: TreeNode){
-        console.log(`${node.label} should be downloaded`);
+        if (node.type == TreeNodeType.file.toString()){            
+            this.fileService.getFileById(node.key).subscribe(
+                (response) => {
+                    const fileType = "text/plain;charset=utf-8";
+                    const fileName = node.label;
+                    const fileContent = response.body.content;
+                    const blob = new Blob([fileContent], { type: fileType });
+                    saveAs(blob, fileName);                
+                },
+                (error) => {
+                    console.log(error);
+                    this.toast.error('Something went wrong(. Couldn\'t download file','Error Message', {tapToDismiss: true});
+                }
+            )
+           
+        }
+        else {
+            console.log(`Folder ${node.label} downloading...`)
+        }
     }
 
     private openInfoWindow(node: TreeNode)
