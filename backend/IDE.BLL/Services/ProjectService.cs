@@ -5,11 +5,14 @@ using IDE.Common.DTO.Common;
 using IDE.Common.DTO.File;
 using IDE.Common.DTO.Project;
 using IDE.Common.Enums;
+using IDE.Common.ModelsDTO.DTO.Common;
 using IDE.Common.ModelsDTO.DTO.Project;
 using IDE.Common.ModelsDTO.DTO.User;
+using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,25 +22,25 @@ using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
 {
-    public class FakeFile
-    {
-        public string Id { get; set; }
-        public string Folder { get; set; }
-        public string Name { get; set; }
-        public string Content { get; set; }
-    }
-
     public class ProjectService : IProjectService
     {
         private readonly IdeContext _context;
         private readonly IMapper _mapper;
         private readonly FileService _fileService;
+        private readonly ILogger<ProjectService> _logger;
+        private readonly INotificationService _notificationService;
 
-        public ProjectService(IdeContext context, IMapper mapper, FileService fileService)
+        public ProjectService(IdeContext context,
+            IMapper mapper,
+            FileService fileService,
+            INotificationService notificationService,
+            ILogger<ProjectService> logger)
         {
             _context = context;
             _mapper = mapper;
             _fileService = fileService;
+            _notificationService = notificationService;
+            _logger = logger;
         }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
@@ -151,6 +154,13 @@ namespace IDE.BLL.Services
                 .Include(x => x.Author)
                 .SingleOrDefaultAsync(p => p.Id == projectId);
 
+            NotificationDTO notification = new NotificationDTO
+            {
+                Message = $"get project {project.Name}"
+            };
+
+            await _notificationService.SendNotification(projectId, notification);
+
             return _mapper.Map<ProjectInfoDTO>(project);
         }
 
@@ -160,6 +170,7 @@ namespace IDE.BLL.Services
 
             if (targetProject == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"update project not found");
                 throw new NotFoundException(nameof(targetProject), projectUpdateDTO.Id);
             }
 
@@ -189,9 +200,15 @@ namespace IDE.BLL.Services
                 .Include(pr => pr.Builds)
                 .FirstOrDefaultAsync(p => p.Id == id);
             if (project == null)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"delete project not found");
                 throw new NotFoundException(nameof(Project), id);
+            }
             if (project.AuthorId != ownerId)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"not author delete project");
                 throw new InvalidAuthorException();
+            }
 
             //var filesDelete = await _fileService.GetAllForProjectAsync(id);
             //foreach (var file in filesDelete)
@@ -228,7 +245,7 @@ namespace IDE.BLL.Services
                     .OrderBy(x => x.ProjectType).ToListAsync();
         }
 
-        public async Task<bool> MakeProjectZipFile(int projectId, string path)
+        public async Task<bool> CreateProjectZipFile(int projectId, string path)
         {
             ICollection<FileDTO> filesForProject = await _fileService.GetAllForProjectAsync(projectId);
             try
@@ -244,12 +261,14 @@ namespace IDE.BLL.Services
                     }
 
                 }
+
                 ZipFile.CreateFromDirectory(Path.Combine(path,"ProjectFolder"), Path.Combine(path, $"project_{projectId}.zip"));
                 var dirToDelete = Path.Combine(path, "ProjectFolder");
                 Directory.Delete(dirToDelete, true);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"making zip file not successful");
                 return false;
             }
             return true;

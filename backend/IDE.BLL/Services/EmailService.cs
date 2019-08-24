@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IDE.BLL.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -13,14 +14,15 @@ namespace IDE.BLL.Services
     {
         private readonly string _currentAddress;
         private readonly string _senderEmail;
-
+        private readonly ILogger<EmailService> _logger;
         private readonly SendGridClient client;
 
-        public EmailService(string apiKey, string httpAddress, string senderEmail)
+        public EmailService(string apiKey, string httpAddress, string senderEmail, ILogger<EmailService> logger)
         {
             client = new SendGridClient(apiKey);
             _currentAddress = httpAddress;
             _senderEmail = senderEmail;
+            _logger = logger;
         }
 
         public async Task SendPasswordRecoveryMail(string receiverEmail, string newPassword)

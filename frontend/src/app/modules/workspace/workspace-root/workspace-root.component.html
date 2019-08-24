@@ -5,10 +5,8 @@
             class="ui-button-secondary" label="Run"></button>
         <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-arrow-down" iconPos="left"
             class="ui-button-secondary" label="Build"></button>
-        <button pButton *ngIf="canEdit || isAuthor()" type="button" (click)="onSaveButtonClick($event)" icon="pi pi-save" iconPos="left"
+        <button pButton *ngIf="canEdit || isAuthor()" type="button" (click)="onFilesSave()" icon="pi pi-save" iconPos="left"
             class="ui-button-secondary" label="Save"></button>
-        <button pButton *ngIf="isAuthor()" (click)="openCollaboratorModalWindow()" type="button" icon="pi pi-comment" iconPos="left"
-            class="ui-button-secondary" label="Collaborators"></button>
     </div>
 
 </div>
@@ -27,8 +25,8 @@
     <div class="p-col">
         <div class="inner-wrapper p-grid p-nogutter ">
             <div *ngIf="showFileBrowser" class="file-browser-content p-col-12 p-md-4 p-xl-2 p-align-stretch">
-                <app-file-browser-section #fileBrowser (fileSelected)="onFileSelected($event)"
-                    [showSerachField]="showSearch">
+                <app-file-browser-section #fileBrowser (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
+                    [showSearchField]="showSearch" [project]="project">
                 </app-file-browser-section>
             </div>
             <div *ngIf="project" class="p-col-12 p-md-8 p-xl-10 p-align-stretch " [ngStyle]="{'background-color':getProjectColor()}" [ngClass]="{large:!showFileBrowser}">

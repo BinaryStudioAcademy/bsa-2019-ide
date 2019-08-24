@@ -8,6 +8,9 @@ import { takeUntil } from 'rxjs/operators';
 import { ProjectService } from '../services/project.service/project.service';
 import { TokenService } from '../services/token.service/token.service';
 import { SearchProjectDTO } from '../models/DTO/Project/searchProjectDTO'
+import { SignalRService } from '../services/signalr.service/signal-r.service';
+import { NotificationDTO } from '../models/DTO/Common/notificationDTO';
+import { NotificationService } from '../services/notification.service/notification.service';
 
 @Component({
     selector: 'app-nav-menu',
@@ -23,25 +26,33 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public dialogType = DialogType;
     public isAuthorized: boolean;
     public items: MenuItem[];
+    public showNotification = false;
+    public data: NotificationDTO[];
+    public notReadNotification: NotificationDTO[]=[];
     private unsubscribe$ = new Subject<void>();
 
     constructor(
         private authDialogService: AuthDialogService,
         private router: Router,
         private tokenService: TokenService,
-        private projectService: ProjectService
+        private projectService: ProjectService,
+        private signalRService: SignalRService,
+        private notificationService: NotificationService
     ) { }
 
     ngOnInit() {
         this.getUser();
+        const userId = this.tokenService.getUserId();
+        this.signalRService.startConnection(this.isAuthorized,userId);
+        this.loadNotifications(userId);
         this.authUserItems = [
-            { 
+            {
                 label: 'Home',
                 command: () => {
-                    if(!this.router.url.startsWith('/dashboard')) {
+                    if (!this.router.url.startsWith('/dashboard')) {
                         this.router.navigate(['/dashboard'])
                     }
-                } 
+                }
             }
         ];
         this.unAuthUserItems = [
@@ -64,6 +75,39 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                 }
             }
         ];
+        
+        if (this.isAuthorized) {
+            
+            this.signalRService.addToGroup(userId);
+        }
+    }
+
+    public loadNotifications(userId: number): void
+    {
+        this.notificationService.getUserNotifications(userId)
+        .subscribe(
+            (resp)=>{
+                this.notReadNotification = resp.body;
+            }
+        );
+        this.data = this.signalRService.addTransferChartDataListener();
+    }
+
+    public showNotificationPanel() {
+        this.showNotification = !this.showNotification;
+        const dataForDelete =this.data;
+        if (!this.showNotification) {
+            this.signalRService.crearData();     
+            this.signalRService.deleteTransferChartDataListener();
+            this.data = this.signalRService.addTransferChartDataListener();
+            dataForDelete.forEach(element => {
+                this.signalRService.markNotificationAsRead(element.id);
+            });
+            this.notReadNotification.forEach(element=>{
+                this.signalRService.markNotificationAsRead(element.id);
+            })
+            this.notReadNotification=[];
+        }
     }
 
     public filterProject(event): void {
@@ -74,7 +118,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     }
 
     public checkProject(project: SearchProjectDTO): void {
-        this.project=null;
+        this.project = null;
         this.router.navigate([`/project/${project.id}`]);
     }
 
@@ -86,10 +130,9 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                 filtered.push(project);
             }
         }
-        if (filtered.length === 0)
-        {
-            const notFound:SearchProjectDTO = {
-                id:0,
+        if (filtered.length === 0) {
+            const notFound: SearchProjectDTO = {
+                id: 0,
                 name: "We couldn’t find any project matching " + query
             }
             filtered.push(notFound);
@@ -121,6 +164,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public LogOut() {
         this.tokenService.logout();
         this.isAuthorized = undefined;
+        this.signalRService.crearData();
     }
 
     private getUser() {

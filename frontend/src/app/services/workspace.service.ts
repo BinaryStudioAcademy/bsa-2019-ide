@@ -1,12 +1,9 @@
-import { HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 import { HttpClientWrapperService } from './http-client-wrapper.service';
 import { Injectable } from '@angular/core';
 import { FileUpdateDTO } from '../models/DTO/File/fileUpdateDTO';
-import { of } from 'rxjs/internal/observable/of';
 import { forkJoin, Observable } from 'rxjs';
 import { FileDTO } from '../models/DTO/File/fileDTO';
-import { switchMap } from 'rxjs/internal/operators/switchMap';
-import { map } from 'rxjs/internal/operators/map';
 
 @Injectable({
     providedIn: 'root'

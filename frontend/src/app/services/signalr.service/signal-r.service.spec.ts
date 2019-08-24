@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { CollaborateService } from './collaborate.service';
+import { SignalRService } from './signal-r.service';
 
-describe('CollaborateService', () => {
+describe('SignalRService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: CollaborateService = TestBed.get(CollaborateService);
+    const service: SignalRService = TestBed.get(SignalRService);
     expect(service).toBeTruthy();
   });
 });

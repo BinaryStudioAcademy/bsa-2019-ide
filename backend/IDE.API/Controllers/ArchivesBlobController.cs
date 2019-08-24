@@ -2,6 +2,7 @@ using IDE.DAL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
@@ -12,11 +13,13 @@ namespace IDE.API.Controllers
     [ApiController]
     public class ArchivesBlobController : ControllerBase
     {
+        private readonly ILogger<ArchivesBlobController> _logger;
         private readonly IBlobRepository _blobService;
 
-        public ArchivesBlobController(IBlobRepository blobService)
+        public ArchivesBlobController(IBlobRepository blobService, ILogger<ArchivesBlobController> logger)
         {
             _blobService = blobService;
+            _logger = logger;
         }
 
         [HttpPost]

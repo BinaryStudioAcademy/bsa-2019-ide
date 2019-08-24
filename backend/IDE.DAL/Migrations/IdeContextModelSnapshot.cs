@@ -93,6 +93,25 @@ namespace IDE.DAL.Migrations
                     b.ToTable("Images");
                 });
 
+            modelBuilder.Entity("IDE.DAL.Entities.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("IsRead");
+
+                    b.Property<string>("Message");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("IDE.DAL.Entities.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -244,6 +263,14 @@ namespace IDE.DAL.Migrations
                     b.HasOne("IDE.DAL.Entities.User", "User")
                         .WithMany("FavouriteProjects")
                         .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("IDE.DAL.Entities.Notification", b =>
+                {
+                    b.HasOne("IDE.DAL.Entities.User", "User")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.Project", b =>

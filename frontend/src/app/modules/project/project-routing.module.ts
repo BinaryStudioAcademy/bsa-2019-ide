@@ -18,6 +18,7 @@ const projectRoutes: Routes = [
         resolve: { project: ProjectInfoResolver } // What is it?
                                                   // I don't know bro.
                                                   // Gyus this is for loading data
+                                                  // O-o-o-o, man, thanks a lot😊
       }
     ],
     canActivate: [LoginGuard]

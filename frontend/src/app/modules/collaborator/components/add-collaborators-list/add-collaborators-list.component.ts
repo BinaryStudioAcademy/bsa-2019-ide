@@ -19,13 +19,9 @@ export class AddCollaboratorsListComponent implements OnInit {
     public label: string;
 
     @Input() collaborators: CollaboratorDTO[];
-    @Input() area: string;
-    @Output() onChanged = new EventEmitter<CollaboratorDTO[]>();
 
     constructor(
-        private addCollaboratorsComponent: AddCollaboratorsComponent,
-        private projectSettingComponent: ProjectWindowComponent
-    ) { }
+        private addCollaboratorsComponent: AddCollaboratorsComponent) { }
 
     ngOnInit() {
         this.userAccess = [
@@ -37,12 +33,6 @@ export class AddCollaboratorsListComponent implements OnInit {
     }
 
     public delete(collaboratorId: number): void {
-        if(this.area=="workspace")
-        {
-            this.addCollaboratorsComponent.delete(collaboratorId);
-        }
-        else{
-            this.projectSettingComponent.delete(collaboratorId);
-        }
+        this.addCollaboratorsComponent.delete(collaboratorId);
     }
 }

@@ -1,6 +1,7 @@
 using FluentValidation.AspNetCore;
 using IDE.API.Extensions;
 using IDE.BLL;
+using IDE.BLL.HubConfig;
 using IDE.DAL;
 using IDE.DAL.Context;
 using Microsoft.AspNetCore.Builder;
@@ -9,15 +10,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Shared;
 
 namespace IDE.API
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly ILogger<Startup> _logger;
+
+        public Startup(IConfiguration configuration , ILogger<Startup> logger)
         {
             Configuration = configuration;
+            this._logger = logger;
         }
 
         public IConfiguration Configuration { get; }        
@@ -28,7 +33,8 @@ namespace IDE.API
             services.ConfigureJwt(Configuration);
             services.RegisterCustomValidators();
 
-            services.AddCors();       
+            services.AddCors();   
+            services.AddSignalR();
 
             services.AddMvcCore()
                 .AddAuthorization()
@@ -41,6 +47,7 @@ namespace IDE.API
         {
             if (env.IsDevelopment())
             {
+                _logger.LogInformation("In Development environment");
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -50,13 +57,20 @@ namespace IDE.API
             }
 
             DALConfigurations.Configure(app, env);
-            
+            BLLConfigurations.Configure(app, env);
+
+
             app.UseCors(builder => builder
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .WithExposedHeaders("Token-Expired", "Content-Disposition")
                 .AllowCredentials()
-                .AllowAnyOrigin());
+               .WithOrigins("http://localhost:4200"));
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<NotificationHub>("/notification");
+            });
 
             app.UseHttpsRedirection();
             app.UseAuthentication();

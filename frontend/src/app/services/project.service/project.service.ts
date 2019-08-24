@@ -8,6 +8,7 @@ import { SearchProjectDTO } from 'src/app/models/DTO/Project/searchProjectDTO';
 import { ProjectCreateDTO } from 'src/app/models/DTO/Project/projectCreateDTO';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
+import { Language } from 'src/app/models/Enums/language';
 
 @Injectable({
     providedIn: 'root'
@@ -19,8 +20,8 @@ export class ProjectService {
     constructor(private httpClient: HttpClientWrapperService) { }
 
 
-    public addProject(project: ProjectCreateDTO) {
-        return this.httpClient.postRequest(this.address, project);
+    public addProject(body) {
+        return this.httpClient.postRequest(this.address, body);
     }
 
     public getProjectCollaborators(projectId: number): Observable<HttpResponse<CollaboratorDTO[]>>

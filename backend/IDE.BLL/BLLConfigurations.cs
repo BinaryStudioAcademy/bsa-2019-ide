@@ -10,6 +10,8 @@ using IDE.BLL.Services;
 using IDE.BLL.Interfaces;
 using IDE.BLL.MappingProfiles;
 using System;
+using IDE.BLL.HubConfig;
+using Microsoft.Extensions.Logging;
 
 namespace IDE.BLL
 {
@@ -21,7 +23,8 @@ namespace IDE.BLL
 
             services.AddScoped<AuthService>();
             services.AddScoped<UserService>();
-            services.AddScoped<IEmailService>(x => new EmailService(Environment.GetEnvironmentVariable("emailApiKey"), configuration["CurrentWebAPIAddressForMail"], configuration["websiteMail"]));
+            services.AddScoped<IEmailService>(x => new EmailService(Environment.GetEnvironmentVariable("emailApiKey"), configuration["CurrentWebAPIAddressForMail"], configuration["websiteMail"], x.GetService<ILogger<EmailService>>()));
+            services.AddScoped<INotificationService,NotificationService>();
             services.AddScoped<IProjectMemberSettingsService, ProjectMemberSettingsService>();
             services.AddScoped<IProjectStructureService, ProjectStructureService>();
             services.AddScoped<IProjectTemplateService, ProjectTemplateService>();
@@ -56,6 +59,7 @@ namespace IDE.BLL
                 cfg.AddProfile<FileHistoryProfile>();
                 cfg.AddProfile<GitCredentialProfile>();
                 cfg.AddProfile<ProjectStructureProfile>();
+                cfg.AddProfile<NotificationProfile>();
             });
         }
 

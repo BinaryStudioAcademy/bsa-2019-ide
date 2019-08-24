@@ -1,0 +1,51 @@
+[
+    { 
+        "extension": "default",
+        "extensionInfo": {
+            "imageClass": "fa fa-file",
+            "monacoFileType": ""
+        }
+    },
+    { 
+        "extension": ".cs",
+        "extensionInfo": {
+            "imageClass": "fa icon-cs",
+            "monacoFileType": ""
+        }
+    },
+    { 
+        "extension": ".css",
+        "extensionInfo": {
+            "imageClass": "fa icon-css",
+            "monacoFileType": ""
+        }
+    },
+    { 
+        "extension": ".ts",
+        "extensionInfo": {
+            "imageClass": "fa icon-ts",
+            "monacoFileType": ""
+        }
+    },
+    { 
+        "extension": ".js",
+        "extensionInfo": {
+            "imageClass": "fa icon-js",
+            "monacoFileType": ""
+        }
+    },
+    { 
+        "extension": ".html",
+        "extensionInfo": {
+            "imageClass": "fa icon-html",
+            "monacoFileType": ""
+        }
+    },
+    { 
+        "extension": ".go",
+        "extensionInfo": {
+            "imageClass": "fa icon-go",
+            "monacoFileType": ""
+        }
+    }
+]

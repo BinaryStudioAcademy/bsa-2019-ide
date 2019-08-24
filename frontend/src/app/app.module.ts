@@ -22,7 +22,7 @@ import { DialogService } from 'primeng/api';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { GeneralModule } from './general/general.module';
 import { TreeModule } from 'primeng/tree';
-import { MenuModule,AutoCompleteModule } from 'primeng/primeng';
+import { MenuModule,AutoCompleteModule, ListboxModule, AccordionModule, OverlayPanelModule } from 'primeng/primeng';
 import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { LoginGuard } from './guards/login.guard';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -34,6 +34,7 @@ import { FormsModule } from '@angular/forms';
 import { ProjectSettingsRouteGuard } from './guards/project-settings-route.guard';
 import { AddCollaboratorsComponent } from './modules/collaborator/components/add-collaborators/add-collaborators.component';
 import { FileInfoComponent } from './modules/workspace/file-info/file-info.component';
+import { ChartsModule } from 'ng2-charts';
 
 
 @NgModule({
@@ -42,6 +43,10 @@ import { FileInfoComponent } from './modules/workspace/file-info/file-info.compo
         NavMenuComponent
     ],
     imports: [
+        OverlayPanelModule,
+        AccordionModule,
+        ListboxModule,
+        ChartsModule,
         CollaboratorModule,
         AutoCompleteModule,
         FormsModule,

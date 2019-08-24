@@ -2,6 +2,7 @@
 using IDE.Common.ModelsDTO.DTO.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
@@ -12,10 +13,11 @@ namespace IDE.API.Controllers
     public class EmailController : Controller
     {
         private readonly UserService _userService;
-
-        public EmailController(UserService userService)
+        private readonly ILogger<EmailController> _logger;
+        public EmailController(UserService userService, ILogger<EmailController> logger)
         {
             _userService = userService;
+            _logger = logger;
         }
 
         [HttpPut]
