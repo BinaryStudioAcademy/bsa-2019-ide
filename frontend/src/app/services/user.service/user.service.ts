@@ -8,6 +8,7 @@ import { HttpResponse } from '@angular/common/http';
 import { VerificationTokenDTO } from 'src/app/models/DTO/Common/verificationTokenDTO';
 import { EmailDTO } from 'src/app/models/DTO/Common/emailDTO';
 import { UserUpdateDTO } from 'src/app/models/DTO/User/userUpdateDTO';
+import { ImageUploadBase64DTO } from 'src/app/models/DTO/Image/imageUploadBase64DTO';
 
 @Injectable({
     providedIn: 'root'
@@ -44,6 +45,10 @@ export class UserService {
 
     public recoverPassword(email: EmailDTO) {
         return this.httpService.putRequest("email/recover", email);
+    }
+
+    public updateProfilePhoto(image:ImageUploadBase64DTO){
+        return this.httpService.putRequest(`${this.routePrefix}/photo`, image);
     }
 
     public copyUser({ email, firstName, lastName, id, nickName }: UserDTO) {

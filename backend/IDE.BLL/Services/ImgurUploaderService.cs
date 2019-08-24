@@ -20,21 +20,23 @@ namespace IDE.BLL.Services
 
         public async Task<string> UploadAsync(string imgSrc)
         {
-            return await UploadImageAsync(imgSrc).ConfigureAwait(false);
+            return await UploadImageAsync(imgSrc);
         }
 
         public async Task<string> UploadAsync(byte[] byteArray)
         {
-            return await UploadImageAsync(byteArray).ConfigureAwait(false);
+            return await UploadImageAsync(byteArray);
         }
 
         private async Task<string> UploadImageAsync<T>(T source)
         {
-            var content = new {image = source};
+            var url = source.ToString();
+            var index = url.IndexOf(",") + 1;
+            var content = new {image = url.Substring(index)};
             var json = JsonConvert.SerializeObject(content);
             var body = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await _client.PostAsync($"image", body);
+            var response = await _client.PostAsync($"image.json", body);
 
             if (response == null)
             {
@@ -62,5 +64,7 @@ namespace IDE.BLL.Services
 
             return uploadedImageUrl;
         }
+
+
     }
 }

@@ -12,20 +12,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IDE.BLL.Helpers;
+using IDE.Common.DTO.Image;
 
 namespace IDE.BLL.Services
 {
     public class UserService
     {
-        private readonly IdeContext _context;
         private readonly IMapper _mapper;
+        private readonly IdeContext _context;
         private readonly IEmailService _emailService;
+        private readonly IImageUploader _imageUploader;
 
-        public UserService(IdeContext context, IEmailService emailService, IMapper mapper)
+        public UserService(IdeContext context, IEmailService emailService, IMapper mapper, IImageUploader imageUploader)
         {
-            _context = context;
             _mapper = mapper;
+            _context = context;
             _emailService = emailService;
+            _imageUploader = imageUploader;
         }
 
         public async Task<User> CreateUser(UserRegisterDTO userDto)
@@ -171,6 +174,22 @@ namespace IDE.BLL.Services
             return await _context.Users
                 .Include(u => u.Avatar)
                 .FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task UpdateUserAvatar(ImageUploadBase64DTO imageUploadBase64DTO, int userId)
+        {
+            var imgSrc = await _imageUploader.UploadAsync(imageUploadBase64DTO.Base64);
+            var targetUser = await _context.Users.SingleOrDefaultAsync(p => p.Id == userId);
+
+            await _context.Images.AddAsync(new Image { Url = imgSrc });
+            await _context.SaveChangesAsync();
+
+            var imageId = await _context.Images.LastAsync();
+
+            targetUser.AvatarId = imageId.Id;
+
+            _context.Users.Update(targetUser);
+            await _context.SaveChangesAsync();
         }
     }
 }

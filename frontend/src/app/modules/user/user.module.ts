@@ -13,13 +13,15 @@ import { UserDialogWindowComponent } from './components/user-dialog-window/user-
 import { ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule, KeyFilterModule } from 'primeng/primeng';
 import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 @NgModule({
     declarations: [
         UserRootComponent, 
         UserDetailsComponent, 
         UserSettingsComponent, 
-        EmailVerificationComponent, UserDialogWindowComponent
+        EmailVerificationComponent,
+        UserDialogWindowComponent
     ],
     imports: [
         CommonModule,
@@ -33,6 +35,7 @@ import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdia
         InputTextModule,
         KeyFilterModule,
         DynamicDialogModule,
+        ImageCropperModule
     ],
     entryComponents: [
         UserDialogWindowComponent

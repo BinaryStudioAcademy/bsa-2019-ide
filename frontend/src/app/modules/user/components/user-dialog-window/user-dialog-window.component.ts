@@ -30,7 +30,7 @@ export class UserDialogWindowComponent implements OnInit {
     public isPageLoaded: boolean = false;
     public hasDetailsSaveResponse: boolean = true;
 
-    //public updatePhoto: UserUpdatePhotoDTO;
+    //public updatePassword: UserUpdatePhotoDTO;
     public userUpdateInfo: UserUpdateDTO;
 
     private userUpdateStartState: UserUpdateDTO;
@@ -46,7 +46,7 @@ export class UserDialogWindowComponent implements OnInit {
 
   ngOnInit(): void {
         this.userDialogType = this.config.data.userDialogType;
-        this.title = this.userDialogType === UserDialogType.UpdateInfo ? 'Edit profile info' : 'Edit profile photo';
+        this.title = this.userDialogType === UserDialogType.UpdateInfo ? 'Edit profile info' : 'Change password';
 
         if (this.IsUpdateInfo()) {
 
@@ -95,6 +95,7 @@ export class UserDialogWindowComponent implements OnInit {
                         this.toastrService.success("Your profile info was updated");
                         this.hasDetailsSaveResponse = true;
                         this.close();
+                        window.location.reload();
                     },
                     error => {
                         this.toastrService.error('error');                        

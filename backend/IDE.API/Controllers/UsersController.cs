@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections;
 using IDE.Common.ModelsDTO.DTO.User;
 using System.Collections.Generic;
+using IDE.Common.DTO.Image;
 
 namespace IDE.API.Controllers
 {
@@ -52,6 +53,14 @@ namespace IDE.API.Controllers
         {
             var updatedUser = await _userService.UpdateUser(user);
             return Ok(updatedUser);
+        }
+
+        [HttpPut("photo")]
+        public async Task UpdateAvatar([FromBody] ImageUploadBase64DTO imageUploadBase64DTO)
+        {
+            var author = this.GetUserIdFromToken();
+
+            await _userService.UpdateUserAvatar(imageUploadBase64DTO, author);
         }
     }
 }

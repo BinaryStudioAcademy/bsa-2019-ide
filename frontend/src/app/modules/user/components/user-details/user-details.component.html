@@ -31,3 +31,39 @@
             [contentStyle]="{'overflow':'visible', 'padding': '0', 'border': 'none', 'background': 'none', 'align-content': 'center', 'display': 'flex'}">
     <img class="big-avatar" src="{{user.url}}" alt="avatar">
 </p-dialog>
+
+<p-dialog [(visible)]="isChangeAvatar" [showHeader]="false" appendTo="body" [closable]=false [modal]="true" [responsive]="true"
+          [contentStyle]="{'width':'500px', 'overflow':'visible'}" [positionTop]="10">
+    
+    <span class="modal-close-btn" (click)="close()">&times;</span>
+
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <div class="title">Upload new avatar</div>
+        </div>
+    </div>
+
+	<div>
+        <input id="uploadfile" type="file" (change)="fileChangeEvent($event)" />
+        <image-cropper
+            [imageChangedEvent]="imageChangedEvent"
+            [maintainAspectRatio]="true"
+            [aspectRatio]="4 / 3"
+            [resizeToWidth]="512"
+            [cropperMinWidth]="128"
+            [onlyScaleDown]="true"
+            [roundCropper]="false"
+            format="png"
+            outputType="base64"
+            (imageCropped)="imageCropped($event)"
+            (imageLoaded)="imageLoaded()"
+            (loadImageFailed)="loadImageFailed()"
+            [style.display]="showCropper ? null : 'none'"
+            [alignImage]="'bottom'"
+        ></image-cropper>
+      </div>
+      <p-button [style]="{'padding-top':'20px'}" label="Update" (onClick)="handleClick($event)" *ngIf="!hasDetailsSaveResponse && selected"></p-button>
+      <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="hasDetailsSaveResponse">
+            <p-progressSpinner></p-progressSpinner>
+      </div>
+    </p-dialog>

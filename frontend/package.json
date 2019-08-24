@@ -25,6 +25,7 @@
     "angular-resizable-element": "^3.2.4",
     "chart.js": "^2.8.0",
     "font-awesome": "^4.7.0",
+    "ngx-image-cropper": "^1.4.1",
     "ngx-toastr": "^10.0.4",
     "primeflex": "^1.0.0-rc.1",
     "primeicons": "^2.0.0",

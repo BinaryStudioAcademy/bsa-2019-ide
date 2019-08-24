@@ -1,4 +1,4 @@
 export enum UserDialogType {
-    UpdatePhoto,
+    UpdatePassword,
     UpdateInfo
 }
