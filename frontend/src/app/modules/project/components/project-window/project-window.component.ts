@@ -16,6 +16,8 @@ import { DeleteCollaboratorRightDTO } from 'src/app/models/DTO/Common/deleteColl
 import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
 import { ProjectDescriptionDTO } from 'src/app/models/DTO/Project/projectDescriptionDTO';
 import { ProjDialogDataService } from 'src/app/services/proj-dialog-data.service/proj-dialog-data.service';
+import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
   selector: 'app-project-window',
@@ -33,7 +35,6 @@ export class ProjectWindowComponent implements OnInit {
     public colors: any;
     public access: any;
     public projectForm: FormGroup;
-    public area: string;
     public isFileSelected: boolean = false; 
 
     public isPageLoaded: boolean = false;
@@ -41,11 +42,7 @@ export class ProjectWindowComponent implements OnInit {
 
     public projectCreate: ProjectCreateDTO;
     public projectUpdate: ProjectUpdateDTO;
-
-    public collaborators: CollaboratorDTO[];
-    public deleteCollaborators: CollaboratorDTO[] = [];
     
-    private startCollaborators = [] as CollaboratorDTO[];
     private projectUpdateStartState: ProjectUpdateDTO;
     private projectType: ProjectType;
     private projectId: number;
@@ -57,7 +54,9 @@ export class ProjectWindowComponent implements OnInit {
                 private toastrService: ToastrService,
                 private rightService: RightsService,
                 private router: Router,
-                private dialogService: ProjDialogDataService) { }
+                private dialogService: ProjDialogDataService,
+                private signalRservice: SignalRService,
+                private tokenService: TokenService) { }
 
     ngOnInit(): void { 
         this.projectType = this.config.data.projectType;
@@ -114,7 +113,6 @@ export class ProjectWindowComponent implements OnInit {
         }
 
         if (!this.isCreateForm()) {
-            this.area = "projectSettings";
             this.projectId = this.config.data.projectId;
             this.projectService.getProjectById(this.projectId)
                 .subscribe(
@@ -125,17 +123,6 @@ export class ProjectWindowComponent implements OnInit {
                     },
                     (error) => {
                         this.toastrService.error('Can\'t load project details.', 'Error Message:');
-                        console.error(error.message);
-                    }
-                );
-            this.projectService.getProjectCollaborators(this.projectId)
-                .subscribe(
-                    (resp) => {
-                        this.SetCollaboratorsFromResponse(resp);
-                        this.isPageLoaded = true;
-                    },
-                    (error) => {
-                        this.toastrService.error("'Can\'t load project collaborators.', 'Error Message:'");
                         console.error(error.message);
                     }
                 );
@@ -150,8 +137,7 @@ export class ProjectWindowComponent implements OnInit {
     }
     
     public projectItemIsNotChange(): boolean {
-        return this.IsProjectNotChange()
-            && this.IsCollaboratorChange();
+        return this.IsProjectNotChange();
     }
 
     public IsProjectNotChange(): boolean {
@@ -162,30 +148,8 @@ export class ProjectWindowComponent implements OnInit {
         && this.projectForm.get('color').value === this.projectUpdateStartState.color;
     }
 
-    public IsCollaboratorChange(): boolean {
-        if(this.deleteCollaborators.length!=0)
-        {
-            return false;
-        }
-        for (let i in this.collaborators) {
-            if (this.collaborators[i].access !== this.startCollaborators[i].access) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public isCreateForm() {
         return this.projectType === ProjectType.Create;
-    }
-
-    public delete(collaboratorId: number): void {
-        const deleteCollaborator = this.collaborators.find(item => item.id == collaboratorId);
-        this.deleteCollaborators.push(deleteCollaborator);
-        const index: number = this.collaborators.indexOf(deleteCollaborator);
-        if (index !== -1) {
-            this.collaborators.splice(index, 1);
-        }
     }
 
     public onSubmit() {
@@ -207,6 +171,8 @@ export class ProjectWindowComponent implements OnInit {
                         let projectId = res.body;
                         this.hasDetailsSaveResponse = true;
                         this.close();
+                        const userId=this.tokenService.getUserId();
+                        this.signalRservice.addToGroup(userId);
                         this.router.navigate([`/project/${projectId}`]);   
                     },
                     error => {
@@ -231,51 +197,7 @@ export class ProjectWindowComponent implements OnInit {
                         console.error(error.message);
                     }
                 );
-            }
-            if (!this.IsCollaboratorChange()) {
-                this.deleteCollaborators.forEach(item => {
-                    const deleteItem: DeleteCollaboratorRightDTO =
-                    {
-                        id: item.id,
-                        access: item.access,
-                        nickName: item.nickName,
-                        projectId: this.projectId
-                    }
-                    if (!this.IsSelected(deleteItem)) {
-                        this.rightService.deleteCollaborator(deleteItem)
-                            .subscribe(
-                                (resp)=>
-                                {
-                                },
-                                (error) => {
-                                    this.toastrService.error('Can\'t delete collacortors access', 'Error Message');
-                                }
-                            );
-                    }
-                });
-                for (let i in this.collaborators) {
-                    if (this.collaborators[i].access !== this.startCollaborators[i].access) {
-                        const update: UpdateUserRightDTO =
-                        {
-                            projectId:this.projectId,
-                            access: this.collaborators[i].access,
-                            userId: this.collaborators[i].id
-                        }
-                        this.rightService.setUsersRigths(update)
-                        .subscribe(
-                            (resp) => {
-                                this.router.navigate([`project/${this.projectId}`]);
-                                this.hasDetailsSaveResponse = true;
-                                this.toastrService.success('New collacortors access have successfully saved!');
-                            },
-                            (error) => {
-                                this.hasDetailsSaveResponse = true;
-                                this.toastrService.error('Can\'t save new collacortors access', 'Error Message');
-                            }
-                        );
-                    }
-                }
-            }
+            }      
         }
     }
 
@@ -360,16 +282,6 @@ export class ProjectWindowComponent implements OnInit {
     public close() {
         this.ref.close();
     }
-        
-    private IsSelected(collaborator: UserNicknameDTO): boolean {
-        let result: boolean = false;
-        this.collaborators.forEach(element => {
-            if (element.id === collaborator.id) {
-                result = true;
-            }
-        });
-        return result;
-    }
 
     private InitializeProject(resp: HttpResponse<ProjectInfoDTO>) {
         this.projectUpdateStartState = resp.body;
@@ -407,17 +319,5 @@ export class ProjectWindowComponent implements OnInit {
             language: this.projectForm.get('language').value,
             projectType: this.projectForm.get('projectType').value
         }
-    }
-    private SetCollaboratorsFromResponse(resp: HttpResponse<CollaboratorDTO[]>): void {
-        this.collaborators = resp.body;
-        this.collaborators.forEach(element => {
-            let newElement: CollaboratorDTO =
-            {
-                id: element.id,
-                access: element.access,
-                nickName: element.nickName
-            }
-            this.startCollaborators.push(newElement);
-        });
     }
 }

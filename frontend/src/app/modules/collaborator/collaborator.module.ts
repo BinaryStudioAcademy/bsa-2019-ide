@@ -23,7 +23,8 @@ import { ProjectWindowComponent } from '../project/components/project-window/pro
         ButtonModule
     ],
     exports:[
-        AddCollaboratorsListComponent
+        AddCollaboratorsListComponent,
+        AddCollaboratorsComponent
     ],
     providers:[
         ProjectWindowComponent

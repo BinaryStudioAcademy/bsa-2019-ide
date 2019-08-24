@@ -5,6 +5,7 @@ using IDE.Common.DTO.Common;
 using IDE.Common.DTO.File;
 using IDE.Common.DTO.Project;
 using IDE.Common.Enums;
+using IDE.Common.ModelsDTO.DTO.Common;
 using IDE.Common.ModelsDTO.DTO.Project;
 using IDE.Common.ModelsDTO.DTO.User;
 using IDE.DAL.Context;
@@ -24,12 +25,17 @@ namespace IDE.BLL.Services
         private readonly IdeContext _context;
         private readonly IMapper _mapper;
         private readonly FileService _fileService;
+        private readonly INotificationService _notificationService;
 
-        public ProjectService(IdeContext context, IMapper mapper, FileService fileService)
+        public ProjectService(IdeContext context, 
+            IMapper mapper, 
+            FileService fileService,
+            INotificationService notificationService)
         {
             _context = context;
             _mapper = mapper;
             _fileService = fileService;
+            _notificationService = notificationService;
         }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
@@ -142,6 +148,13 @@ namespace IDE.BLL.Services
             var project = await _context.Projects
                 .Include(x => x.Author)
                 .SingleOrDefaultAsync(p => p.Id == projectId);
+
+            NotificationDTO notification = new NotificationDTO
+            {
+                Message = $"get project {project.Name}"
+            };
+
+            await _notificationService.SendNotification(projectId, notification);
 
             return _mapper.Map<ProjectInfoDTO>(project);
         }

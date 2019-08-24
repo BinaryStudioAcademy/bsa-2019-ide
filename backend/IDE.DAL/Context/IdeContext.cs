@@ -22,6 +22,7 @@ namespace IDE.DAL.Context
         public DbSet<GitCredential> GitCredentials { get; private set; }
         public DbSet<FavouriteProjects> FavouriteProjects { get; private set; }
         public DbSet<VerificationToken> VerificationTokens { get; private set; }
+        public DbSet<Notification> Notifications { get; private set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

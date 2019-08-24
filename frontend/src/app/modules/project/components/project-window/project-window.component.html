@@ -118,11 +118,6 @@
                 </div>
             </div>
 
-            <!--Collaborators-->
-            <div class="label" *ngIf="!isCreateForm() && collaborators && collaborators.length > 0">Collaborators:</div>
-            <app-add-collaborators-list [collaborators]="collaborators" [area]="area"
-                *ngIf="!isCreateForm() && collaborators && collaborators.length > 0"></app-add-collaborators-list>
-
             <!-- Color -->
             <div class="label">Project color</div>
             <div class="ui-g ui-fluid">
@@ -140,8 +135,8 @@
             </div>
 
             <!-- Import -->
-            <div class="label">Choose Existing Project</div>
-            <div class="ui-g ui-fluid project-upload">
+            <div *ngIf="isCreateForm()" class="label">Choose Existing Project</div>
+            <div *ngIf="isCreateForm()" class="ui-g ui-fluid project-upload">
                 <div class="ui-g-5 ui-g-offset-1">
                     <p-fileUpload #uploadElement maxFileSize="10485760" accept=".zip" chooseLabel="Choose archive" (onSelect)="selectHandler()"
                         mode="basic" [customUpload]="true"></p-fileUpload>
