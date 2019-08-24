@@ -24,9 +24,12 @@ import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
     styleUrls: ['./file-browser-section.component.sass']
 })
 export class FileBrowserSectionComponent implements OnInit {
-    @Input() project: ProjectInfoDTO;
-    @Input() showSearchField:boolean;
-    @Output() fileSelected = new EventEmitter<string>();
+    @Input()
+    project: ProjectInfoDTO;
+    @Input()
+    showSearchField:boolean;
+    @Output()
+    fileSelected = new EventEmitter<string>();
     items: MenuItem[];
     public files: TreeNode[];
     public selectedItem: TreeNode;
@@ -71,7 +74,6 @@ export class FileBrowserSectionComponent implements OnInit {
         );
 
         this.extensions = filesExtensions;
-
         this.items = [
             { label: 'create file', icon: 'fa fa-file', command: () => this.createFile(this.selectedItem),  },
             { label: 'create folder', icon: 'fa fa-folder', command: () => this.createFolder(this.selectedItem) },
