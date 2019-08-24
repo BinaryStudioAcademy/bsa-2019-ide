@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
 import { ProjectType } from '../../models/project-type';
+import { saveAs } from 'file-saver';
 
 @Component({
     selector: 'app-project-details-info',
@@ -50,30 +51,16 @@ export class ProjectDetailsInfoComponent implements OnInit {
         this.projectService.exportProject(this.project.id)
             .subscribe(
             (result) => {
-                const keys = result.headers.keys();
-
-                const contentDespoHeader = !!keys.find(x => x == "content-disposition")
-                    ? result.headers.get(keys.find(x => x == "content-disposition"))
-                    : null;
-
-                const fileName = !!contentDespoHeader
-                    ? contentDespoHeader.split(';')[1].trim().split('=')[1] 
-                    : "file.zip";
-
                 const blob = new Blob([result.body], {
                     type: 'application/zip'
                 });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = fileName;
-                link.click();
+
+                saveAs(blob, 'project.zip');
             },
             (error) => {
-                    this.toastService.error("Error: can not download", 'Error');
+                    this.toastService.error("Error: can not download", 'Error Message', {tapToDismiss: true});
                     console.log(error);
             });
-
-
     }
     remove(event: boolean) {
         if (event) {
