@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace IDE.BLL.Services
 {
@@ -42,6 +43,15 @@ namespace IDE.BLL.Services
             {
                 await AddToFileLinkedItems(fileForProjectDto);
             }
+
+            return fileForProjectDtos;
+        }
+        public async Task<IDictionary<string, FileDTO>> GetRangeByListOfIdAsync(ICollection<string> listOfId)
+        {
+            var filesForProject = await _fileRepository.GetAllAsync(f => listOfId.Any( id => id == f.Id));
+
+            var fileForProjectDtos = _mapper.Map<ICollection<FileDTO>>(filesForProject)
+                .ToDictionary(key => key.Id, value => value);
 
             return fileForProjectDtos;
         }
