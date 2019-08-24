@@ -177,7 +177,7 @@ export class AddCollaboratorsComponent implements OnInit {
         if (filtered.length === 0) {
             const notFound: UserNicknameDTO = {
                 id: 0,
-                nickName: "We couldn’t find any project matching " + query
+                nickName: "We couldn’t find any user nickname matching " + query
             }
             filtered.push(notFound);
         }
