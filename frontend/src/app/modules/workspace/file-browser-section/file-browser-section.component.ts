@@ -16,7 +16,9 @@ import { ProjectService } from 'src/app/services/project.service/project.service
 import filesExtensions from '../../../assets/file-extensions.json';
 import defaultExtensions from '../../../assets/newFilesDefaultExtensions.json';
 import { FileUpdateDTO } from 'src/app/models/DTO/File/fileUpdateDTO';
+import { delay } from 'rxjs/operators';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
+import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -27,17 +29,21 @@ export class FileBrowserSectionComponent implements OnInit {
     @Input() project: ProjectInfoDTO;
     @Input() showSearchField:boolean;
     @Output() fileSelected = new EventEmitter<string>();
+    @Output() renameFile = new EventEmitter<FileRenameDTO>();
     items: MenuItem[];
     public files: TreeNode[];
     public selectedItem: TreeNode;
     public projectId: number;
     public expandFolder = false;
 
-    private fileCounter: number = 0;
-    private folderCounter: number = 0;
     private lastSelectedElement: any;
     private extensions: Extension[];
     private defaultExtension: string;
+
+    private lastActionFileCreated: boolean = false;
+    private lastActionFolderCreated: boolean = false;
+    private lastCreatedNode: TreeNode;
+    private currentInputPos: 0;
 
     constructor(private projectStructureService: FileBrowserService,
                 private projectStructureFormaterService: ProjectStructureFormaterService,
@@ -111,37 +117,8 @@ export class FileBrowserSectionComponent implements OnInit {
             parent.children.push(newNode);
             parent.children.sort(this.nodeCompare);
         }
-    }
-
-    private createFile(node: TreeNode) {
-        if (this.defaultExtension === undefined) {
-            const lang = this.project.language.toString();
-            this.defaultExtension = defaultExtensions.find(x => x.language === lang).extension;
-        }
-        var newFile : FileCreateDTO  = {
-            name: `New File ${++this.fileCounter}`,
-            content: "// Start code here:\n",
-            projectId: this.projectId,
-            folder : ""
-        }
-        newFile.folder = this.getFolderName(node);
-
-        this.fileService.addFile(newFile).subscribe(
-            (response) => {
-                let newFileNode = this.projectStructureFormaterService.makeFileNode(`New File ${this.fileCounter}${this.defaultExtension}`, response.body.id);
-                newFileNode.type = TreeNodeType.file.toString();
-                newFileNode.parent = node;
-                newFileNode.icon = this.getExtensionImage(this.defaultExtension);
-                this.appendNewNode(node, newFileNode);
-                this.updateProjectStructure();
-                this.toast.success("File successfully created", "Success Message", { tapToDismiss: true })
-            },
-            (error) => {
-                this.toast.error("File wasn't created", "Error Message", { tapToDismiss: true })
-                console.log(error);
-            }
-        );
-    }
+        this.selectedItem = newNode;   
+    }    
 
     private getFileStructure(files : TreeNode[]) : FileStructureDTO[] {
         let fileStructure : FileStructureDTO[] = [];
@@ -166,7 +143,6 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     private updateProjectStructure(){
-
         let fileStructure : FileStructureDTO[];
         fileStructure = this.getFileStructure(this.files);
         let projectStructured : ProjectStructureDTO = {
@@ -184,19 +160,115 @@ export class FileBrowserSectionComponent implements OnInit {
         );
     }
 
+    public inputKeyDown(event: any) {
+        const pos = event.target.selectionStart;
+        switch(event.keyCode) {
+            case 37:
+                if (pos > 0) {
+                    (this.lastSelectedElement as HTMLInputElement).setSelectionRange(pos, pos);
+                    event.stopPropagation();
+                }
+                break;
+            case 39:
+                (this.lastSelectedElement as HTMLInputElement).setSelectionRange(pos, pos);
+                event.stopPropagation();
+                break;
+        }
+    }
+
+    private createFile(node: TreeNode) {
+        if(this.lastActionFileCreated || this.lastActionFolderCreated) {
+            return;
+        }
+        if (this.defaultExtension === undefined) {
+            const lang = this.project.language.toString();
+            this.defaultExtension = defaultExtensions.find(x => x.language === lang).extension;
+        }
+        this.lastActionFileCreated = true;
+        this.lastCreatedNode = this.projectStructureFormaterService.makeFileNode(`file${this.defaultExtension}`, '1')
+        this.lastCreatedNode.type = TreeNodeType.file.toString();
+        this.lastCreatedNode.parent = node;
+        this.lastCreatedNode.icon = this.getExtensionImage(this.defaultExtension);
+        this.appendNewNode(node, this.lastCreatedNode);
+
+        setTimeout(() => {
+            var element = document.getElementsByClassName('ui-state-highlight').item(0).children.item(0).children.item(0) as HTMLInputElement;
+            this.lastSelectedElement = element;
+            this.rename(this.selectedItem);
+        }, 1);
+    }
+
     private createFolder(node: TreeNode) {
-        let newFolderNode = this.projectStructureFormaterService.makeFolderNode(`New Folder ${++this.folderCounter}`, this.folderCounter.toString());
-        newFolderNode.type = TreeNodeType.folder.toString();
-        newFolderNode.parent = node;
-        this.appendNewNode(node, newFolderNode);
-        this.toast.success("Folder successfully created", "Success Message", { tapToDismiss: true })
-        this.updateProjectStructure();
+        if(this.lastActionFileCreated || this.lastActionFolderCreated) {
+            return;
+        }
+        this.lastActionFolderCreated = true;
+        this.lastCreatedNode = this.projectStructureFormaterService.makeFolderNode(`New folder`, '1')
+        this.lastCreatedNode.type = TreeNodeType.folder.toString();
+        this.lastCreatedNode.parent = node;
+        this.appendNewNode(node, this.lastCreatedNode);
+
+        setTimeout(() => {
+            var element = document.getElementsByClassName('ui-state-highlight').item(0).children.item(0).children.item(0) as HTMLInputElement;
+            this.lastSelectedElement = element;
+            this.rename(this.selectedItem);
+        }, 1);
+    }
+
+    private create(node: TreeNode) {
+        const label = this.lastSelectedElement.value.trim();
+        if ((label === `file${this.defaultExtension}` && node.parent.children.filter(n => n.label === label).length > 1)
+            || (label !== `file${this.defaultExtension}` && node.parent.children.some(n => n.label === label))) {
+            this.lastSelectedElement.focus();
+            this.toast.error(`File with name \"${label}\" already exist!`, "Error Message", { tapToDismiss: true });
+            return;
+        }
+        this.lastCreatedNode.label = label;
+
+        if (this.lastActionFolderCreated) {
+            this.toast.success(`Folder \"${label}\" successfully created`, "Success Message", { tapToDismiss: true })
+            this.updateProjectStructure();    
+            this.lastSelectedElement = null;
+            this.lastCreatedNode = null;
+        } else {
+            this.lastActionFileCreated = false;
+            var newFile : FileCreateDTO  = {
+                name: label,
+                content: "// Start code here:\n",
+                projectId: this.projectId,
+                folder : this.getFolderName(node)
+            }
+            
+            this.fileService.addFile(newFile).subscribe(
+                (response) => {
+                    this.lastCreatedNode.key = response.body.id;
+                    this.updateProjectStructure(); 
+                    this.toast.success(`File \"${label}\" successfully created`, "Success Message", { tapToDismiss: true })
+                    node.selectable = true;
+                    this.lastSelectedElement.disabled = true;
+                },
+                (error) => {
+                    this.toast.error("File wasn't created", "Error Message", { tapToDismiss: true })
+                    console.log(error);
+                },
+                () => {
+                    this.lastSelectedElement = null;
+                    this.lastCreatedNode = null;
+                }
+            );
+        }
     }
 
     public focusout(node: TreeNode){
         if (this.lastSelectedElement.disabled) {
             return;
         }
+
+        if (this.lastActionFileCreated || this.lastActionFolderCreated) {
+            this.create(node);
+            return;
+        }
+
         node.selectable = true;
         this.lastSelectedElement.disabled = true;
         const newName = this.lastSelectedElement.value.trim();
@@ -216,8 +288,12 @@ export class FileBrowserSectionComponent implements OnInit {
             return;
         }
         node.label = newName;
-        this.toast.success(`Successfully renamed to "${newName}"`, "Success Message", { tapToDismiss: true })
-        this.updateProjectStructure();
+        const fileRename: FileRenameDTO = { name: node.label, id: node.key };
+        this.fileService.updateFileName(fileRename).subscribe((response) => {
+            this.toast.success(`Successfully renamed to "${newName}"`, "Success Message", { tapToDismiss: true })
+            this.updateProjectStructure();
+            this.renameFile.emit(fileRename);
+        })
     }
 
     public setIcon(node: TreeNode) {

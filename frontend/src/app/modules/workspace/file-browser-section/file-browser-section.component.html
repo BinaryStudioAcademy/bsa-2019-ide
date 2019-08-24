@@ -5,10 +5,12 @@
         (onNodeSelect)="nodeSelect($event)" (onNodeContextMenuSelect)="nodeContextMenuSelect($event)" [filter]="showSearchField"
         filterMode="strict">
         <ng-template let-node pTemplate="0">
-                <input class="input-item" [value]="node.label" (focusout)="focusout(node)" disabled>
+                <input class="input-item" [value]="node.label" (focusout)="focusout(node)" 
+                        (keyup.enter)="focusout(node)" (keydown)="inputKeyDown($event)" disabled>
         </ng-template>
         <ng-template let-node  pTemplate="1">
-            <input class="input-item" type="text" [ngModel]="node.label" (focusout)="focusout(node)" (input)="setIcon(node)" (keyup.enter)="focusout(node)" disabled>
+            <input class="input-item" type="text" [ngModel]="node.label" (focusout)="focusout(node)"
+                        (input)="setIcon(node)" (keyup.enter)="focusout(node)" (keydown)="inputKeyDown($event)" disabled>
         </ng-template>
     </p-tree>
     <p-contextMenu #cm [model]="items"></p-contextMenu>
