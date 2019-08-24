@@ -35,4 +35,9 @@ export class AddCollaboratorsListComponent implements OnInit {
     public delete(collaboratorId: number): void {
         this.addCollaboratorsComponent.delete(collaboratorId);
     }
+
+    public isAuthor()
+    {
+        return this.addCollaboratorsComponent.isAuthor();
+    }
 }

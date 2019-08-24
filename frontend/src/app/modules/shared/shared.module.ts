@@ -13,8 +13,7 @@ import {UserAccessDirective} from 'src/app/directives/userAccess/user-access.dir
         ConfirmationDialogComponent,
         ProjectTypeDirective,
         LanguageDirective,
-        CompilerTypeDirective,
-        UserAccessDirective
+        CompilerTypeDirective
     ],
     imports: [
         CommonModule,
@@ -24,8 +23,7 @@ import {UserAccessDirective} from 'src/app/directives/userAccess/user-access.dir
         ConfirmationDialogComponent,
         ProjectTypeDirective,
         LanguageDirective,
-        CompilerTypeDirective,
-        UserAccessDirective
+        CompilerTypeDirective
     ],
     providers: [
         ConfirmationService
