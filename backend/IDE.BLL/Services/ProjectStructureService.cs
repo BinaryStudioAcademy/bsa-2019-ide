@@ -106,7 +106,7 @@ namespace IDE.BLL.Services
 
         public async Task UnzipProject(ProjectStructureDTO projectStructure, IFormFile zipFile, int userId, int projectId)
         {
-            string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "Temp", Guid.NewGuid().ToString());
+            string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\Temp", Guid.NewGuid().ToString());
             try
             {
                 if (!Directory.Exists(tempFolder))

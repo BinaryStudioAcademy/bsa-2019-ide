@@ -146,7 +146,7 @@ namespace IDE.API.Controllers
         [HttpGet("Download/{id}")]
         public async Task<ActionResult> DownloadProject(int id)
         {
-            var tempDir = Path.Combine(Directory.GetCurrentDirectory(), "Temp");
+            var tempDir = Path.Combine(Directory.GetCurrentDirectory(), "..\\Temp");
 
             var path = Path.Combine(tempDir, Guid.NewGuid().ToString());
 
@@ -165,10 +165,12 @@ namespace IDE.API.Controllers
                 _logger.LogWarning(LoggingEvents.GetItemNotFound, $"File on server not found");
                 return NotFound();
             }
-
-            if (Directory.Exists(path))
+            finally
             {
-                Directory.Delete(path, true);
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
             }
 
             try
