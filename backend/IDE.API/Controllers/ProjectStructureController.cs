@@ -1,6 +1,7 @@
 ﻿using IDE.BLL.Services;
 using IDE.Common.ModelsDTO.DTO.Workspace;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,10 +13,11 @@ namespace IDE.API.Controllers
     public class ProjectStructureController : ControllerBase
     {
         private readonly ProjectStructureService _projectStructureService;
-
-        public ProjectStructureController(ProjectStructureService projectStructureService)
+        private readonly ILogger<ProjectStructureController> _logger;
+        public ProjectStructureController(ProjectStructureService projectStructureService, ILogger<ProjectStructureController> logger)
         {
             _projectStructureService = projectStructureService;
+            _logger = logger;
         }
 
         [HttpPost]

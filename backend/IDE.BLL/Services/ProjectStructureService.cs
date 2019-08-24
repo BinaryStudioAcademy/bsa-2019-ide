@@ -15,6 +15,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace IDE.BLL.Services
 {
@@ -23,15 +24,17 @@ namespace IDE.BLL.Services
         private readonly IProjectStructureRepository _projectStructureRepository;
         private readonly FileService _fileService;
         private readonly IMapper _mapper;
+        private readonly ILogger<ProjectStructureService> _logger;
 
         public ProjectStructureService(
             IProjectStructureRepository projectStructureRepository,
             FileService fileService,
-            IMapper mapper)
+            IMapper mapper, ILogger<ProjectStructureService> logger)
         {
             _projectStructureRepository = projectStructureRepository;
             _fileService = fileService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ProjectStructureDTO> GetByIdAsync(string id)

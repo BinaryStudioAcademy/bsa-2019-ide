@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections;
 using IDE.Common.ModelsDTO.DTO.User;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using IDE.Common.ModelsDTO.Enums;
 
 namespace IDE.API.Controllers
 {
@@ -16,21 +18,24 @@ namespace IDE.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UserService _userService;
-
-        public UsersController(UserService userService)
+        private readonly ILogger<UsersController> _logger;
+        public UsersController(UserService userService, ILogger<UsersController> logger)
         {
             _userService = userService;
+            _logger = logger;
         }
 
         [HttpGet("fromToken")]
         public async Task<ActionResult<UserDTO>> GetUserFromToken()
         {
+            _logger.LogInformation(LoggingEvents.GetItem, $"Get user from token");
             return Ok(await _userService.GetUserById(this.GetUserIdFromToken()));
         }
 
         [HttpGet("details")]
         public async Task<ActionResult<UserDetailsDTO>> GetUserDetailsFromToken()
         {
+            _logger.LogInformation(LoggingEvents.GetItem, $"Get user details from token");
             return Ok(await _userService.GetUserDetailsById(this.GetUserIdFromToken()));
         }
 
@@ -38,6 +43,7 @@ namespace IDE.API.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<UserDTO>> GetById(int id)
         {
+            _logger.LogInformation(LoggingEvents.GetItem, $"Get user by id {id}");
             return Ok(await _userService.GetUserById(id));
         }
 

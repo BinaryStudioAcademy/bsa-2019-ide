@@ -3,13 +3,18 @@ using IDE.BLL.Interfaces;
 using IDE.BLL.Services;
 using IDE.Common.DTO.Project;
 using IDE.Common.ModelsDTO.DTO.Project;
-using IDE.Common.ModelsDTO.DTO.User;
+
 using IDE.DAL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
+
 using System.Collections.Generic;
 using System.IO;
+using System;
+using IDE.DAL.Interfaces;
+using IDE.Common.ModelsDTO.DTO.User;
+using Microsoft.Extensions.Logging;
+using IDE.Common.ModelsDTO.Enums;
 using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
@@ -28,6 +33,7 @@ namespace IDE.API.Controllers
         private readonly IBlobRepository _blobRepo;
         private readonly IProjectTemplateService _projectTemplateService;
         private readonly INotificationService _notificationService;
+        private readonly ILogger<ProjectController> _logger;
 
         public ProjectController(IProjectService projectService,
                                 IProjectMemberSettingsService projectMemberSettings,
@@ -35,7 +41,8 @@ namespace IDE.API.Controllers
                                 IProjectTemplateService projectTemplateService,
                                 FileService fileService,
                                 IBlobRepository blobRepo,
-                                INotificationService notificationService)
+                                INotificationService notificationService,
+                                ILogger<ProjectController> logger)
         {
             _projectStructureService = projectStructureService;
             _projectService = projectService;
@@ -44,11 +51,13 @@ namespace IDE.API.Controllers
             _blobRepo = blobRepo;
             _projectTemplateService = projectTemplateService;
             _notificationService = notificationService;
+            _logger = logger;
         }
 
         [HttpGet("{projectId}")]
         public async Task<ActionResult<ProjectDescriptionDTO>> GetProjectById(int projectId)
         {
+            _logger.LogInformation(LoggingEvents.GetItem, $"Get project id {projectId}");
             return Ok(await _projectService.GetProjectById(projectId));
         }
 
@@ -93,6 +102,7 @@ namespace IDE.API.Controllers
         {
             var author = this.GetUserIdFromToken();
             var projectId = await _projectService.CreateProject(project, author);
+            _logger.LogInformation(LoggingEvents.InsertItem, $"Created project {projectId}");
 
             if (Request.Form.Files.Count > 0)
             {
@@ -105,7 +115,7 @@ namespace IDE.API.Controllers
                 var projectStructureDTO = await _projectTemplateService.GenerateProjectTemplate(project.Name, projectId, author, project.Language);
                 await _projectStructureService.CreateAsync(projectStructureDTO);
             }
-            
+
             return Created("/project", projectId);
         }
 
@@ -113,6 +123,7 @@ namespace IDE.API.Controllers
         public async Task<ActionResult<ProjectInfoDTO>> UpdateProject([FromBody] ProjectUpdateDTO project)
         {
             var updatedProject = await _projectService.UpdateProject(project);
+            _logger.LogInformation(LoggingEvents.UpdateItem, $"Project updated {project.Id}");
             return Ok(updatedProject);
         }
 
@@ -121,6 +132,7 @@ namespace IDE.API.Controllers
         {
             int userId = this.GetUserIdFromToken();
             await _projectService.DeleteProjectAsync(id, userId);
+            _logger.LogInformation(LoggingEvents.DeleteItem, $"Project deleted {id}");
             return NoContent();
         }
 
@@ -140,6 +152,7 @@ namespace IDE.API.Controllers
 
             bool result = await _projectService.CreateProjectZipFile(id, path);
             if (!result) {
+                _logger.LogInformation(LoggingEvents.OperationFailed, $"Making project zip failed");
                 return BadRequest();
             }
             Uri uri;
@@ -149,7 +162,7 @@ namespace IDE.API.Controllers
             }
             catch (FileNotFoundException)
             {
-
+                _logger.LogWarning(LoggingEvents.GetItemNotFound, $"File on server not found");
                 return NotFound();
             }
 
@@ -167,6 +180,7 @@ namespace IDE.API.Controllers
             }
             catch (Exception e)
             {
+                _logger.LogWarning(LoggingEvents.OperationFailed, $"Downloading project zip from blob storage failed");
                 return BadRequest(e);
             }
 

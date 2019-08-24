@@ -8,9 +8,11 @@ using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Common;
 using IDE.Common.ModelsDTO.DTO.Project;
 using IDE.Common.ModelsDTO.DTO.User;
+using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,22 +27,25 @@ namespace IDE.BLL.Services
         private readonly IdeContext _context;
         private readonly IMapper _mapper;
         private readonly FileService _fileService;
+        private readonly ILogger<ProjectService> _logger;
         private readonly INotificationService _notificationService;
 
-        public ProjectService(IdeContext context, 
-            IMapper mapper, 
+        public ProjectService(IdeContext context,
+            IMapper mapper,
             FileService fileService,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            ILogger<ProjectService> logger)
         {
             _context = context;
             _mapper = mapper;
             _fileService = fileService;
             _notificationService = notificationService;
+            _logger = logger;
         }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
         public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)
-        {            
+        {
             var project = await _context.Projects
                 .Include(p => p.Author)
                 .FirstOrDefaultAsync(p => p.Id == projectId);
@@ -165,6 +170,7 @@ namespace IDE.BLL.Services
 
             if (targetProject == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"update project not found");
                 throw new NotFoundException(nameof(targetProject), projectUpdateDTO.Id);
             }
 
@@ -194,9 +200,15 @@ namespace IDE.BLL.Services
                 .Include(pr => pr.Builds)
                 .FirstOrDefaultAsync(p => p.Id == id);
             if (project == null)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"delete project not found");
                 throw new NotFoundException(nameof(Project), id);
+            }
             if (project.AuthorId != ownerId)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"not author delete project");
                 throw new InvalidAuthorException();
+            }
 
             //var filesDelete = await _fileService.GetAllForProjectAsync(id);
             //foreach (var file in filesDelete)
@@ -256,7 +268,7 @@ namespace IDE.BLL.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                _logger.LogWarning(LoggingEvents.HaveException, $"making zip file not successful");
                 return false;
             }
             return true;

@@ -5,6 +5,7 @@ using IDE.Common.ModelsDTO.DTO.Common;
 using IDE.Common.ModelsDTO.DTO.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 
@@ -16,10 +17,11 @@ namespace IDE.API.Controllers
     public class RightsController : ControllerBase
     {
         private readonly IRightsService _rightsService;
-
-        public RightsController(IRightsService rightsService)
+        private readonly ILogger<RightsController> _logger;
+        public RightsController(IRightsService rightsService, ILogger<RightsController> logger)
         {
             _rightsService = rightsService;
+            _logger = logger;
         }
 
         [HttpPut]

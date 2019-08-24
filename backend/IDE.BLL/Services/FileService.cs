@@ -2,8 +2,10 @@
 using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
 using IDE.Common.DTO.File;
+using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,17 +19,19 @@ namespace IDE.BLL.Services
         private readonly FileHistoryService _fileHistoryService;
         private readonly UserService _userService;
         private readonly IMapper _mapper;
-
+        private readonly ILogger<FileService> _logger;
         public FileService(
             INoSqlRepository<File> fileRepository, 
             FileHistoryService fileHistoryService, 
             UserService userService,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<FileService> logger)
         {
             _fileRepository = fileRepository;
             _fileHistoryService = fileHistoryService;
             _userService = userService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<ICollection<FileDTO>> GetAllForProjectAsync(int projectId)
@@ -48,6 +52,7 @@ namespace IDE.BLL.Services
             var file = await _fileRepository.GetByIdAsync(id);
             if (file == null)
             {
+                _logger.LogWarning(LoggingEvents.GetItemNotFound, $"GetFileById({id}) NOT FOUND");
                 throw new NotFoundException(nameof(File), id);
             }
 
@@ -113,6 +118,7 @@ namespace IDE.BLL.Services
             var file = await _fileRepository.GetByIdAsync(id);
             if (file == null)
             {
+                _logger.LogWarning(LoggingEvents.DeleteItemNotFound, $"Deleting file ({id}) NOT FOUND");
                 throw new NotFoundException(nameof(File), id);
             }
 

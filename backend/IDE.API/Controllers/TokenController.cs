@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using IDE.Common.ModelsDTO.DTO.Authentification;
+using Microsoft.Extensions.Logging;
 
 namespace IDE.API.Controllers
 {
@@ -13,10 +14,11 @@ namespace IDE.API.Controllers
     public class TokenController : Controller
     {
         private readonly AuthService _authService;
-
-        public TokenController(AuthService authService)
+        private readonly ILogger<TokenController> _logger;
+        public TokenController(AuthService authService, ILogger<TokenController> logger)
         {
             _authService = authService;
+            _logger = logger;
         }
 
         [HttpPost("refresh")]
