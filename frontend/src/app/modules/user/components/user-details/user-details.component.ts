@@ -54,7 +54,7 @@ export class UserDetailsComponent implements OnInit {
             this.userPhotoUpdate();
         }},
         {label: 'Delete Image', icon: 'pi pi-trash', command: () => {
-            // this.delete();
+            this.DeleteProfilePhoto();
         }},
         {label: 'Update Info', icon: 'pi pi-refresh', command: () => {
             this.userInfoUpdate();
@@ -97,14 +97,23 @@ export class UserDetailsComponent implements OnInit {
     this.toastrService.error("An error occured while uploading photo");
   }
 
-  handleClick(event){
+  UpdateProfilePhoto(event){
     this.hasDetailsSaveResponse = true;
     this.userService.updateProfilePhoto(this.image).subscribe(resp =>{
         window.location.reload()
-        this.toastrService.success('photo successfuly updated')
+        this.toastrService.success('photo successfully updated');
     },error =>{
         this.toastrService.error('can`t update photo');
-    }
-    )
+    });
   }
+
+  DeleteProfilePhoto(){
+    this.userService.deleteProfilePhoto().subscribe(resp =>{
+        this.toastrService.success('photo successfully deleted');
+        window.location.reload();
+    },error =>{
+        this.toastrService.error('can`t delete photo');
+    });
+  }
+
 }

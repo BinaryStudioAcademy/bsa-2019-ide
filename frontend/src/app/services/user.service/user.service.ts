@@ -51,6 +51,10 @@ export class UserService {
         return this.httpService.putRequest(`${this.routePrefix}/photo`, image);
     }
 
+    public deleteProfilePhoto(){
+        return this.httpService.deleteRequest(`${this.routePrefix}/photo/del`);
+    }
+
     public copyUser({ email, firstName, lastName, id, nickName }: UserDTO) {
         return {
             firstName,

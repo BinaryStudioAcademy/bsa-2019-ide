@@ -62,7 +62,7 @@
             [alignImage]="'bottom'"
         ></image-cropper>
       </div>
-      <p-button [style]="{'padding-top':'20px'}" label="Update" (onClick)="handleClick($event)" *ngIf="!hasDetailsSaveResponse && selected"></p-button>
+      <p-button [style]="{'padding-top':'20px'}" label="Update" (onClick)="UpdateProfilePhoto($event)" *ngIf="!hasDetailsSaveResponse && selected"></p-button>
       <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="hasDetailsSaveResponse">
             <p-progressSpinner></p-progressSpinner>
       </div>

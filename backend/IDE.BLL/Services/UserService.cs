@@ -179,7 +179,7 @@ namespace IDE.BLL.Services
         public async Task UpdateUserAvatar(ImageUploadBase64DTO imageUploadBase64DTO, int userId)
         {
             var imgSrc = await _imageUploader.UploadAsync(imageUploadBase64DTO.Base64);
-            var targetUser = await _context.Users.SingleOrDefaultAsync(p => p.Id == userId);
+            var targetUser = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
 
             await _context.Images.AddAsync(new Image { Url = imgSrc });
             await _context.SaveChangesAsync();
@@ -189,6 +189,18 @@ namespace IDE.BLL.Services
             targetUser.AvatarId = imageId.Id;
 
             _context.Users.Update(targetUser);
+            await _context.SaveChangesAsync();
+        }
+
+
+        public async Task DeleteAvatar(int userId)
+        {
+            var targetUser = await _context.Users.SingleOrDefaultAsync(u => u.Id == userId);
+            var tarhetImage = await _context.Images.SingleOrDefaultAsync(i => i.Id == targetUser.AvatarId);
+
+            targetUser.AvatarId = null;
+            _context.Images.Remove(tarhetImage);
+
             await _context.SaveChangesAsync();
         }
     }

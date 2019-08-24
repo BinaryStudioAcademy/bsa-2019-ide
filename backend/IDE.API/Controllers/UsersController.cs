@@ -62,5 +62,14 @@ namespace IDE.API.Controllers
 
             await _userService.UpdateUserAvatar(imageUploadBase64DTO, author);
         }
+
+        [HttpDelete("photo/del")]
+        public async Task<ActionResult> DeleteAvatar()
+        {
+            var author = this.GetUserIdFromToken();
+
+            await _userService.DeleteAvatar(author);
+            return NoContent();
+        }
     }
 }
