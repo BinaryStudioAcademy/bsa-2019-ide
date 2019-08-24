@@ -3,7 +3,7 @@ import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { SelectItem } from 'primeng/api';
 import { AddCollaboratorsComponent } from '../add-collaborators/add-collaborators.component';
-import { ProjectWindowComponent } from '../../../project/components/project-window/project-window.component';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-add-collaborators-list',
@@ -21,6 +21,7 @@ export class AddCollaboratorsListComponent implements OnInit {
     @Input() collaborators: CollaboratorDTO[];
 
     constructor(
+        private router: Router,
         private addCollaboratorsComponent: AddCollaboratorsComponent) { }
 
     ngOnInit() {
@@ -34,5 +35,9 @@ export class AddCollaboratorsListComponent implements OnInit {
 
     public delete(collaboratorId: number): void {
         this.addCollaboratorsComponent.delete(collaboratorId);
+    }
+
+    public openUserDetails(id: number):void {
+        this.router.navigate([`/user/details/${id}`]);   
     }
 }

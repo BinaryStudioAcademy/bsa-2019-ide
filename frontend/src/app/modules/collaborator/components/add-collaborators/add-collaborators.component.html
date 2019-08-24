@@ -3,7 +3,8 @@
     <div class="ui-g-12">
         <p-autoComplete class="collaborator-auto-complete" [(ngModel)]="collaborator"
             [suggestions]="filterCollaborators" (completeMethod)="filterCollarator($event)" field="nickName" [size]="30"
-            placeholder="User nickname..." [minLength]="1" (onSelect)="addCollaborator(collaborator)"></p-autoComplete>
+            placeholder="User nickname..." [minLength]="1" (onSelect)="addCollaborator(collaborator)">
+        </p-autoComplete>
     </div>
 </div>
 
