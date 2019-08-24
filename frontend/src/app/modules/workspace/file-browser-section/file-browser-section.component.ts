@@ -18,7 +18,7 @@ import defaultExtensions from '../../../assets/newFilesDefaultExtensions.json';
 import { FileUpdateDTO } from 'src/app/models/DTO/File/fileUpdateDTO';
 import { delay } from 'rxjs/operators';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
-import { FileRenameDTO } from '../../../models/DTO/File/FileRenameDTO';
+import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 
 @Component({
     selector: 'app-file-browser-section',

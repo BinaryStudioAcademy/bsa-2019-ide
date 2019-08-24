@@ -26,7 +26,7 @@ import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
-import { FileRenameDTO } from '../../../models/DTO/File/FileRenameDTO';
+import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 
 
 // FOR REFACTOR

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { FileCreateDTO } from 'src/app/models/DTO/File/fileCreateDTO';
-import { FileRenameDTO } from '../../models/DTO/File/FileRenameDTO';
+import { FileRenameDTO } from '../../models/DTO/File/fileRenameDTO';
 
 @Injectable({
     providedIn: 'root'
