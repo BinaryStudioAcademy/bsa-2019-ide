@@ -2,6 +2,7 @@
 using IDE.BLL.ExceptionsCustom;
 using IDE.Common.DTO.File;
 using IDE.Common.ModelsDTO.Enums;
+using IDE.Common.ModelsDTO.DTO.File;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -109,6 +110,26 @@ namespace IDE.BLL.Services
                 CreatedAt = currentFileDto.UpdatedAt.Value
             };
             await _fileHistoryService.CreateAsync(fileHistory);           
+        }
+
+        public async Task RenameAsync(FileRenameDTO fileRenameDTO, int updaterId)
+        {
+            var currentFileDto = await GetByIdAsync(fileRenameDTO.Id);
+            currentFileDto.Name = fileRenameDTO.Name;
+            currentFileDto.UpdaterId = updaterId;
+            currentFileDto.UpdatedAt = DateTime.Now;
+
+            var fileUpdate = _mapper.Map<File>(currentFileDto);
+            await _fileRepository.UpdateAsync(fileUpdate);
+
+            var fileHistory = new FileHistoryDTO
+            {
+                FileId = fileRenameDTO.Id,
+                Name = fileRenameDTO.Name,
+                CreatorId = updaterId,
+                CreatedAt = currentFileDto.UpdatedAt.Value
+            };
+            await _fileHistoryService.CreateAsync(fileHistory);
         }
 
         public async Task DeleteAsync(string id)
