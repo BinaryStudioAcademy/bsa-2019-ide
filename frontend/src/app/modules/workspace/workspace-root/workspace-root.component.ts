@@ -62,7 +62,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     constructor(
         private route: ActivatedRoute,
         private tr: ToastrService,
-        private ws: WorkspaceService,
+        private workSpaceService: WorkspaceService,
         private saveOnExit: LeavePageDialogService,
         private fileService: FileService,
         private rightService: RightsService,
@@ -144,7 +144,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.ws.getFileById(fileId)
+        this.workSpaceService.getFileById(fileId)
             .subscribe(
                 (resp) => {
                     if (resp.ok) {
@@ -165,52 +165,25 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             );
     }
 
-    // FOR REFACTOR
-    // onSaveButtonClick and onFilesSave do same things - need to create one method Save and calls it for this actions(save btn, tab close)
-    // firsty BETTER to have method for save one file its more logical. And add than save all method. And for close tab use saveOne method!!!
-    // this one calls on save btn click
-    public onSaveButtonClick(ev) {
+    public onFilesSave(files?: FileUpdateDTO[]) {
         if (!this.editor.anyFileChanged()) {
             return;
         }
-        this.saveFiles().subscribe(
-            (success) => {
-                if (success.every(x => x.ok)) {
-                    this.tr.success("Files saved", 'Success', { tapToDismiss: true });
-                } else {
-                    this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
-                }
-            },
-            (error) => {
-                this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
-                console.error(error);
-            }
-        );
-    }
-
-    public hideSearchField(): void {
-        this.showSearch = !this.showSearch;
-    }
-
-    // this one calls on tab close
-    public onFilesSave(files: FileUpdateDTO[]) {
         this.saveFilesRequest(files)
             .subscribe(
                 success => {
                     if (success.every(x => x.ok)) {
                         this.tr.success("Files saved", 'Success', { tapToDismiss: true });
-                        // FOR REFACTOR
-                        // "confirmSaving" method invert isChanged flag,
-                        // but here in calls for closed tab, so it calls for undefind obj so it throw exeption
-                        // refactor it for call only for opened files and mabe rename it
-                        // this.editor.confirmSaving(files.map(x => x.id));
                     } else {
                         this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
                 },
                 error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
-    // FOR REFACTOR
+
+    public hideSearchField(): void {
+        this.showSearch = !this.showSearch;
+    }
 
     public hideFileBrowser(): void
     {
@@ -221,16 +194,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         this.projectEditService.show(ProjectType.Update, this.projectId);
     }
 
-    private saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
-        return this.ws.saveFilesRequest(files);
+    private saveFilesRequest(files?: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
+        if(!files)
+        {
+            files = this.editor.openedFiles.map(x => x.innerFile);         
+        }
+        return this.workSpaceService.saveFilesRequest(files);
     }
-    
-    public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
-        const openedFiles: FileUpdateDTO[] = this.editor.openedFiles.map(x => x.innerFile);
-
-        return this.saveFilesRequest(openedFiles);
-    }
-    // FOR REFACTOR
 
     canDeactivate(): Observable<boolean> {
         return !this.editor.anyFileChanged() ? of(true) : this.saveOnExit.confirm('Save changes?')
