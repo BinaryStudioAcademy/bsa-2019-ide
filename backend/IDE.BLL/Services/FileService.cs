@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
-using IDE.BLL.Interfaces;
 using IDE.Common.DTO.File;
 using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Entities.NoSql;
@@ -8,7 +7,6 @@ using IDE.DAL.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Services

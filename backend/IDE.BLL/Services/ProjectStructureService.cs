@@ -161,9 +161,12 @@ namespace IDE.BLL.Services
                 foreach (var file in Directory.GetFiles(sourseDir))
                 {
                     var fileName = file.Substring(file.LastIndexOf('\\') + 1);
+                    var dirName = sourseDir.Substring(sourseDir.LastIndexOf('\\') + 1);
+
+                    Debug.WriteLine(dirName);
 
                     var fileCreateDto = new FileCreateDTO();
-                    fileCreateDto.Folder = sourseDir;
+                    fileCreateDto.Folder = dirName;
                     fileCreateDto.Name = fileName;
                     fileCreateDto.ProjectId = projectId;
                     fileCreateDto.Content = await GetFileContent(file);
