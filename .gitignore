@@ -403,3 +403,4 @@ backend/IDE.API/appsettings.Development.json
 frontend/src/environments/environment.ts
 
 backend/IDE.API/Temp/
+backend/Temp/
