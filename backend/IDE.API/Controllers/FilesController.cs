@@ -4,6 +4,7 @@ using IDE.API.Extensions;
 using IDE.BLL.Services;
 using IDE.Common.DTO.File;
 using IDE.Common.ModelsDTO.Enums;
+using IDE.Common.ModelsDTO.DTO.File;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -57,6 +58,15 @@ namespace IDE.API.Controllers
             _logger.LogInformation(LoggingEvents.UpdateItem, $"Updating file {fileUpdateDTO.Id}");
             var updaterId = this.GetUserIdFromToken();
             await _fileService.UpdateAsync(fileUpdateDTO, updaterId);
+            return NoContent();
+        }
+
+        [HttpPut("rename")]
+        public async Task<ActionResult> RenameAsync([FromBody] FileRenameDTO fileRenameDTO)
+        {
+            _logger.LogInformation(LoggingEvents.UpdateItem, $"Updating file {fileRenameDTO.Id}");
+            var updaterId = this.GetUserIdFromToken();
+            await _fileService.RenameAsync(fileRenameDTO, updaterId);
             return NoContent();
         }
 
