@@ -51,15 +51,16 @@ export class ProjectDetailsInfoComponent implements OnInit {
         this.projectService.exportProject(this.project.id)
             .subscribe(
             (result) => {
+                console.log(result);
                 const blob = new Blob([result.body], {
                     type: 'application/zip'
                 });
 
-                saveAs(blob, 'project.zip');
+                saveAs(blob, `${this.project.name}.zip`);
             },
             (error) => {
-                    this.toastService.error("Error: can not download", 'Error Message', {tapToDismiss: true});
-                    console.log(error);
+                 this.toastService.error('Error: can not download', 'Error Message', {tapToDismiss: true});
+                 console.log(error);
             });
     }
     remove(event: boolean) {
