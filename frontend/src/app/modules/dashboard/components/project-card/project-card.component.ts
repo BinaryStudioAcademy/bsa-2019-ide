@@ -6,7 +6,7 @@ import { TokenService } from 'src/app/services/token.service/token.service';
 import { MenuItem } from 'primeng/api';
 import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
 import { ProjectType } from 'src/app/modules/project/models/project-type';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ProjDialogDataService } from 'src/app/services/proj-dialog-data.service/proj-dialog-data.service';
 
@@ -36,15 +36,11 @@ export class ProjectCardComponent implements OnInit {
 
         this.projectData.todos$
             .pipe(takeUntil(this.unsubscribe$))
+            .pipe(filter(project => { if(project !== null) { return project.id === this.project.id }}))
             .subscribe((proj) => {
-                if(proj === null) {
-                    return;
-                }
-                if (proj.id === this.project.id) {
-                    proj.lastBuild = this.project.lastBuild;
-                    proj.buildStatus = this.project.buildStatus;
-                    this.project = proj;
-                }
+                proj.lastBuild = this.project.lastBuild;
+                proj.buildStatus = this.project.buildStatus;
+                this.project = proj;
             });
     }
 
