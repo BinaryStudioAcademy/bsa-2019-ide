@@ -22,8 +22,8 @@ namespace BuildServer
             //setup our DI
             var services = new ServiceCollection();
             services.AddSingleton<IConfiguration>(configuration);
-            services.AddTransient<IBuilder, Builder>();
-            services.Configure<Builder>(configuration);
+            services.AddTransient<IBuilder, DotNetBuilder>();
+            services.Configure<DotNetBuilder>(configuration);
             services.AddTransient<IFileArchiver, FileArchiver>();
             services.Configure<FileArchiver>(configuration);
             services.AddTransient<IAzureService, AzureService>();

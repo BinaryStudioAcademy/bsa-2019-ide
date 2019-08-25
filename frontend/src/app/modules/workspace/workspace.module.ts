@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import {TabMenuModule} from 'primeng/tabmenu';
 import { ContextMenuModule, MenuModule } from 'primeng/primeng';
 import { FileInfoComponent } from './file-info/file-info.component';
+import {ProgressBarModule} from 'primeng/progressbar';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { FileInfoComponent } from './file-info/file-info.component';
     FormsModule,
     TabMenuModule,
     MenuModule,
-    ContextMenuModule
+    ContextMenuModule,
+    ProgressBarModule
   ]
 })
 export class WorkspaceModule { }

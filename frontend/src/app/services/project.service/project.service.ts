@@ -79,6 +79,10 @@ export class ProjectService {
     }
 
     public exportProject(projectId: number): Observable<HttpResponse<Blob>>{
-        return this.httpClient.getBlobRequest(`${this.address}/Download/${projectId}`);
+        return this.httpClient.getBlobRequest(`${this.address}/Download/${projectId.toString()}`);
+    }
+    
+    public exportFolder(projectId: number, folderGuid : string): Observable<HttpResponse<Blob>>{
+        return this.httpClient.getBlobRequest(`${this.address}/Download/${projectId.toString()}/${folderGuid}`);
     }
 }

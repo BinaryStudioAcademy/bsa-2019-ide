@@ -39,11 +39,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public userId: number;
     public access: UserAccess;
     public showFileBrowser = true;
-    public showSearch = false;
+    public showSearchField = true;
     public large = false;
     public canRun = false;
     public canBuild = false;
-    public canEdit = false;
+    public canNotEdit = false;
     public expandFolder=false;
     public project: ProjectInfoDTO;
 
@@ -74,7 +74,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         }
 
     ngOnInit() {
-        const userId = this.tokenService.getUserId();
+        this.userId = this.tokenService.getUserId();
         this.routeSub = this.route.params.subscribe(params => {
             this.projectId = params['id'];
         });
@@ -82,15 +82,18 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             .subscribe(
                 (resp) => {
                     this.authorId = resp.body;
-                });
-        if (this.userId != this.authorId) {
-            this.rightService.getUserRightById(userId, this.projectId)
-                .subscribe(
-                    (resp) => {
-                        this.access = resp.body;
+
+                    if (this.userId != this.authorId) {
+                        this.rightService.getUserRightById(this.userId, this.projectId)
+                            .subscribe(
+                                (resp) => {
+                                    this.access = resp.body;
+                                    this.setUserAccess();
+                                    console.log(this.canNotEdit);
+                                }
+                            )
                     }
-                )
-        }
+                });    
         this.projectService.getProjectById(this.projectId)
             .subscribe(
                 (resp) => {
@@ -100,7 +103,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                     this.tr.error("Can't load selected project.", 'Error Message');
                 }
             );
-        this.setUserAccess();
     }
 
     public getProjectColor(): string
@@ -110,15 +112,15 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     public setUserAccess() {
         switch (this.access) {
-            case 1:
-                this.canEdit = true;
+            case 0:
+                this.canNotEdit = true;
                 break;
             case 2:
-                this.canEdit = true;
+                this.canNotEdit = false;
                 this.canBuild = true;
                 break;
             case 3:
-                this.canEdit = true;
+                this.canNotEdit = false;
                 this.canBuild = true;
                 this.canRun = true;
                 break;
@@ -142,7 +144,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public onFileSelected(fileId: string): void {
-        if (this.editor.openedFiles.some(f => f.innerFile.id === fileId)) {
+        if (this.editor && this.editor.openedFiles.some(f => f.innerFile.id === fileId)) {
             this.editor.activeItem = this.editor.tabs.find(i => i.id === fileId);
             this.editor.code = this.editor.openedFiles.find(f => f.innerFile.id === fileId).innerFile.content;
             return;
@@ -186,7 +188,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public hideSearchField(): void {
-        this.showSearch = !this.showSearch;
+        this.showSearchField = !this.showSearchField;
     }
 
     public hideFileBrowser(): void

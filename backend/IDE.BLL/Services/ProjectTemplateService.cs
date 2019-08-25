@@ -3,6 +3,7 @@ using IDE.BLL.Interfaces;
 using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Workspace;
 using IDE.Common.ModelsDTO.Enums;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -56,28 +57,29 @@ namespace IDE.BLL.Services
                 ProjectId = projectId
                 //FilenameExtension = "csproj"//maybe better to use enums
             },
-            authorId); ;
+            authorId);
 
             projectStructureDTO.NestedFiles.Add(
                 new FileStructureDTO
                 {
+                    Id = Guid.NewGuid().ToString(),
                     Type = TreeNodeType.Folder,
                     Name = projectName,
                     NestedFiles = new List<FileStructureDTO>()
+                    {
+                        new FileStructureDTO()
                         {
-                            new FileStructureDTO()
-                            {
-                                Id = programFile.Id,
-                                Name = programFile.Name,
-                                Type = TreeNodeType.File,
-                            },
-                            new FileStructureDTO()
-                            {
-                                Id = projectFile.Id,
-                                Name = projectFile.Name,
-                                Type = TreeNodeType.File,
-                            }
+                            Id = programFile.Id,
+                            Name = programFile.Name,
+                            Type = TreeNodeType.File,
+                        },
+                        new FileStructureDTO()
+                        {
+                            Id = projectFile.Id,
+                            Name = projectFile.Name,
+                            Type = TreeNodeType.File,
                         }
+                    }
                 });
 
             return projectStructureDTO;
@@ -101,17 +103,18 @@ namespace IDE.BLL.Services
             projectStructureDTO.NestedFiles.Add(
                 new FileStructureDTO
                 {
+                    Id = Guid.NewGuid().ToString(),
                     Type = TreeNodeType.Folder,
                     Name = projectName,
                     NestedFiles = new List<FileStructureDTO>()
+                    {
+                        new FileStructureDTO()
                         {
-                            new FileStructureDTO()
-                            {
-                                Id = programFile.Id,
-                                Name = programFile.Name,
-                                Type = TreeNodeType.File,
-                            }
+                            Id = programFile.Id,
+                            Name = programFile.Name,
+                            Type = TreeNodeType.File,
                         }
+                    }
                 });
 
             return projectStructureDTO;
@@ -135,17 +138,18 @@ namespace IDE.BLL.Services
             projectStructureDTO.NestedFiles.Add(
                 new FileStructureDTO
                 {
+                    Id = Guid.NewGuid().ToString(),
                     Type = TreeNodeType.Folder,
                     Name = projectName,
                     NestedFiles = new List<FileStructureDTO>()
+                    {
+                        new FileStructureDTO()
                         {
-                            new FileStructureDTO()
-                            {
-                                Id = programFile.Id,
-                                Name = programFile.Name,
-                                Type = TreeNodeType.File,
-                            }
+                            Id = programFile.Id,
+                            Name = programFile.Name,
+                            Type = TreeNodeType.File,
                         }
+                    }
                 });
 
             return projectStructureDTO;
@@ -169,17 +173,18 @@ namespace IDE.BLL.Services
             projectStructureDTO.NestedFiles.Add(
                 new FileStructureDTO
                 {
+                    Id = Guid.NewGuid().ToString(),
                     Type = TreeNodeType.Folder,
                     Name = projectName,
                     NestedFiles = new List<FileStructureDTO>()
+                    {
+                        new FileStructureDTO()
                         {
-                            new FileStructureDTO()
-                            {
-                                Id = programFile.Id,
-                                Name = programFile.Name,
-                                Type = TreeNodeType.File,
-                            }
+                            Id = programFile.Id,
+                            Name = programFile.Name,
+                            Type = TreeNodeType.File,
                         }
+                    }
                 });
 
             return projectStructureDTO;

@@ -25,6 +25,7 @@
     "@materia-ui/ngx-monaco-editor": "^2.0.6",
     "angular-resizable-element": "^3.2.4",
     "chart.js": "^2.8.0",
+    "file-saver": "^2.0.2",
     "font-awesome": "^4.7.0",
     "ngx-image-cropper": "^1.4.1",
     "ng2-charts": "^2.3.0",

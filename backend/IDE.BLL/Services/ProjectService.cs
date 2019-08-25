@@ -2,7 +2,6 @@
 using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
 using IDE.Common.DTO.Common;
-using IDE.Common.DTO.File;
 using IDE.Common.DTO.Project;
 using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Common;
@@ -15,8 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,7 +26,7 @@ namespace IDE.BLL.Services
         private readonly FileService _fileService;
         private readonly ILogger<ProjectService> _logger;
         private readonly INotificationService _notificationService;
-
+        
         public ProjectService(IdeContext context,
             IMapper mapper,
             FileService fileService,
@@ -265,36 +262,6 @@ namespace IDE.BLL.Services
                                 }).OrderByDescending(i => i.LikesCount).Take(5).ToArray()
                     })
                     .OrderBy(x => x.ProjectType).ToListAsync();
-        }
-
-        public async Task<bool> CreateProjectZipFile(int projectId, string path)
-        {
-            ICollection<FileDTO> filesForProject = await _fileService.GetAllForProjectAsync(projectId);
-            try
-            {
-                foreach (var f in filesForProject)
-                {
-                    f.Folder.TrimStart('/', '.');
-                    var dest = Path.Combine(path, "ProjectFolder", f.Folder);
-                    Directory.CreateDirectory(dest);
-                    using (StreamWriter sw = File.CreateText(Path.Combine(dest, f.Name)))
-                    {
-                        sw.Write(f.Content);
-                    }
-
-                }
-
-                ZipFile.CreateFromDirectory(Path.Combine(path,"ProjectFolder"), Path.Combine(path, $"project_{projectId}.zip"));
-                var dirToDelete = Path.Combine(path, "ProjectFolder");
-                Directory.Delete(dirToDelete, true);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(LoggingEvents.HaveException, $"making zip file not successful");
-                return false;
-            }
-            return true;
-
         }
     }
 }
