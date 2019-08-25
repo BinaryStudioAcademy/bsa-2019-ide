@@ -38,9 +38,7 @@ namespace IDE.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] FileCreateDTO fileCreateDTO)
         {
-            var authorId = this.GetUserIdFromToken();
-            var creatorId = authorId;
-
+            var creatorId = this.GetUserIdFromToken();
             var createdFile = await _fileService.CreateAsync(fileCreateDTO, creatorId);
             return CreatedAtAction(nameof(GetByIdAsync), new { id = createdFile.Id }, createdFile);
         }

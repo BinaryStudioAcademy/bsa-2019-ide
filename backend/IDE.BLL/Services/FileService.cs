@@ -74,7 +74,6 @@ namespace IDE.BLL.Services
             fileCreate.CreatorId = creatorId;
             var createdFile = await _fileRepository.CreateAsync(fileCreate);
 
-            //add to index
             var searchFile = _mapper.Map<FileSearch>(createdFile);
             await _fileSearchRepository.IndexAsync(searchFile);
 
@@ -103,7 +102,10 @@ namespace IDE.BLL.Services
 
             var fileUpdate = _mapper.Map<File>(currentFileDto);
             await _fileRepository.UpdateAsync(fileUpdate);
-                                 
+
+            var searchFile = _mapper.Map<FileSearch>(fileUpdate);
+            await _fileSearchRepository.UpdateAsync(searchFile);
+
             var fileHistory = new FileHistoryDTO
             {
                 FileId = fileUpdateDTO.Id,

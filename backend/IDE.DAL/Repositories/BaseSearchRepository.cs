@@ -1,4 +1,5 @@
-﻿using IDE.DAL.Entities.Elastic.Abstract;
+﻿using Elasticsearch.Net;
+using IDE.DAL.Entities.Elastic.Abstract;
 using IDE.DAL.Factories.Abstractions;
 using IDE.DAL.Interfaces;
 using Nest;
@@ -20,14 +21,23 @@ namespace IDE.DAL.Repositories
         }
 
 
-        #region Create/Delete index
+        // Create/Delete index
 
         public virtual async Task<bool> CreateIndex()
         {
-            // // check???
-            var response = await _client.Indices.CreateAsync(_index, c => c.Map<T>(mm => mm.AutoMap()));
+            if (!_client.Indices.Exists(_index).Exists)
+            {
+                var response = await _client.Indices.CreateAsync(
+                    _index,
+                    c => c
+                        .Map<T>(m => m
+                            .AutoMap()
+                ));
 
-            return response.Acknowledged;
+                return response.Acknowledged; //\\ to true and in general maybe void method? and method is required?
+            }
+
+            return false;
         }
 
         public virtual async Task<bool> DeleteIndex()
@@ -42,15 +52,16 @@ namespace IDE.DAL.Repositories
             return response.Acknowledged;
         }
 
-        #endregion
-
-        #region Add document
+        // Add document
 
         public virtual async Task IndexAsync(T document)
         {
-            await _client.IndexAsync(document, c => c
-                // .Id(document.Id) // Elasticsearch assigns a system id to the document if not specified while indexing the document.       
-                .OpType(Elasticsearch.Net.OpType.Create).Index(_index));
+            await _client.IndexAsync(
+                document, 
+                i => i
+                    .Index(_index)
+                    .OpType(OpType.Create)
+            );
         }
 
         public virtual async Task IndexManyAsync(IList<T> documents)
@@ -58,27 +69,26 @@ namespace IDE.DAL.Repositories
             await _client.IndexManyAsync(documents);
         }
 
-        #endregion
-
-        #region Update document
+        // Update document
 
         public virtual async Task UpdateAsync(T document)
         {
-            await _client.UpdateAsync<T>(document.Id, c => c.Index(_index).Doc(document));
+            await _client.UpdateAsync<T>(
+                document.Id, 
+                u => u
+                    .Index(_index)
+                    .Doc(document)
+            );
         }
 
-        #endregion
-
-        #region Delete document
+        // Delete document
 
         public virtual async Task DeleteAsync(string id)
         {
             var response = await _client.DeleteAsync<T>(id, d => d.Index(_index));
         }
 
-        #endregion
-
-        #region Search in index
+        // Search in index
 
         //should be overridden
         //I didn`t implement these methods because they need document`s property
@@ -91,6 +101,5 @@ namespace IDE.DAL.Repositories
         {
             throw new NotImplementedException();
         }
-        #endregion
     }
 }
