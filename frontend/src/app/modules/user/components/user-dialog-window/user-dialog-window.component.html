@@ -77,7 +77,7 @@
                 <div class="ui-g ui-fluid">
                     <div class="ui-g-12">
                         <div class="ui-inputgroup">
-                            <input  type="password" pPassword name="password" formControlName="password" minlength="8"  maxlength="16" required
+                            <input  type="password" pPassword name="password" placeholder="password" formControlName="password" minlength="8"  maxlength="16" required
                                 pattern="[а-яА-Яa-zA-Z0-9]{8,16}"/>
                                 <div class="invalid" *ngIf="userForm.get('password').invalid && (userForm.get('password').dirty || userForm.get('password').touched)">
                                     <div *ngIf="userForm.get('password').errors.pattern">
@@ -126,8 +126,8 @@
             <!-- Submit -->
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
-                    <button *ngIf="isUpdateInfo()" type="submit" [disabled]="!userForm.valid" pButton label="Update"></button>
-                    <button *ngIf="isUpdatePassword()" type="submit" [disabled]="!userForm.valid" pButton label="Change"></button>
+                    <button *ngIf="isUpdateInfo() && hasDetailsSaveResponse" type="submit" [disabled]="!userForm.valid" pButton label="Update"></button>
+                    <button *ngIf="isUpdatePassword() && hasDetailsSaveResponse" type="submit" [disabled]="!userForm.valid" pButton label="Change"></button>
                     <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
                         <p-progressSpinner></p-progressSpinner>
                     </div>
