@@ -40,4 +40,9 @@ export class AddCollaboratorsListComponent implements OnInit {
     public openUserDetails(id: number):void {
         this.router.navigate([`/user/details/${id}`]);   
     }
+
+    public isAuthor(): boolean
+    {
+        return this.addCollaboratorsComponent.isAuthor();
+    }
 }
