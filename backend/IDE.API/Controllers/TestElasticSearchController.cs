@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using IDE.DAL.Entities.Elastic;
 using IDE.DAL.Interfaces;
+using IDE.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IDE.API.Controllers
@@ -16,16 +17,18 @@ namespace IDE.API.Controllers
         // specific entry in the index - http://localhost:9200/test/_doc/1 
 
         private ISearchRepository<TestDocument> _searchRepository;
+        private FileSearchRepository _fileSearchRepository;
 
-        public TestElasticSearchController(ISearchRepository<TestDocument> serchRepository)
+        public TestElasticSearchController(ISearchRepository<TestDocument> serchRepository, FileSearchRepository fileSearchRepository)
         {
             _searchRepository = serchRepository;
+            _fileSearchRepository = fileSearchRepository;
         }
 
         [HttpGet("addone")]
         public async Task AddOneToIndex()
         {
-            await _searchRepository.IndexAsync(new TestDocument("1", "Samsung"));
+            await _searchRepository.IndexAsync(new TestDocument { Id = "1", Brand = "Samsung" });
         }
 
         [HttpGet("addmany")]
@@ -34,15 +37,19 @@ namespace IDE.API.Controllers
             await _searchRepository.IndexManyAsync(
                 new List<TestDocument>
                 {
-                    new TestDocument("2", "OnePlus"),
-                    new TestDocument("3", "Sony"),
-                    new TestDocument("4", "Xiaomi"),
-                    new TestDocument("5", "Apple"),
-                    new TestDocument("6", "Nokia"),
-                    new TestDocument("7", "Motorola"),
-                    new TestDocument("8", "Huawei"),
-                    new TestDocument("9", "Lenovo"),
-                    new TestDocument("10", "Meizu"),
+                    new TestDocument { Id = "2", Brand = "OnePlus lorem" },
+                    new TestDocument { Id = "3", Brand = "lorem Sony" },
+                    new TestDocument { Id = "4", Brand = "Xialoremomi" },
+                    new TestDocument { Id = "5", Brand = "App lorem le" },
+                    new TestDocument { Id = "6", Brand = "Nokia" },
+                    new TestDocument { Id = "7", Brand = "Motorola" },
+                    new TestDocument { Id = "8", Brand = "Huawei" },
+                    new TestDocument { Id = "9", Brand = "Lenovo" },
+                    new TestDocument { Id = "10", Brand = "Meizu" },
+                    new TestDocument { Id = "11", Brand = "Meizu" },
+                    new TestDocument { Id = "12", Brand = "Meizu123" },
+                    new TestDocument { Id = "13", Brand = "Mei123" },
+                    new TestDocument { Id = "13", Brand = "Meizmi" }
                 });
         }
 
@@ -80,7 +87,13 @@ namespace IDE.API.Controllers
         [HttpGet("update")]
         public async Task UpdateDoc()
         {
-            await _searchRepository.UpdateAsync(new TestDocument("1", "Samsung Samsung Samsung"));
+            await _searchRepository.UpdateAsync(new TestDocument { Id = "1", Brand = "Samsung Samsung Samsung" });
+        }
+
+        [HttpGet("fileSearch")]
+        public async Task<ActionResult> FileSearch(string query)
+        {
+            return Ok(await _fileSearchRepository.SearchAsync(query));
         }
     }
 }

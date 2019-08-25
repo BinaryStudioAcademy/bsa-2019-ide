@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace IDE.DAL.Repositories
 {
-    class BaseSearchRepository<T> : ISearchRepository<T> where T : BaseSearchDocument
+    public abstract class BaseSearchRepository<T> : ISearchRepository<T> where T : BaseSearchDocument
     {
         protected string _index;
         protected ElasticClient _client;
@@ -24,10 +24,8 @@ namespace IDE.DAL.Repositories
 
         public virtual async Task<bool> CreateIndex()
         {
-            var response = await _client.Indices.CreateAsync(_index, c => c
-                                                .Map<T>(mm => mm
-                                                    .AutoMap()
-                                                ));
+            // // check???
+            var response = await _client.Indices.CreateAsync(_index, c => c.Map<T>(mm => mm.AutoMap()));
 
             return response.Acknowledged;
         }
@@ -50,7 +48,9 @@ namespace IDE.DAL.Repositories
 
         public virtual async Task IndexAsync(T document)
         {
-            await _client.IndexAsync(document, c => c.OpType(Elasticsearch.Net.OpType.Create).Index(_index));
+            await _client.IndexAsync(document, c => c
+                // .Id(document.Id) // Elasticsearch assigns a system id to the document if not specified while indexing the document.       
+                .OpType(Elasticsearch.Net.OpType.Create).Index(_index));
         }
 
         public virtual async Task IndexManyAsync(IList<T> documents)
@@ -64,7 +64,7 @@ namespace IDE.DAL.Repositories
 
         public virtual async Task UpdateAsync(T document)
         {
-            await _client.UpdateAsync<T>(document.Id, c => c.Doc(document).Index(_index));
+            await _client.UpdateAsync<T>(document.Id, c => c.Index(_index).Doc(document));
         }
 
         #endregion

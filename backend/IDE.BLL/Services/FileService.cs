@@ -2,11 +2,12 @@
 using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
 using IDE.Common.DTO.File;
+using IDE.DAL.Entities.Elastic;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
+using IDE.DAL.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
@@ -14,17 +15,20 @@ namespace IDE.BLL.Services
     public class FileService
     {
         private readonly INoSqlRepository<File> _fileRepository;
+        private readonly FileSearchRepository _fileSearchRepository;
         private readonly FileHistoryService _fileHistoryService;
         private readonly UserService _userService;
         private readonly IMapper _mapper;
 
         public FileService(
-            INoSqlRepository<File> fileRepository, 
+            INoSqlRepository<File> fileRepository,
+            FileSearchRepository fileSearchRepository,
             FileHistoryService fileHistoryService, 
             UserService userService,
             IMapper mapper)
         {
             _fileRepository = fileRepository;
+            _fileSearchRepository = fileSearchRepository;
             _fileHistoryService = fileHistoryService;
             _userService = userService;
             _mapper = mapper;
@@ -59,7 +63,7 @@ namespace IDE.BLL.Services
 
         public async Task<int> GetFileSize(string id)
         {
-            var file = await this.GetByIdAsync(id);
+            var file = await GetByIdAsync(id);
             return file.Content.Length;
         }
 
@@ -69,6 +73,10 @@ namespace IDE.BLL.Services
             fileCreate.CreatedAt = DateTime.Now;
             fileCreate.CreatorId = creatorId;
             var createdFile = await _fileRepository.CreateAsync(fileCreate);
+
+            //add to index
+            var searchFile = _mapper.Map<FileSearch>(createdFile);
+            await _fileSearchRepository.IndexAsync(searchFile);
 
             var fileHistory = new FileHistoryDTO
             {

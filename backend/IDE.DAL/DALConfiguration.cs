@@ -23,6 +23,8 @@ namespace IDE.DAL
             services.AddScoped<INoSqlRepository<File>, NoSqlRepository<File>>();
             services.AddScoped<INoSqlRepository<FileHistory>, NoSqlRepository<FileHistory>>();
             services.AddScoped<IProjectStructureRepository, ProjectStructureRepository>();
+            services.AddScoped<FileSearchRepository>(); //\\ improve interface
+            
 
             services.AddSingleton<IAzureBlobConnectionFactory>(new AzureBlobConnectionFactory(configuration));
 
