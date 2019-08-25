@@ -47,7 +47,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public canNotEdit = false;
     public expandFolder=false;
     public project: ProjectInfoDTO;
-    public options: EditorSettingDTO[];
+    public options: EditorSettingDTO;
 
     private routeSub: Subscription;
     private authorId: number;
@@ -99,7 +99,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             .subscribe(
                 (resp) => {
                     this.project = resp.body;
-                    this.options=JSON.parse(this.project.editorProjectSettings);
+                    this.options=this.project.editorProjectSettings;
                 },
                 (error) => {
                     this.tr.error("Can't load selected project.", 'Error Message');

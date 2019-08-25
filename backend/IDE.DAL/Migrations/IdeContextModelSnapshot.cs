@@ -46,6 +46,35 @@ namespace IDE.DAL.Migrations
                     b.ToTable("Builds");
                 });
 
+            modelBuilder.Entity("IDE.DAL.Entities.EditorSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CursorStyle");
+
+                    b.Property<int>("FontSize");
+
+                    b.Property<int>("IntlineHeight");
+
+                    b.Property<string>("LineNumbers");
+
+                    b.Property<bool>("ReadOnly");
+
+                    b.Property<bool>("RoundedSelection");
+
+                    b.Property<bool>("ScrollBeyondLastLine");
+
+                    b.Property<int>("TabSize");
+
+                    b.Property<string>("Theme");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EditorSettings");
+                });
+
             modelBuilder.Entity("IDE.DAL.Entities.FavouriteProjects", b =>
                 {
                     b.Property<int>("ProjectId");
@@ -134,7 +163,7 @@ namespace IDE.DAL.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<string>("EditorProjectSettings");
+                    b.Property<int?>("EditorProjectSettingsId");
 
                     b.Property<int?>("GitCredentialId");
 
@@ -149,6 +178,8 @@ namespace IDE.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("EditorProjectSettingsId");
 
                     b.HasIndex("GitCredentialId");
 
@@ -199,7 +230,7 @@ namespace IDE.DAL.Migrations
 
                     b.Property<DateTime>("Birthday");
 
-                    b.Property<string>("EditorSettings");
+                    b.Property<int?>("EditorSettingsId");
 
                     b.Property<string>("Email");
 
@@ -224,6 +255,8 @@ namespace IDE.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AvatarId");
+
+                    b.HasIndex("EditorSettingsId");
 
                     b.ToTable("Users");
                 });
@@ -284,6 +317,10 @@ namespace IDE.DAL.Migrations
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("IDE.DAL.Entities.EditorSetting", "EditorProjectSettings")
+                        .WithMany()
+                        .HasForeignKey("EditorProjectSettingsId");
+
                     b.HasOne("IDE.DAL.Entities.GitCredential", "GitCredential")
                         .WithMany()
                         .HasForeignKey("GitCredentialId");
@@ -314,6 +351,10 @@ namespace IDE.DAL.Migrations
                     b.HasOne("IDE.DAL.Entities.Image", "Avatar")
                         .WithMany()
                         .HasForeignKey("AvatarId");
+
+                    b.HasOne("IDE.DAL.Entities.EditorSetting", "EditorSettings")
+                        .WithMany()
+                        .HasForeignKey("EditorSettingsId");
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.VerificationToken", b =>

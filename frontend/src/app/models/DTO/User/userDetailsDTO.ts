@@ -1,5 +1,7 @@
 ﻿/* Auto Generated */
 
+import { EditorSettingDTO } from "./../Common/editorSettingDTO"
+
 export interface UserDetailsDTO {
     id: number;
     firstName: string;
@@ -11,5 +13,5 @@ export interface UserDetailsDTO {
     registeredAt: Date;
     lastActive: Date;
     url: string;
-    editorSettings: string;
+    editorSettings: EditorSettingDTO;
 }

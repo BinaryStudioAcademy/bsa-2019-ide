@@ -4,6 +4,7 @@ import { Language } from "./../../Enums/language"
 import { ProjectType } from "./../../Enums/projectType"
 import { CompilerType } from "./../../Enums/compilerType"
 import { AccessModifier } from "./../../Enums/accessModifier"
+import { EditorSettingDTO } from "./../Common/editorSettingDTO"
 import { GitCredentialDTO } from "./../Common/gitCredentialDTO"
 
 export interface ProjectInfoDTO {
@@ -18,7 +19,7 @@ export interface ProjectInfoDTO {
     projectType: ProjectType;
     compilerType: CompilerType;
     accessModifier: AccessModifier;
-    editorProjectSettings: string;
+    editorProjectSettings: EditorSettingDTO;
     authorId: number;
     authorName: string;
     gitCredential: GitCredentialDTO;

@@ -31,12 +31,14 @@ namespace IDE.BLL.Services
         private readonly ILogger<ProjectService> _logger;
         private readonly INotificationService _notificationService;
         private readonly UserService _userService;
+        private readonly IEditorSettingService _editorSettingService; 
         public ProjectService(IdeContext context,
             IMapper mapper,
             FileService fileService,
             UserService userService,
             INotificationService notificationService,
-            ILogger<ProjectService> logger)
+            ILogger<ProjectService> logger,
+            IEditorSettingService editorSettingService)
         {
             _context = context;
             _mapper = mapper;
@@ -44,6 +46,7 @@ namespace IDE.BLL.Services
             _notificationService = notificationService;
             _logger = logger;
             _userService = userService;
+            _editorSettingService = editorSettingService;
         }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
@@ -145,7 +148,21 @@ namespace IDE.BLL.Services
             project.AuthorId = userId;
             project.CreatedAt = DateTime.Now;
             project.AccessModifier = AccessModifier.Private;
-            project.EditorProjectSettings = user.EditorSettings;
+            var userEditorSettings = (await _userService.GetUserDetailsById(userId)).EditorSettings;
+            var newProjectEditorSetting = new EditorSettingDTO
+            {
+                CursorStyle = userEditorSettings.CursorStyle,
+                FontSize = userEditorSettings.FontSize,
+                ScrollBeyondLastLine = userEditorSettings.ScrollBeyondLastLine,
+                RoundedSelection = userEditorSettings.RoundedSelection,
+                TabSize = userEditorSettings.TabSize,
+                LineHeight = userEditorSettings.LineHeight,
+                LineNumbers = userEditorSettings.LineNumbers,
+                ReadOnly = userEditorSettings.ReadOnly,
+                Theme = userEditorSettings.Theme
+            };
+            var createDTO = await _editorSettingService.CreateEditorSettings(newProjectEditorSetting);
+            project.EditorProjectSettings = _mapper.Map<EditorSetting>(createDTO);
 
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
@@ -157,6 +174,7 @@ namespace IDE.BLL.Services
         {
             var project = await _context.Projects
                 .Include(x => x.Author)
+                .Include(i=>i.EditorProjectSettings)
                 .SingleOrDefaultAsync(p => p.Id == projectId);
 
             NotificationDTO notification = new NotificationDTO
@@ -185,7 +203,8 @@ namespace IDE.BLL.Services
             targetProject.CountOfSaveBuilds = projectUpdateDTO.CountOfSaveBuilds;
             targetProject.AccessModifier = projectUpdateDTO.AccessModifier;
             targetProject.Color = projectUpdateDTO.Color;
-            targetProject.EditorProjectSettings = projectUpdateDTO.EditorProjectSettings;
+            var updateDTO= await _editorSettingService.UpdateEditorSetting(projectUpdateDTO.EditorProjectSettings);
+            targetProject.EditorProjectSettings = _mapper.Map<EditorSetting>(updateDTO);
 
             _context.Projects.Update(targetProject);
             await _context.SaveChangesAsync();

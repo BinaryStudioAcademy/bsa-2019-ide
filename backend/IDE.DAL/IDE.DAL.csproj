@@ -26,6 +26,8 @@
     <Compile Remove="Migrations\20190825122324_editorSettings.Designer.cs" />
     <Compile Remove="Migrations\20190825122515_editorSettings.cs" />
     <Compile Remove="Migrations\20190825122515_editorSettings.Designer.cs" />
+    <Compile Remove="Migrations\20190825125949_editorSettings.cs" />
+    <Compile Remove="Migrations\20190825125949_editorSettings.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

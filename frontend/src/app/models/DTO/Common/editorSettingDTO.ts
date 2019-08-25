@@ -1,6 +1,7 @@
 ﻿/* Auto Generated */
 
 export interface EditorSettingDTO {
+    id?: number;
     lineNumbers: string;
     roundedSelection: boolean;
     scrollBeyondLastLine: boolean;

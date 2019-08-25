@@ -23,12 +23,18 @@ namespace IDE.BLL.Services
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly ILogger<UserService> _logger;
-        public UserService(IdeContext context, IEmailService emailService, IMapper mapper, ILogger<UserService> logger)
+        private readonly IEditorSettingService _editorSettingService;
+        public UserService(IdeContext context, 
+            IEmailService emailService, 
+            IMapper mapper, 
+            ILogger<UserService> logger,
+            IEditorSettingService editorSettingService)
         {
             _context = context;
             _mapper = mapper;
             _emailService = emailService;
             _logger = logger;
+            _editorSettingService = editorSettingService;
         }
 
         public async Task<User> CreateUser(UserRegisterDTO userDto)
@@ -62,8 +68,17 @@ namespace IDE.BLL.Services
                 _logger.LogWarning(LoggingEvents.HaveException, $"update user not found");
                 throw new NotFoundException(nameof(targetUser), userDTO.Id);
             }
+             
+            if(targetUser.EditorSettings==null)
+            {
+                userDTO.EditorSettings = await _editorSettingService.CreateEditorSettings(userDTO.EditorSettings);
+            }
+            else
+            {
+                userDTO.EditorSettings = await _editorSettingService.UpdateEditorSetting(userDTO.EditorSettings);
+            }
 
-            targetUser.EditorSettings = userDTO.EditorSettings;
+            targetUser.EditorSettings = _mapper.Map<EditorSetting>(userDTO.EditorSettings);
 
             _context.Users.Update(targetUser);
             await _context.SaveChangesAsync();
@@ -178,6 +193,7 @@ namespace IDE.BLL.Services
         {
             return await _context.Users
                 .Include(u => u.Avatar)
+                .Include(i=>i.EditorSettings)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
     }

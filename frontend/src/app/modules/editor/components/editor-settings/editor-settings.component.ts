@@ -78,14 +78,13 @@ export class EditorSettingsComponent implements OnInit {
             { label: 'interval', value: 'interval' },
             { label: 'relative', value: 'relative' }
         ];
-        console.log(this.config.data);
         if (this.config.data) {
             this.project=this.config.data.project;
             console.log(this.project.editorProjectSettings);
-            this.settings = JSON.parse(this.project.editorProjectSettings);
+            this.settings = this.project.editorProjectSettings;
         }
         else {
-            this.settings = JSON.parse(this.user.editorSettings);
+            this.settings = this.user.editorSettings;
         }
         this.InitializeEditorSettings();
     }
@@ -134,7 +133,7 @@ export class EditorSettingsComponent implements OnInit {
 
     public InitializeEditorSettings(): void {
         if (!this.settings) {
-            this.user.editorSettings = JSON.stringify(this.editorOptions);
+            this.user.editorSettings = this.editorOptions;
             this.settings = this.editorOptions;
             this.userService.updateUser(this.user).subscribe();
         }
@@ -165,6 +164,7 @@ export class EditorSettingsComponent implements OnInit {
     private getValuesForEditorSettingsUpdate() {
         this.settingsUpdate = {
             readOnly: false,
+            id: this.settings.id,
             theme: this.editorSettingsForm.get('theme').value,
             fontSize: this.editorSettingsForm.get('fontSize').value,
             lineHeight: this.editorSettingsForm.get('lineHeight').value,
@@ -175,9 +175,9 @@ export class EditorSettingsComponent implements OnInit {
             cursorStyle: this.editorSettingsForm.get('cursorStyle').value
         }
         if (this.config.data) {
-            this.project.editorProjectSettings = JSON.stringify(this.settingsUpdate);
+            this.project.editorProjectSettings = this.settingsUpdate;
             return;
         }
-        this.user.editorSettings = JSON.stringify(this.settingsUpdate);
+        this.user.editorSettings = this.settingsUpdate;
     }
 }

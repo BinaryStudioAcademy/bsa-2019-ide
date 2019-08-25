@@ -24,7 +24,7 @@ namespace IDE.DAL.Entities
         public ProjectType ProjectType { get; set; }
         public CompilerType CompilerType { get; set; }
         public AccessModifier AccessModifier { get; set; }
-        public string EditorProjectSettings { get; set; }
+        public EditorSetting EditorProjectSettings { get; set; }
 
         public string Color { get; set; }
         public int AuthorId { get; set; }
