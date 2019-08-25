@@ -9,7 +9,7 @@ import {ProjectDescriptionDTO} from '../../../../models/DTO/Project/projectDescr
 })
 export class FavouriteProjectsComponent implements OnInit {
 
-    public projects: ProjectDescriptionDTO[];
+  public projects: ProjectDescriptionDTO[];
 
   constructor(private projectService: ProjectService) { }
 

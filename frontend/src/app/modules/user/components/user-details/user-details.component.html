@@ -23,11 +23,8 @@
         <p-progressSpinner></p-progressSpinner>
     </div>
     <div class="panel p-col-10 p-md-8 p-lg-7  p-dir-col">
-        <div *ngIf="isAuthor">
-            <h2>My projects</h2>
-        </div>
-        <div *ngIf="!isAuthor">
-            <h2>{{user?.nickName}} projects</h2>
+        <div *ngIf="user">
+            <app-user-proj-list [userId]="user.id"></app-user-proj-list>        
         </div>
     </div>
 </div>

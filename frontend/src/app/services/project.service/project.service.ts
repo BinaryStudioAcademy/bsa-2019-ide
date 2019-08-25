@@ -9,6 +9,7 @@ import { ProjectCreateDTO } from 'src/app/models/DTO/Project/projectCreateDTO';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 import { Language } from 'src/app/models/Enums/language';
+import { ProjectUserPageDTO } from 'src/app/models/DTO/Project/projectUserPageDTO';
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +19,6 @@ export class ProjectService {
     private address = 'project';
 
     constructor(private httpClient: HttpClientWrapperService) { }
-
 
     public addProject(body) {
         return this.httpClient.postRequest(this.address, body);
@@ -44,6 +44,14 @@ export class ProjectService {
 
     public getProjectById(id: number): Observable<HttpResponse<ProjectInfoDTO>> {
         return this.httpClient.getRequest(this.address + `/${id}`);
+    }
+
+    public getProjectsByUserId(id: number): Observable<HttpResponse<ProjectUserPageDTO[]>> {
+        return this.httpClient.getRequest(this.address + `/users/${id}`);
+    }
+    
+    public getAssignedByUserId(id: number): Observable<HttpResponse<ProjectUserPageDTO[]>> {
+        return this.httpClient.getRequest(this.address + `/usersassigned/${id}`);
     }
 
     public getMyProjects(): Observable<HttpResponse<ProjectDescriptionDTO[]>> {

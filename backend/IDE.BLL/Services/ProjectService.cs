@@ -88,6 +88,28 @@ namespace IDE.BLL.Services
             return colaborators;
         }
 
+        public async Task<ICollection<ProjectUserPageDTO>> GetProjectsByUserId(int userId)
+        {
+            var projects = _context.Projects
+               .Where(pr => pr.AuthorId == userId);
+
+            var collection = await projects.ToListAsync();
+
+            return _mapper.Map<ICollection<ProjectUserPageDTO>>(collection);
+        }
+
+        public async Task<ICollection<ProjectUserPageDTO>> GetAssignedProjectsByUserId(int userId)
+        {
+            var projects = _context.ProjectMembers
+              .Where(pr => pr.UserId == userId)
+              .Include(x => x.Project)
+              .Select(x => x.Project);
+
+            var collection = await projects.ToListAsync();
+
+            return _mapper.Map<ICollection<ProjectUserPageDTO>>(collection);
+        }
+
         public async Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId)
         {
             //Maybe it can be a bit easier
