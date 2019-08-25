@@ -217,20 +217,31 @@ export class FileBrowserSectionComponent implements OnInit {
 
     private create(node: TreeNode) {
         const label = this.lastSelectedElement.value.trim();
-        if ((label === `file${this.defaultExtension}` && node.parent.children.filter(n => n.label === label).length > 1)
-            || (label !== `file${this.defaultExtension}` && node.parent.children.some(n => n.label === label))) {
-            this.lastSelectedElement.focus();
-            this.toast.error(`File with name \"${label}\" already exist!`, "Error Message", { tapToDismiss: true });
-            return;
-        }
-        this.lastCreatedNode.label = label;
 
         if (this.lastActionFolderCreated) {
+            if ((label === `New folder` && node.parent.children.filter(n => n.label === label).length > 1)
+                || (label !== `New folder` && node.parent.children.some(n => n.label === label))) {
+                this.lastSelectedElement.focus();
+                this.toast.error(`File with name \"${label}\" already exist!`, "Error Message", { tapToDismiss: true });
+                return;
+            }
+            this.lastActionFolderCreated = false;
+            
+            this.lastCreatedNode.label = label;
             this.toast.success(`Folder \"${label}\" successfully created`, "Success Message", { tapToDismiss: true })
             this.updateProjectStructure();    
+            node.selectable = true;
+            this.lastSelectedElement.disabled = true;
             this.lastSelectedElement = null;
             this.lastCreatedNode = null;
         } else {
+            if ((label === `file${this.defaultExtension}` && node.parent.children.filter(n => n.label === label).length > 1)
+                || (label !== `file${this.defaultExtension}` && node.parent.children.some(n => n.label === label))) {
+                this.lastSelectedElement.focus();
+                this.toast.error(`File with name \"${label}\" already exist!`, "Error Message", { tapToDismiss: true });
+                return;
+            }
+            this.lastCreatedNode.label = label;
             this.lastActionFileCreated = false;
             var newFile : FileCreateDTO  = {
                 name: label,
