@@ -11,6 +11,6 @@ namespace IDE.BLL.Interfaces
         Task<ProjectStructureDTO> CreateAsync(ProjectStructureDTO projectStructureDto);
         Task<ProjectStructureDTO> CreateEmptyAsync(int projectId, string projectName);
         Task UnzipProject(ProjectStructureDTO projectStructure, IFormFile zipFile, int userId, int projectId);
-        Task<bool> CreateProjectZipFile(int projectId, string folderGuid);
+        Task<byte[]> CreateProjectZipFile(int projectId, string folderGuid = "");
     }
 }
