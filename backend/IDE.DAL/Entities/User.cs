@@ -26,6 +26,7 @@ namespace IDE.DAL.Entities
         public DateTime RegisteredAt { get; set; }
         public DateTime LastActive { get; set; }
         public bool EmailConfirmed { get; set; }
+        public string EditorSettings { get;set; }
 
         public int? AvatarId { get; set; }
         public Image Avatar { get; set; }

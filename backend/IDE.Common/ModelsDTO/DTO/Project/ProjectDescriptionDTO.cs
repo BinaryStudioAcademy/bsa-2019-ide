@@ -1,4 +1,5 @@
 ﻿using IDE.Common.Enums;
+using IDE.Common.ModelsDTO.DTO.Common;
 using System;
 
 namespace IDE.Common.DTO.Project
@@ -14,5 +15,6 @@ namespace IDE.Common.DTO.Project
         public BuildStatus? BuildStatus { get; set; }
         public DateTime? LastBuild { get; set; }
         public string Color { get; set; }
+        public EditorSettingDTO EditorProjectSettings { get; set; }
     }
 }

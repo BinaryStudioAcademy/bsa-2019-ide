@@ -32,6 +32,13 @@ namespace IDE.API.Controllers
             return Ok(await _userService.GetUserById(this.GetUserIdFromToken()));
         }
 
+        [HttpPut]
+        public async Task<ActionResult<UserDTO>> UpdateUser(UserDTO userDTO)
+        {
+            _logger.LogInformation(LoggingEvents.GetItem, $"Update user");
+            return Ok(await _userService.Update(userDTO));
+        }
+
         [HttpGet("details")]
         public async Task<ActionResult<UserDetailsDTO>> GetUserDetailsFromToken()
         {

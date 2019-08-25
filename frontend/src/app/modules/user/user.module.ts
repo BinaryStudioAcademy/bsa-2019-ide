@@ -9,6 +9,8 @@ import {SlideMenuModule} from 'primeng/slidemenu';
 import {ButtonModule} from 'primeng/button';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import { EmailVerificationComponent } from './components/email-verification/email-verification.component';
+import { EditorModule } from '../editor/editor.module';
+import { TabViewModule } from 'primeng/primeng';
 
 @NgModule({
     declarations: [
@@ -23,7 +25,9 @@ import { EmailVerificationComponent } from './components/email-verification/emai
         DialogModule,
         SlideMenuModule,
         ButtonModule,
-        ProgressSpinnerModule
+        ProgressSpinnerModule,
+        EditorModule,
+        TabViewModule
     ]
 })
 export class UserModule { }

@@ -14,6 +14,7 @@ export class UserDetailsComponent implements OnInit {
   user : UserDetailsDTO;
   isImageExpended: boolean = false;
   actions: MenuItem[];
+  public showEditorSettings=false;
 
 
   constructor(private userService: UserService) { }
@@ -23,7 +24,6 @@ export class UserDetailsComponent implements OnInit {
         if (!this.user.url){
             this.user.url = './assets/img/user-default-avatar.png';
         }
-        console.log(new Date(1,1,1,1,1,1,1));
         if(this.user.birthday==new Date())
         {
             this.user.birthday==null;
@@ -43,6 +43,11 @@ export class UserDetailsComponent implements OnInit {
             // this.delete();
         }}
     ];
+  }
+
+  public showEditorSettingsForUser()
+  {
+      this.showEditorSettings=!this.showEditorSettings;
   }
   expandImage(imageUrl : string){
       this.isImageExpended = true;

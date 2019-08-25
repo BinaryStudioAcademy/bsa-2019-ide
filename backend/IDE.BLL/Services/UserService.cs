@@ -53,6 +53,24 @@ namespace IDE.BLL.Services
             return userEntity;
         }
 
+        public async Task<UserDTO> Update(UserDTO userDTO)
+        {
+            var targetUser = await _context.Users.SingleOrDefaultAsync(p => p.Id == userDTO.Id);
+
+            if (targetUser == null)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"update user not found");
+                throw new NotFoundException(nameof(targetUser), userDTO.Id);
+            }
+
+            targetUser.EditorSettings = userDTO.EditorSettings;
+
+            _context.Users.Update(targetUser);
+            await _context.SaveChangesAsync();
+
+            return await GetUserById(userDTO.Id);
+        }
+
         public async Task<UserNicknameDTO[]> GetUserListByNickNameParts(int currentUser)
         {
 

@@ -22,8 +22,18 @@
     <div *ngIf="!user" class="panel p-col-10 p-md-4 p-lg-3 p-grid  p-justify-center">
         <p-progressSpinner></p-progressSpinner>
     </div>
-    <div class="panel p-col-10 p-md-8 p-lg-7  p-dir-col">
-        More information about user: projects, builds, ets..
+    <div *ngIf="user" class="panel p-col-10 p-md-8 p-lg-7  p-dir-col">
+            <p-tabView>
+                    <p-tabPanel header="Projects">
+                        Content 2
+                    </p-tabPanel>
+                    <p-tabPanel header="Builds">
+                        Content 3
+                    </p-tabPanel>
+                    <p-tabPanel header="Editor settings">
+                            <app-editor-settings [user]="user" ></app-editor-settings>
+                    </p-tabPanel>
+                </p-tabView>
     </div>
 </div>
 <p-dialog  *ngIf="user" [(visible)]="isImageExpended" [style]="{'box-shadow': 'none'}" [showHeader]="false" [draggable]="false" [modal]="true"

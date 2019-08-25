@@ -14,5 +14,6 @@ namespace IDE.Common.DTO.User
         public DateTime RegisteredAt { get; set; }
         public DateTime LastActive { get; set; }
         public string Url { get; set; }
+        public string EditorSettings { get; set; }
     }
 }
