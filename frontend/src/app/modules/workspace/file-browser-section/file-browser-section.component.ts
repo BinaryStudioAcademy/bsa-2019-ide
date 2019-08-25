@@ -87,25 +87,50 @@ export class FileBrowserSectionComponent implements OnInit {
         ];
     }
 
+    private downloadFile(node: TreeNode){
+        this.fileService.getFileById(node.key).subscribe(
+            (response) => {
+                const fileType = "text/plain;charset=utf-8";
+                const fileName = node.label;
+                const fileContent = response.body.content;
+                const blob = new Blob([fileContent], { type: fileType });
+                saveAs(blob, fileName);                
+            },
+            (error) => {
+                console.log(error);
+                this.toast.error('Something went wrong(. Couldn\'t download file','Error Message', {tapToDismiss: true});
+            }
+        )
+    }
+
+    private downloadFolder(node: TreeNode){
+        if (!node.children || node.children.length == 0)
+        {
+            this.toast.info('Folder is empty', 'Info Message', {tapToDismiss: true});            
+            return;
+        }
+        this.projectService.exportFolder(this.project.id, node.key).subscribe(
+        (result) => {    
+            console.log(result);
+            const blob = new Blob([result.body], {
+                type: 'application/zip'
+            });
+
+            saveAs(blob, `${node.label}.zip`);
+        },
+        (error) => {
+            console.log(error);
+            this.toast.error('Error: can\'t download folder', 'Error Message', {tapToDismiss: true});
+        });
+    }
+    
     private download(node: TreeNode){
+        console.log(this.files);
         if (node.type == TreeNodeType.file.toString()){            
-            this.fileService.getFileById(node.key).subscribe(
-                (response) => {
-                    const fileType = "text/plain;charset=utf-8";
-                    const fileName = node.label;
-                    const fileContent = response.body.content;
-                    const blob = new Blob([fileContent], { type: fileType });
-                    saveAs(blob, fileName);                
-                },
-                (error) => {
-                    console.log(error);
-                    this.toast.error('Something went wrong(. Couldn\'t download file','Error Message', {tapToDismiss: true});
-                }
-            )
-           
+            this.downloadFile(node);
         }
         else {
-            console.log(`Folder ${node.label} downloading...`)
+            this.downloadFolder(node);
         }
     }
 
