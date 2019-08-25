@@ -33,7 +33,7 @@ namespace IDE.API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<UserDTO>> UpdateUser(UserDTO userDTO)
+        public async Task<ActionResult<UserDTO>> UpdateUser(UserDetailsDTO userDTO)
         {
             _logger.LogInformation(LoggingEvents.GetItem, $"Update user");
             return Ok(await _userService.Update(userDTO));

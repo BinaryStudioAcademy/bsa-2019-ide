@@ -6,5 +6,4 @@ export interface UserDTO {
     lastName: string;
     nickName: string;
     email: string;
-    editorSettings: string;
 }

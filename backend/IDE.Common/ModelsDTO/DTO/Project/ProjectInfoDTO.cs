@@ -18,7 +18,7 @@ namespace IDE.Common.DTO.Project
         public ProjectType ProjectType { get; set; }
         public CompilerType CompilerType { get; set; }
         public AccessModifier AccessModifier { get; set; }
-        public EditorSettingDTO EditorProjectSettings { get; set; }
+        public string EditorProjectSettings { get; set; }
         public int AuthorId { get; set; }
         public string AuthorName { get; set; }
         public GitCredentialDTO GitCredential { get; set; }

@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import {TabMenuModule} from 'primeng/tabmenu';
 import { ContextMenuModule, MenuModule } from 'primeng/primeng';
 import { FileInfoComponent } from './file-info/file-info.component';
+import { EditorSettingsComponent } from '../editor/components/editor-settings/editor-settings.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,9 @@ import { FileInfoComponent } from './file-info/file-info.component';
     TabMenuModule,
     MenuModule,
     ContextMenuModule
+  ],
+  entryComponents: [
+      EditorSettingsComponent
   ]
 })
 export class WorkspaceModule { }

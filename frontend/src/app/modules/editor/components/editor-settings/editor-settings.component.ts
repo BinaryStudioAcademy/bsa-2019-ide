@@ -1,10 +1,12 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { SelectItem } from 'primeng/api';
+import { SelectItem, DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { UserService } from 'src/app/services/user.service/user.service';
 import { ToastrService } from 'ngx-toastr';
+import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
+import { ProjectService } from 'src/app/services/project.service/project.service';
 
 @Component({
     selector: 'app-editor-settings',
@@ -14,6 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 export class EditorSettingsComponent implements OnInit {
 
     @Input() user: UserDetailsDTO;
+    project: ProjectInfoDTO;
     public editorOptions: EditorSettingDTO =
         {
             lineNumbers: "on",
@@ -37,9 +40,12 @@ export class EditorSettingsComponent implements OnInit {
     public hasDetailsSaveResponse = true;
 
     constructor(
+        private config: DynamicDialogConfig,
         private formBuilder: FormBuilder,
         private userService: UserService,
-        private toastService: ToastrService
+        private ref: DynamicDialogRef,
+        private toastService: ToastrService,
+        private projectService: ProjectService
     ) { }
 
     ngOnInit() {
@@ -72,31 +78,57 @@ export class EditorSettingsComponent implements OnInit {
             { label: 'interval', value: 'interval' },
             { label: 'relative', value: 'relative' }
         ];
-        this.InitializeEditorSettings(this.user);
+        if (this.config.data.type == "workspace") {
+            this.project=this.config.data.project;
+            this.settings = JSON.parse(this.project.editorProjectSettings);
+        }
+        else {
+            this.settings = JSON.parse(this.user.editorSettings);
+        }
+        this.InitializeEditorSettings();
+    }
+
+    public close()
+    {
+        this.ref.close();
     }
 
     public onSubmit() {
-        console.log("bebebe");
         this.hasDetailsSaveResponse = false;
         if (!this.IsSettingsNotChange()) {
             this.getValuesForEditorSettingsUpdate();
-            this.userService.updateUser(this.user)
-                .subscribe(
-                    (resp) => {
-                        this.hasDetailsSaveResponse = true;
-                        this.toastService.success('New details have successfully saved!');
-                        this.startEditorOptions=this.settingsUpdate;
-                    },
-                    (error) => {
-                        this.hasDetailsSaveResponse = true;
-                        this.toastService.error('Can\'t save new project details', 'Error Message');
-                    }
-                );
+            if (this.config.data.type == "workspace") {
+                this.projectService.updateProject(this.project)
+                    .subscribe(
+                        (resp) => {
+                            this.hasDetailsSaveResponse = true;
+                            this.toastService.success('New details have successfully saved!');
+                            this.startEditorOptions = this.settingsUpdate;
+                        },
+                        (error) => {
+                            this.hasDetailsSaveResponse = true;
+                            this.toastService.error('Can\'t save new project details', 'Error Message');
+                        }
+                    );
+            }
+            else {
+                this.userService.updateUser(this.user)
+                    .subscribe(
+                        (resp) => {
+                            this.hasDetailsSaveResponse = true;
+                            this.toastService.success('New details have successfully saved!');
+                            this.startEditorOptions = this.settingsUpdate;
+                        },
+                        (error) => {
+                            this.hasDetailsSaveResponse = true;
+                            this.toastService.error('Can\'t save new project details', 'Error Message');
+                        }
+                    );
+            }
         }
     }
 
-    public InitializeEditorSettings(userSettings: UserDetailsDTO): void {
-        this.settings = JSON.parse(userSettings.editorSettings);
+    public InitializeEditorSettings(): void {
         if (!this.settings) {
             this.user.editorSettings = JSON.stringify(this.editorOptions);
             this.settings = this.editorOptions;
@@ -137,6 +169,10 @@ export class EditorSettingsComponent implements OnInit {
             scrollBeyondLastLine: this.editorSettingsForm.get('scrollBeyondLastLine').value,
             tabSize: this.editorSettingsForm.get('tabSize').value,
             cursorStyle: this.editorSettingsForm.get('cursorStyle').value
+        }
+        if (this.config.data.type == "workspace") {
+            this.project.editorProjectSettings = JSON.stringify(this.settingsUpdate);
+            return;
         }
         this.user.editorSettings = JSON.stringify(this.settingsUpdate);
     }

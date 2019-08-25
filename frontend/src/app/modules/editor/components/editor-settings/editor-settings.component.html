@@ -1,3 +1,4 @@
+<span class="modal-close-btn" (click)="close()">&times;</span>
 <form class="edittor-setting-content" [formGroup]="editorSettingsForm" (ngSubmit)="onSubmit()">
     <div class="editor-details-property">
         <p class="property-name">Thema:</p>
@@ -16,16 +17,16 @@
         <input type="text" pInputText formControlName="lineHeight">
     </div>
     <div class="editor-details-property">
+        <p class="property-name">Line numbers:</p>
+        <p-dropdown [options]="lineNumbers" formControlName="lineNumbers"></p-dropdown>
+    </div>
+    <div class="editor-details-property">
         <p class="property-name">Font size:</p>
         <input type="text" pInputText formControlName="fontSize">
     </div>
     <div class="editor-details-property">
         <p class="property-name">Tab size:</p>
         <input type="text" pInputText formControlName="tabSize">
-    </div>
-    <div class="editor-details-property">
-        <p class="property-name">Line numbers:</p>
-        <p-dropdown [options]="lineNumbers" formControlName="lineNumbers"></p-dropdown>
     </div>
     <div class="ui-g ui-fluid">
         <div class="ui-g-12">

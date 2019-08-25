@@ -2,6 +2,7 @@ import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { CancelEditableRow } from 'primeng/table';
+import { EditorSettingDTO } from '../../../models/DTO/Common/editorSettingDTO'
 
 export interface TabFileWrapper {
     isChanged: boolean;
@@ -15,6 +16,7 @@ export interface TabFileWrapper {
 })
 export class EditorSectionComponent implements OnInit {
 
+    @Input() options: EditorSettingDTO;
     @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
 
     // FOR REFACTOR
@@ -29,13 +31,7 @@ export class EditorSectionComponent implements OnInit {
 
     constructor() { }
 
-    ngOnInit() {
-        this.editorOptions = {
-            theme: 'vs-dark',
-            language: 'typescript',
-            readOnly: this.canEdit
-        };
-    }
+    ngOnInit() {}
 
     onChange(ev) {
         if (!this.canEdit) {

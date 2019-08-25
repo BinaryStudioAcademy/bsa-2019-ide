@@ -110,6 +110,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         return this.project.color;
     }
 
+    public Settings()
+    {
+        this.workSpaceService.show(this.project);
+    }
+
     public setUserAccess() {
         switch (this.access) {
             case 0:

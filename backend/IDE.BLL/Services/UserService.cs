@@ -53,7 +53,7 @@ namespace IDE.BLL.Services
             return userEntity;
         }
 
-        public async Task<UserDTO> Update(UserDTO userDTO)
+        public async Task<UserDTO> Update(UserDetailsDTO userDTO)
         {
             var targetUser = await _context.Users.SingleOrDefaultAsync(p => p.Id == userDTO.Id);
 

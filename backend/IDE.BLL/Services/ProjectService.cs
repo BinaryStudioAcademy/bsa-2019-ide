@@ -4,6 +4,7 @@ using IDE.BLL.Interfaces;
 using IDE.Common.DTO.Common;
 using IDE.Common.DTO.File;
 using IDE.Common.DTO.Project;
+using IDE.Common.DTO.User;
 using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Common;
 using IDE.Common.ModelsDTO.DTO.Project;
@@ -29,10 +30,11 @@ namespace IDE.BLL.Services
         private readonly FileService _fileService;
         private readonly ILogger<ProjectService> _logger;
         private readonly INotificationService _notificationService;
-
+        private readonly UserService _userService;
         public ProjectService(IdeContext context,
             IMapper mapper,
             FileService fileService,
+            UserService userService,
             INotificationService notificationService,
             ILogger<ProjectService> logger)
         {
@@ -41,6 +43,7 @@ namespace IDE.BLL.Services
             _fileService = fileService;
             _notificationService = notificationService;
             _logger = logger;
+            _userService = userService;
         }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
@@ -138,9 +141,11 @@ namespace IDE.BLL.Services
         public async Task<int> CreateProject(ProjectCreateDTO projectCreateDto, int userId)
         {
             var project = _mapper.Map<Project>(projectCreateDto);
+            var user = await _userService.GetUserDetailsById(userId);
             project.AuthorId = userId;
             project.CreatedAt = DateTime.Now;
             project.AccessModifier = AccessModifier.Private;
+            project.EditorProjectSettings = user.EditorSettings;
 
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
