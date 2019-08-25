@@ -121,6 +121,7 @@ namespace IDE.DAL.Context
             foreach (var project in projects)
             {
                 var fileStructure = new FileStructure();
+                fileStructure.Id = Guid.NewGuid().ToString();
                 fileStructure.Type = Common.ModelsDTO.Enums.TreeNodeType.Folder;
                 fileStructure.Details = $"Super important details of file {project.Name}";
                 fileStructure.Name = project.Name;

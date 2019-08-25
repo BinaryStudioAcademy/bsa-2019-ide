@@ -10,7 +10,6 @@ import { FileCreateDTO } from 'src/app/models/DTO/File/fileCreateDTO';
 import { ProjectStructureFormaterService } from 'src/app/services/project-structure-formater.service';
 import { FileStructureDTO } from 'src/app/models/DTO/Workspace/fileStructureDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
-import { TokenService } from 'src/app/services/token.service/token.service';
 import { Extension } from '../model/extension';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import filesExtensions from '../../../assets/file-extensions.json';
@@ -19,6 +18,8 @@ import { FileUpdateDTO } from 'src/app/models/DTO/File/fileUpdateDTO';
 import { delay } from 'rxjs/operators';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
+import {ProgressBarModule} from 'primeng/progressbar';
+import { saveAs } from 'file-saver';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -61,8 +62,7 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     contextMenuSaveButton: MenuItem[];
-
-
+    
     ngOnInit() {
         this.projectStructureService.getProjectStructureById(this.projectId).subscribe(
             (response) => {
@@ -77,19 +77,61 @@ export class FileBrowserSectionComponent implements OnInit {
         );
 
         this.extensions = filesExtensions;
-
         this.items = [
             { label: 'create file', icon: 'fa fa-file', command: () => this.createFile(this.selectedItem),  },
             { label: 'create folder', icon: 'fa fa-folder', command: () => this.createFolder(this.selectedItem) },
             { label: 'delete', icon: 'fa fa-remove', command: () => this.delete(this.selectedItem) },
             { label: 'info', icon: 'fa fa-info', command: () => this.openInfoWindow(this.selectedItem)},
             { label: 'rename', icon: 'fa fa-refresh', command: () => this.rename(this.selectedItem)},
-            { label: 'download', icon: 'pi pi-download', command: (event) => console.log(event) }//this.download(this.selectedItem), disabled : true }
+            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) }
         ];
     }
 
+    private downloadFile(node: TreeNode){
+        this.fileService.getFileById(node.key).subscribe(
+            (response) => {
+                const fileType = "text/plain;charset=utf-8";
+                const fileName = node.label;
+                const fileContent = response.body.content;
+                const blob = new Blob([fileContent], { type: fileType });
+                saveAs(blob, fileName);                
+            },
+            (error) => {
+                console.log(error);
+                this.toast.error('Something went wrong(. Couldn\'t download file','Error Message', {tapToDismiss: true});
+            }
+        )
+    }
+
+    private downloadFolder(node: TreeNode){
+        if (!node.children || node.children.length == 0)
+        {
+            this.toast.info('Folder is empty', 'Info Message', {tapToDismiss: true});            
+            return;
+        }
+        this.projectService.exportFolder(this.project.id, node.key).subscribe(
+        (result) => {    
+            console.log(result);
+            const blob = new Blob([result.body], {
+                type: 'application/zip'
+            });
+
+            saveAs(blob, `${node.label}.zip`);
+        },
+        (error) => {
+            console.log(error);
+            this.toast.error('Error: can\'t download folder', 'Error Message', {tapToDismiss: true});
+        });
+    }
+    
     private download(node: TreeNode){
-        console.log(`${node.label} should be downloaded`);
+        console.log(this.files);
+        if (node.type == TreeNodeType.file.toString()){            
+            this.downloadFile(node);
+        }
+        else {
+            this.downloadFolder(node);
+        }
     }
 
     private openInfoWindow(node: TreeNode)

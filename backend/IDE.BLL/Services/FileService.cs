@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
-using IDE.BLL.Interfaces;
 using IDE.Common.DTO.File;
 using IDE.Common.ModelsDTO.Enums;
 using IDE.Common.ModelsDTO.DTO.File;
@@ -9,8 +8,10 @@ using IDE.DAL.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using System.Linq;
+using MongoDB.Driver;
+using MongoDB.Bson;
 
 namespace IDE.BLL.Services
 {
@@ -44,6 +45,21 @@ namespace IDE.BLL.Services
             {
                 await AddToFileLinkedItems(fileForProjectDto);
             }
+
+            return fileForProjectDtos;
+        }
+        public async Task<IDictionary<string, FileDTO>> GetRangeByListOfIdAsync(ICollection<string> listOfId)
+        {
+            var filesForProject = new List<File>();
+            foreach(var id in listOfId)
+            {
+                var file = await _fileRepository.GetByIdAsync(id).ConfigureAwait(false);
+                if (file != null)
+                    filesForProject.Add(file);
+            }
+
+            var fileForProjectDtos = _mapper.Map<ICollection<FileDTO>>(filesForProject)
+                .ToDictionary(key => key.Id, value => value);
 
             return fileForProjectDtos;
         }

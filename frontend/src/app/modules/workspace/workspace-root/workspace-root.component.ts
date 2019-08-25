@@ -39,7 +39,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public userId: number;
     public access: UserAccess;
     public showFileBrowser = true;
-    public showSearch = false;
+    public showSearchField = true;
     public large = false;
     public canRun = false;
     public canBuild = false;
@@ -188,7 +188,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public hideSearchField(): void {
-        this.showSearch = !this.showSearch;
+        this.showSearchField = !this.showSearchField;
     }
 
     public hideFileBrowser(): void
