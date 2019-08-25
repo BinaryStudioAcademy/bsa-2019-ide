@@ -60,7 +60,7 @@ export class ProjectStructureFormaterService {
     makeFolderNode(name: string, id: string) {
         const emptyFolder = this.getEmptyFolderNode();
         emptyFolder.label = name;
-        emptyFolder.key = this.newGuid();
+        emptyFolder.key = id;
         return emptyFolder;
     }
     makeFileNode(name: string, id: string) {
