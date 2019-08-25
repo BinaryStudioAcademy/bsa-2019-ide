@@ -11,7 +11,7 @@ import { TokenService } from 'src/app/services/token.service/token.service';
 export class ProjectDetailsComponent implements OnInit {
     public project: ProjectInfoDTO;
     projectId: number;
-    public userId:number;
+    public userId: number;
 
     constructor(
       private route: ActivatedRoute,

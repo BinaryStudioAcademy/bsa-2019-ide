@@ -110,11 +110,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         return this.project.color;
     }
 
-    public getUserRigths()
-    {
-        
-    }
-
     public setUserAccess() {
         switch (this.access) {
             case 0:

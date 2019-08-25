@@ -31,8 +31,8 @@ export class AddCollaboratorsComponent implements OnInit {
     public deleteCollaborators: CollaboratorDTO[] = [];
     public area: string
     public isCollaboratorChange = false;
-    public userId:number;
-    public authorId:number;
+    public userId: number;
+    public authorId: number;
 
     private startCollaborators = [] as CollaboratorDTO[];
 
@@ -204,7 +204,7 @@ export class AddCollaboratorsComponent implements OnInit {
         return filtered;
     }
 
-    public isAuthor(){
+    public isAuthor(): boolean{
         return this.userId==this.authorId;
     }
 
