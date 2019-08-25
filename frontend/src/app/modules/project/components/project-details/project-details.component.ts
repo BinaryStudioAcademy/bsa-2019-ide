@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { ActivatedRoute } from '@angular/router';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
   selector: 'app-project-details',
@@ -10,9 +11,11 @@ import { ActivatedRoute } from '@angular/router';
 export class ProjectDetailsComponent implements OnInit {
     public project: ProjectInfoDTO;
     projectId: number;
+    public userId: number;
 
     constructor(
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private tokenService: TokenService
     ) { }
 
     ngOnInit() {
@@ -20,5 +23,11 @@ export class ProjectDetailsComponent implements OnInit {
             this.project = data['project'];
         });
         this.projectId=this.project.id;
+        this.userId=this.tokenService.getUserId();
+    }
+
+    public isAuthor()
+    {
+        return this.project.authorId==this.userId;
     }
 }

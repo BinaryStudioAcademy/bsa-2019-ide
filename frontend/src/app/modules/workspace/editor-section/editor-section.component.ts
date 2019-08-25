@@ -1,6 +1,7 @@
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MenuItem } from 'primeng/api';
+import { CancelEditableRow } from 'primeng/table';
 
 export interface TabFileWrapper {
     isChanged: boolean;
@@ -15,25 +16,33 @@ export interface TabFileWrapper {
 export class EditorSectionComponent implements OnInit {
 
     @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
-    
+
     // FOR REFACTOR
     // think about agregaiting of TabFileWrapper(openedFiles) with MenuItem(tabs)
     public tabs = [] as MenuItem[]; // maybe reneme on "tab"
     public activeItem: MenuItem;
     public openedFiles = [] as TabFileWrapper[];
-    
-    editorOptions = { theme: 'vs-dark', language: 'typescript' };
+    @Input() canEdit: boolean;
+
+    public editorOptions;
     code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
-    options = { theme: 'vs-dark' }; 
 
     constructor() { }
 
-    ngOnInit() {  }
+    ngOnInit() {
+        this.editorOptions = {
+            theme: 'vs-dark',
+            language: 'typescript',
+            readOnly: this.canEdit
+        };
+    }
 
     onChange(ev) {
-        const touchedFile = this.getFileFromActiveItem(this.activeItem);
-        touchedFile.isChanged = true;
-        touchedFile.innerFile.content = this.code;
+        if (!this.canEdit) {
+            const touchedFile = this.getFileFromActiveItem(this.activeItem);
+            touchedFile.isChanged = true;
+            touchedFile.innerFile.content = this.code;
+        }
     }
 
     public closeItem(event, index) {
@@ -44,7 +53,7 @@ export class EditorSectionComponent implements OnInit {
         this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
 
         // if 1st tab closed
-        if(this.openedFiles.length === 0) {
+        if (this.openedFiles.length === 0) {
             event.preventDefault();
             this.code = '';
             return;
@@ -66,6 +75,11 @@ export class EditorSectionComponent implements OnInit {
     }
 
     public AddFileToOpened(file: FileUpdateDTO) {
+        this.editorOptions = {
+            theme: 'vs-dark',
+            language: 'typescript',
+            readOnly: this.canEdit
+        };
         const fileWrapper: TabFileWrapper = { isChanged: false, innerFile: file }
         this.openedFiles.push(fileWrapper);
     }
@@ -78,7 +92,7 @@ export class EditorSectionComponent implements OnInit {
         fileIds.map(x => this.openedFiles.filter(f => f.innerFile.id == x)[0]).forEach(x => x.isChanged = false);
     }
 
-    anyFileChanged(): boolean {
+    public anyFileChanged(): boolean {
         return this.openedFiles.some(x => x.isChanged);
     }
 }
