@@ -27,9 +27,6 @@ export class EditorSectionComponent implements OnInit {
     public openedFiles = [] as TabFileWrapper[];
     @Input() canEdit: boolean;
 
-    public editorOptions={
-        theme:""
-    };
     code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
 
     constructor() { }
@@ -75,9 +72,6 @@ export class EditorSectionComponent implements OnInit {
     }
 
     public AddFileToOpened(file: FileUpdateDTO) {
-        console.log(this.editorOptions.theme);
-        this.editorOptions.theme=this.monacoOptions.theme;
-        console.log(this.editorOptions.theme);
         const fileWrapper: TabFileWrapper = { isChanged: false, innerFile: file }
         this.openedFiles.push(fileWrapper);
     }
