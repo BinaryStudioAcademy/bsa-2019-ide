@@ -2,8 +2,9 @@ import { Component, OnInit, Input } from '@angular/core';
 import { SelectItem } from 'primeng/api';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
-import {EditorSettingDTO} from 'src/app/models/DTO/Common/editorSettingDTO';
+import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { UserService } from 'src/app/services/user.service/user.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-editor-settings',
@@ -31,24 +32,27 @@ export class EditorSettingsComponent implements OnInit {
     public scrolls: SelectItem[];
     public cursorStyles: SelectItem[];
     public lineNumbers: SelectItem[];
+    public settingsUpdate: EditorSettingDTO;
     public settings: EditorSettingDTO;
-    public hasDetailsSaveResponse=true;
+    public hasDetailsSaveResponse = true;
 
     constructor(
         private formBuilder: FormBuilder,
-        private userService: UserService
+        private userService: UserService,
+        private toastService: ToastrService
     ) { }
 
     ngOnInit() {
         this.editorSettingsForm = this.formBuilder.group({
-            theme: [''],
-            lineHeight: [''],
-            cursorStyle: [''],
-            tabSize: [''],
-            fontSize: [''],
-            lineNumbers: [''],
-            roundedSelection: [''],
-            scrollBeyondLastLine: ['']});
+            theme: ['', Validators.required],
+            lineHeight: ['', Validators.required],
+            cursorStyle: ['', Validators.required],
+            tabSize: ['', Validators.required],
+            fontSize: ['', Validators.required],
+            lineNumbers: ['', Validators.required],
+            roundedSelection: ['', Validators.required],
+            scrollBeyondLastLine: ['', Validators.required]
+        });
         this.themes = [
             { label: 'hc-black', value: 'hc-black' },
             { label: 'vs', value: 'vs' },
@@ -58,11 +62,11 @@ export class EditorSettingsComponent implements OnInit {
             { label: 'true', value: true },
             { label: 'false', value: false }
         ];
-        this.cursorStyles=[
+        this.cursorStyles = [
             { label: 'block', value: 'block' },
             { label: 'line', value: 'line' }
         ];
-        this.lineNumbers=[
+        this.lineNumbers = [
             { label: 'on', value: 'on' },
             { label: 'off', value: 'off' },
             { label: 'interval', value: 'interval' },
@@ -71,16 +75,34 @@ export class EditorSettingsComponent implements OnInit {
         this.InitializeEditorSettings(this.user);
     }
 
-    public InitializeEditorSettings(userSettings: UserDetailsDTO): void
-    {
-        this.settings =JSON.parse(userSettings.editorSettings);
-        if(!this.settings)
-        {
-            this.user.editorSettings=JSON.stringify(this.editorOptions);
-            this.settings=this.editorOptions;
-            this.userService.updateUser(this.user).subscribe();           
+    public onSubmit() {
+        console.log("bebebe");
+        this.hasDetailsSaveResponse = false;
+        if (!this.IsSettingsNotChange()) {
+            this.getValuesForEditorSettingsUpdate();
+            this.userService.updateUser(this.user)
+                .subscribe(
+                    (resp) => {
+                        this.hasDetailsSaveResponse = true;
+                        this.toastService.success('New details have successfully saved!');
+                        this.startEditorOptions=this.settingsUpdate;
+                    },
+                    (error) => {
+                        this.hasDetailsSaveResponse = true;
+                        this.toastService.error('Can\'t save new project details', 'Error Message');
+                    }
+                );
         }
-        this.editorSettingsForm.setValue({ 
+    }
+
+    public InitializeEditorSettings(userSettings: UserDetailsDTO): void {
+        this.settings = JSON.parse(userSettings.editorSettings);
+        if (!this.settings) {
+            this.user.editorSettings = JSON.stringify(this.editorOptions);
+            this.settings = this.editorOptions;
+            this.userService.updateUser(this.user).subscribe();
+        }
+        this.editorSettingsForm.setValue({
             theme: this.settings.theme,
             cursorStyle: this.settings.cursorStyle,
             fontSize: this.settings.fontSize,
@@ -88,18 +110,34 @@ export class EditorSettingsComponent implements OnInit {
             lineNumbers: this.settings.lineNumbers,
             roundedSelection: this.settings.roundedSelection,
             scrollBeyondLastLine: this.settings.scrollBeyondLastLine,
-            tabSize: this.settings.tabSize});
-        this.startEditorOptions=this.settings;
+            tabSize: this.settings.tabSize
+        });
+        this.startEditorOptions = this.settings;
     }
 
     public IsSettingsNotChange(): boolean {
         return this.editorSettingsForm.get('theme').value === this.startEditorOptions.theme
-        && this.editorSettingsForm.get('cursorStyle').value === this.startEditorOptions.cursorStyle
-        && this.editorSettingsForm.get('fontSize').value === this.startEditorOptions.fontSize
-        && this.editorSettingsForm.get('lineHeight').value === this.startEditorOptions.lineHeight
-        && this.editorSettingsForm.get('lineNumbers').value === this.startEditorOptions.lineNumbers
-        && this.editorSettingsForm.get('roundedSelection').value === this.startEditorOptions.roundedSelection
-        && this.editorSettingsForm.get('scrollBeyondLastLine').value === this.startEditorOptions.scrollBeyondLastLine
-        && this.editorSettingsForm.get('tabSize').value === this.startEditorOptions.tabSize
+            && this.editorSettingsForm.get('cursorStyle').value === this.startEditorOptions.cursorStyle
+            && this.editorSettingsForm.get('fontSize').value === this.startEditorOptions.fontSize
+            && this.editorSettingsForm.get('lineHeight').value === this.startEditorOptions.lineHeight
+            && this.editorSettingsForm.get('lineNumbers').value === this.startEditorOptions.lineNumbers
+            && this.editorSettingsForm.get('roundedSelection').value === this.startEditorOptions.roundedSelection
+            && this.editorSettingsForm.get('scrollBeyondLastLine').value === this.startEditorOptions.scrollBeyondLastLine
+            && this.editorSettingsForm.get('tabSize').value === this.startEditorOptions.tabSize
+    }
+
+    private getValuesForEditorSettingsUpdate() {
+        this.settingsUpdate = {
+            readOnly: false,
+            theme: this.editorSettingsForm.get('theme').value,
+            fontSize: this.editorSettingsForm.get('fontSize').value,
+            lineHeight: this.editorSettingsForm.get('lineHeight').value,
+            lineNumbers: this.editorSettingsForm.get('lineNumbers').value,
+            roundedSelection: this.editorSettingsForm.get('roundedSelection').value,
+            scrollBeyondLastLine: this.editorSettingsForm.get('scrollBeyondLastLine').value,
+            tabSize: this.editorSettingsForm.get('tabSize').value,
+            cursorStyle: this.editorSettingsForm.get('cursorStyle').value
+        }
+        this.user.editorSettings = JSON.stringify(this.settingsUpdate);
     }
 }

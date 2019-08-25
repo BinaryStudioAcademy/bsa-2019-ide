@@ -1,4 +1,4 @@
-<div class="edittor-setting-content" [formGroup]="editorSettingsForm" (ngSubmit)="onSubmit()">
+<form class="edittor-setting-content" [formGroup]="editorSettingsForm" (ngSubmit)="onSubmit()">
     <div class="editor-details-property">
         <p class="property-name">Thema:</p>
         <p-dropdown [options]="themes" formControlName="theme"></p-dropdown>
@@ -28,12 +28,12 @@
         <p-dropdown [options]="lineNumbers" formControlName="lineNumbers"></p-dropdown>
     </div>
     <div class="ui-g ui-fluid">
-            <div class="ui-g-12">
-                <button *ngIf="hasDetailsSaveResponse" type="submit"
-                    [disabled]="!editorSettingsForm.valid || IsSettingsNotChange()" pButton label="Save"></button>
-                <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
-                    <p-progressSpinner></p-progressSpinner>
-                </div>
+        <div class="ui-g-12">
+            <button *ngIf="hasDetailsSaveResponse" type="submit"
+                [disabled]="!editorSettingsForm.valid || IsSettingsNotChange()" pButton label="Save"></button>
+            <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
+                <p-progressSpinner></p-progressSpinner>
             </div>
         </div>
-</div>
+    </div>
+</form>
