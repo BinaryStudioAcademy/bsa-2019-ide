@@ -45,10 +45,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public canBuild = false;
     public canNotEdit = false;
     public project: ProjectInfoDTO;
-
     private routeSub: Subscription;
     private authorId: number;
-    private eventsSubject: Subject<void> = new Subject<void>();
+
+    public  eventsSubject: Subject<void> = new Subject<void>();
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
@@ -199,7 +199,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         this.projectEditService.show(ProjectType.Update, this.projectId);
     }
 
-    private expand() {
+    public expand() {
         this.eventsSubject.next()
     }
 
