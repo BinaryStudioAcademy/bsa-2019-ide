@@ -24,11 +24,7 @@ namespace IDE.API.Controllers
         private readonly IProjectService _projectService;
         private readonly IProjectMemberSettingsService _projectMemberSettings;
         private readonly IProjectStructureService _projectStructureService;
-        private readonly IProjectTemplateService projectTemplateService;
-        private readonly FileService _fileService;
-        private readonly IBlobRepository _blobRepo;
         private readonly IProjectTemplateService _projectTemplateService;
-        private readonly INotificationService _notificationService;
         private readonly ILogger<ProjectController> _logger;
 
         public ProjectController(IProjectService projectService,
@@ -43,10 +39,7 @@ namespace IDE.API.Controllers
             _projectStructureService = projectStructureService;
             _projectService = projectService;
             _projectMemberSettings = projectMemberSettings;
-            _fileService = fileService;
-            _blobRepo = blobRepo;
             _projectTemplateService = projectTemplateService;
-            _notificationService = notificationService;
             _logger = logger;
         }
 
