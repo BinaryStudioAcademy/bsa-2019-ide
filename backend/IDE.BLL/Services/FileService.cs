@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using MongoDB.Driver;
+using MongoDB.Bson;
 
 namespace IDE.BLL.Services
 {
@@ -48,7 +50,13 @@ namespace IDE.BLL.Services
         }
         public async Task<IDictionary<string, FileDTO>> GetRangeByListOfIdAsync(ICollection<string> listOfId)
         {
-            var filesForProject = await _fileRepository.GetAllAsync(f => listOfId.Any( id => id == f.Id));
+            var filesForProject = new List<File>();
+            foreach(var id in listOfId)
+            {
+                var file = await _fileRepository.GetByIdAsync(id).ConfigureAwait(false);
+                if (file != null)
+                    filesForProject.Add(file);
+            }
 
             var fileForProjectDtos = _mapper.Map<ICollection<FileDTO>>(filesForProject)
                 .ToDictionary(key => key.Id, value => value);
