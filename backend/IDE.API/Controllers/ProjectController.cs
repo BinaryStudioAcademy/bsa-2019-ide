@@ -139,49 +139,45 @@ namespace IDE.API.Controllers
             return NoContent();
         }
 
-        [HttpGet("Download/{id}")]
-        public async Task<ActionResult> DownloadProject(int id)
+        [HttpGet("download/{projectId}")]
+        public async Task<ActionResult> DownloadProject(int projectId)
         {
-            var tempDir = Path.Combine(Directory.GetCurrentDirectory(), "..\\Temp");
-
-            var path = Path.Combine(tempDir, Guid.NewGuid().ToString());
-
-            bool result = await _projectService.CreateProjectZipFile(id, path);
-            if (!result) {
-                _logger.LogInformation(LoggingEvents.OperationFailed, $"Making project zip failed");
-                return BadRequest();
-            }
-            Uri uri;
             try
             {
-                uri = await _blobRepo.UploadFileFromPathOnServer(Path.Combine(path, $"project_{id}.zip"));
+                const string contentType = "application/zip";
+                HttpContext.Response.ContentType = contentType;
+                var fileByteArray = await _projectStructureService.CreateProjectZipFile(projectId).ConfigureAwait(false);
+                var project = await _projectService.GetProjectById(projectId).ConfigureAwait(false);
+                return new FileContentResult(fileByteArray ?? new byte[0], contentType)
+                {
+                    FileDownloadName = project.Name
+                };
             }
-            catch (FileNotFoundException)
+            catch (Exception ex)
             {
-                _logger.LogWarning(LoggingEvents.GetItemNotFound, $"File on server not found");
+                _logger.LogWarning(LoggingEvents.GetItemNotFound, $"File on server not found. ${ex.Message}");
                 return NotFound();
             }
-            finally
-            {
-                if (Directory.Exists(path))
-                {
-                    Directory.Delete(path, true);
-                }
-            }
+        }
+
+        [HttpGet("download/{projectId}/{folderGuid}")]
+        public async Task<ActionResult> DownloadProject(int projectId, string folderGuid)
+        {
+            if (!Guid.TryParse(folderGuid, out _))
+                return BadRequest("Folder guid is invalide!");
 
             try
             {
-
-                Stream memStream = await _blobRepo.DownloadFileAsync(uri.ToString(), "DownloadProjectZipContainer");
-
-                return File(memStream, "application/zip", "project.zip");
+                const string contentType = "application/zip";
+                HttpContext.Response.ContentType = contentType;
+                var fileByteArray = await _projectStructureService.CreateProjectZipFile(projectId, folderGuid).ConfigureAwait(false);
+                return new FileContentResult(fileByteArray, contentType);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                _logger.LogWarning(LoggingEvents.OperationFailed, $"Downloading project zip from blob storage failed");
-                return BadRequest(e);
+                _logger.LogWarning(LoggingEvents.GetItemNotFound, $"File on server not found. ${ex.Message}");
+                return NotFound();
             }
-
         }
     }
 }
