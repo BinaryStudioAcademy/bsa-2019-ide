@@ -32,7 +32,7 @@
                 </app-file-browser-section>
             </div>
             <div *ngIf="project" class="p-col-12 p-md-8 p-xl-10 p-align-stretch " [ngStyle]="{'background-color':getProjectColor()}" [ngClass]="{large:!showFileBrowser}">
-                <app-editor-section  [canEdit]="canNotEdit" [options]='project.editorProjectSettings' (filesSaveEvent)="onFilesSave($event)"></app-editor-section>
+                <app-editor-section  [canEdit]="canNotEdit" [monacoOptions]='options' (filesSaveEvent)="onFilesSave($event)"></app-editor-section>
             </div>
         </div>
     </div>

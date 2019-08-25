@@ -27,6 +27,7 @@ import { FileBrowserSectionComponent } from '../file-browser-section/file-browse
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
 import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
+import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 
 @Component({
     selector: 'app-workspace-root',
@@ -46,6 +47,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public canNotEdit = false;
     public expandFolder=false;
     public project: ProjectInfoDTO;
+    public options: EditorSettingDTO[];
 
     private routeSub: Subscription;
     private authorId: number;
@@ -89,7 +91,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                                 (resp) => {
                                     this.access = resp.body;
                                     this.setUserAccess();
-                                    console.log(this.canNotEdit);
                                 }
                             )
                     }
@@ -98,11 +99,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             .subscribe(
                 (resp) => {
                     this.project = resp.body;
+                    this.options=JSON.parse(this.project.editorProjectSettings);
                 },
                 (error) => {
                     this.tr.error("Can't load selected project.", 'Error Message');
                 }
             );
+
     }
 
     public getProjectColor(): string

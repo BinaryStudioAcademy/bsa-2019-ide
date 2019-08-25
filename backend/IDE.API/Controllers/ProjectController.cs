@@ -120,7 +120,7 @@ namespace IDE.API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<ProjectInfoDTO>> UpdateProject([FromBody] ProjectUpdateDTO project)
+        public async Task<ActionResult<ProjectInfoDTO>> UpdateProject([FromBody] ProjectInfoDTO project)
         {
             var updatedProject = await _projectService.UpdateProject(project);
             _logger.LogInformation(LoggingEvents.UpdateItem, $"Project updated {project.Id}");

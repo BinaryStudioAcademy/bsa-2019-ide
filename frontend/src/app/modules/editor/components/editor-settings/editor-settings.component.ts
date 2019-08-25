@@ -78,8 +78,10 @@ export class EditorSettingsComponent implements OnInit {
             { label: 'interval', value: 'interval' },
             { label: 'relative', value: 'relative' }
         ];
-        if (this.config.data.type == "workspace") {
+        console.log(this.config.data);
+        if (this.config.data) {
             this.project=this.config.data.project;
+            console.log(this.project.editorProjectSettings);
             this.settings = JSON.parse(this.project.editorProjectSettings);
         }
         else {
@@ -97,13 +99,14 @@ export class EditorSettingsComponent implements OnInit {
         this.hasDetailsSaveResponse = false;
         if (!this.IsSettingsNotChange()) {
             this.getValuesForEditorSettingsUpdate();
-            if (this.config.data.type == "workspace") {
+            if (this.config.data) {
                 this.projectService.updateProject(this.project)
                     .subscribe(
                         (resp) => {
                             this.hasDetailsSaveResponse = true;
                             this.toastService.success('New details have successfully saved!');
                             this.startEditorOptions = this.settingsUpdate;
+                            this.ref.close();
                         },
                         (error) => {
                             this.hasDetailsSaveResponse = true;
@@ -118,6 +121,7 @@ export class EditorSettingsComponent implements OnInit {
                             this.hasDetailsSaveResponse = true;
                             this.toastService.success('New details have successfully saved!');
                             this.startEditorOptions = this.settingsUpdate;
+                            this.ref.close();
                         },
                         (error) => {
                             this.hasDetailsSaveResponse = true;
@@ -170,7 +174,7 @@ export class EditorSettingsComponent implements OnInit {
             tabSize: this.editorSettingsForm.get('tabSize').value,
             cursorStyle: this.editorSettingsForm.get('cursorStyle').value
         }
-        if (this.config.data.type == "workspace") {
+        if (this.config.data) {
             this.project.editorProjectSettings = JSON.stringify(this.settingsUpdate);
             return;
         }
