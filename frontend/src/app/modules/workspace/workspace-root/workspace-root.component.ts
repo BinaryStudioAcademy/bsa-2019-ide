@@ -39,7 +39,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public userId: number;
     public access: UserAccess;
     public showFileBrowser = true;
-    public showSearchField = true;
+    public showSearchField = false;
     public large = false;
     public canRun = false;
     public canBuild = false;
