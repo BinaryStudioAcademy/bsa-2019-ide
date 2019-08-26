@@ -52,6 +52,7 @@ namespace IDE.BLL.Services
             userEntity.PasswordSalt = Convert.ToBase64String(salt);
             userEntity.PasswordHash = SecurityHelper.HashPassword(userDto.Password, salt);
             userEntity.RegisteredAt = DateTime.Now;
+            userEntity.EditorSettingsId = await _editorSettingService.CreateInitEditorSettings();
 
             _context.Users.Add(userEntity);
             await _context.SaveChangesAsync();

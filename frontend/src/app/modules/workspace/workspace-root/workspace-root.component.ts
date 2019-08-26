@@ -45,7 +45,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public canRun = false;
     public canBuild = false;
     public canNotEdit = false;
-    public expandFolder=false;
+    public expandFolder = false;
     public project: ProjectInfoDTO;
     public options: EditorSettingDTO;
 
@@ -68,12 +68,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private projectService: ProjectService,
         private projectEditService: ProjectDialogService,
         private tokenService: TokenService,
-        private hotkeys: HotkeyService) { 
-            this.hotkeys.addShortcut({keys: 'shift.h'})
-        .subscribe(()=>{
-            this.hideFileBrowser();
-        });
-        }
+        private hotkeys: HotkeyService) {
+        this.hotkeys.addShortcut({ keys: 'shift.h' })
+            .subscribe(() => {
+                this.hideFileBrowser();
+            });
+    }
 
     ngOnInit() {
         this.userId = this.tokenService.getUserId();
@@ -91,30 +91,32 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                                 (resp) => {
                                     this.access = resp.body;
                                     this.setUserAccess();
+                                    this.projectService.getProjectById(this.projectId)
+                                        .subscribe(
+                                            (resp) => {
+                                                this.project = resp.body;
+                                                this.options = this.project.editorProjectSettings;
+                                                console.log(this.canNotEdit);
+                                                if (this.canNotEdit) {
+                                                    this.options.readOnly = true;
+                                                }
+                                            },
+                                            (error) => {
+                                                this.tr.error("Can't load selected project.", 'Error Message');
+                                            }
+                                        );
+
                                 }
                             )
                     }
-                });    
-        this.projectService.getProjectById(this.projectId)
-            .subscribe(
-                (resp) => {
-                    this.project = resp.body;
-                    this.options=this.project.editorProjectSettings;
-                },
-                (error) => {
-                    this.tr.error("Can't load selected project.", 'Error Message');
-                }
-            );
-
+                });
     }
 
-    public getProjectColor(): string
-    {
+    public getProjectColor(): string {
         return this.project.color;
     }
 
-    public Settings()
-    {
+    public Settings() {
         this.workSpaceService.show(this.project);
     }
 
@@ -199,19 +201,17 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         this.showSearch = !this.showSearch;
     }
 
-    public hideFileBrowser(): void
-    {
-        this.showFileBrowser= !this.showFileBrowser;
+    public hideFileBrowser(): void {
+        this.showFileBrowser = !this.showFileBrowser;
     }
-    
+
     public editProjectSettings() {
         this.projectEditService.show(ProjectType.Update, this.projectId);
     }
 
     private saveFilesRequest(files?: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
-        if(!files)
-        {
-            files = this.editor.openedFiles.map(x => x.innerFile);         
+        if (!files) {
+            files = this.editor.openedFiles.map(x => x.innerFile);
         }
         return this.workSpaceService.saveFilesRequest(files);
     }

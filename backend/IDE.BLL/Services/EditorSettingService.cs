@@ -15,13 +15,13 @@ using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
 {
-    public class EditorSettingService: IEditorSettingService
+    public class EditorSettingService : IEditorSettingService
     {
         private IdeContext _context;
         private readonly ILogger<EditorSettingService> _logger;
         private readonly IMapper _mapper;
 
-        public EditorSettingService(IdeContext context, 
+        public EditorSettingService(IdeContext context,
             ILogger<EditorSettingService> logger,
             IMapper mapper)
         {
@@ -36,7 +36,7 @@ namespace IDE.BLL.Services
 
             await _context.EditorSettings.AddAsync(editorSettins);
             await _context.SaveChangesAsync();
-            editorSettinsCreateDto  = _mapper.Map<EditorSettingDTO>(editorSettins);
+            editorSettinsCreateDto = _mapper.Map<EditorSettingDTO>(editorSettins);
 
             return editorSettinsCreateDto;
         }
@@ -49,6 +49,27 @@ namespace IDE.BLL.Services
             return _mapper.Map<EditorSettingDTO>(editorSettings);
         }
 
+        public async Task<int> CreateInitEditorSettings()
+        {
+            var neweditorSettings = new EditorSetting
+            {
+                LineNumbers = "on",
+                RoundedSelection = false,
+                ScrollBeyondLastLine = false,
+                ReadOnly = false,
+                FontSize = 20,
+                TabSize = 5,
+                CursorStyle = "line",
+                LineHeight = 20,
+                Theme = "vs"
+            };
+
+            await _context.EditorSettings.AddAsync(neweditorSettings);
+            await _context.SaveChangesAsync();
+            return neweditorSettings.Id;
+
+        }
+
         public async Task<EditorSettingDTO> UpdateAllProject(EditorSettingDTO editorSettingstUpdateDTO, int userId)
         {
             var projects = await _context.Projects
@@ -59,11 +80,11 @@ namespace IDE.BLL.Services
 
             var author = await _context.Users
                 .FirstOrDefaultAsync(item => item.Id == userId);
-            foreach(var project in projects)
+            foreach (var project in projects)
             {
                 var editorSettings = await _context.EditorSettings
                     .FirstOrDefaultAsync(item => item.Id == project.EditorProjectSettingsId);
-                if(editorSettings==null)
+                if (editorSettings == null)
                 {
                     var neweditorSettings = new EditorSetting
                     {
@@ -84,7 +105,7 @@ namespace IDE.BLL.Services
                     _context.Projects.Update(project);
                     await _context.SaveChangesAsync();
                 }
-                else if (!HaveTheSameEditorSettings(editorSettingstUpdateDTO,editorSettings))
+                else if (!HaveTheSameEditorSettings(editorSettingstUpdateDTO, editorSettings))
                 {
                     editorSettingstUpdateDTO.Id = editorSettings.Id;
                     await UpdateEditorSetting(editorSettingstUpdateDTO);
@@ -115,7 +136,7 @@ namespace IDE.BLL.Services
             targetEditorSetting.LineHeight = editorSettingstUpdateDTO.LineHeight;
             targetEditorSetting.LineNumbers = editorSettingstUpdateDTO.LineNumbers;
             targetEditorSetting.RoundedSelection = editorSettingstUpdateDTO.RoundedSelection;
-            targetEditorSetting.TabSize= editorSettingstUpdateDTO.TabSize;
+            targetEditorSetting.TabSize = editorSettingstUpdateDTO.TabSize;
             targetEditorSetting.Theme = editorSettingstUpdateDTO.Theme;
             targetEditorSetting.ReadOnly = editorSettingstUpdateDTO.ReadOnly;
 
@@ -127,12 +148,12 @@ namespace IDE.BLL.Services
 
         private bool HaveTheSameEditorSettings(EditorSettingDTO first, EditorSetting second)
         {
-            if (first.LineHeight!=second.LineHeight ||
-                first.LineNumbers!=second.LineNumbers ||
-                first.RoundedSelection!=second.RoundedSelection ||
-                first.ScrollBeyondLastLine!=second.ScrollBeyondLastLine ||
-                first.TabSize!=second.TabSize ||
-                first.Theme!=second.Theme)
+            if (first.LineHeight != second.LineHeight ||
+                first.LineNumbers != second.LineNumbers ||
+                first.RoundedSelection != second.RoundedSelection ||
+                first.ScrollBeyondLastLine != second.ScrollBeyondLastLine ||
+                first.TabSize != second.TabSize ||
+                first.Theme != second.Theme)
             {
                 return false;
             }
