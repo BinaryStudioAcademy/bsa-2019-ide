@@ -17,6 +17,8 @@ using IDE.DAL.Context;
 using IDE.BLL;
 using IDE.DAL;
 using RabbitMQ.Shared;
+using IDE.Common.ModelsDTO.DTO.File;
+using IDE.Common.DTO.Project;
 
 namespace IDE.API.Extensions
 {
@@ -42,6 +44,9 @@ namespace IDE.API.Extensions
             services.AddSingleton<IValidator<UserLoginDTO>, UserLogInDTOValidator>();
             services.AddSingleton<IValidator<FileCreateDTO>, FileCreateDTOValidator>();
             services.AddSingleton<IValidator<FileUpdateDTO>, FileUpdateDTOValidator>();
+            services.AddSingleton<IValidator<FileRenameDTO>, FileRenameDTOValidator>();
+            services.AddSingleton<IValidator<ProjectCreateDTO>, ProjectCreateDTOValidator>();
+            services.AddSingleton<IValidator<ProjectUpdateDTO>, ProjectUpdateDTOValidator>();
         }
 
         public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)

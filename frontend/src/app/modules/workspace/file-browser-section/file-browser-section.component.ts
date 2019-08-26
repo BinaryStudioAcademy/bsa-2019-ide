@@ -44,6 +44,7 @@ export class FileBrowserSectionComponent implements OnInit {
     private lastActionFolderCreated: boolean = false;
     private lastCreatedNode: TreeNode;
     private currentInputPos: 0;
+    private fileNameRegex: RegExp;
 
     constructor(private projectStructureService: FileBrowserService,
                 private projectStructureFormaterService: ProjectStructureFormaterService,
@@ -76,6 +77,7 @@ export class FileBrowserSectionComponent implements OnInit {
             }
         );
 
+        this.fileNameRegex = /^[A-Z0-9.]+$/gi
         this.extensions = filesExtensions;
 
         this.items = [
@@ -279,10 +281,14 @@ export class FileBrowserSectionComponent implements OnInit {
             this.create(node);
             return;
         }
-
+        const newName = this.lastSelectedElement.value.trim();
+        if (!this.fileNameRegex.test(newName)) {
+            this.toast.error("Name should contain only latin letters, numbers and dots!", "Error Message", { tapToDismiss: true });
+            this.lastSelectedElement.focus();
+            return;
+        }
         node.selectable = true;
         this.lastSelectedElement.disabled = true;
-        const newName = this.lastSelectedElement.value.trim();
         if (node.label === newName) {
             return;
         }
