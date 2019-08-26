@@ -12,7 +12,7 @@
                     <div *ngIf="data.length!=0 || notReadNotification.length!=0" class="count-of-notification">
                         {{data.length+notReadNotification.length}}</div>
                 </button>
-                <p-overlayPanel #notifications class="notification">
+                <p-overlayPanel #notifications [dismissable]="false" class="notification">
                     <div class="notification-panel-content">
                         <div *ngIf="notReadNotification.length!=0">
                             <div class="notification-item" *ngFor="let item of notReadNotification">
