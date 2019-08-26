@@ -33,7 +33,7 @@ namespace RabbitMQ.Shared
 
         private static void RegisterConnectionFactory(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IConnectionFactory>(x => new ExtendedConnectionFactory(new Uri(configuration.GetSection("RabbitMQ").Value))); //"amqp://admin:admin@localhost:5672"
+            services.AddSingleton<IConnectionFactory>(x => new ExtendedConnectionFactory(new Uri(configuration.GetSection("RabbitMQ").Value)));
         }
     }
 }
