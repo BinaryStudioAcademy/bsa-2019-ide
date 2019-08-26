@@ -1,7 +1,5 @@
 ﻿using IDE.Common.ModelsDTO.Enums;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace IDE.Common.ModelsDTO.DTO.Workspace
 {

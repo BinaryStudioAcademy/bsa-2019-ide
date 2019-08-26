@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import {TabMenuModule} from 'primeng/tabmenu';
 import { ContextMenuModule, MenuModule } from 'primeng/primeng';
 import { FileInfoComponent } from './file-info/file-info.component';
+import {ProgressBarModule} from 'primeng/progressbar';
 import { EditorSettingsComponent } from '../editor/components/editor-settings/editor-settings.component';
 
 @NgModule({
@@ -32,7 +33,8 @@ import { EditorSettingsComponent } from '../editor/components/editor-settings/ed
     FormsModule,
     TabMenuModule,
     MenuModule,
-    ContextMenuModule
+    ContextMenuModule,
+    ProgressBarModule
   ],
   entryComponents: [
       EditorSettingsComponent
