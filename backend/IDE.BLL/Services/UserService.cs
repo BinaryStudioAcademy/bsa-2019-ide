@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using IDE.BLL.Helpers;
+using Microsoft.Extensions.Logging;
+using IDE.Common.ModelsDTO.Enums;
 
 namespace IDE.BLL.Services
 {
@@ -20,12 +22,13 @@ namespace IDE.BLL.Services
         private readonly IdeContext _context;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
-
-        public UserService(IdeContext context, IEmailService emailService, IMapper mapper)
+        private readonly ILogger<UserService> _logger;
+        public UserService(IdeContext context, IEmailService emailService, IMapper mapper, ILogger<UserService> logger)
         {
             _context = context;
             _mapper = mapper;
             _emailService = emailService;
+            _logger = logger;
         }
 
         public async Task<User> CreateUser(UserRegisterDTO userDto)
@@ -34,6 +37,7 @@ namespace IDE.BLL.Services
             var user = await _context.Users.Where(a => a.Email == userEntity.Email).FirstOrDefaultAsync();
             if (user != null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"user already exists");
                 throw new ExistedUserLoginException();
             }
 
@@ -67,6 +71,7 @@ namespace IDE.BLL.Services
             var user = await GetUserByIdInternal(id);
             if (user == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"user not found");
                 throw new NotFoundException(nameof(User), id);
             }
 
@@ -78,6 +83,7 @@ namespace IDE.BLL.Services
             var user = await GetUserByIdInternal(id);
             if (user == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"user not found");
                 throw new NotFoundException(nameof(User), id);
             }
 
@@ -89,10 +95,12 @@ namespace IDE.BLL.Services
             var user = _context.Users.FirstOrDefault(u => u.Id == userId);
             if (user == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"not found user");
                 throw new NotFoundException("user", userId);
             }
             if (user.EmailConfirmed)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"email confirmed exception");
                 throw new EmailConfirmedException();
             }
             string token = GenerateSymbols.GenerateRandomSymbols();
@@ -113,6 +121,7 @@ namespace IDE.BLL.Services
                 .FirstOrDefault(t => t.Token == token);
             if (verToken == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"not found verification token");
                 throw new NotFoundException("Such token");
             }
             var userTokens = _context.VerificationTokens.Where(u => u.UserId == verToken.UserId);
@@ -132,6 +141,7 @@ namespace IDE.BLL.Services
             var user = _context.Users.FirstOrDefault(u => u.Email == email);
             if (user == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"not user with such email");
                 throw new NotFoundException("User with such email was");
             }
 

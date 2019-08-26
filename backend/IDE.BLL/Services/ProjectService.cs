@@ -2,19 +2,18 @@
 using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
 using IDE.Common.DTO.Common;
-using IDE.Common.DTO.File;
 using IDE.Common.DTO.Project;
 using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Common;
 using IDE.Common.ModelsDTO.DTO.Project;
 using IDE.Common.ModelsDTO.DTO.User;
+using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,22 +24,25 @@ namespace IDE.BLL.Services
         private readonly IdeContext _context;
         private readonly IMapper _mapper;
         private readonly FileService _fileService;
+        private readonly ILogger<ProjectService> _logger;
         private readonly INotificationService _notificationService;
-
-        public ProjectService(IdeContext context, 
-            IMapper mapper, 
+        
+        public ProjectService(IdeContext context,
+            IMapper mapper,
             FileService fileService,
-            INotificationService notificationService)
+            INotificationService notificationService,
+            ILogger<ProjectService> logger)
         {
             _context = context;
             _mapper = mapper;
             _fileService = fileService;
             _notificationService = notificationService;
+            _logger = logger;
         }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
         public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)
-        {            
+        {
             var project = await _context.Projects
                 .Include(p => p.Author)
                 .FirstOrDefaultAsync(p => p.Id == projectId);
@@ -165,6 +167,7 @@ namespace IDE.BLL.Services
 
             if (targetProject == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"update project not found");
                 throw new NotFoundException(nameof(targetProject), projectUpdateDTO.Id);
             }
 
@@ -194,9 +197,15 @@ namespace IDE.BLL.Services
                 .Include(pr => pr.Builds)
                 .FirstOrDefaultAsync(p => p.Id == id);
             if (project == null)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"delete project not found");
                 throw new NotFoundException(nameof(Project), id);
+            }
             if (project.AuthorId != ownerId)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"not author delete project");
                 throw new InvalidAuthorException();
+            }
 
             //var filesDelete = await _fileService.GetAllForProjectAsync(id);
             //foreach (var file in filesDelete)
@@ -231,36 +240,6 @@ namespace IDE.BLL.Services
                                 }).OrderByDescending(i => i.LikesCount).Take(5).ToArray()
                     })
                     .OrderBy(x => x.ProjectType).ToListAsync();
-        }
-
-        public async Task<bool> CreateProjectZipFile(int projectId, string path)
-        {
-            ICollection<FileDTO> filesForProject = await _fileService.GetAllForProjectAsync(projectId);
-            try
-            {
-                foreach (var f in filesForProject)
-                {
-                    f.Folder.TrimStart('/', '.');
-                    var dest = Path.Combine(path, "ProjectFolder", f.Folder);
-                    Directory.CreateDirectory(dest);
-                    using (StreamWriter sw = File.CreateText(Path.Combine(dest, f.Name)))
-                    {
-                        sw.Write(f.Content);
-                    }
-
-                }
-
-                ZipFile.CreateFromDirectory(Path.Combine(path,"ProjectFolder"), Path.Combine(path, $"project_{projectId}.zip"));
-                var dirToDelete = Path.Combine(path, "ProjectFolder");
-                Directory.Delete(dirToDelete, true);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return false;
-            }
-            return true;
-
         }
     }
 }

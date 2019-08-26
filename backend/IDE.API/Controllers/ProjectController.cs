@@ -4,9 +4,11 @@ using IDE.BLL.Services;
 using IDE.Common.DTO.Project;
 using IDE.Common.ModelsDTO.DTO.Project;
 using IDE.Common.ModelsDTO.DTO.User;
+using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +17,6 @@ using System.Threading.Tasks;
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
-    //[AllowAnonymous]
     [Authorize]
     [ApiController]
     public class ProjectController : ControllerBase
@@ -23,11 +24,8 @@ namespace IDE.API.Controllers
         private readonly IProjectService _projectService;
         private readonly IProjectMemberSettingsService _projectMemberSettings;
         private readonly IProjectStructureService _projectStructureService;
-        private readonly IProjectTemplateService projectTemplateService;
-        private readonly FileService _fileService;
-        private readonly IBlobRepository _blobRepo;
         private readonly IProjectTemplateService _projectTemplateService;
-        private readonly INotificationService _notificationService;
+        private readonly ILogger<ProjectController> _logger;
 
         public ProjectController(IProjectService projectService,
                                 IProjectMemberSettingsService projectMemberSettings,
@@ -35,20 +33,20 @@ namespace IDE.API.Controllers
                                 IProjectTemplateService projectTemplateService,
                                 FileService fileService,
                                 IBlobRepository blobRepo,
-                                INotificationService notificationService)
+                                INotificationService notificationService,
+                                ILogger<ProjectController> logger)
         {
             _projectStructureService = projectStructureService;
             _projectService = projectService;
             _projectMemberSettings = projectMemberSettings;
-            _fileService = fileService;
-            _blobRepo = blobRepo;
             _projectTemplateService = projectTemplateService;
-            _notificationService = notificationService;
+            _logger = logger;
         }
 
         [HttpGet("{projectId}")]
         public async Task<ActionResult<ProjectDescriptionDTO>> GetProjectById(int projectId)
         {
+            _logger.LogInformation(LoggingEvents.GetItem, $"Get project id {projectId}");
             return Ok(await _projectService.GetProjectById(projectId));
         }
 
@@ -93,6 +91,7 @@ namespace IDE.API.Controllers
         {
             var author = this.GetUserIdFromToken();
             var projectId = await _projectService.CreateProject(project, author);
+            _logger.LogInformation(LoggingEvents.InsertItem, $"Created project {projectId}");
 
             if (Request.Form.Files.Count > 0)
             {
@@ -105,7 +104,7 @@ namespace IDE.API.Controllers
                 var projectStructureDTO = await _projectTemplateService.GenerateProjectTemplate(project.Name, projectId, author, project.Language);
                 await _projectStructureService.CreateAsync(projectStructureDTO);
             }
-            
+
             return Created("/project", projectId);
         }
 
@@ -113,6 +112,7 @@ namespace IDE.API.Controllers
         public async Task<ActionResult<ProjectInfoDTO>> UpdateProject([FromBody] ProjectUpdateDTO project)
         {
             var updatedProject = await _projectService.UpdateProject(project);
+            _logger.LogInformation(LoggingEvents.UpdateItem, $"Project updated {project.Id}");
             return Ok(updatedProject);
         }
 
@@ -121,6 +121,7 @@ namespace IDE.API.Controllers
         {
             int userId = this.GetUserIdFromToken();
             await _projectService.DeleteProjectAsync(id, userId);
+            _logger.LogInformation(LoggingEvents.DeleteItem, $"Project deleted {id}");
             return NoContent();
         }
 
@@ -131,45 +132,45 @@ namespace IDE.API.Controllers
             return NoContent();
         }
 
-        [HttpGet("Download/{id}")]
-        public async Task<ActionResult> DownloadProject(int id)
+        [HttpGet("download/{projectId}")]
+        public async Task<ActionResult> DownloadProject(int projectId)
         {
-            var tempDir = Path.Combine(Directory.GetCurrentDirectory(), "Temp");
-
-            var path = Path.Combine(tempDir, Guid.NewGuid().ToString());
-
-            bool result = await _projectService.CreateProjectZipFile(id, path);
-            if (!result) {
-                return BadRequest();
-            }
-            Uri uri;
             try
             {
-                uri = await _blobRepo.UploadFileFromPathOnServer(Path.Combine(path, $"project_{id}.zip"));
+                const string contentType = "application/zip";
+                HttpContext.Response.ContentType = contentType;
+                var fileByteArray = await _projectStructureService.CreateProjectZipFile(projectId).ConfigureAwait(false);
+                var project = await _projectService.GetProjectById(projectId).ConfigureAwait(false);
+                return new FileContentResult(fileByteArray ?? new byte[0], contentType)
+                {
+                    FileDownloadName = project.Name
+                };
             }
-            catch (FileNotFoundException)
+            catch (Exception ex)
             {
-
+                _logger.LogWarning(LoggingEvents.GetItemNotFound, $"File on server not found. ${ex.Message}");
                 return NotFound();
             }
+        }
 
-            if (Directory.Exists(path))
-            {
-                Directory.Delete(path, true);
-            }
+        [HttpGet("download/{projectId}/{folderGuid}")]
+        public async Task<ActionResult> DownloadProject(int projectId, string folderGuid)
+        {
+            if (!Guid.TryParse(folderGuid, out _))
+                return BadRequest("Folder guid is invalide!");
 
             try
             {
-
-                Stream memStream = await _blobRepo.DownloadFileAsync(uri.ToString(), "DownloadProjectZipContainer");
-
-                return File(memStream, "application/zip", "project.zip");
+                const string contentType = "application/zip";
+                HttpContext.Response.ContentType = contentType;
+                var fileByteArray = await _projectStructureService.CreateProjectZipFile(projectId, folderGuid).ConfigureAwait(false);
+                return new FileContentResult(fileByteArray, contentType);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(e);
+                _logger.LogWarning(LoggingEvents.GetItemNotFound, $"File on server not found. ${ex.Message}");
+                return NotFound();
             }
-
         }
     }
 }

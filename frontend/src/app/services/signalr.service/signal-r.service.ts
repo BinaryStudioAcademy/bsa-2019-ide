@@ -48,7 +48,6 @@ export class SignalRService {
 
     public addTransferChartDataListener(): NotificationDTO[] {
         this.hubConnection.on('transferchartdata', (notification) => {
-            console.log(notification);
             this.notifications.push(notification);
         });
         return this.notifications;

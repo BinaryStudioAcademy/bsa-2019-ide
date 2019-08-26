@@ -5,7 +5,7 @@
             class="ui-button-secondary" label="Run"></button>
         <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-arrow-down" iconPos="left"
             class="ui-button-secondary" label="Build"></button>
-        <button pButton *ngIf="canEdit || isAuthor()" type="button" (click)="onSaveButtonClick($event)" icon="pi pi-save" iconPos="left"
+        <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onFilesSave()" icon="pi pi-save" iconPos="left"
             class="ui-button-secondary" label="Save"></button>
     </div>
 
@@ -17,7 +17,7 @@
         <button pButton type="button" icon="pi pi-file" iconPos="left" class="ui-button-secondary" disabled></button>
         <button pButton routerLink="/project/{{projectId}}" title="Project details" type="button" icon="pi pi-info"
             iconPos="left" class="ui-button-secondary"></button>
-        <button pButton type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary"
+        <button *ngIf="isAuthor()" pButton type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary"
             (click)="editProjectSettings()"></button>
         <button pButton type="button" icon="pi pi-search" iconPos="left" class="ui-button-secondary"
             (click)="hideSearchField()"></button>        
@@ -25,12 +25,12 @@
     <div class="p-col">
         <div class="inner-wrapper p-grid p-nogutter ">
             <div *ngIf="showFileBrowser" class="file-browser-content p-col-12 p-md-4 p-xl-2 p-align-stretch">
-                <app-file-browser-section #fileBrowser (fileSelected)="onFileSelected($event)"
-                    [showSerachField]="showSearch">
+                <app-file-browser-section #fileBrowser (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
+                    [showSearchField]="showSearchField" [project]="project">
                 </app-file-browser-section>
             </div>
             <div *ngIf="project" class="p-col-12 p-md-8 p-xl-10 p-align-stretch " [ngStyle]="{'background-color':getProjectColor()}" [ngClass]="{large:!showFileBrowser}">
-                <app-editor-section (filesSaveEvent)="onFilesSave($event)"></app-editor-section>
+                <app-editor-section  [canEdit]="canNotEdit" (filesSaveEvent)="onFilesSave($event)"></app-editor-section>
             </div>
         </div>
     </div>

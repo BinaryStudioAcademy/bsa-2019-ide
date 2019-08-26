@@ -3,10 +3,12 @@ using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.JWT;
 using IDE.Common.DTO.User;
 using IDE.Common.ModelsDTO.DTO.Authentification;
+using IDE.Common.ModelsDTO.Enums;
 using IDE.Common.Security;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,12 +19,13 @@ namespace IDE.BLL.Services
         private readonly IdeContext _context;
         private readonly JWTFactory _jwtFactory;
         private readonly IMapper _mapper;
-
-        public AuthService(IdeContext context, IMapper mapper, JWTFactory jwtFactory)
+        private readonly ILogger<AuthService> _logger;
+        public AuthService(IdeContext context, IMapper mapper, JWTFactory jwtFactory, ILogger<AuthService> logger)
         {
             _context = context;
             _jwtFactory = jwtFactory;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<AuthUserDTO> Authorize(UserLoginDTO userDto)
@@ -33,6 +36,7 @@ namespace IDE.BLL.Services
 
             if (userEntity == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"Not found user");
                 throw new NotFoundException(name: nameof(userEntity));
             }
 
@@ -40,6 +44,7 @@ namespace IDE.BLL.Services
 
             if (!SecurityHelper.ValidatePassword(userDto.Password, userEntity.PasswordHash, userEntity.PasswordSalt))
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"invalid username or password");
                 throw new InvalidUsernameOrPasswordException("wrong username or password");
             }
 
@@ -79,6 +84,7 @@ namespace IDE.BLL.Services
 
             if (userEntity == null) 
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"Not found user");
                 throw new NotFoundException(nameof(userEntity)); 
             }
 
@@ -86,11 +92,13 @@ namespace IDE.BLL.Services
 
             if (rToken == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"invalid token");
                 throw new InvalidTokenException("refresh");
             }
 
             if (!rToken.IsActive)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"expired refresh token");
                 throw new ExpiredRefreshTokenException();
             }
 
@@ -115,6 +123,7 @@ namespace IDE.BLL.Services
 
             if (rToken == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"invalid token");
                 throw new InvalidTokenException("refresh");
             }
 

@@ -4,6 +4,7 @@ using IDE.DAL.Entities.Elastic;
 using IDE.DAL.Interfaces;
 using IDE.DAL.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace IDE.API.Controllers
 {
@@ -18,11 +19,13 @@ namespace IDE.API.Controllers
 
         private ISearchRepository<TestDocument> _searchRepository;
         private FileSearchRepository _fileSearchRepository;
+        private readonly ILogger<TestElasticSearchController> _logger;
 
-        public TestElasticSearchController(ISearchRepository<TestDocument> serchRepository, FileSearchRepository fileSearchRepository)
+        public TestElasticSearchController(ISearchRepository<TestDocument> serchRepository, FileSearchRepository fileSearchRepository,  ILogger<TestElasticSearchController> logger)
         {
             _searchRepository = serchRepository;
             _fileSearchRepository = fileSearchRepository;
+            _logger = logger;
         }
 
         [HttpGet("addone")]

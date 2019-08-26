@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IDE.Common.ModelsDTO.DTO.Project
+﻿namespace IDE.Common.ModelsDTO.DTO.Project
 {
     public class LikedProjectDTO
     {

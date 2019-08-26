@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IDE.Common.ModelsDTO.DTO.Common
+﻿namespace IDE.Common.ModelsDTO.DTO.Common
 {
     public class VerificationTokenDTO
     {

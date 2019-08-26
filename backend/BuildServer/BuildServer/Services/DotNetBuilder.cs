@@ -5,11 +5,11 @@ using System.Diagnostics;
 
 namespace BuildServer.Services
 {
-    public class Builder : IBuilder
+    public class DotNetBuilder : IBuilder
     {
         private string _buildDirectory;
 
-        public Builder(IConfiguration configuration)
+        public DotNetBuilder(IConfiguration configuration)
         {
             _buildDirectory = configuration.GetSection("BuildDirectory").Value;
         }
@@ -75,7 +75,7 @@ namespace BuildServer.Services
 
                 while (!process.StandardOutput.EndOfStream)
                 {
-                    var line = process.StandardOutput.ReadLine();
+                    var line = process.StandardOutput.ReadLineAsync();
                     outputMessage += line + "\n";
                 }
 

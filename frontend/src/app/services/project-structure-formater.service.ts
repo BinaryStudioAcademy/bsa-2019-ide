@@ -23,13 +23,14 @@ export class ProjectStructureFormaterService {
     private itemId : number = 0;
     
     constructor() { }
-    toTreeView(projectStructure: ProjectStructureDTO) : TreeNode {
+    
+    public toTreeView(projectStructure: ProjectStructureDTO) : TreeNode {
         let root : TreeNode;
         root = this.toTreeNode(projectStructure.nestedFiles[0]);
         return root;
     }
 
-    toTreeNode(fileStructure: FileStructureDTO, parent: TreeNode = null) : TreeNode {
+    public toTreeNode(fileStructure: FileStructureDTO, parent: TreeNode = null) : TreeNode {
         let root : TreeNode;
         if (fileStructure.type == TreeNodeType.folder){
             root = this.makeFolderNode(fileStructure.name, fileStructure.id);
@@ -50,19 +51,21 @@ export class ProjectStructureFormaterService {
         return root;
     }
 
-    getEmptyFolderNode() {
+    public getEmptyFolderNode(): TreeNode {
         return Object.assign({}, this.folderNode);
     }
-    getEmptyFileNode() {
+
+    public getEmptyFileNode(): TreeNode {
         return Object.assign({}, this.fileNode);
     }
-    makeFolderNode(name: string, id: string) {
+    
+    public makeFolderNode(name: string, id: string): TreeNode {
         const emptyFolder = this.getEmptyFolderNode();
         emptyFolder.label = name;
-        emptyFolder.key = this.newGuid();
+        emptyFolder.key = id;
         return emptyFolder;
     }
-    makeFileNode(name: string, id: string) {
+    public makeFileNode(name: string, id: string): TreeNode {
         const emptyFile = this.getEmptyFileNode();
         emptyFile.label = name;
         emptyFile.key = id;

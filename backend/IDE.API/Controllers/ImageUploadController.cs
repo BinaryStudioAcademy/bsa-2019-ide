@@ -2,6 +2,7 @@
 using IDE.BLL.Interfaces;
 using IDE.Common.DTO.Image;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace IDE.API.Controllers
 {
@@ -11,10 +12,11 @@ namespace IDE.API.Controllers
     public class ImageUploadController : ControllerBase
     {
         private readonly IImageUploader _imageUploadService;
-
-        public ImageUploadController(IImageUploader imageUploadService)
+        private readonly ILogger<ImageUploadController> _logger;
+        public ImageUploadController(IImageUploader imageUploadService, ILogger<ImageUploadController> logger)
         {
             _imageUploadService = imageUploadService;
+            _logger = logger;
         }
 
         [HttpPost("base64")]

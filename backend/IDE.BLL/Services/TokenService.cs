@@ -1,7 +1,9 @@
 ﻿using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
+using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Security.Claims;
 
@@ -10,13 +12,15 @@ namespace IDE.BLL.Services
     public class TokenService : ITokenService
     {
         private readonly IdeContext _context;
+        private readonly ILogger<TokenService> _logger;
         private int userId;
         public string FirstName { get; private set; }
         private User user;
 
-        public TokenService(IdeContext context)
+        public TokenService(IdeContext context, ILogger<TokenService> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public User GetUser()
@@ -83,6 +87,7 @@ namespace IDE.BLL.Services
 
         private void ThrowException()
         {
+            _logger.LogWarning(LoggingEvents.HaveException, $"invalid token exception");
             throw new InvalidTokenException("access");
         }
     }

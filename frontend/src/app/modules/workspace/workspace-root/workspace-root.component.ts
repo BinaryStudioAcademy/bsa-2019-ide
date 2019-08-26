@@ -26,10 +26,7 @@ import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
-
-
-// FOR REFACTOR
-// last and facultative superior wish - to review and rearrange duties of editor-section, workspace-root, file-browser and links between them
+import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 
 @Component({
     selector: 'app-workspace-root',
@@ -42,11 +39,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public userId: number;
     public access: UserAccess;
     public showFileBrowser = true;
-    public showSearch = false;
+    public showSearchField = true;
     public large = false;
     public canRun = false;
     public canBuild = false;
-    public canEdit = false;
+    public canNotEdit = false;
     public expandFolder=false;
     public project: ProjectInfoDTO;
 
@@ -62,7 +59,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     constructor(
         private route: ActivatedRoute,
         private tr: ToastrService,
-        private ws: WorkspaceService,
+        private workSpaceService: WorkspaceService,
         private saveOnExit: LeavePageDialogService,
         private fileService: FileService,
         private rightService: RightsService,
@@ -77,7 +74,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         }
 
     ngOnInit() {
-        const userId = this.tokenService.getUserId();
+        this.userId = this.tokenService.getUserId();
         this.routeSub = this.route.params.subscribe(params => {
             this.projectId = params['id'];
         });
@@ -85,15 +82,18 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             .subscribe(
                 (resp) => {
                     this.authorId = resp.body;
-                });
-        if (this.userId != this.authorId) {
-            this.rightService.getUserRightById(userId, this.projectId)
-                .subscribe(
-                    (resp) => {
-                        this.access = resp.body;
+
+                    if (this.userId != this.authorId) {
+                        this.rightService.getUserRightById(this.userId, this.projectId)
+                            .subscribe(
+                                (resp) => {
+                                    this.access = resp.body;
+                                    this.setUserAccess();
+                                    console.log(this.canNotEdit);
+                                }
+                            )
                     }
-                )
-        }
+                });    
         this.projectService.getProjectById(this.projectId)
             .subscribe(
                 (resp) => {
@@ -103,7 +103,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                     this.tr.error("Can't load selected project.", 'Error Message');
                 }
             );
-        this.setUserAccess();
     }
 
     public getProjectColor(): string
@@ -113,15 +112,15 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     public setUserAccess() {
         switch (this.access) {
-            case 1:
-                this.canEdit = true;
+            case 0:
+                this.canNotEdit = true;
                 break;
             case 2:
-                this.canEdit = true;
+                this.canNotEdit = false;
                 this.canBuild = true;
                 break;
             case 3:
-                this.canEdit = true;
+                this.canNotEdit = false;
                 this.canBuild = true;
                 this.canRun = true;
                 break;
@@ -137,22 +136,29 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         return false;
     }
 
+    public onFileRenaming(fileUpdate: FileRenameDTO) {
+        const tab = this.editor.tabs.find(x => x.id === fileUpdate.id);
+        if (tab !== undefined) {
+            tab.label = fileUpdate.name;
+        }
+    }
+
     public onFileSelected(fileId: string): void {
-        if (this.editor.openedFiles.some(f => f.innerFile.id === fileId)) {
-            this.editor.activeItem = this.editor.items.find(i => i.id === fileId);
+        if (this.editor && this.editor.openedFiles.some(f => f.innerFile.id === fileId)) {
+            this.editor.activeItem = this.editor.tabs.find(i => i.id === fileId);
             this.editor.code = this.editor.openedFiles.find(f => f.innerFile.id === fileId).innerFile.content;
             return;
         }
 
-        this.ws.getFileById(fileId)
+        this.workSpaceService.getFileById(fileId)
             .subscribe(
                 (resp) => {
                     if (resp.ok) {
                         const { id, name, content, folder, updaterId } = resp.body as FileDTO;
                         const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder };
                         this.editor.AddFileToOpened(fileUpdateDTO);
-                        this.editor.items.push({ label: name, icon: 'fa fa-fw fa-file', id: id });
-                        this.editor.activeItem = this.editor.items[this.editor.items.length - 1];
+                        this.editor.tabs.push({ label: name, icon: 'fa fa-fw fa-file', id: id });
+                        this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
                         this.editor.code = content;
                     } else {
                         this.tr.error("Can't load selected file.", 'Error Message');
@@ -165,52 +171,25 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             );
     }
 
-    // FOR REFACTOR
-    // onSaveButtonClick and onFilesSave do same things - need to create one method Save and calls it for this actions(save btn, tab close)
-    // firsty BETTER to have method for save one file its more logical. And add than save all method. And for close tab use saveOne method!!!
-    // this one calls on save btn click
-    public onSaveButtonClick(ev) {
+    public onFilesSave(files?: FileUpdateDTO[]) {
         if (!this.editor.anyFileChanged()) {
             return;
         }
-        this.saveFiles().subscribe(
-            (success) => {
-                if (success.every(x => x.ok)) {
-                    this.tr.success("Files saved", 'Success', { tapToDismiss: true });
-                } else {
-                    this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
-                }
-            },
-            (error) => {
-                this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
-                console.error(error);
-            }
-        );
-    }
-
-    public hideSearchField(): void {
-        this.showSearch = !this.showSearch;
-    }
-
-    // this one calls on tab close
-    public onFilesSave(files: FileUpdateDTO[]) {
         this.saveFilesRequest(files)
             .subscribe(
                 success => {
                     if (success.every(x => x.ok)) {
                         this.tr.success("Files saved", 'Success', { tapToDismiss: true });
-                        // FOR REFACTOR
-                        // "confirmSaving" method invert isChanged flag,
-                        // but here in calls for closed tab, so it calls for undefind obj so it throw exeption
-                        // refactor it for call only for opened files and mabe rename it
-                        // this.editor.confirmSaving(files.map(x => x.id));
                     } else {
                         this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
                 },
                 error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
-    // FOR REFACTOR
+
+    public hideSearchField(): void {
+        this.showSearchField = !this.showSearchField;
+    }
 
     public hideFileBrowser(): void
     {
@@ -221,22 +200,19 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         this.projectEditService.show(ProjectType.Update, this.projectId);
     }
 
-    private saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
-        return this.ws.saveFilesRequest(files);
+    private saveFilesRequest(files?: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
+        if(!files)
+        {
+            files = this.editor.openedFiles.map(x => x.innerFile);         
+        }
+        return this.workSpaceService.saveFilesRequest(files);
     }
-    
-    public saveFiles(): Observable<HttpResponse<FileUpdateDTO>[]> {
-        const openedFiles: FileUpdateDTO[] = this.editor.openedFiles.map(x => x.innerFile);
-
-        return this.saveFilesRequest(openedFiles);
-    }
-    // FOR REFACTOR
 
     canDeactivate(): Observable<boolean> {
         return !this.editor.anyFileChanged() ? of(true) : this.saveOnExit.confirm('Save changes?')
             .pipe(
                 switchMap(
-                    mustSave => mustSave ? this.saveFiles().pipe(map(result => result.every(x => x.ok) ? true : false)) : of(false)));
+                    mustSave => mustSave ? this.saveFilesRequest().pipe(map(result => result.every(x => x.ok) ? true : false)) : of(false)));
     }
 
     ngOnDestroy() {
