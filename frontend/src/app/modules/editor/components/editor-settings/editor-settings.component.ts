@@ -7,6 +7,7 @@ import { UserService } from 'src/app/services/user.service/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { ProjectService } from 'src/app/services/project.service/project.service';
+import { EditorSettingsService } from 'src/app/services/editor-settings.service/editor-settings.service';
 
 @Component({
     selector: 'app-editor-settings',
@@ -45,7 +46,8 @@ export class EditorSettingsComponent implements OnInit {
         private userService: UserService,
         private ref: DynamicDialogRef,
         private toastService: ToastrService,
-        private projectService: ProjectService
+        private projectService: ProjectService,
+        private editorSettingsService: EditorSettingsService
     ) { }
 
     ngOnInit() {
@@ -79,8 +81,7 @@ export class EditorSettingsComponent implements OnInit {
             { label: 'relative', value: 'relative' }
         ];
         if (this.config.data) {
-            this.project=this.config.data.project;
-            console.log(this.project.editorProjectSettings);
+            this.project = this.config.data.project;
             this.settings = this.project.editorProjectSettings;
         }
         else {
@@ -89,8 +90,7 @@ export class EditorSettingsComponent implements OnInit {
         this.InitializeEditorSettings();
     }
 
-    public close()
-    {
+    public close() {
         this.ref.close();
     }
 
@@ -98,36 +98,20 @@ export class EditorSettingsComponent implements OnInit {
         this.hasDetailsSaveResponse = false;
         if (!this.IsSettingsNotChange()) {
             this.getValuesForEditorSettingsUpdate();
-            if (this.config.data) {
-                this.projectService.updateProject(this.project)
-                    .subscribe(
-                        (resp) => {
-                            this.hasDetailsSaveResponse = true;
-                            this.toastService.success('New details have successfully saved!');
-                            this.startEditorOptions = this.settingsUpdate;
-                            this.ref.close();
-                        },
-                        (error) => {
-                            this.hasDetailsSaveResponse = true;
-                            this.toastService.error('Can\'t save new project details', 'Error Message');
-                        }
-                    );
-            }
-            else {
-                this.userService.updateUser(this.user)
-                    .subscribe(
-                        (resp) => {
-                            this.hasDetailsSaveResponse = true;
-                            this.toastService.success('New details have successfully saved!');
-                            this.startEditorOptions = this.settingsUpdate;
-                            this.ref.close();
-                        },
-                        (error) => {
-                            this.hasDetailsSaveResponse = true;
-                            this.toastService.error('Can\'t save new project details', 'Error Message');
-                        }
-                    );
-            }
+            console.log(this.settingsUpdate);
+            this.editorSettingsService.UpdateEditorSettings(this.settingsUpdate)
+                .subscribe(
+                    (resp) => {
+                        this.hasDetailsSaveResponse = true;
+                        this.toastService.success('New details have successfully saved!');
+                        this.startEditorOptions = this.settingsUpdate;
+                        this.ref.close();
+                    },
+                    (error) => {
+                        this.hasDetailsSaveResponse = true;
+                        this.toastService.error('Can\'t save new project details', 'Error Message');
+                    }
+                );
         }
     }
 

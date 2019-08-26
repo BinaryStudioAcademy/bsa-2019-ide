@@ -14,7 +14,7 @@ namespace IDE.DAL.Entities
         public int FontSize { get; set; }
         public int TabSize { get; set; }
         public string CursorStyle { get; set; }
-        public int IntlineHeight { get; set; }
+        public int LineHeight { get; set; }
         public string Theme { get; set; }
     }
 }

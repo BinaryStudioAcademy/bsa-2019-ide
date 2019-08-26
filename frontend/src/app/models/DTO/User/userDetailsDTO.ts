@@ -13,5 +13,6 @@ export interface UserDetailsDTO {
     registeredAt: Date;
     lastActive: Date;
     url: string;
+    editorSettingsId?: number;
     editorSettings: EditorSettingDTO;
 }

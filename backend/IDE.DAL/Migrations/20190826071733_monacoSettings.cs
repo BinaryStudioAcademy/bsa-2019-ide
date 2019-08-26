@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace IDE.DAL.Migrations
 {
-    public partial class editorSettings : Migration
+    public partial class monacoSettings : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,7 +30,7 @@ namespace IDE.DAL.Migrations
                     FontSize = table.Column<int>(nullable: false),
                     TabSize = table.Column<int>(nullable: false),
                     CursorStyle = table.Column<string>(nullable: true),
-                    IntlineHeight = table.Column<int>(nullable: false),
+                    LineHeight = table.Column<int>(nullable: false),
                     Theme = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

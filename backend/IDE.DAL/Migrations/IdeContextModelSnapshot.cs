@@ -56,7 +56,7 @@ namespace IDE.DAL.Migrations
 
                     b.Property<int>("FontSize");
 
-                    b.Property<int>("IntlineHeight");
+                    b.Property<int>("LineHeight");
 
                     b.Property<string>("LineNumbers");
 

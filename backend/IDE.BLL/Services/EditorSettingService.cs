@@ -61,7 +61,7 @@ namespace IDE.BLL.Services
 
             targetEditorSetting.FontSize = editorSettingstUpdateDTO.FontSize;
             targetEditorSetting.CursorStyle = editorSettingstUpdateDTO.CursorStyle;
-            targetEditorSetting.IntlineHeight = editorSettingstUpdateDTO.LineHeight;
+            targetEditorSetting.LineHeight = editorSettingstUpdateDTO.LineHeight;
             targetEditorSetting.LineNumbers = editorSettingstUpdateDTO.LineNumbers;
             targetEditorSetting.RoundedSelection = editorSettingstUpdateDTO.RoundedSelection;
             targetEditorSetting.TabSize= editorSettingstUpdateDTO.TabSize;

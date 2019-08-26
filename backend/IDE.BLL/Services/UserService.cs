@@ -61,7 +61,7 @@ namespace IDE.BLL.Services
 
         public async Task<UserDTO> Update(UserDetailsDTO userDTO)
         {
-            var targetUser = await _context.Users.SingleOrDefaultAsync(p => p.Id == userDTO.Id);
+            var targetUser = await GetUserByIdInternal(userDTO.Id);
 
             if (targetUser == null)
             {
@@ -71,14 +71,8 @@ namespace IDE.BLL.Services
              
             if(targetUser.EditorSettings==null)
             {
-                userDTO.EditorSettings = await _editorSettingService.CreateEditorSettings(userDTO.EditorSettings);
+                targetUser.EditorSettingsId = (await _editorSettingService.CreateEditorSettings(userDTO.EditorSettings)).Id;
             }
-            else
-            {
-                userDTO.EditorSettings = await _editorSettingService.UpdateEditorSetting(userDTO.EditorSettings);
-            }
-
-            targetUser.EditorSettings = _mapper.Map<EditorSetting>(userDTO.EditorSettings);
 
             _context.Users.Update(targetUser);
             await _context.SaveChangesAsync();

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IDE.DAL.Migrations
 {
     [DbContext(typeof(IdeContext))]
-    [Migration("20190825215950_editorSettings")]
-    partial class editorSettings
+    [Migration("20190826071733_monacoSettings")]
+    partial class monacoSettings
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -58,7 +58,7 @@ namespace IDE.DAL.Migrations
 
                     b.Property<int>("FontSize");
 
-                    b.Property<int>("IntlineHeight");
+                    b.Property<int>("LineHeight");
 
                     b.Property<string>("LineNumbers");
 

@@ -162,7 +162,7 @@ namespace IDE.BLL.Services
                 Theme = userEditorSettings.Theme
             };
             var createDTO = await _editorSettingService.CreateEditorSettings(newProjectEditorSetting);
-            project.EditorProjectSettings = _mapper.Map<EditorSetting>(createDTO);
+            project.EditorProjectSettingsId = _mapper.Map<EditorSetting>(createDTO).Id;
 
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();

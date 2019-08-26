@@ -28,6 +28,14 @@
     <Compile Remove="Migrations\20190825122515_editorSettings.Designer.cs" />
     <Compile Remove="Migrations\20190825125949_editorSettings.cs" />
     <Compile Remove="Migrations\20190825125949_editorSettings.Designer.cs" />
+    <Compile Remove="Migrations\20190825215950_editorSettings.cs" />
+    <Compile Remove="Migrations\20190825215950_editorSettings.Designer.cs" />
+    <Compile Remove="Migrations\20190826062625_editorSettings.cs" />
+    <Compile Remove="Migrations\20190826062625_editorSettings.Designer.cs" />
+    <Compile Remove="Migrations\20190826063714_settings.cs" />
+    <Compile Remove="Migrations\20190826063714_settings.Designer.cs" />
+    <Compile Remove="Migrations\20190826071259_monacoSettings.cs" />
+    <Compile Remove="Migrations\20190826071259_monacoSettings.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
