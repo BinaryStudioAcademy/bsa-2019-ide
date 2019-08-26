@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ProjectUserPageDTO } from 'src/app/models/DTO/Project/ProjectUserPageDTO';
+import { ProjectUserPageDTO } from 'src/app/models/DTO/Project/projectUserPageDTO';
 
 @Component({
   selector: 'app-user-pr-card',
