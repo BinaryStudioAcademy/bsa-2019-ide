@@ -8,7 +8,7 @@ namespace IDE.DAL.Entities.Elastic
         [Text(Name = "name")]
         public string Name { get; set; }
 
-        [Text(Name = "content")]
+        [Text(TermVector = TermVectorOption.WithPositionsOffsets)]
         public string Content { get; set; }
 
         [Text(Name = "folder")]

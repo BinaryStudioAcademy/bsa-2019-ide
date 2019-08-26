@@ -69,7 +69,7 @@ namespace IDE.API.Controllers
         [HttpGet("index")]
         public async Task<bool> CreateIndex()
         {
-            return await _searchRepository.CreateIndex();
+            return await _fileSearchRepository.CreateIndex();
         }
 
         [HttpGet("indexdel")]
