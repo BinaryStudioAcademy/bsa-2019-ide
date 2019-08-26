@@ -21,7 +21,6 @@ export class RightsService {
 
     public getUserRightById(userId: number, projectId: number): Observable<HttpResponse<UserAccess>>
     {
-        console.log("get");
         return this.httpClient.getRequest(this.address+'/'+userId+'/'+projectId);
     }
 

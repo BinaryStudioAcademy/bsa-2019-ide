@@ -48,7 +48,6 @@ import {FileUploadModule} from 'primeng/fileupload';
     SharedModule,
     ProgressSpinnerModule,
     TabViewModule,
-    SharedModule,
     DynamicDialogModule,
     CollaboratorModule,
     FileUploadModule

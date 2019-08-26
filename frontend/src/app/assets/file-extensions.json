@@ -47,5 +47,12 @@
             "imageClass": "fa icon-go",
             "monacoFileType": ""
         }
+    },
+    { 
+        "extension": ".csproj",
+        "extensionInfo": {
+            "imageClass": "fa icon-csproj",
+            "monacoFileType": ""
+        }
     }
 ]

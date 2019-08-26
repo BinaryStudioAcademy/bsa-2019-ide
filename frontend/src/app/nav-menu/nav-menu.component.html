@@ -1,36 +1,38 @@
 <div class="menu-wrapper">
     <p-menubar [model]="getMenuItems()">
-
-        <div *ngIf="isAuthorized">
-            <p-autoComplete class="auto-complete" [(ngModel)]="project" [suggestions]="filterProhects"
-                (completeMethod)="filterProject($event)" field="name" [size]="30" placeholder="Project title..."
-                [minLength]="1" (onSelect)="checkProject(project)"></p-autoComplete>
-            <p-splitButton label="My Profile" icon="pi pi-user" (onClick)="goToUserDetails()" [model]="items">
-            </p-splitButton>
-            <button class="bell-wrapper ui-button-secondary" pButton icon="pi pi-bell" (click)="notifications.toggle($event)"
-                (click)="showNotificationPanel()">
-                <div *ngIf="data.length!=0 || notReadNotification.length!=0" class="count-of-notification">{{data.length+notReadNotification.length}}</div>
-            </button>
-            <p-overlayPanel #notifications class="notification">
+        <div class="right-part">
+            <div *ngIf="isAuthorized">
+                <p-autoComplete class="auto-complete" [(ngModel)]="project" [suggestions]="filterProhects"
+                    (completeMethod)="filterProject($event)" field="name" [size]="30" placeholder="Project title..."
+                    [minLength]="1" (onSelect)="checkProject(project)"></p-autoComplete>
+                <p-splitButton label="My Profile" icon="pi pi-user" (onClick)="goToUserDetails()" [model]="items">
+                </p-splitButton>
+                <button class="bell-wrapper ui-button-secondary" pButton icon="pi pi-bell"
+                    (click)="notifications.toggle($event)" (click)="showNotificationPanel()">
+                    <div *ngIf="data.length!=0 || notReadNotification.length!=0" class="count-of-notification">
+                        {{data.length+notReadNotification.length}}</div>
+                </button>
+                <p-overlayPanel #notifications class="notification">
                     <div *ngIf="notReadNotification.length!=0">
-                            <div class="notification-item" *ngFor="let item of notReadNotification">
-                                {{item.message}}
-                            </div>
+                        <div class="notification-item" *ngFor="let item of notReadNotification">
+                            {{item.message}}
                         </div>
-                <div *ngIf="data.length!=0">
-                    <div class="notification-item" *ngFor="let item of data">
-                        {{item.message}}
                     </div>
-                </div>
-                <div *ngIf="data.length==0 && notReadNotification.length==0">
+                    <div *ngIf="data.length!=0">
+                        <div class="notification-item" *ngFor="let item of data">
+                            {{item.message}}
+                        </div>
+                    </div>
+                    <div *ngIf="data.length==0 && notReadNotification.length==0">
                         There is no notification for you
-                </div>
-            </p-overlayPanel>
+                    </div>
+                </p-overlayPanel>
 
-        </div>
-        <div *ngIf="!isAuthorized">
-            <button class="login-btn" pButton (click)="openAuthDialog(dialogType.SignIn)" label="Login"></button>
-            <button class="signup-btn" pButton (click)="openAuthDialog(dialogType.SignUp)" label="SignUp"></button>
+            </div>
+            <div *ngIf="!isAuthorized">
+                <button class="login-btn" pButton (click)="openAuthDialog(dialogType.SignIn)" label="Login"></button>
+                <button class="signup-btn" pButton (click)="openAuthDialog(dialogType.SignUp)" label="SignUp"></button>
+            </div>
         </div>
 
     </p-menubar>

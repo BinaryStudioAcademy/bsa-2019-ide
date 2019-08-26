@@ -12,6 +12,7 @@ import { DeleteCollaboratorRightDTO } from 'src/app/models/DTO/Common/deleteColl
 import { BlockUIModule } from 'primeng/primeng';
 import { element } from 'protractor';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
     selector: 'app-add-collaborators',
@@ -30,6 +31,8 @@ export class AddCollaboratorsComponent implements OnInit {
     public deleteCollaborators: CollaboratorDTO[] = [];
     public area: string
     public isCollaboratorChange = false;
+    public userId: number;
+    public authorId: number;
 
     private startCollaborators = [] as CollaboratorDTO[];
 
@@ -37,13 +40,20 @@ export class AddCollaboratorsComponent implements OnInit {
     constructor(private route: ActivatedRoute,
         private userService: UserService,
         private projectService: ProjectService,
+        private tokenService: TokenService,
         private router: Router,
         private rightService: RightsService,
         private toastService: ToastrService,
         private signalRService: SignalRService) { }
 
     public ngOnInit(): void {
-        this.area = "workspace";
+        this.userId=this.tokenService.getUserId();
+        this.projectService.getAuthorId(this.projectId)
+        .subscribe(
+            (resp)=>{
+                this.authorId=resp.body;
+            }
+        );
         this.projectService.getProjectCollaborators(this.projectId)
             .subscribe(
                 (resp) => {
@@ -64,6 +74,16 @@ export class AddCollaboratorsComponent implements OnInit {
         }
     }
 
+    public wasInStartList(deleteItem: DeleteCollaboratorRightDTO): boolean{
+        this.startCollaborators.forEach(element => {
+            if(deleteItem.id==element.id)
+            {
+                return true;
+            }
+        });
+        return false;
+    }
+
     public save(): void {
         this.isCollaboratorsSaved = false;
         this.deleteCollaborators.forEach(item => {
@@ -74,7 +94,7 @@ export class AddCollaboratorsComponent implements OnInit {
                 nickName: item.nickName,
                 projectId: this.projectId
             }
-            if (!this.IsSelected(deleteItem)) {
+            if (!this.IsSelected(deleteItem) && this.wasInStartList(deleteItem)) {
                 this.rightService.deleteCollaborator(deleteItem)
                     .subscribe(
                         (resp) => {
@@ -177,11 +197,15 @@ export class AddCollaboratorsComponent implements OnInit {
         if (filtered.length === 0) {
             const notFound: UserNicknameDTO = {
                 id: 0,
-                nickName: "We couldn’t find any project matching " + query
+                nickName: "We couldn’t find any user nickname matching " + query
             }
             filtered.push(notFound);
         }
         return filtered;
+    }
+
+    public isAuthor(): boolean{
+        return this.userId==this.authorId;
     }
 
     private IsSelected(collaborator: UserNicknameDTO): boolean {

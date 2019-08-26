@@ -1,7 +1,4 @@
 ﻿using IDE.Common.ModelsDTO.DTO.User;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace IDE.Common.ModelsDTO.DTO.Common
 {
