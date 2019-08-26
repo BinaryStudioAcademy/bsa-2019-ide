@@ -32,6 +32,10 @@ export class EditorSectionComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
+        if(!this.canEdit)
+        {
+            this.monacoOptions.readOnly=true;
+        }
     }
 
     onChange(ev) {

@@ -8,6 +8,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { EditorSettingsService } from 'src/app/services/editor-settings.service/editor-settings.service';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
     selector: 'app-editor-settings',
@@ -39,6 +40,7 @@ export class EditorSettingsComponent implements OnInit {
     public settingsUpdate: EditorSettingDTO;
     public settings: EditorSettingDTO;
     public hasDetailsSaveResponse = true;
+    public IsWorkspace = false;
 
     constructor(
         private config: DynamicDialogConfig,
@@ -47,7 +49,8 @@ export class EditorSettingsComponent implements OnInit {
         private ref: DynamicDialogRef,
         private toastService: ToastrService,
         private projectService: ProjectService,
-        private editorSettingsService: EditorSettingsService
+        private editorSettingsService: EditorSettingsService,
+        private tokenService: TokenService
     ) { }
 
     ngOnInit() {
@@ -83,6 +86,7 @@ export class EditorSettingsComponent implements OnInit {
         if (this.config.data) {
             this.project = this.config.data.project;
             this.settings = this.project.editorProjectSettings;
+            this.IsWorkspace = true;
         }
         else {
             this.settings = this.user.editorSettings;
@@ -94,24 +98,47 @@ export class EditorSettingsComponent implements OnInit {
         this.ref.close();
     }
 
-    public onSubmit() {
-        this.hasDetailsSaveResponse = false;
+    public SaveToAllUserProjects() {
+        console.log("to all");
+        this.ref.close();
+    }
+
+    public onSubmit(event) {
+        console.log(event);
         if (!this.IsSettingsNotChange()) {
+            this.hasDetailsSaveResponse = false;
             this.getValuesForEditorSettingsUpdate();
-            console.log(this.settingsUpdate);
-            this.editorSettingsService.UpdateEditorSettings(this.settingsUpdate)
-                .subscribe(
-                    (resp) => {
-                        this.hasDetailsSaveResponse = true;
-                        this.toastService.success('New details have successfully saved!');
-                        this.startEditorOptions = this.settingsUpdate;
-                        this.ref.close();
-                    },
-                    (error) => {
-                        this.hasDetailsSaveResponse = true;
-                        this.toastService.error('Can\'t save new project details', 'Error Message');
-                    }
-                );
+            if (!event) {
+                this.editorSettingsService.UpdateEditorSettings(this.settingsUpdate)
+                    .subscribe(
+                        (resp) => {
+                            this.hasDetailsSaveResponse = true;
+                            this.toastService.success('New details have successfully saved!');
+                            this.startEditorOptions = this.settingsUpdate;
+                            this.ref.close();
+                        },
+                        (error) => {
+                            this.hasDetailsSaveResponse = true;
+                            this.toastService.error('Can\'t save new editor settings', 'Error Message');
+                        }
+                    );
+            }
+            else{
+                const userId=this.tokenService.getUserId();
+                this.editorSettingsService.UpdateAllUserProjectEditorSettings(this.settingsUpdate,userId)
+                    .subscribe(
+                        (resp) => {
+                            this.hasDetailsSaveResponse = true;
+                            this.toastService.success('New details have successfully saved!');
+                            this.startEditorOptions = this.settingsUpdate;
+                            this.ref.close();
+                        },
+                        (error) => {
+                            this.hasDetailsSaveResponse = true;
+                            this.toastService.error('Can\'t save new editor settings', 'Error Message');
+                        }
+                    );        
+            }
         }
     }
 

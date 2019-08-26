@@ -1,40 +1,46 @@
-<span class="modal-close-btn" (click)="close()">&times;</span>
-<form class="edittor-setting-content" [formGroup]="editorSettingsForm" (ngSubmit)="onSubmit()">
-    <div class="editor-details-property">
-        <p class="property-name">Thema:</p>
-        <p-dropdown [options]="themes" formControlName="theme"></p-dropdown>
-    </div>
-    <div class="editor-details-property">
-        <p class="property-name">Scroll beyond last line:</p>
-        <p-dropdown [options]="scrolls" formControlName="scrollBeyondLastLine"></p-dropdown>
-    </div>
-    <div class="editor-details-property">
-        <p class="property-name">Cursor style:</p>
-        <p-dropdown [options]="cursorStyles" formControlName="cursorStyle"></p-dropdown>
-    </div>
-    <div class="editor-details-property">
-        <p class="property-name">Line height:</p>
-        <input type="text" pInputText formControlName="lineHeight">
-    </div>
-    <div class="editor-details-property">
-        <p class="property-name">Line numbers:</p>
-        <p-dropdown [options]="lineNumbers" formControlName="lineNumbers"></p-dropdown>
-    </div>
-    <div class="editor-details-property">
-        <p class="property-name">Font size:</p>
-        <input type="text" pInputText formControlName="fontSize">
-    </div>
-    <div class="editor-details-property">
-        <p class="property-name">Tab size:</p>
-        <input type="text" pInputText formControlName="tabSize">
-    </div>
-    <div class="ui-g ui-fluid">
-        <div class="ui-g-12">
-            <button *ngIf="hasDetailsSaveResponse" type="submit"
-                [disabled]="!editorSettingsForm.valid || IsSettingsNotChange()" pButton label="Save"></button>
-            <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
-                <p-progressSpinner></p-progressSpinner>
+<div class="editor-settings-content">
+    <span *ngIf="IsWorkspace" class="modal-close-btn" (click)="close()">&times;</span>
+    <h2 *ngIf="IsWorkspace" class="title"> Editor settings</h2>
+    <form class="edittor-setting-content" [formGroup]="editorSettingsForm">
+        <div class="editor-details-property">
+            <p class="property-name">Thema:</p>
+            <p-dropdown [options]="themes" formControlName="theme"></p-dropdown>
+        </div>
+        <div class="editor-details-property">
+            <p class="property-name">Scroll beyond last line:</p>
+            <p-dropdown [options]="scrolls" formControlName="scrollBeyondLastLine"></p-dropdown>
+        </div>
+        <div class="editor-details-property">
+            <p class="property-name">Cursor style:</p>
+            <p-dropdown [options]="cursorStyles" formControlName="cursorStyle"></p-dropdown>
+        </div>
+        <div class="editor-details-property">
+            <p class="property-name">Line height:</p>
+            <input type="text" pInputText formControlName="lineHeight">
+        </div>
+        <div class="editor-details-property">
+            <p class="property-name">Line numbers:</p>
+            <p-dropdown [options]="lineNumbers" formControlName="lineNumbers"></p-dropdown>
+        </div>
+        <div class="editor-details-property">
+            <p class="property-name">Font size:</p>
+            <input type="text" pInputText formControlName="fontSize">
+        </div>
+        <div class="editor-details-property">
+            <p class="property-name">Tab size:</p>
+            <input type="text" pInputText formControlName="tabSize">
+        </div>
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12">
+                <button *ngIf="hasDetailsSaveResponse" (click)="onSubmit(false)" class="settings-btn"
+                    [disabled]="!editorSettingsForm.valid || IsSettingsNotChange()" pButton label="Save"></button>
+                <button *ngIf="hasDetailsSaveResponse && IsWorkspace" (click)="onSubmit(true)" class="settings-btn"
+                    [disabled]="!editorSettingsForm.valid || IsSettingsNotChange()" pButton
+                    label="Save to all projects"></button>
+                <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
+                    <p-progressSpinner></p-progressSpinner>
+                </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>

@@ -18,4 +18,8 @@ export class EditorSettingsService {
   public UpdateEditorSettings(updateDTO: EditorSettingDTO): Observable<HttpResponse<EditorSettingDTO>>{
       return this.http.putRequest(this.address, updateDTO);
   }
+
+  public UpdateAllUserProjectEditorSettings(updateDTO: EditorSettingDTO,userId:number): Observable<HttpResponse<EditorSettingDTO>>{
+    return this.http.putRequest(this.address+'/'+userId, updateDTO);
+}
 }

@@ -4,6 +4,7 @@ import { EditorSettingsComponent } from './components/editor-settings/editor-set
 import { DropdownModule, ProgressSpinnerModule, ButtonModule } from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
+import { SharedModule } from '../shared/shared.module';
 
 
 
@@ -18,7 +19,8 @@ import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdia
     ReactiveFormsModule,
     ProgressSpinnerModule,
     ButtonModule,
-    DynamicDialogModule
+    DynamicDialogModule,
+    SharedModule
   ],
   exports:[
       EditorSettingsComponent

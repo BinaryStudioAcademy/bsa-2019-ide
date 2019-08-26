@@ -32,5 +32,11 @@ namespace IDE.API.Controllers
             return Ok(await _editorSetiingsService.UpdateEditorSetting(editorSettingDTO));
         }
 
+        [HttpPut("{userId}")]
+        public async Task<ActionResult<EditorSettingDTO>> UpdateAllUserProject(EditorSettingDTO editorSettingDTO, int userId)
+        {
+            return Ok(await _editorSetiingsService.UpdateAllProject(editorSettingDTO, userId));
+        }
+
     }
 }

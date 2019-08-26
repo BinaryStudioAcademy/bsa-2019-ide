@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,7 +34,7 @@ namespace IDE.BLL.Services
         {
             var editorSettins = _mapper.Map<EditorSetting>(editorSettinsCreateDto);
 
-            _context.EditorSettings.Add(editorSettins);
+            await _context.EditorSettings.AddAsync(editorSettins);
             await _context.SaveChangesAsync();
             editorSettinsCreateDto  = _mapper.Map<EditorSettingDTO>(editorSettins);
 
@@ -46,6 +47,56 @@ namespace IDE.BLL.Services
                 .SingleOrDefaultAsync(p => p.Id == editorSettingsId);
 
             return _mapper.Map<EditorSettingDTO>(editorSettings);
+        }
+
+        public async Task<EditorSettingDTO> UpdateAllProject(EditorSettingDTO editorSettingstUpdateDTO, int userId)
+        {
+            var projects = await _context.Projects
+                .Where(pr => pr.AuthorId == userId)
+                .Include(x => x.Author)
+                .Include(x => x.EditorProjectSettings)
+                .ToListAsync();
+
+            var author = await _context.Users
+                .FirstOrDefaultAsync(item => item.Id == userId);
+            foreach(var project in projects)
+            {
+                var editorSettings = await _context.EditorSettings
+                    .FirstOrDefaultAsync(item => item.Id == project.EditorProjectSettingsId);
+                if(editorSettings==null)
+                {
+                    var neweditorSettings = new EditorSetting
+                    {
+                        CursorStyle = editorSettingstUpdateDTO.CursorStyle,
+                        FontSize = editorSettingstUpdateDTO.FontSize,
+                        LineHeight = editorSettingstUpdateDTO.LineHeight,
+                        LineNumbers = editorSettingstUpdateDTO.LineNumbers,
+                        RoundedSelection = editorSettingstUpdateDTO.RoundedSelection,
+                        ScrollBeyondLastLine = editorSettingstUpdateDTO.ScrollBeyondLastLine,
+                        TabSize = editorSettingstUpdateDTO.TabSize,
+                        Theme = editorSettingstUpdateDTO.Theme,
+                        ReadOnly = editorSettingstUpdateDTO.ReadOnly
+                    };
+                    editorSettings = neweditorSettings;
+                    await _context.EditorSettings.AddAsync(editorSettings);
+                    await _context.SaveChangesAsync();
+                    project.EditorProjectSettingsId = editorSettings.Id;
+                    _context.Projects.Update(project);
+                    await _context.SaveChangesAsync();
+                }
+                else if (!HaveTheSameEditorSettings(editorSettingstUpdateDTO,editorSettings))
+                {
+                    editorSettingstUpdateDTO.Id = editorSettings.Id;
+                    await UpdateEditorSetting(editorSettingstUpdateDTO);
+                }
+            }
+            var userEditorSettings = await _context.EditorSettings
+                    .FirstOrDefaultAsync(item => item.Id == author.EditorSettingsId);
+            editorSettingstUpdateDTO.Id = userEditorSettings.Id;
+            await UpdateEditorSetting(editorSettingstUpdateDTO);
+            await _context.SaveChangesAsync();
+            return editorSettingstUpdateDTO;
+
         }
 
         public async Task<EditorSettingDTO> UpdateEditorSetting(EditorSettingDTO editorSettingstUpdateDTO)
@@ -72,6 +123,20 @@ namespace IDE.BLL.Services
             await _context.SaveChangesAsync();
 
             return await GetEditorSettingById(targetEditorSetting.Id);
+        }
+
+        private bool HaveTheSameEditorSettings(EditorSettingDTO first, EditorSetting second)
+        {
+            if (first.LineHeight!=second.LineHeight ||
+                first.LineNumbers!=second.LineNumbers ||
+                first.RoundedSelection!=second.RoundedSelection ||
+                first.ScrollBeyondLastLine!=second.ScrollBeyondLastLine ||
+                first.TabSize!=second.TabSize ||
+                first.Theme!=second.Theme)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
