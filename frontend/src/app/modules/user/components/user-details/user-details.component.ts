@@ -42,6 +42,7 @@ export class UserDetailsComponent implements OnInit {
       private userDialogService: UserDetailsDialogService) { }
 
   ngOnInit() {
+      
       let id = this.activateRoute.snapshot.params['id'];
 
       this.userService.getUserInformationById(id).subscribe(response =>{
@@ -51,7 +52,7 @@ export class UserDetailsComponent implements OnInit {
         if (!this.user.url){
             this.user.url = './assets/img/user-default-avatar.png';
         }
-        console.log(new Date(1,1,1,1,1,1,1));
+
         if(this.user.birthday==new Date())
         {
             this.user.birthday==null;
@@ -83,7 +84,7 @@ export class UserDetailsComponent implements OnInit {
 
   public userInfoUpdate() {
     this.userDialogService.show(UserDialogType.UpdateInfo);
-  }
+}
 
   public userPasswordUpdate() {
     this.userDialogService.show(UserDialogType.UpdatePassword);
@@ -113,8 +114,12 @@ export class UserDetailsComponent implements OnInit {
   UpdateProfilePhoto(event){
     this.hasDetailsSaveResponse = true;
     this.userService.updateProfilePhoto(this.image).subscribe(resp =>{
-        window.location.reload()
         this.toastrService.success('photo successfully updated');
+        this.hasDetailsSaveResponse = false;
+        this.isChangeAvatar = false;
+        this.showCropper = false;
+        this.selected = false;
+        this.ngOnInit();
     },error =>{
         this.toastrService.error('can`t update photo');
     });
@@ -123,7 +128,7 @@ export class UserDetailsComponent implements OnInit {
   DeleteProfilePhoto(){
     this.userService.deleteProfilePhoto().subscribe(resp =>{
         this.toastrService.success('photo successfully deleted');
-        window.location.reload();
+        this.ngOnInit();
     },error =>{
         this.toastrService.error('can`t delete photo');
     });
