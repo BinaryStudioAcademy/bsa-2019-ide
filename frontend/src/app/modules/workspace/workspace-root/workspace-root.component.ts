@@ -91,25 +91,31 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                                 (resp) => {
                                     this.access = resp.body;
                                     this.setUserAccess();
-                                    this.projectService.getProjectById(this.projectId)
-                                        .subscribe(
-                                            (resp) => {
-                                                this.project = resp.body;
-                                                this.options = this.project.editorProjectSettings;
-                                                console.log(this.canNotEdit);
-                                                if (this.canNotEdit) {
-                                                    this.options.readOnly = true;
-                                                }
-                                            },
-                                            (error) => {
-                                                this.tr.error("Can't load selected project.", 'Error Message');
-                                            }
-                                        );
-
+                                    this.getProjectById();
                                 }
                             )
                     }
+                    else{
+                        this.getProjectById();
+                    }
                 });
+    }
+
+    public getProjectById() {
+        this.projectService.getProjectById(this.projectId)
+            .subscribe(
+                (resp) => {
+                    this.project = resp.body;
+                    this.options = this.project.editorProjectSettings;
+                    console.log(this.canNotEdit);
+                    if (this.canNotEdit) {
+                        this.options.readOnly = true;
+                    }
+                },
+                (error) => {
+                    this.tr.error("Can't load selected project.", 'Error Message');
+                }
+            );
     }
 
     public getProjectColor(): string {
