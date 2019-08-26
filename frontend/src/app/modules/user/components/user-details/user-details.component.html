@@ -12,8 +12,6 @@
         <p class="property-name">Birthday:</p>
         <p *ngIf="user.birthday" class="property-value p-col-align-center">{{user.birthday | date:'mediumDate'}}</p>
         <p *ngIf="!user.birthday" class="property-value p-col-align-center">Birthday not specified</p>
-        <p class="property-name ">Last Active:</p>
-        <p class="property-value p-col-align-center">{{user.lastActive | date:'medium'}}</p>
         <p class="property-name">Registred At:</p>
         <p class="property-value p-col-align-center">{{user.registeredAt | date:'MMM d, y'}}</p>
         <p-slideMenu #menu [model]="actions" [popup]="true" [viewportHeight]="200"></p-slideMenu>
@@ -51,7 +49,7 @@
         <image-cropper
             [imageChangedEvent]="imageChangedEvent"
             [maintainAspectRatio]="true"
-            [aspectRatio]="4 / 3"
+            [aspectRatio]="1 / 1"
             [resizeToWidth]="512"
             [cropperMinWidth]="128"
             [onlyScaleDown]="true"
@@ -66,7 +64,7 @@
         ></image-cropper>
       </div>
       <p-button [style]="{'padding-top':'20px'}" label="Update" (onClick)="UpdateProfilePhoto($event)" *ngIf="!hasDetailsSaveResponse && selected"></p-button>
-      <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="hasDetailsSaveResponse">
+      <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="hasDetailsSaveResponse && selected">
             <p-progressSpinner></p-progressSpinner>
       </div>
     </p-dialog>

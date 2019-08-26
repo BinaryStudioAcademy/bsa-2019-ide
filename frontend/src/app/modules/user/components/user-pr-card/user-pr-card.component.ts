@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ProjectDescriptionDTO } from 'src/app/models/DTO/Project/projectDescriptionDTO';
+import { ProjectUserPageDTO } from 'src/app/models/DTO/Project/ProjectUserPageDTO';
 
 @Component({
   selector: 'app-user-pr-card',
@@ -8,7 +8,7 @@ import { ProjectDescriptionDTO } from 'src/app/models/DTO/Project/projectDescrip
 })
 export class UserPrCardComponent implements OnInit {
 
-  @Input() project: ProjectDescriptionDTO;
+  @Input() project: ProjectUserPageDTO;
 
 
   constructor(){ }

@@ -159,7 +159,6 @@ namespace IDE.BLL.Services
             var project = _mapper.Map<Project>(projectCreateDto);
             project.AuthorId = userId;
             project.CreatedAt = DateTime.Now;
-            project.AccessModifier = AccessModifier.Private;
 
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();

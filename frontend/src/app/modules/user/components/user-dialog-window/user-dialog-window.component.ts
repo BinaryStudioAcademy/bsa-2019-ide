@@ -4,14 +4,12 @@ import { UserUpdateDTO } from 'src/app/models/DTO/User/userUpdateDTO';
 import { UserDialogType } from '../models/project-dialog-type';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
-import { UserDetailsDialogDataService } from 'src/app/services/user-dialog/user-details-dialog-data.service';
 import { HttpResponse } from '@angular/common/http';
-import { UserDTO } from 'src/app/models/DTO/User/userDTO';
 import { UserService } from 'src/app/services/user.service/user.service';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
 import { UserChangePasswordDTO } from 'src/app/models/DTO/User/userChangePasswordDTO';
+import { UserDetailsComponent } from '../user-details/user-details.component';
 
 @Component({
   selector: 'app-user-dialog-window',
@@ -37,7 +35,8 @@ export class UserDialogWindowComponent implements OnInit {
     private userUpdateStartState: UserUpdateDTO;
     private userDialogType: UserDialogType;
 
-    constructor(private ref: DynamicDialogRef,
+    constructor(
+        private ref: DynamicDialogRef,
         private config: DynamicDialogConfig,
         private fb: FormBuilder,
         private tokenService: TokenService,
@@ -103,61 +102,37 @@ export class UserDialogWindowComponent implements OnInit {
             this.getValuesForUpdateInfo();
             this.userService.updateUser(this.userUpdateInfo)
                 .subscribe(res => {
-                        this.toastrService.success("Your profile info was updated");
+                        this.toastrService.success("Your profile info was successfully updated");
                         this.hasDetailsSaveResponse = true;
-                        this.close();
                         window.location.reload();
+                        this.close();
                     },
                     error => {
-                        this.toastrService.error('error');                        
+                        this.toastrService.error('An error occured while updating the profile');                        
                         this.hasDetailsSaveResponse = true;
                     })
         }
         
         if(this.isUpdatePassword()){
             this.getValuesForUpdatePassword();
-            console.log(this.userForm);
             this.userService.updatePassword(this.userUpdatePassword)
             .subscribe(res => {
                 this.toastrService.success("Your password was updated");
                 this.hasDetailsSaveResponse = true;
-                this.close();
             },
             error => {
-                this.toastrService.error('error');                        
+                this.toastrService.error('Incorrect password');                        
                 this.hasDetailsSaveResponse = true;
             })
         }
+    }
 
-        else {
-            this.hasDetailsSaveResponse = false;
-            /*
-            if (!this.IsUserNotChange()) {
-                this.getValuesForPhotoUpdate();
-                this.userService.updatePhoto(this.projectUpdate)
-                .subscribe(
-                    (resp) => {
-                        this.hasDetailsSaveResponse = true;
-                        this.toastrService.success('New details have successfully saved!');
-                        this.dialogService.addProject(this.projectInfoToProjectDesc(resp.body));
-                        this.close();
-                    },
-                    (error) => {
-                        this.hasDetailsSaveResponse = true;
-                        this.toastrService.error('Can\'t save new project details', 'Error Message');
-                        console.error(error.message);
-                    }
-                );*/
-            }
-        }
-    
     public close() {
         this.ref.close();
     }
     
     private Initialize(resp: HttpResponse<UserDetailsDTO>) {
         this.userUpdateStartState = resp.body;
-        console.log(this.userUpdateStartState);
         this.userForm.patchValue({ 
             firstName: this.userUpdateStartState.firstName,
             lastName: this.userUpdateStartState.lastName,
