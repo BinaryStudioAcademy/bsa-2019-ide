@@ -20,9 +20,6 @@ namespace IDE.DAL.Repositories
         {
         }
 
-
-        // Create/Delete index
-
         public virtual async Task<bool> CreateIndex()
         {
             if (!_client.Indices.Exists(_index).Exists)
@@ -42,7 +39,7 @@ namespace IDE.DAL.Repositories
 
         public virtual async Task<bool> DeleteIndex()
         {
-            DeleteIndexResponse response = null;
+            DeleteIndexResponse response = null; //\\ maybe refactor
 
             if (_client.Indices.Exists(_index).Exists)
             {
@@ -51,8 +48,6 @@ namespace IDE.DAL.Repositories
 
             return response.Acknowledged;
         }
-
-        // Add document
 
         public virtual async Task IndexAsync(T document)
         {
@@ -69,8 +64,6 @@ namespace IDE.DAL.Repositories
             await _client.IndexManyAsync(documents);
         }
 
-        // Update document
-
         public virtual async Task UpdateAsync(T document)
         {
             await _client.UpdateAsync<T>(
@@ -81,25 +74,21 @@ namespace IDE.DAL.Repositories
             );
         }
 
-        // Delete document
-
         public virtual async Task DeleteAsync(string id)
         {
             var response = await _client.DeleteAsync<T>(id, d => d.Index(_index));
         }
 
-        // Search in index
-
         //should be overridden
         //I didn`t implement these methods because they need document`s property
-        public virtual async Task<ICollection<T>> AutoCompleteAsync(string query, int skip = 0, int take = -1)
-        {
-            throw new NotImplementedException();
-        }
+        //public virtual async Task<ICollection<T>> AutoCompleteAsync(string query, int skip = 0, int take = -1)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public virtual async Task<ICollection<T>> SearchAsync(string query, int skip = 0, int take = -1)
-        {
-            throw new NotImplementedException();
-        }
+        //public virtual async Task<ICollection<T>> SearchAsync(string query, int skip = 0, int take = -1)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

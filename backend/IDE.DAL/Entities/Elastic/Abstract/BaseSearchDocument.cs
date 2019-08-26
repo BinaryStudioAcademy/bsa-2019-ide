@@ -6,10 +6,5 @@ namespace IDE.DAL.Entities.Elastic.Abstract
     public abstract class BaseSearchDocument
     {
         public string Id { get; set; }
-
-        //public BaseSearchDocument(string id)
-        //{
-        //    Id = id;
-        //}
     }
 }

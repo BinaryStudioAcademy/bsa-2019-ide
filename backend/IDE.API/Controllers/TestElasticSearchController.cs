@@ -56,17 +56,17 @@ namespace IDE.API.Controllers
                 });
         }
 
-        [HttpGet("s")]
-        public async Task<ActionResult> Search(string query)
-        {
-             return Ok(await _searchRepository.SearchAsync(query));
-        }
+        //[HttpGet("s")]
+        //public async Task<ActionResult> Search(string query)
+        //{
+        //     return Ok(await _searchRepository.SearchAsync(query));
+        //}
 
-        [HttpGet("a")]
-        public async Task<ActionResult> AutoComplete(string query)
-        {
-            return Ok(await _searchRepository.AutoCompleteAsync(query));
-        }
+        //[HttpGet("a")]
+        //public async Task<ActionResult> AutoComplete(string query)
+        //{
+        //    return Ok(await _searchRepository.AutoCompleteAsync(query));
+        //}
 
 
         [HttpGet("index")]
@@ -94,9 +94,9 @@ namespace IDE.API.Controllers
         }
 
         [HttpGet("fileSearch")]
-        public async Task<ActionResult> FileSearch(string query)
+        public async Task<ActionResult> FileSearch(string query, int projectId)
         {
-            return Ok(await _fileSearchRepository.SearchAsync(query));
+            return Ok(await _fileSearchRepository.SearchAsync(query, projectId));
         }
     }
 }

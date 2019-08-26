@@ -1,11 +1,11 @@
-﻿using IDE.DAL.Entities.Elastic.Abstract;
-using Nest;
+﻿using System.Collections.Generic;
 
 namespace IDE.DAL.Entities.Elastic
 {
     public class FileSearchResult
     {
-        public FileSearch FileSearch { get; set; }
-        public string Hightlight { get; set; }
+        public string FileId { get; set; }
+        public string FileName { get; set; }
+        public IReadOnlyDictionary<string, IReadOnlyCollection<string>> Hightlights { get; set; }
     }
 }

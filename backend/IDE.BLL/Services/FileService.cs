@@ -179,6 +179,8 @@ namespace IDE.BLL.Services
             }
 
             await _fileRepository.DeleteAsync(id);
+
+            await _fileSearchRepository.DeleteAsync(id);
         }
 
         private async Task AddToFileLinkedItems(FileDTO file)

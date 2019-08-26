@@ -8,7 +8,8 @@ namespace IDE.DAL.Entities.Elastic
         [Text(Name = "name")]
         public string Name { get; set; }
 
-        [Text(TermVector = TermVectorOption.WithPositionsOffsets)]
+        //[Text(Name = "content", TermVector = TermVectorOption.WithPositionsOffsets)]
+        [Text(Name = "content")]
         public string Content { get; set; }
 
         [Text(Name = "folder")]
@@ -16,10 +17,5 @@ namespace IDE.DAL.Entities.Elastic
 
         [Text(Name = "projectId")]
         public int ProjectId { get; set; }
-
-        //public FileSerch(string id, string Name, string Content) : base(id)
-        //{
-        //    Brand = brand;           
-        //}
     }
 }

@@ -55,7 +55,7 @@ namespace IDE.DAL.Repositories
         //    return suggestions.ToList();
         //}
 
-        public override async Task<ICollection<TestDocument>> SearchAsync(string query, int skip = 0, int take = -1) // не используется
+        public /*override*/ async Task<ICollection<TestDocument>> SearchAsync(string query, int skip = 0, int take = -1) // не используется
         {
             var result = await _client.SearchAsync<TestDocument>(x => x.Index(_index)            // use search method
           .Query(q => q               // define query
