@@ -4,12 +4,12 @@
     </div>
 </div>
 
-<div *ngIf="mprojects.length != 0" class="scrolling-wrapper">
+<div *ngIf="mprojects?.length != 0" class="scrolling-wrapper">
     <div class="card-wrapper" *ngFor="let project of mprojects">
         <app-user-pr-card [project]="project"></app-user-pr-card>
     </div>
 </div>
-<div *ngIf="mprojects.length == 0"><h2>You do not have your own projects</h2></div>
+<div *ngIf="mprojects?.length == 0"><h2>You do not have your own projects</h2></div>
 
 <div class="ui-g ui-fluid">
     <div class="ui-g-12">
@@ -17,9 +17,9 @@
     </div>
 </div>
 
-<div *ngIf="aprojects.length != 0" class="scrolling-wrapper">
+<div *ngIf="aprojects?.length != 0" class="scrolling-wrapper">
     <div class="card-wrapper" *ngFor="let project of aprojects">
         <app-user-pr-card [project]="project"></app-user-pr-card>
     </div>
 </div>
-<div *ngIf="aprojects.length == 0"><h2>You have no assigned projects</h2></div>
+<div *ngIf="aprojects?.length == 0"><h2>You have no assigned projects</h2></div>
