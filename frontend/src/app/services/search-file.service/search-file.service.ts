@@ -13,7 +13,7 @@ export class SearchFileService {
 
     constructor(private httpClient: HttpClientWrapperService) { }
 
-    public find(query: string, projectId: number): Observable<HttpResponse<FileSearchResultDTO>> {
+    public find(query: string, projectId: number): Observable<HttpResponse<FileSearchResultDTO[]>> {
         return this.httpClient.getRequest(this.address, {query, projectId});
     }
 }

@@ -21,6 +21,7 @@ import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 import {ProgressBarModule} from 'primeng/progressbar';
 import { saveAs } from 'file-saver';
 import { SearchFileService } from 'src/app/services/search-file.service/search-file.service';
+import { FileSearchResultDTO } from 'src/app/models/DTO/File/fileSearchResultDTO';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -37,6 +38,7 @@ export class FileBrowserSectionComponent implements OnInit {
     public selectedItem: TreeNode;
     public projectId: number;
     public expandFolder = false;
+    public fileSearchResults: FileSearchResultDTO[]
 
     private lastSelectedElement: any;
     private extensions: Extension[];
@@ -425,6 +427,7 @@ export class FileBrowserSectionComponent implements OnInit {
         this.searchFileService.find(query, this.projectId).subscribe(
             (response) => {
                 console.log(response.body);
+                this.fileSearchResults = response.body;
             },
             (error) => {
                 this.toast.error(error.Message, "Error Message", { tapToDismiss: true })
@@ -432,6 +435,11 @@ export class FileBrowserSectionComponent implements OnInit {
             }
         );
     }
+
+    onFileResultSelected(evt) {
+        this.fileSelected.emit(evt.value[0].fileId);
+    }
+
 
     private expandRecursive(node:TreeNode, isExpand:boolean){
         node.expanded = isExpand;

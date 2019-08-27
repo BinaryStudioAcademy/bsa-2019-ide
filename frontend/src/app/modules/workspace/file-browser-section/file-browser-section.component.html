@@ -14,13 +14,19 @@
                         (input)="setIcon(node)" (keyup.enter)="focusout(node)" (keydown)="inputKeyDown($event)" disabled>
         </ng-template>
     </p-tree>
-    <div *ngIf="showSearchField" class="ui-g ui-fluid">
-        <div class="ui-g-12 ui-md-4">
-            <div class="ui-inputgroup">
-                <input type="text"  placeholder="Keyword" #keywordInput>
-                <button pButton type="submit" label="Search" (click)="searchByFiles(keywordInput.value)"></button>
-            </div>
+
+    <div *ngIf="showSearchField">
+        <div class="file-search">
+            <input type="text" class="file-search-keyword" placeholder="Keyword" #keywordInput>
+            <button pButton class="file-search-submit" type="submit" label="Search" (click)="searchByFiles(keywordInput.value)"></button>
         </div>
+        <p-orderList *ngIf="fileSearchResults" [value]="fileSearchResults" (onSelectionChange) = "onFileResultSelected($event)">
+            <ng-template let-result pTemplate="item">
+                <div class="ui-helper-clearfix">
+                    <div>{{result.fileName}}</div>
+                </div>
+            </ng-template>
+        </p-orderList>
     </div>
     <p-contextMenu #contextMenu [model]="items"></p-contextMenu>
 </div>
