@@ -53,7 +53,7 @@ namespace IDE.API.Controllers
             await _projectStructureService.CalculateProjectStructureSize(projectStructure);
             foreach (var item in projectStructure.NestedFiles)
             {
-                if (fileStructureId=="null")
+                if (fileStructureId==item.Id)
                 {
                     return item.Size;
                 }
