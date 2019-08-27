@@ -2,9 +2,12 @@
     <div *ngFor="let collaborator of collaborators">
         <div class="collaborator-item">
             <div>{{collaborator.nickName}}</div>
+
             <span *ngIf="!isAuthor()" appUserAccess [userAccess]="collaborator.access"></span>
             <p-dropdown *ngIf="isAuthor()" [options]="userAccess" [(ngModel)]="collaborator.access"></p-dropdown>
-            <button *ngIf="isAuthor()" pButton type="button" (click)="delete(collaborator.id)" label="Delete" class="ui-button-raised ui-button-danger delete-btn"></button>
+            <button pButton type="button" (click)="openUserDetails(collaborator.id)" class="ui-button-raised ui-button-info b-btn" label="Details"></button>
+            <button *ngIf="isAuthor()" pButton type="button" (click)="delete(collaborator.id)" label="Delete" class="ui-button-raised ui-button-danger b-btn"></button>
+
         </div>
     </div>
 </div>

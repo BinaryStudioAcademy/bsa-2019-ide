@@ -145,7 +145,8 @@ export class ProjectWindowComponent implements OnInit {
         && this.projectForm.get('description').value === this.projectUpdateStartState.description
         && this.projectForm.get('countOfSavedBuilds').value === this.projectUpdateStartState.countOfSaveBuilds
         && this.projectForm.get('countOfBuildAttempts').value === this.projectUpdateStartState.countOfBuildAttempts
-        && this.projectForm.get('color').value === this.projectUpdateStartState.color;
+        && this.projectForm.get('color').value === this.projectUpdateStartState.color
+        && this.projectForm.get('access').value === this.projectUpdateStartState.accessModifier;
     }
 
     public isCreateForm() {
