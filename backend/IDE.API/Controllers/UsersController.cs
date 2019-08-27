@@ -40,6 +40,13 @@ namespace IDE.API.Controllers
             return Ok(await _userService.Update(userDTO));
         }
 
+        [HttpPut("profile")]
+        public async Task<ActionResult<UserDTO>> UpdateProfile(UserUpdateDTO userDTO)
+        {
+            _logger.LogInformation(LoggingEvents.GetItem, $"Update user");
+            return Ok(await _userService.UpdateUser(userDTO));
+        }
+
         [HttpGet("details")]
         public async Task<ActionResult<UserDetailsDTO>> GetUserDetailsFromToken()
         {

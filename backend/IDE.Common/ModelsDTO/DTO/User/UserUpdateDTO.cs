@@ -11,5 +11,6 @@ namespace IDE.Common.ModelsDTO.DTO.User
         public string LastName { get; set; }
         public string NickName { get; set; }
         public string GitHubUrl { get; set; }
+        public DateTime Birthday { get; set; }
     }
 }

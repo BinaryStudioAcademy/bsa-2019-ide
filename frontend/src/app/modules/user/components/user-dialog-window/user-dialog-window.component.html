@@ -67,6 +67,19 @@
 
                 <div class="invalid" *ngIf="userForm.get('gitHubUrl').invalid && userForm.get('gitHubUrl').dirty">Invalid GitHubUrl</div>
 
+
+            <!-- User Birthday -->
+            <div *ngIf="true" class="label">Birthday</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="ui-inputgroup">
+                            <p-calendar formControlName="birthday" [monthNavigator]="true" [yearNavigator]="true" yearRange="1960:2002"></p-calendar>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="invalid" *ngIf="userForm.get('birthday').invalid && userForm.get('birthday').dirty">Please, input your birthday</div>
+
             </div>
 
             <div *ngIf="isUpdatePassword()">
