@@ -27,6 +27,8 @@ import { FileBrowserSectionComponent } from '../file-browser-section/file-browse
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
 import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
+import { BuildService } from 'src/app/services/build.service';
+import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 
 @Component({
@@ -62,7 +64,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     constructor(
         private route: ActivatedRoute,
-        private tr: ToastrService,
+        private toast: ToastrService,
         private workSpaceService: WorkspaceService,
         private saveOnExit: LeavePageDialogService,
         private fileService: FileService,
@@ -70,12 +72,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private projectService: ProjectService,
         private projectEditService: ProjectDialogService,
         private tokenService: TokenService,
-        private hotkeys: HotkeyService) {
-        this.hotkeys.addShortcut({ keys: 'shift.h' })
-            .subscribe(() => {
-                this.hideFileBrowser();
-            });
-    }
+        private hotkeys: HotkeyService,
+        private buildService: BuildService) { 
+            this.hotkeys.addShortcut({keys: 'shift.h'})
+        .subscribe(()=>{
+            this.hideFileBrowser();
+        });
+        }
 
     ngOnInit() {
         this.userId = this.tokenService.getUserId();
@@ -115,7 +118,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                     }
                 },
                 (error) => {
-                    this.tr.error("Can't load selected project.", 'Error Message');
+                    this.toast.error("Can't load selected project.", 'Error Message');
                 }
             );
     }
@@ -179,14 +182,32 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
                         this.editor.code = content;
                     } else {
-                        this.tr.error("Can't load selected file.", 'Error Message');
+                        this.toast.error("Can't load selected file.", 'Error Message');
                     }
                 },
                 (error) => {
-                    this.tr.error("Can't load selected file.", 'Error Message');
+                    this.toast.error("Can't load selected file.", 'Error Message');
                     console.error(error.message);
                 }
             );
+    }
+
+    public onBuild(){
+        if (this.project.language !== Language.cSharp){
+            this.toast.info('Only C# project available for build', 'Info Message', {tapToDismiss : true});
+            return;
+        }
+
+        this.buildService.buildProject(this.project.id).subscribe(
+            (response) => {
+                debugger;
+                this.toast.info('Build was started', 'Info Message', {tapToDismiss : true});
+            },
+            (error) => {
+                console.log(error);
+                this.toast.error('Something bad happened(', 'Error Message', {tapToDismiss : true});
+            }    
+        )
     }
 
     public onFilesSave(files?: FileUpdateDTO[]) {
@@ -197,12 +218,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             .subscribe(
                 success => {
                     if (success.every(x => x.ok)) {
-                        this.tr.success("Files saved", 'Success', { tapToDismiss: true });
+                        this.toast.success("Files saved", 'Success', { tapToDismiss: true });
                     } else {
-                        this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
+                        this.toast.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
                 },
-                error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
+                error => { console.log(error); this.toast.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
 
     public hideSearchField() {

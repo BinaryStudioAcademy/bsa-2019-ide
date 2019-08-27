@@ -50,6 +50,14 @@ namespace IDE.API.Controllers
             return Ok(await _projectService.GetProjectById(projectId));
         }
 
+        [HttpGet("build/{projectId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult> BuildProjectById(int projectId)
+        {
+            await _projectService.BuildProject(projectId);
+            return Ok();
+        }
+
         [HttpGet("author/{projectId}")]
         public async Task<ActionResult<int>> GetAuthorId(int projectId)
         {

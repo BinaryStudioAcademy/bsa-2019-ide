@@ -23,5 +23,6 @@ namespace IDE.BLL.Interfaces
         Task<ProjectDTO> GetProjectByIdAsync(int projectId);
         Task DeleteProjectAsync(int id, int userId);
         Task<IEnumerable<LikedProjectInLanguageDTO>> GetLikedProjects();
+        Task BuildProject(int projectId);
     }
 }

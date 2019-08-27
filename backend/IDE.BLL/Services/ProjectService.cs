@@ -27,24 +27,35 @@ namespace IDE.BLL.Services
         private readonly FileService _fileService;
         private readonly ILogger<ProjectService> _logger;
         private readonly INotificationService _notificationService;
+        private readonly IQueueService _queueService;
+        private readonly IBuildService _buildService;
         private readonly UserService _userService;
         private readonly IEditorSettingService _editorSettingService; 
+
         public ProjectService(IdeContext context,
             IMapper mapper,
             FileService fileService,
             UserService userService,
             INotificationService notificationService,
             ILogger<ProjectService> logger,
-            IEditorSettingService editorSettingService)
+            IQueueService queueService,
+            IEditorSettingService editorSettingService,
+            IBuildService buildService)
         {
             _context = context;
             _mapper = mapper;
             _fileService = fileService;
             _notificationService = notificationService;
             _logger = logger;
-            _userService = userService;
-            _editorSettingService = editorSettingService;
         }
+
+        public async Task BuildProject(int projectId)
+        {
+            var project = await GetProjectById(projectId);
+            if (project.Language == Language.CSharp)
+                await _buildService.BuildDotNetProject(projectId);
+        }
+
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
         public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)

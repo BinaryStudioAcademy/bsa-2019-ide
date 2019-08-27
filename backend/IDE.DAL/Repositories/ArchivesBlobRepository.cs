@@ -96,25 +96,32 @@ namespace IDE.DAL.Repositories
             return blob.Uri;
         }
 
+        public async Task<Uri> UploadAsync(byte[] file, int projectId, int buildId)
+        {
+            var blobContainer = await _connectionFactory.GetDownloadedProjectZipsBlobContainer();
+            var dir = blobContainer.GetDirectoryReference($"projectsToBuild");
+            var blob = dir.GetBlockBlobReference($"project_{projectId}_for_build_{buildId}.zip");
+            blob.Properties.ContentType = "application/zip";
+            await blob.UploadFromByteArrayAsync(file, 0, file.Length).ConfigureAwait(false);
+            return blob.Uri;
+        }
+
         public async Task<Uri> UploadFileFromPathOnServer(string path)
         {
-            if (File.Exists(path))
+            if (!File.Exists(path))
+                throw new FileNotFoundException();
+
+            var blobContainer = await _connectionFactory.GetDownloadedProjectZipsBlobContainer();
+            var dir = blobContainer.GetDirectoryReference($"projectArch");
+            var fileName = Path.GetFileName(path);
+            var blob = dir.GetBlockBlobReference(fileName);
+            blob.Properties.ContentType = "application/zip";
+            using (var stream = File.OpenRead(path))
             {
-
-                var blobContainer = await _connectionFactory.GetDownloadedProjectZipsBlobContainer();
-                var dir = blobContainer.GetDirectoryReference($"projectArch");
-                var fileName = Path.GetFileName(path);
-                var blob = dir.GetBlockBlobReference(fileName);
-                blob.Properties.ContentType = "application/zip";
-                using (var stream = File.OpenRead(path))
-                {
-                    await blob.UploadFromStreamAsync(stream);
-                }
-
-                return blob.Uri;
+                await blob.UploadFromStreamAsync(stream);
             }
-            throw new FileNotFoundException();
 
+            return blob.Uri;
         }
 
 
