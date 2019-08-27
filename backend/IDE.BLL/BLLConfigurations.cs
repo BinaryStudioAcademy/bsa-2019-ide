@@ -46,7 +46,6 @@ namespace IDE.BLL
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-
         }
 
         private static void RegisterAutoMapper(IServiceCollection services)

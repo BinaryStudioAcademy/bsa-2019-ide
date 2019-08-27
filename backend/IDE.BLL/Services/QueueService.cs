@@ -38,9 +38,13 @@ namespace IDE.BLL.Services
                 RoutingKey = "request"
             });
 
-            _messageConsumerScope.MessageConsumer.Received += MessageConsumer_Received;
             _logger = logger;
             _notificationService = notificationService;
+        }
+
+        public void ConfigureSubscription()
+        {
+            _messageConsumerScope.MessageConsumer.Received += MessageConsumer_Received;
         }
 
         private void MessageConsumer_Received(object sender, BasicDeliverEventArgs e)

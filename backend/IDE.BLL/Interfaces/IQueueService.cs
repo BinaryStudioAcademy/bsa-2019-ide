@@ -4,5 +4,6 @@
     public interface IQueueService
     {
         bool SendMessage(string message, int projectId);
+        void ConfigureSubscription();
     }
 }
