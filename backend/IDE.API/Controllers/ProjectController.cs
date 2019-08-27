@@ -50,6 +50,14 @@ namespace IDE.API.Controllers
             return Ok(await _projectService.GetProjectById(projectId));
         }
 
+        [HttpGet("build/{projectId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult> BuildProjectById(int projectId)
+        {
+            await _projectService.BuildProject(projectId);
+            return Ok();
+        }
+
         [HttpGet("author/{projectId}")]
         public async Task<ActionResult<int>> GetAuthorId(int projectId)
         {
@@ -66,6 +74,18 @@ namespace IDE.API.Controllers
         public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetCreatedByUserProjects()
         {
             return Ok(await _projectService.GetUserProjects(this.GetUserIdFromToken()));
+        }
+
+        [HttpGet("users/{id}")]
+        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetByUserProjects(int id)
+        {
+            return Ok(await _projectService.GetProjectsByUserId(id));
+        }
+
+        [HttpGet("usersassigned/{id}")]
+        public async Task<ActionResult<IEnumerable<ProjectDescriptionDTO>>> GetAssignedById(int id)
+        {
+            return Ok(await _projectService.GetAssignedProjectsByUserId(id));
         }
 
         [HttpGet("assigned")]

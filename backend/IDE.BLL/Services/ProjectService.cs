@@ -26,19 +26,33 @@ namespace IDE.BLL.Services
         private readonly FileService _fileService;
         private readonly ILogger<ProjectService> _logger;
         private readonly INotificationService _notificationService;
-        
+        private readonly IQueueService _queueService;
+        private readonly IBuildService _buildService;
+
         public ProjectService(IdeContext context,
             IMapper mapper,
             FileService fileService,
             INotificationService notificationService,
-            ILogger<ProjectService> logger)
+            ILogger<ProjectService> logger,
+            IQueueService queueService,
+            IBuildService buildService)
         {
             _context = context;
             _mapper = mapper;
             _fileService = fileService;
             _notificationService = notificationService;
             _logger = logger;
+            _queueService = queueService;
+            _buildService = buildService;
         }
+
+        public async Task BuildProject(int projectId)
+        {
+            var project = await GetProjectById(projectId);
+            if (project.Language == Language.CSharp)
+                await _buildService.BuildDotNetProject(projectId);
+        }
+
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
         public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)
@@ -83,6 +97,28 @@ namespace IDE.BLL.Services
                 }).ToListAsync();
 
             return colaborators;
+        }
+
+        public async Task<ICollection<ProjectUserPageDTO>> GetProjectsByUserId(int userId)
+        {
+            var projects = _context.Projects
+               .Where(pr => pr.AuthorId == userId);
+
+            var collection = await projects.ToListAsync();
+
+            return _mapper.Map<ICollection<ProjectUserPageDTO>>(collection);
+        }
+
+        public async Task<ICollection<ProjectUserPageDTO>> GetAssignedProjectsByUserId(int userId)
+        {
+            var projects = _context.ProjectMembers
+              .Where(pr => pr.UserId == userId)
+              .Include(x => x.Project)
+              .Select(x => x.Project);
+
+            var collection = await projects.ToListAsync();
+
+            return _mapper.Map<ICollection<ProjectUserPageDTO>>(collection);
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId)
@@ -137,7 +173,6 @@ namespace IDE.BLL.Services
             var project = _mapper.Map<Project>(projectCreateDto);
             project.AuthorId = userId;
             project.CreatedAt = DateTime.Now;
-            project.AccessModifier = AccessModifier.Private;
 
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();

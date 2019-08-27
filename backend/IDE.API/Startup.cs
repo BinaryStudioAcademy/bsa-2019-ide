@@ -3,15 +3,12 @@ using IDE.API.Extensions;
 using IDE.BLL;
 using IDE.BLL.HubConfig;
 using IDE.DAL;
-using IDE.DAL.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using RabbitMQ.Shared;
 
 namespace IDE.API
 {
@@ -22,7 +19,7 @@ namespace IDE.API
         public Startup(IConfiguration configuration , ILogger<Startup> logger)
         {
             Configuration = configuration;
-            this._logger = logger;
+            _logger = logger;
         }
 
         public IConfiguration Configuration { get; }        
