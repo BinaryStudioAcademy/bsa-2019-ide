@@ -9,6 +9,7 @@ import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { EditorSettingsService } from 'src/app/services/editor-settings.service/editor-settings.service';
 import { TokenService } from 'src/app/services/token.service/token.service';
+import { Route, Router } from '@angular/router';
 
 @Component({
     selector: 'app-editor-settings',
@@ -51,7 +52,8 @@ export class EditorSettingsComponent implements OnInit {
         private toastService: ToastrService,
         private projectService: ProjectService,
         private editorSettingsService: EditorSettingsService,
-        private tokenService: TokenService
+        private tokenService: TokenService,
+        private router: Router
     ) { }
 
     ngOnInit() {
@@ -115,6 +117,7 @@ export class EditorSettingsComponent implements OnInit {
                             this.toastService.success('New details have successfully saved!');
                             this.startEditorOptions = this.settingsUpdate;
                             this.ref.close();
+                            //this.router.navigate([`workspace/${this.project.id}`]);
                         },
                         (error) => {
                             this.hasDetailsSaveResponse = true;
@@ -184,7 +187,7 @@ export class EditorSettingsComponent implements OnInit {
             scrollBeyondLastLine: this.editorSettingsForm.get('scrollBeyondLastLine').value,
             tabSize: this.editorSettingsForm.get('tabSize').value,
             cursorStyle: this.editorSettingsForm.get('cursorStyle').value,
-            language: this.project.language.toString().toLowerCase()
+            language: null
         }
         if (this.config.data) {
             this.project.editorProjectSettings = this.settingsUpdate;
