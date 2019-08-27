@@ -20,13 +20,15 @@
         <button *ngIf="isAuthor()" pButton type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary"
             (click)="editProjectSettings()"></button>
         <button pButton type="button" icon="pi pi-search" iconPos="left" class="ui-button-secondary"
-            (click)="hideSearchField()"></button>        
+            (click)="hideSearchField()"></button>
+        <button pButton type="button" icon="pi pi-sort" title="Expand or collapse all" iconPos="left" class="ui-button-secondary"
+                (click)="expand()"></button>
     </div>
     <div class="p-col">
         <div class="inner-wrapper p-grid p-nogutter ">
             <div *ngIf="showFileBrowser" class="file-browser-content p-col-12 p-md-4 p-xl-2 p-align-stretch">
                 <app-file-browser-section #fileBrowser (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
-                    [showSearchField]="showSearchField" [project]="project">
+                    [showSearchField]="showSearchField" [events]="eventsSubject.asObservable()" [project]="project">
                 </app-file-browser-section>
             </div>
             <div *ngIf="project" class="p-col-12 p-md-8 p-xl-10 p-align-stretch " [ngStyle]="{'background-color':getProjectColor()}" [ngClass]="{large:!showFileBrowser}">

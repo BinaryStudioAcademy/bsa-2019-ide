@@ -54,5 +54,12 @@
             "imageClass": "fa icon-csproj",
             "monacoFileType": ""
         }
+    },
+    { 
+        "extension": ".json",
+        "extensionInfo": {
+            "imageClass": "fa icon-json",
+            "monacoFileType": ""
+        }
     }
 ]
