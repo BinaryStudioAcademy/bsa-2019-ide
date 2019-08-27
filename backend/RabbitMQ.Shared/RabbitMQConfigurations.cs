@@ -17,11 +17,11 @@ namespace RabbitMQ.Shared
 
             services.AddScoped<IMessageProducer, MessageProducer>();
             services.AddScoped<IMessageProducerScope, MessageProducerScope>();
-            services.AddScoped<IMessageProducerScopeFactory, MessageProducerScopeFactory>();
+            services.AddSingleton<IMessageProducerScopeFactory, MessageProducerScopeFactory>();
 
             services.AddScoped<IMessageConsumer, MessageConsumer>();
             services.AddScoped<IMessageConsumerScope, MessageConsumerScope>();
-            services.AddScoped<IMessageConsumerScopeFactory, MessageConsumerScopeFactory>();
+            services.AddSingleton<IMessageConsumerScopeFactory, MessageConsumerScopeFactory>();
 
             RegisterConnectionFactory(services, configuration);
         }
