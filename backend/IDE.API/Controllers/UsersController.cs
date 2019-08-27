@@ -33,6 +33,13 @@ namespace IDE.API.Controllers
             return Ok(await _userService.GetUserById(this.GetUserIdFromToken()));
         }
 
+        [HttpPut]
+        public async Task<ActionResult<UserDTO>> UpdateUser(UserDetailsDTO userDTO)
+        {
+            _logger.LogInformation(LoggingEvents.GetItem, $"Update user");
+            return Ok(await _userService.Update(userDTO));
+        }
+
         [HttpGet("details")]
         public async Task<ActionResult<UserDetailsDTO>> GetUserDetailsFromToken()
         {
@@ -40,18 +47,12 @@ namespace IDE.API.Controllers
             return Ok(await _userService.GetUserDetailsById(this.GetUserIdFromToken()));
         }
 
-        [HttpGet("information/{id}")]
-        public async Task<ActionResult<UserDetailsDTO>> GetUserDetails(int id)
-        {
-            return Ok(await _userService.GetUserInformationById(id));
-        }
-
         [HttpGet("{id}")]
         [AllowAnonymous]
         public async Task<ActionResult<UserDTO>> GetById(int id)
         {
             _logger.LogInformation(LoggingEvents.GetItem, $"Get user by id {id}");
-            return Ok(await _userService.GetUserById(id));
+            return Ok(await _userService.GetUserDetailsById(id));
         }
 
         [HttpGet("nickname")]
@@ -59,13 +60,7 @@ namespace IDE.API.Controllers
         {
             return await _userService.GetUserListByNickNameParts(this.GetUserIdFromToken());
         }
-        
-        [HttpPut]
-        public async Task<ActionResult<UserUpdateDTO>> UpdateUser([FromBody] UserUpdateDTO user)
-        {
-            var updatedUser = await _userService.UpdateUser(user);
-            return Ok(updatedUser);
-        }
+
 
         [HttpPut("photo")]
         public async Task UpdateAvatar([FromBody] ImageUploadBase64DTO imageUploadBase64DTO)

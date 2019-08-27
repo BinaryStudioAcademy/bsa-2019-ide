@@ -18,6 +18,24 @@
     <Compile Remove="Migrations\20190823101912_notification.Designer.cs" />
     <Compile Remove="Migrations\20190823102443_ndkwhdc.cs" />
     <Compile Remove="Migrations\20190823102443_ndkwhdc.Designer.cs" />
+    <Compile Remove="Migrations\20190825104009_editorSettings.cs" />
+    <Compile Remove="Migrations\20190825104009_editorSettings.Designer.cs" />
+    <Compile Remove="Migrations\20190825121817_editorSettings.cs" />
+    <Compile Remove="Migrations\20190825121817_editorSettings.Designer.cs" />
+    <Compile Remove="Migrations\20190825122324_editorSettings.cs" />
+    <Compile Remove="Migrations\20190825122324_editorSettings.Designer.cs" />
+    <Compile Remove="Migrations\20190825122515_editorSettings.cs" />
+    <Compile Remove="Migrations\20190825122515_editorSettings.Designer.cs" />
+    <Compile Remove="Migrations\20190825125949_editorSettings.cs" />
+    <Compile Remove="Migrations\20190825125949_editorSettings.Designer.cs" />
+    <Compile Remove="Migrations\20190825215950_editorSettings.cs" />
+    <Compile Remove="Migrations\20190825215950_editorSettings.Designer.cs" />
+    <Compile Remove="Migrations\20190826062625_editorSettings.cs" />
+    <Compile Remove="Migrations\20190826062625_editorSettings.Designer.cs" />
+    <Compile Remove="Migrations\20190826063714_settings.cs" />
+    <Compile Remove="Migrations\20190826063714_settings.Designer.cs" />
+    <Compile Remove="Migrations\20190826071259_monacoSettings.cs" />
+    <Compile Remove="Migrations\20190826071259_monacoSettings.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

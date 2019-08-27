@@ -1,4 +1,5 @@
 ﻿using IDE.Common.Enums;
+using IDE.Common.ModelsDTO.DTO.Common;
 using System;
 
 namespace IDE.Common.DTO.Project

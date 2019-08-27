@@ -25,14 +25,20 @@ namespace IDE.BLL.Services
         private readonly IEmailService _emailService;
         private readonly IImageUploader _imageUploader;
         private readonly ILogger<UserService> _logger;
-
-        public UserService(IdeContext context, IEmailService emailService, IMapper mapper, IImageUploader imageUploader, ILogger<UserService> logger)
+        private readonly IEditorSettingService _editorSettingService;
+        public UserService(IdeContext context, 
+            IEmailService emailService, 
+            IMapper mapper, 
+            ILogger<UserService> logger,
+            IImageUploader imageUploader,
+            IEditorSettingService editorSettingService)
         {
             _mapper = mapper;
             _context = context;
             _emailService = emailService;
             _imageUploader = imageUploader;
             _logger = logger;
+            _editorSettingService = editorSettingService;
         }
 
         public async Task<User> CreateUser(UserRegisterDTO userDto)
@@ -50,11 +56,33 @@ namespace IDE.BLL.Services
             userEntity.PasswordSalt = Convert.ToBase64String(salt);
             userEntity.PasswordHash = SecurityHelper.HashPassword(userDto.Password, salt);
             userEntity.RegisteredAt = DateTime.Now;
+            userEntity.EditorSettingsId = await _editorSettingService.CreateInitEditorSettings();
 
             _context.Users.Add(userEntity);
             await _context.SaveChangesAsync();
             await SendConfirmationMail(userEntity.Id);
             return userEntity;
+        }
+
+        public async Task<UserDTO> Update(UserDetailsDTO userDTO)
+        {
+            var targetUser = await GetUserByIdInternal(userDTO.Id);
+
+            if (targetUser == null)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"update user not found");
+                throw new NotFoundException(nameof(targetUser), userDTO.Id);
+            }
+             
+            if(targetUser.EditorSettings==null)
+            {
+                targetUser.EditorSettingsId = (await _editorSettingService.CreateEditorSettings(userDTO.EditorSettings)).Id;
+            }
+
+            _context.Users.Update(targetUser);
+            await _context.SaveChangesAsync();
+
+            return await GetUserById(userDTO.Id);
         }
 
         public async Task<UserNicknameDTO[]> GetUserListByNickNameParts(int currentUser)
@@ -96,20 +124,6 @@ namespace IDE.BLL.Services
             if (user == null)
             {
                 _logger.LogWarning(LoggingEvents.HaveException, $"user not found");
-                throw new NotFoundException(nameof(User), id);
-            }
-
-            return _mapper.Map<UserDetailsDTO>(user);
-        }
-
-        public async Task<UserDetailsDTO> GetUserInformationById(int id)
-        {
-            var user = await _context.Users
-                .Include(u => u.Avatar)
-                .SingleOrDefaultAsync(u => u.Id == id);
-
-            if (user == null)
-            {
                 throw new NotFoundException(nameof(User), id);
             }
 
@@ -194,13 +208,6 @@ namespace IDE.BLL.Services
             await _context.SaveChangesAsync();
         }
 
-        private async Task<User> GetUserByIdInternal(int id)
-        {
-            return await _context.Users
-                .Include(u => u.Avatar)
-                .FirstOrDefaultAsync(u => u.Id == id);
-        }
-
         public async Task UpdateUserAvatar(ImageUploadBase64DTO imageUploadBase64DTO, int userId)
         {
             var imgSrc = await _imageUploader.UploadAsync(imageUploadBase64DTO.Base64);
@@ -244,6 +251,14 @@ namespace IDE.BLL.Services
             userEntity.PasswordHash = SecurityHelper.HashPassword(userChangePasswordDTO.NewPassword, salt);
 
             await _context.SaveChangesAsync();
+        }
+
+        private async Task<User> GetUserByIdInternal(int id)
+        {
+            return await _context.Users
+                .Include(u => u.Avatar)
+                .Include(i => i.EditorSettings)
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
     }
 }

@@ -29,6 +29,7 @@ import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
 import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 import { BuildService } from 'src/app/services/build.service';
 import { Language } from 'src/app/models/Enums/language';
+import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 
 @Component({
     selector: 'app-workspace-root',
@@ -46,7 +47,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public canRun = false;
     public canBuild = false;
     public canNotEdit = false;
+    public expandFolder = false;
     public project: ProjectInfoDTO;
+    public options: EditorSettingDTO;
+
     private routeSub: Subscription;
     private authorId: number;
 
@@ -92,15 +96,26 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                                 (resp) => {
                                     this.access = resp.body;
                                     this.setUserAccess();
-                                    console.log(this.canNotEdit);
+                                    this.getProjectById();
                                 }
                             )
                     }
-                });    
+                    else{
+                        this.getProjectById();
+                    }
+                });
+    }
+
+    public getProjectById() {
         this.projectService.getProjectById(this.projectId)
             .subscribe(
                 (resp) => {
                     this.project = resp.body;
+                    this.options = this.project.editorProjectSettings;
+                    console.log(this.canNotEdit);
+                    if (this.canNotEdit) {
+                        this.options.readOnly = true;
+                    }
                 },
                 (error) => {
                     this.toast.error("Can't load selected project.", 'Error Message');
@@ -108,9 +123,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             );
     }
 
-    public getProjectColor(): string
-    {
+    public getProjectColor(): string {
         return this.project.color;
+    }
+
+    public Settings() {
+        this.workSpaceService.show(this.project);
     }
 
     public setUserAccess() {
@@ -215,7 +233,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public hideFileBrowser() {
         this.showFileBrowser= !this.showFileBrowser;
     }
-    
+
     public editProjectSettings() {
         this.projectEditService.show(ProjectType.Update, this.projectId);
     }
@@ -225,9 +243,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     private saveFilesRequest(files?: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
-        if(!files)
-        {
-            files = this.editor.openedFiles.map(x => x.innerFile);         
+        if (!files) {
+            files = this.editor.openedFiles.map(x => x.innerFile);
         }
         return this.workSpaceService.saveFilesRequest(files);
     }

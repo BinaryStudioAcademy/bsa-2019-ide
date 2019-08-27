@@ -23,6 +23,7 @@ export class UserDetailsComponent implements OnInit {
   isImageExpended: boolean = false;
   isAuthor: boolean = false;
   actions: MenuItem[];
+  public showEditorSettings=false;
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
@@ -74,7 +75,12 @@ export class UserDetailsComponent implements OnInit {
         }}
     ];
   }
-  public expandImage(imageUrl : string){
+
+  public showEditorSettingsForUser()
+  {
+      this.showEditorSettings=!this.showEditorSettings;
+  }
+  expandImage(imageUrl : string){
       this.isImageExpended = true;
   }
 
