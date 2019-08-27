@@ -32,7 +32,7 @@ export class ProjectWindowComponent implements OnInit {
     public languages: any;
     public projectTypes: any;
     public compilerTypes: any;
-    public colors: any;
+    public colors: { label:string, value:string }[];
     public access: any;
     public projectForm: FormGroup;
     public isFileSelected: boolean = false; 
@@ -90,7 +90,7 @@ export class ProjectWindowComponent implements OnInit {
         if (this.isCreateForm()) {
             this.isPageLoaded = true;
             this.projectForm = this.fb.group({
-                name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32)]],
+                name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32), Validators.pattern(/^[A-Z0-9]+$/gi)]],
                 description: ['', Validators.required],
                 language: ['', Validators.required],
                 projectType: ['', Validators.required],
@@ -103,7 +103,7 @@ export class ProjectWindowComponent implements OnInit {
             this.projectForm.get('access').setValue(0);
         } else {
             this.projectForm = this.fb.group({
-                name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32)]],
+                name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32), Validators.pattern(/^[A-Z0-9]+$/gi)]],
                 description: ['', Validators.required],
                 countOfSavedBuilds: ['', [Validators.required, Validators.max(10)]],
                 countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
@@ -273,6 +273,9 @@ export class ProjectWindowComponent implements OnInit {
         else if (control.hasError('maxlength')) {
             errorMessage = `The length should be no more than ${control.errors.maxlength.requiredLength} letters!`;
         }
+        else if (control.hasError('pattern')) {
+            errorMessage = `This field can contain only latin letters and numbers!`;
+        }
         else {
             errorMessage = 'validation error';
         }
@@ -282,7 +285,7 @@ export class ProjectWindowComponent implements OnInit {
     public close() {
         this.ref.close();
     }
-
+    
     private InitializeProject(resp: HttpResponse<ProjectInfoDTO>) {
         this.projectUpdateStartState = resp.body;
         this.projectForm.setValue({ 
@@ -290,7 +293,7 @@ export class ProjectWindowComponent implements OnInit {
             description: this.projectUpdateStartState.description,
             countOfSavedBuilds: this.projectUpdateStartState.countOfSaveBuilds,
             countOfBuildAttempts: this.projectUpdateStartState.countOfBuildAttempts,
-            color: this.projectUpdateStartState.color,
+            color: this.colors.find(c => c.value === this.projectUpdateStartState.color).value,
             access: this.projectUpdateStartState.accessModifier
         });
     }

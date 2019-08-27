@@ -36,16 +36,6 @@ namespace IDE.DAL.Context
                 return;
             }
 
-            try //If we need we can check if database with such connection string exists, not to create smth new by mistake
-            {
-                Database.OpenConnection();
-                Database.CloseConnection();
-            }
-            catch (SqlException)
-            {
-                throw new System.Exception("Database with such connection string doesn't exist");
-            }
-
             if (Database.GetPendingMigrations().Count() != 0)
             {
                 Database.Migrate();
