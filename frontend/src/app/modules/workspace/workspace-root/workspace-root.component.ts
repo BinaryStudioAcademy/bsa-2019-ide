@@ -192,7 +192,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public onBuild() {
-        if (this.project.language !== Language.csharp) {
+        if (this.project.language !== Language.cSharp) {
             this.toast.info('Only C# project available for build', 'Info Message', { tapToDismiss: true });
             return;
         }
