@@ -5,6 +5,7 @@ export interface EditorSettingDTO {
     lineNumbers: string;
     roundedSelection: boolean;
     scrollBeyondLastLine: boolean;
+    language: string;
     readOnly: boolean;
     fontSize: number;
     tabSize: number;

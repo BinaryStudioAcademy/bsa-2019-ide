@@ -30,6 +30,7 @@ export class EditorSettingsComponent implements OnInit {
             cursorStyle: "line",
             lineHeight: 20,
             theme: "vs",
+            language:""
         };
     public startEditorOptions: EditorSettingDTO;
     public editorSettingsForm: FormGroup;
@@ -182,7 +183,8 @@ export class EditorSettingsComponent implements OnInit {
             roundedSelection: this.editorSettingsForm.get('roundedSelection').value,
             scrollBeyondLastLine: this.editorSettingsForm.get('scrollBeyondLastLine').value,
             tabSize: this.editorSettingsForm.get('tabSize').value,
-            cursorStyle: this.editorSettingsForm.get('cursorStyle').value
+            cursorStyle: this.editorSettingsForm.get('cursorStyle').value,
+            language: this.project.language.toString().toLowerCase()
         }
         if (this.config.data) {
             this.project.editorProjectSettings = this.settingsUpdate;

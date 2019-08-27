@@ -36,6 +36,12 @@
     <Compile Remove="Migrations\20190826063714_settings.Designer.cs" />
     <Compile Remove="Migrations\20190826071259_monacoSettings.cs" />
     <Compile Remove="Migrations\20190826071259_monacoSettings.Designer.cs" />
+    <Compile Remove="Migrations\20190826071733_monacoSettings.cs" />
+    <Compile Remove="Migrations\20190826071733_monacoSettings.Designer.cs" />
+    <Compile Remove="Migrations\20190827114100_editor-settings.cs" />
+    <Compile Remove="Migrations\20190827114100_editor-settings.Designer.cs" />
+    <Compile Remove="Migrations\20190827114837_editor-settings.cs" />
+    <Compile Remove="Migrations\20190827114837_editor-settings.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
