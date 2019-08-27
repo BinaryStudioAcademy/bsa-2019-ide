@@ -90,7 +90,7 @@ export class ProjectWindowComponent implements OnInit {
         if (this.isCreateForm()) {
             this.isPageLoaded = true;
             this.projectForm = this.fb.group({
-                name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32), Validators.pattern(/^[A-Z0-9]+$/gi)]],
+                name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32), Validators.pattern(/^[A-Z0-9]+$/i)]],
                 description: ['', Validators.required],
                 language: ['', Validators.required],
                 projectType: ['', Validators.required],
@@ -103,7 +103,7 @@ export class ProjectWindowComponent implements OnInit {
             this.projectForm.get('access').setValue(0);
         } else {
             this.projectForm = this.fb.group({
-                name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32), Validators.pattern(/^[A-Z0-9]+$/gi)]],
+                name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32), Validators.pattern(/^[A-Z0-9]+$/i)]],
                 description: ['', Validators.required],
                 countOfSavedBuilds: ['', [Validators.required, Validators.max(10)]],
                 countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],

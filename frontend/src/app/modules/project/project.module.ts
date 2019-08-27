@@ -24,6 +24,10 @@ import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdia
 import { CollaboratorModule } from '../collaborator/collaborator.module';
 import { AddCollaboratorsComponent } from '../collaborator/components/add-collaborators/add-collaborators.component';
 import {FileUploadModule} from 'primeng/fileupload';
+import { HistoryChangesComponent } from './components/history-changes/history-changes.component';
+import {AccordionModule} from 'primeng/accordion';
+import { HistorySearchPipe } from './pipes/history-search.pipe';
+
 
 @NgModule({
   declarations: [
@@ -31,7 +35,9 @@ import {FileUploadModule} from 'primeng/fileupload';
     ProjectDetailsComponent,
     ProjectDetailsInfoComponent,
     ProjectDetailsUserStatisticsComponent,
-    ProjectWindowComponent
+    ProjectWindowComponent,
+    HistoryChangesComponent,
+    HistorySearchPipe
   ],
   imports: [
     FormsModule,
@@ -50,7 +56,8 @@ import {FileUploadModule} from 'primeng/fileupload';
     TabViewModule,
     DynamicDialogModule,
     CollaboratorModule,
-    FileUploadModule
+    FileUploadModule,
+    AccordionModule
   ],
   entryComponents: [
     ProjectWindowComponent

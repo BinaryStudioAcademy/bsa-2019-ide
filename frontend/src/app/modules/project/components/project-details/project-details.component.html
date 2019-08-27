@@ -30,7 +30,7 @@
       Here will be git url <address></address>
     </p-tabPanel>
     <p-tabPanel header="History of changes" leftIcon="pi pi-list">
-      Here will be history of changes
+        <app-history-changes [projectId]="project.id"></app-history-changes>
     </p-tabPanel>
   </p-tabView>
 </div>
