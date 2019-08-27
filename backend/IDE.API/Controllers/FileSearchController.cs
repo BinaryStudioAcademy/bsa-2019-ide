@@ -15,13 +15,11 @@ namespace IDE.API.Controllers
     [ApiController]
     public class FileSearchController : ControllerBase
     {
-        private ISearchRepository<TestDocument> _searchRepository;
         private FileSearchRepository _fileSearchRepository;
-        private readonly ILogger<TestElasticSearchController> _logger;
+        private readonly ILogger<FileSearchController> _logger;
 
-        public FileSearchController(ISearchRepository<TestDocument> serchRepository, FileSearchRepository fileSearchRepository, ILogger<TestElasticSearchController> logger)
+        public FileSearchController(FileSearchRepository fileSearchRepository, ILogger<FileSearchController> logger)
         {
-            _searchRepository = serchRepository;
             _fileSearchRepository = fileSearchRepository;
             _logger = logger;
         }

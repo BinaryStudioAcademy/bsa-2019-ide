@@ -1,4 +1,5 @@
-﻿using IDE.DAL.Entities.Elastic;
+﻿using IDE.Common.ModelsDTO.DTO.File;
+using IDE.DAL.Entities.Elastic;
 using IDE.DAL.Factories.Abstractions;
 using Nest;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace IDE.DAL.Repositories
             _client = searchClientFactory.CreateClient(_index);
         }
 
-        public async Task<List<FileSearchResult>> SearchAsync(string query, int projecId, int skip = 0, int take = -1)
+        public async Task<List<FileSearchResultDTO>> SearchAsync(string query, int projecId, int skip = 0, int take = -1)
         {
             var searchResponce = await _client.SearchAsync<FileSearch>(s => s
                 .Index(_index)
@@ -28,13 +29,13 @@ namespace IDE.DAL.Repositories
                             .Field(f => f.Content)
                             .Field(f => f.Name)
                             .Field(f => f.Folder)
-                        )                     
+                        )
                         .Query(query)
                     )
-                    && +q.Match(m=> m
+                    && +q.Match(m => m
                         .Field(f => f.ProjectId)
                         .Query(projecId.ToString())
-                    )               
+                    )
                 )
                 .Highlight(h => h
                     .Fields(
@@ -55,72 +56,52 @@ namespace IDE.DAL.Repositories
                     )
                 )
             );
-                       
-            var result = searchResponce.Hits.Select(h => new FileSearchResult { FileId = h.Source.Id, FileName = h.Source.Name, Hightlights = h.Highlight }).ToList();
+
+            var result = searchResponce.Hits.Select(h => new FileSearchResultDTO { FileId = h.Source.Id, FileName = h.Source.Name, Hightlights = h.Highlight }).ToList();
 
             return result;
         }
 
-        public async Task<ICollection<FileSearch>> FirstFullWorkingSearchAsync(string query, int skip = 0, int take = -1)
-        {
-            var result = await _client.SearchAsync<FileSearch>(s => s
-                //.Sort(so => so.Descending("_score"))
-                .Query(q => q
-                    .MultiMatch(mm => mm
-                        .Type(TextQueryType.PhrasePrefix)
-                        .Fields(ff => ff
-                            .Field(f => f.Content)
-                            .Field(f => f.Name)
-                            .Field(f => f.Folder)
-                        )
-                        .Query(query)
-                    )
-                    && +q.Match(m => m
-                        .Field(f => f.ProjectId)
-                        .Query("7")
-                    )
-                )
-                .Highlight(h => h
-                    .Fields(ff => ff
-                        .Field("*")
-                            .PreTags("<b style='color:orange'>")
-                            .PostTags("</b>")
-                    )
-                )
-            );
+        // Maybe usefull artefacts
 
-            // Try to take row between \n
-            //.Highlight(h => h
-            //        .Fields(
-            //            fs => fs
-            //                .Field(f => f.Content)
-            //                    //.NumberOfFragments(-1)
-            //                    //.FragmentOffset(5)
-            //                    ////.ForceSource(true)
-            //                    ////.HighlightQuery()
-            //                    ////.MatchedFields(mf => mf.Field(f => f.Content))
-            //                    //.TagsSchema(HighlighterTagsSchema.Styled) 
-            //                    //.Order(HighlighterOrder.Score)
-            //                    //.Fragmenter(HighlighterFragmenter.Simple)
-            //                    //.FragmentSize(10)
-            //                    .Type(HighlighterType.Fvh)
-            //                    .BoundaryCharacters(".,!? \t\n")
-            //                    //.BoundaryMaxScan(20)
-            //                    .PreTags("<b style='color:red'>")
-            //                    .PostTags("</b>"),
-            //            fs => fs
-            //                .Field(f => f.Name)
-            //                    .PreTags("<b style='color:yellow'>")
-            //                    .PostTags("</b>"),
-            //            fs => fs
-            //                .Field(f => f.Folder)
-            //                    .PreTags("<b style='color:orange'>")
-            //                    .PostTags("</b>")
-            //        )
-            //    )
+        // Analog for Highlight ALL
+        //    .Highlight(h => h
+        //        .Fields(ff => ff
+        //            .Field("*")
+        //                .PreTags("<b style='color:orange'>")
+        //                .PostTags("</b>")
+        //        )
+        //    )
 
-            return result.Documents.ToList();
-        }
+        // Try to take row between \n
+        //.Highlight(h => h
+        //        .Fields(
+        //            fs => fs
+        //                .Field(f => f.Content)
+        //                    //.NumberOfFragments(-1)
+        //                    //.FragmentOffset(5)
+        //                    ////.ForceSource(true)
+        //                    ////.HighlightQuery()
+        //                    ////.MatchedFields(mf => mf.Field(f => f.Content))
+        //                    //.TagsSchema(HighlighterTagsSchema.Styled) 
+        //                    //.Order(HighlighterOrder.Score)
+        //                    //.Fragmenter(HighlighterFragmenter.Simple)
+        //                    //.FragmentSize(10)
+        //                    .Type(HighlighterType.Fvh)
+        //                    .BoundaryCharacters(".,!? \t\n")
+        //                    //.BoundaryMaxScan(20)
+        //                    .PreTags("<b style='color:red'>")
+        //                    .PostTags("</b>"),
+        //            fs => fs
+        //                .Field(f => f.Name)
+        //                    .PreTags("<b style='color:yellow'>")
+        //                    .PostTags("</b>"),
+        //            fs => fs
+        //                .Field(f => f.Folder)
+        //                    .PreTags("<b style='color:orange'>")
+        //                    .PostTags("</b>")
+        //        )
+        //    )
     }
 }
 

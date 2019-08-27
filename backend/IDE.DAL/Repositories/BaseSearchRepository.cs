@@ -3,10 +3,7 @@ using IDE.DAL.Entities.Elastic.Abstract;
 using IDE.DAL.Factories.Abstractions;
 using IDE.DAL.Interfaces;
 using Nest;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace IDE.DAL.Repositories
@@ -31,7 +28,7 @@ namespace IDE.DAL.Repositories
                             .AutoMap()
                 ));
 
-                return response.Acknowledged; //\\ to true and in general maybe void method? and method is required?
+                return response.Acknowledged;
             }
 
             return false;
@@ -39,7 +36,7 @@ namespace IDE.DAL.Repositories
 
         public virtual async Task<bool> DeleteIndex()
         {
-            DeleteIndexResponse response = null; //\\ maybe refactor
+            DeleteIndexResponse response = null;
 
             if (_client.Indices.Exists(_index).Exists)
             {

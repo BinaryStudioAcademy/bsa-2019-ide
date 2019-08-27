@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace IDE.DAL.Entities.Elastic
+namespace IDE.Common.ModelsDTO.DTO.File
 {
-    public class FileSearchResult
+    public class FileSearchResultDTO
     {
         public string FileId { get; set; }
         public string FileName { get; set; }

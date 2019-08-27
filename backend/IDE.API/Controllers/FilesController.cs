@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
-    [Authorize] // TODO: use after authorization launch
+    [Authorize]
     [ApiController]
     public class FilesController : ControllerBase
     {
