@@ -51,6 +51,7 @@ namespace IDE.BLL.Services
             _userService = userService;
             _buildService = buildService;
             _queueService = queueService;
+            _buildService = buildService;
         }
 
         public async Task BuildProject(int projectId)

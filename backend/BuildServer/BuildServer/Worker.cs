@@ -37,7 +37,7 @@ namespace BuildServer
             if (buildResult.ToLower().Contains("Build succeeded".ToLower()))
             {
                 isBuildSucceeded = true;
-                executeResult = _builder.Execute(projectName);
+                //executeResult = _builder.Execute(projectName);
             }
 
             //I left it here because we won`t use it later
@@ -53,10 +53,10 @@ namespace BuildServer
             Console.WriteLine("Removing temporrary files...");
             _fileArchiver.RemoveTemporaryFiles(projectName);
 
-
+            Console.WriteLine("Build result:");
             Console.WriteLine(buildResult);
-            Console.WriteLine("program output:");
-            Console.WriteLine(executeResult);
+            //Console.WriteLine("program output:");
+            //Console.WriteLine(executeResult);
 
             return isBuildSucceeded;
         }
