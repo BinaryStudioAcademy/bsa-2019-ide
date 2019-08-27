@@ -46,9 +46,6 @@ namespace IDE.BLL
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            var serviceProvider = app.ApplicationServices;
-            var queueService = serviceProvider.GetService<IQueueService>();
-            queueService.ConfigureSubscription();
         }
 
         private static void RegisterAutoMapper(IServiceCollection services)

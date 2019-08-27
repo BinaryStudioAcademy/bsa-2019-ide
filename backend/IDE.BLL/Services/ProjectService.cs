@@ -47,6 +47,7 @@ namespace IDE.BLL.Services
             _fileService = fileService;
             _notificationService = notificationService;
             _logger = logger;
+            _buildService = buildService;
         }
 
         public async Task BuildProject(int projectId)
