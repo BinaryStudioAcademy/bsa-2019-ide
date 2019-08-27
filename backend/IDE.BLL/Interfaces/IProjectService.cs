@@ -15,11 +15,14 @@ namespace IDE.BLL.Interfaces
         Task<ICollection<ProjectDescriptionDTO>> GetFavouriteUserProjects(int userId);
         Task<ICollection<CollaboratorDTO>> GetProjectCollaborators(int projectId, int authorId);
         Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId);
+        Task<ICollection<ProjectUserPageDTO>> GetProjectsByUserId(int userId);
+        Task<ICollection<ProjectUserPageDTO>> GetAssignedProjectsByUserId(int userId);
         Task<ProjectInfoDTO> UpdateProject(ProjectUpdateDTO project);
         Task<int> GetAuthorId(int projectId);
         Task<int> CreateProject(ProjectCreateDTO project, int userId);
         Task<ProjectDTO> GetProjectByIdAsync(int projectId);
         Task DeleteProjectAsync(int id, int userId);
         Task<IEnumerable<LikedProjectInLanguageDTO>> GetLikedProjects();
+        Task BuildProject(int projectId);
     }
 }
