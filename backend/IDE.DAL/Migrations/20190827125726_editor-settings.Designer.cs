@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IDE.DAL.Migrations
 {
     [DbContext(typeof(IdeContext))]
-    [Migration("20190826071733_monacoSettings")]
-    partial class monacoSettings
+    [Migration("20190827125726_editor-settings")]
+    partial class editorsettings
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -57,6 +57,8 @@ namespace IDE.DAL.Migrations
                     b.Property<string>("CursorStyle");
 
                     b.Property<int>("FontSize");
+
+                    b.Property<string>("Language");
 
                     b.Property<int>("LineHeight");
 

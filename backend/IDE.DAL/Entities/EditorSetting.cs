@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IDE.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,6 +12,7 @@ namespace IDE.DAL.Entities
         public bool RoundedSelection { get; set; }
         public bool ScrollBeyondLastLine { get; set; }
         public bool ReadOnly { get; set; }
+        public string Language { get; set; }
         public int FontSize { get; set; }
         public int TabSize { get; set; }
         public string CursorStyle { get; set; }

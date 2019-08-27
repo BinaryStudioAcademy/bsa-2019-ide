@@ -54,7 +54,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     private routeSub: Subscription;
     private authorId: number;
 
-    public  eventsSubject: Subject<void> = new Subject<void>();
+    public eventsSubject: Subject<void> = new Subject<void>();
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
@@ -73,12 +73,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private projectEditService: ProjectDialogService,
         private tokenService: TokenService,
         private hotkeys: HotkeyService,
-        private buildService: BuildService) { 
-            this.hotkeys.addShortcut({keys: 'shift.h'})
-        .subscribe(()=>{
-            this.hideFileBrowser();
-        });
-        }
+        private buildService: BuildService) {
+        this.hotkeys.addShortcut({ keys: 'shift.h' })
+            .subscribe(() => {
+                this.hideFileBrowser();
+            });
+    }
 
     ngOnInit() {
         this.userId = this.tokenService.getUserId();
@@ -100,7 +100,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                                 }
                             )
                     }
-                    else{
+                    else {
                         this.getProjectById();
                     }
                 });
@@ -112,7 +112,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                 (resp) => {
                     this.project = resp.body;
                     this.options = this.project.editorProjectSettings;
-                    console.log(this.canNotEdit);
                     if (this.canNotEdit) {
                         this.options.readOnly = true;
                     }
@@ -192,21 +191,21 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             );
     }
 
-    public onBuild(){
-        if (this.project.language !== Language.cSharp){
-            this.toast.info('Only C# project available for build', 'Info Message', {tapToDismiss : true});
+    public onBuild() {
+        if (this.project.language !== Language.cSharp) {
+            this.toast.info('Only C# project available for build', 'Info Message', { tapToDismiss: true });
             return;
         }
 
         this.buildService.buildProject(this.project.id).subscribe(
             (response) => {
                 debugger;
-                this.toast.info('Build was started', 'Info Message', {tapToDismiss : true});
+                this.toast.info('Build was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {
                 console.log(error);
-                this.toast.error('Something bad happened(', 'Error Message', {tapToDismiss : true});
-            }    
+                this.toast.error('Something bad happened(', 'Error Message', { tapToDismiss: true });
+            }
         )
     }
 
@@ -229,9 +228,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public hideSearchField() {
         this.showSearchField = !this.showSearchField;
     }
-  
+
     public hideFileBrowser() {
-        this.showFileBrowser= !this.showFileBrowser;
+        this.showFileBrowser = !this.showFileBrowser;
     }
 
     public editProjectSettings() {

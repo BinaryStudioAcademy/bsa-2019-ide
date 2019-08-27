@@ -67,8 +67,10 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((auth) => {
                 this.isAuthorized = auth;
-                this.data = this.signalRService.addTransferChartDataListener();
-                this.loadNotifications(this.userId);
+                if (this.isAuthorized && this.userId) {
+                    this.data = this.signalRService.addTransferChartDataListener();
+                    this.loadNotifications(this.userId);
+                }
             });
 
         this.items = [
