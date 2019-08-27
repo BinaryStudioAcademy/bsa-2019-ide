@@ -10,8 +10,10 @@ namespace IDE.API.Validators
             RuleFor(f => f.Name)
                 .NotEmpty().WithMessage("Name is mandatory.")
                 .MaximumLength(256)
-                .WithMessage("Name length should have no more than 256 characters.");
-
+                .WithMessage("Name length should have no more than 256 characters.")
+                .Matches("[A-Za-z0-9.]{2,256}")
+                .WithMessage("File name can contain only letters, numbers and \".\"");
+           
             RuleFor(f => f.Folder)
                 .NotEmpty()
                 .WithMessage("Folder is mandatory.");

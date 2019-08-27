@@ -132,6 +132,7 @@ namespace IDE.BLL.Services
             }
 
             targetEditorSetting.FontSize = editorSettingstUpdateDTO.FontSize;
+            targetEditorSetting.ScrollBeyondLastLine = editorSettingstUpdate.ScrollBeyondLastLine;
             targetEditorSetting.CursorStyle = editorSettingstUpdateDTO.CursorStyle;
             targetEditorSetting.LineHeight = editorSettingstUpdateDTO.LineHeight;
             targetEditorSetting.LineNumbers = editorSettingstUpdateDTO.LineNumbers;

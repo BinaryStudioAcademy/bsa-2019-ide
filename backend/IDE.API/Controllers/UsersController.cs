@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections;
 using IDE.Common.ModelsDTO.DTO.User;
 using System.Collections.Generic;
+using IDE.Common.DTO.Image;
 using Microsoft.Extensions.Logging;
 using IDE.Common.ModelsDTO.Enums;
 
@@ -51,13 +52,39 @@ namespace IDE.API.Controllers
         public async Task<ActionResult<UserDTO>> GetById(int id)
         {
             _logger.LogInformation(LoggingEvents.GetItem, $"Get user by id {id}");
-            return Ok(await _userService.GetUserById(id));
+            return Ok(await _userService.GetUserDetailsById(id));
         }
 
         [HttpGet("nickname")]
         public async Task<IEnumerable<UserNicknameDTO>> GetUsersNickByNickname()
         {
             return await _userService.GetUserListByNickNameParts(this.GetUserIdFromToken());
-        } 
+        }
+
+
+        [HttpPut("photo")]
+        public async Task UpdateAvatar([FromBody] ImageUploadBase64DTO imageUploadBase64DTO)
+        {
+            var author = this.GetUserIdFromToken();
+
+            await _userService.UpdateUserAvatar(imageUploadBase64DTO, author);
+        }
+
+        [HttpPut("password")]
+        public async Task UpdatePassword([FromBody]UserChangePasswordDTO userChangePasswordDTO)
+        {
+            var userId = this.GetUserIdFromToken();
+
+            await _userService.ChangePassword(userChangePasswordDTO, userId);
+        }
+
+        [HttpDelete("photo/del")]
+        public async Task<ActionResult> DeleteAvatar()
+        {
+            var author = this.GetUserIdFromToken();
+
+            await _userService.DeleteAvatar(author);
+            return NoContent();
+        }
     }
 }

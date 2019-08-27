@@ -15,11 +15,12 @@ import { ProjectService } from 'src/app/services/project.service/project.service
 import filesExtensions from '../../../assets/file-extensions.json';
 import defaultExtensions from '../../../assets/newFilesDefaultExtensions.json';
 import { FileUpdateDTO } from 'src/app/models/DTO/File/fileUpdateDTO';
-import { delay } from 'rxjs/operators';
+import { delay, throwIfEmpty } from 'rxjs/operators';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 import {ProgressBarModule} from 'primeng/progressbar';
 import { saveAs } from 'file-saver';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -31,20 +32,24 @@ export class FileBrowserSectionComponent implements OnInit {
     @Input() showSearchField:boolean;
     @Output() fileSelected = new EventEmitter<string>();
     @Output() renameFile = new EventEmitter<FileRenameDTO>();
+    @Input() events: Observable<void>;
+    
     items: MenuItem[];
     public files: TreeNode[];
     public selectedItem: TreeNode;
     public projectId: number;
     public expandFolder = false;
-
+    
     private lastSelectedElement: any;
     private extensions: Extension[];
     private defaultExtension: string;
-
+    
     private lastActionFileCreated: boolean = false;
     private lastActionFolderCreated: boolean = false;
     private lastCreatedNode: TreeNode;
+    private eventsSubscription: any;
     private currentInputPos: 0;
+    private fileNameRegex: RegExp;
 
     constructor(private projectStructureService: FileBrowserService,
                 private projectStructureFormaterService: ProjectStructureFormaterService,
@@ -56,7 +61,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 private projectService: ProjectService) {
         this.hotkeys.addShortcut({keys: 'shift.e'})
         .subscribe(()=>{
-            this.expand();
+          this.expand();
         });
         this.projectId = activateRoute.snapshot.params['id'];
     }
@@ -76,6 +81,7 @@ export class FileBrowserSectionComponent implements OnInit {
             }
         );
 
+        this.fileNameRegex = /^[A-Z0-9.]+$/gi
         this.extensions = filesExtensions;
         this.items = [
             { label: 'create file', icon: 'fa fa-file', command: () => this.createFile(this.selectedItem),  },
@@ -85,8 +91,21 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'rename', icon: 'fa fa-refresh', command: () => this.rename(this.selectedItem)},
             { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) }
         ];
+
+        this.eventsSubscription = this.events.subscribe(() => this.expand())
     }
 
+    ngOnDestroy() {
+        this.eventsSubscription.unsubscribe()
+    }
+    
+    private expand() {
+        this.expandFolder = !this.expandFolder;
+        this.files.forEach( node => {
+            this.expandRecursive(node, this.expandFolder);
+        } );
+    }
+    
     private downloadFile(node: TreeNode){
         this.fileService.getFileById(node.key).subscribe(
             (response) => {
@@ -259,20 +278,31 @@ export class FileBrowserSectionComponent implements OnInit {
 
     private create(node: TreeNode) {
         const label = this.lastSelectedElement.value.trim();
-        if ((label === `file${this.defaultExtension}` && node.parent.children.filter(n => n.label === label).length > 1)
-            || (label !== `file${this.defaultExtension}` && node.parent.children.some(n => n.label === label))) {
-            this.lastSelectedElement.focus();
-            this.toast.error(`File with name \"${label}\" already exist!`, "Error Message", { tapToDismiss: true });
-            return;
-        }
-        this.lastCreatedNode.label = label;
 
         if (this.lastActionFolderCreated) {
+            if ((label === `New folder` && node.parent.children.filter(n => n.label === label).length > 1)
+                || (label !== `New folder` && node.parent.children.some(n => n.label === label))) {
+                this.lastSelectedElement.focus();
+                this.toast.error(`File with name \"${label}\" already exist!`, "Error Message", { tapToDismiss: true });
+                return;
+            }
+            this.lastActionFolderCreated = false;
+            
+            this.lastCreatedNode.label = label;
             this.toast.success(`Folder \"${label}\" successfully created`, "Success Message", { tapToDismiss: true })
             this.updateProjectStructure();    
+            node.selectable = true;
+            this.lastSelectedElement.disabled = true;
             this.lastSelectedElement = null;
             this.lastCreatedNode = null;
         } else {
+            if ((label === `file${this.defaultExtension}` && node.parent.children.filter(n => n.label === label).length > 1)
+                || (label !== `file${this.defaultExtension}` && node.parent.children.some(n => n.label === label))) {
+                this.lastSelectedElement.focus();
+                this.toast.error(`File with name \"${label}\" already exist!`, "Error Message", { tapToDismiss: true });
+                return;
+            }
+            this.lastCreatedNode.label = label;
             this.lastActionFileCreated = false;
             var newFile : FileCreateDTO  = {
                 name: label,
@@ -310,10 +340,14 @@ export class FileBrowserSectionComponent implements OnInit {
             this.create(node);
             return;
         }
-
+        const newName = this.lastSelectedElement.value.trim();
+        if (!this.fileNameRegex.test(newName)) {
+            this.toast.error("Name should contain only latin letters, numbers and dots!", "Error Message", { tapToDismiss: true });
+            this.lastSelectedElement.focus();
+            return;
+        }
         node.selectable = true;
         this.lastSelectedElement.disabled = true;
-        const newName = this.lastSelectedElement.value.trim();
         if (node.label === newName) {
             return;
         }
@@ -409,14 +443,6 @@ export class FileBrowserSectionComponent implements OnInit {
         for (let child of node.children){
             this.deleteFiles(child)
         }
-    }
-
-    public expand()
-    {
-        this.expandFolder=!this.expandFolder;
-        this.files.forEach( node => {
-            this.expandRecursive(node, this.expandFolder);
-        } );
     }
 
     private expandRecursive(node:TreeNode, isExpand:boolean){

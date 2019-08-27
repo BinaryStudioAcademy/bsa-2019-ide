@@ -99,12 +99,10 @@ export class EditorSettingsComponent implements OnInit {
     }
 
     public SaveToAllUserProjects() {
-        console.log("to all");
         this.ref.close();
     }
 
     public onSubmit(event) {
-        console.log(event);
         if (!this.IsSettingsNotChange()) {
             this.hasDetailsSaveResponse = false;
             this.getValuesForEditorSettingsUpdate();
@@ -143,6 +141,7 @@ export class EditorSettingsComponent implements OnInit {
     }
 
     public InitializeEditorSettings(): void {
+        console.log(this.settings);
         if (!this.settings) {
             this.user.editorSettings = this.editorOptions;
             this.settings = this.editorOptions;

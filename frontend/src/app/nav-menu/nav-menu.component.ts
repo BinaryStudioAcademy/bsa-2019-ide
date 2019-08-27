@@ -137,7 +137,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     }
 
     public goToUserDetails() {
-        this.router.navigate(['/user/details']);
+        this.router.navigate([`/user/details/${this.tokenService.getUserId()}`]);
     }
 
     public getMenuItems() {
