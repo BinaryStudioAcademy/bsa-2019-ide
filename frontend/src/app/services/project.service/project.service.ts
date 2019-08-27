@@ -78,14 +78,14 @@ export class ProjectService {
         return this.httpClient.getBlobRequest(`${this.address}/Download/${projectId.toString()}/${folderGuid}`);
     }
 
-    public getAllFilesFromProject(projectId): Observable<HttpResponse<FileDTO[]>> {
+    public getAllFilesFromProject(projectId: number): Observable<HttpResponse<FileDTO[]>> {
         return this.httpClient.getRequest(`files/forProject/${projectId}`)
     }
 
     public getAuthorOfProjectStatistics(project: ProjectInfoDTO) {
 
         return this.getAllFilesFromProject(project.id).pipe(map(response => {
-            let files = response.body;
+            const files = response.body;
             return {
                 id: project.authorId,
                 name: project.authorName,
