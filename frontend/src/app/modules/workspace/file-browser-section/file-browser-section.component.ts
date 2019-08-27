@@ -20,6 +20,8 @@ import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 import {ProgressBarModule} from 'primeng/progressbar';
 import { saveAs } from 'file-saver';
+import { SearchFileService } from 'src/app/services/search-file.service/search-file.service';
+import { FileSearchResultDTO } from 'src/app/models/DTO/File/fileSearchResultDTO';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -39,7 +41,8 @@ export class FileBrowserSectionComponent implements OnInit {
     public selectedItem: TreeNode;
     public projectId: number;
     public expandFolder = false;
-    
+    public fileSearchResults: FileSearchResultDTO[]
+
     private lastSelectedElement: any;
     private extensions: Extension[];
     private defaultExtension: string;
@@ -55,6 +58,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 private projectStructureFormaterService: ProjectStructureFormaterService,
                 activateRoute: ActivatedRoute,
                 private fileService: FileService,
+                private searchFileService: SearchFileService,
                 private toast: ToastrService,
                 private hotkeys: HotkeyService,
                 private fileBrowserService: FileBrowserService,
@@ -443,6 +447,23 @@ export class FileBrowserSectionComponent implements OnInit {
         for (let child of node.children){
             this.deleteFiles(child)
         }
+    }
+
+    public searchByFiles(query) {
+        this.searchFileService.find(query, this.projectId).subscribe(
+            (response) => {
+                console.log(response.body);
+                this.fileSearchResults = response.body;
+            },
+            (error) => {
+                this.toast.error(error.Message, "Error Message", { tapToDismiss: true })
+                console.log(error);
+            }
+        );
+    }
+
+    onFileResultSelected(evt) {
+        this.fileSelected.emit(evt.value[0].fileId);
     }
 
     private expandRecursive(node:TreeNode, isExpand:boolean){

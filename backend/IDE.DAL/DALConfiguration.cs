@@ -41,8 +41,8 @@ namespace IDE.DAL
 
         private static void ConfigureElasticSearch(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<ISearchClientFactory>(x => new SearchClientFactory(configuration.GetSection("ElasticSearch").Value)); //"amqp://admin:admin@localhost:5672"
-            services.AddScoped<ISearchRepository<TestDocument>, TestSearchRepository>();
+            services.AddSingleton<ISearchClientFactory>(x => new SearchClientFactory(configuration.GetSection("ElasticSearch").Value));
+            services.AddScoped<FileSearchRepository>();
         }
 
         private static void ConfigureNoSqlDb(IServiceCollection services, IConfiguration configuration)
