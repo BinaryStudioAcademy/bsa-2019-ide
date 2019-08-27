@@ -7,7 +7,7 @@ import { ResizeEvent } from 'angular-resizable-element';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, of, Subscription, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
 
@@ -44,11 +44,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public canRun = false;
     public canBuild = false;
     public canNotEdit = false;
-    public expandFolder=false;
     public project: ProjectInfoDTO;
-
     private routeSub: Subscription;
     private authorId: number;
+
+    public  eventsSubject: Subject<void> = new Subject<void>();
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
@@ -187,17 +187,20 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                 error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
 
-    public hideSearchField(): void {
+    public hideSearchField() {
         this.showSearchField = !this.showSearchField;
     }
-
-    public hideFileBrowser(): void
-    {
+  
+    public hideFileBrowser() {
         this.showFileBrowser= !this.showFileBrowser;
     }
     
     public editProjectSettings() {
         this.projectEditService.show(ProjectType.Update, this.projectId);
+    }
+
+    public expand() {
+        this.eventsSubject.next()
     }
 
     private saveFilesRequest(files?: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
@@ -218,31 +221,4 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.routeSub.unsubscribe();
     }
-
-
-    // *********code below for resizing blocks***************
-    //   public style: object = {};
-
-    //   validate(event: ResizeEvent): boolean {
-    //     const MIN_DIMENSIONS_PX: number = 50;
-    //     if (
-    //       event.rectangle.width &&
-    //       event.rectangle.height &&
-    //       (event.rectangle.width < MIN_DIMENSIONS_PX ||
-    //         event.rectangle.height < MIN_DIMENSIONS_PX)
-    //     ) {
-    //       return false;
-    //     }
-    //     return true;
-    //   }
-
-    //   onResizeEnd(event: ResizeEvent): void {
-    //     this.style = {
-    //       position: 'fixed',
-    //       left: `${event.rectangle.left}px`,
-    //       top: `${event.rectangle.top}px`,
-    //       width: `${event.rectangle.width}px`,
-    //       height: `${event.rectangle.height}px`
-    //     };
-    // }
 }

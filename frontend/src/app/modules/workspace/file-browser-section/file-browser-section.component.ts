@@ -15,11 +15,12 @@ import { ProjectService } from 'src/app/services/project.service/project.service
 import filesExtensions from '../../../assets/file-extensions.json';
 import defaultExtensions from '../../../assets/newFilesDefaultExtensions.json';
 import { FileUpdateDTO } from 'src/app/models/DTO/File/fileUpdateDTO';
-import { delay } from 'rxjs/operators';
+import { delay, throwIfEmpty } from 'rxjs/operators';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 import {ProgressBarModule} from 'primeng/progressbar';
 import { saveAs } from 'file-saver';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'app-file-browser-section',
@@ -31,19 +32,22 @@ export class FileBrowserSectionComponent implements OnInit {
     @Input() showSearchField:boolean;
     @Output() fileSelected = new EventEmitter<string>();
     @Output() renameFile = new EventEmitter<FileRenameDTO>();
+    @Input() events: Observable<void>;
+    
     items: MenuItem[];
     public files: TreeNode[];
     public selectedItem: TreeNode;
     public projectId: number;
     public expandFolder = false;
-
+    
     private lastSelectedElement: any;
     private extensions: Extension[];
     private defaultExtension: string;
-
+    
     private lastActionFileCreated: boolean = false;
     private lastActionFolderCreated: boolean = false;
     private lastCreatedNode: TreeNode;
+    private eventsSubscription: any;
     private currentInputPos: 0;
     private fileNameRegex: RegExp;
 
@@ -57,7 +61,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 private projectService: ProjectService) {
         this.hotkeys.addShortcut({keys: 'shift.e'})
         .subscribe(()=>{
-            this.expand();
+          this.expand();
         });
         this.projectId = activateRoute.snapshot.params['id'];
     }
@@ -87,8 +91,21 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'rename', icon: 'fa fa-refresh', command: () => this.rename(this.selectedItem)},
             { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) }
         ];
+
+        this.eventsSubscription = this.events.subscribe(() => this.expand())
     }
 
+    ngOnDestroy() {
+        this.eventsSubscription.unsubscribe()
+    }
+    
+    private expand() {
+        this.expandFolder = !this.expandFolder;
+        this.files.forEach( node => {
+            this.expandRecursive(node, this.expandFolder);
+        } );
+    }
+    
     private downloadFile(node: TreeNode){
         this.fileService.getFileById(node.key).subscribe(
             (response) => {
@@ -426,14 +443,6 @@ export class FileBrowserSectionComponent implements OnInit {
         for (let child of node.children){
             this.deleteFiles(child)
         }
-    }
-
-    public expand()
-    {
-        this.expandFolder=!this.expandFolder;
-        this.files.forEach( node => {
-            this.expandRecursive(node, this.expandFolder);
-        } );
     }
 
     private expandRecursive(node:TreeNode, isExpand:boolean){
