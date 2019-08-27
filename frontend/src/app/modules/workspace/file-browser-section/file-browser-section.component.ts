@@ -449,14 +449,6 @@ export class FileBrowserSectionComponent implements OnInit {
         }
     }
 
-    public expand()
-    {
-        this.expandFolder=!this.expandFolder;
-        this.files.forEach( node => {
-            this.expandRecursive(node, this.expandFolder);
-        } );
-    }
-
     public searchByFiles(query) {
         this.searchFileService.find(query, this.projectId).subscribe(
             (response) => {
