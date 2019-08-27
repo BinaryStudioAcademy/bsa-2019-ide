@@ -47,6 +47,10 @@ namespace IDE.BLL.Services
             _fileService = fileService;
             _notificationService = notificationService;
             _logger = logger;
+            _editorSettingService = editorSettingService;
+            _userService = userService;
+            _buildService = buildService;
+            _queueService = queueService;
             _buildService = buildService;
         }
 
