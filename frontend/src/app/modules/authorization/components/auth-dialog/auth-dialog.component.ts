@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { UserService } from 'src/app/services/user.service/user.service';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
+import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 
 @Component({
     selector: 'app-auth-dialog',
@@ -17,6 +18,18 @@ import { SignalRService } from 'src/app/services/signalr.service/signal-r.servic
 })
 export class AuthDialogComponent implements OnInit {
 
+    public editorOptions: EditorSettingDTO =
+        {
+            lineNumbers: "on",
+            roundedSelection: false,
+            scrollBeyondLastLine: false,
+            readOnly: false,
+            fontSize: 20,
+            tabSize: 5,
+            cursorStyle: "line",
+            lineHeight: 20,
+            theme: "vs",
+        };
     public dialogType = DialogType;
     public firstName: string;
     public lastName: string;
@@ -87,7 +100,8 @@ export class AuthDialogComponent implements OnInit {
             lastName: this.lastName,
             nickName: this.nickName,
             password: this.password,
-            email: this.email
+            email: this.email,
+            editorSettings: JSON.stringify(this.editorOptions)
         };
         this.tokenService
             .register(user)

@@ -23,9 +23,11 @@ export class ConfirmationDialogComponent implements OnInit {
             header: this.header,
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
+                console.log("accept");
                 this.IsConfirmed.emit(true);
             },
             reject: () => {
+                console.log("reject");
                 this.IsConfirmed.emit(false);
             }
         });

@@ -1,5 +1,6 @@
 ﻿using IDE.Common.DTO.Common;
 using IDE.Common.Enums;
+using IDE.Common.ModelsDTO.DTO.Common;
 using System;
 
 namespace IDE.Common.DTO.Project
@@ -17,6 +18,7 @@ namespace IDE.Common.DTO.Project
         public ProjectType ProjectType { get; set; }
         public CompilerType CompilerType { get; set; }
         public AccessModifier AccessModifier { get; set; }
+        public EditorSettingDTO EditorProjectSettings { get; set; }
         public int AuthorId { get; set; }
         public string AuthorName { get; set; }
         public GitCredentialDTO GitCredential { get; set; }

@@ -3,6 +3,7 @@ using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
 using IDE.Common.DTO.Common;
 using IDE.Common.DTO.Project;
+using IDE.Common.DTO.User;
 using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Common;
 using IDE.Common.ModelsDTO.DTO.Project;
@@ -28,13 +29,17 @@ namespace IDE.BLL.Services
         private readonly INotificationService _notificationService;
         private readonly IQueueService _queueService;
         private readonly IBuildService _buildService;
+        private readonly UserService _userService;
+        private readonly IEditorSettingService _editorSettingService; 
 
         public ProjectService(IdeContext context,
             IMapper mapper,
             FileService fileService,
+            UserService userService,
             INotificationService notificationService,
             ILogger<ProjectService> logger,
             IQueueService queueService,
+            IEditorSettingService editorSettingService,
             IBuildService buildService)
         {
             _context = context;
@@ -42,8 +47,10 @@ namespace IDE.BLL.Services
             _fileService = fileService;
             _notificationService = notificationService;
             _logger = logger;
-            _queueService = queueService;
+            _editorSettingService = editorSettingService;
+            _userService = userService;
             _buildService = buildService;
+            _queueService = queueService;
         }
 
         public async Task BuildProject(int projectId)
@@ -171,8 +178,25 @@ namespace IDE.BLL.Services
         public async Task<int> CreateProject(ProjectCreateDTO projectCreateDto, int userId)
         {
             var project = _mapper.Map<Project>(projectCreateDto);
+            var user = await _userService.GetUserDetailsById(userId);
             project.AuthorId = userId;
             project.CreatedAt = DateTime.Now;
+            project.AccessModifier = AccessModifier.Private;
+            var userEditorSettings = (await _userService.GetUserDetailsById(userId)).EditorSettings;
+            var newProjectEditorSetting = new EditorSettingDTO
+            {
+                CursorStyle = userEditorSettings.CursorStyle,
+                FontSize = userEditorSettings.FontSize,
+                ScrollBeyondLastLine = userEditorSettings.ScrollBeyondLastLine,
+                RoundedSelection = userEditorSettings.RoundedSelection,
+                TabSize = userEditorSettings.TabSize,
+                LineHeight = userEditorSettings.LineHeight,
+                LineNumbers = userEditorSettings.LineNumbers,
+                ReadOnly = userEditorSettings.ReadOnly,
+                Theme = userEditorSettings.Theme
+            };
+            var createDTO = await _editorSettingService.CreateEditorSettings(newProjectEditorSetting);
+            project.EditorProjectSettingsId = _mapper.Map<EditorSetting>(createDTO).Id;
 
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
@@ -184,6 +208,7 @@ namespace IDE.BLL.Services
         {
             var project = await _context.Projects
                 .Include(x => x.Author)
+                .Include(i=>i.EditorProjectSettings)
                 .SingleOrDefaultAsync(p => p.Id == projectId);
 
             NotificationDTO notification = new NotificationDTO
@@ -196,7 +221,7 @@ namespace IDE.BLL.Services
             return _mapper.Map<ProjectInfoDTO>(project);
         }
 
-        public async Task<ProjectInfoDTO> UpdateProject(ProjectUpdateDTO projectUpdateDTO)
+        public async Task<ProjectInfoDTO> UpdateProject(ProjectInfoDTO projectUpdateDTO)
         {
             var targetProject = await _context.Projects.SingleOrDefaultAsync(p => p.Id == projectUpdateDTO.Id);
 
@@ -212,6 +237,8 @@ namespace IDE.BLL.Services
             targetProject.CountOfSaveBuilds = projectUpdateDTO.CountOfSaveBuilds;
             targetProject.AccessModifier = projectUpdateDTO.AccessModifier;
             targetProject.Color = projectUpdateDTO.Color;
+            var updateDTO= await _editorSettingService.UpdateEditorSetting(projectUpdateDTO.EditorProjectSettings);
+            targetProject.EditorProjectSettings = _mapper.Map<EditorSetting>(updateDTO);
 
             _context.Projects.Update(targetProject);
             await _context.SaveChangesAsync();
