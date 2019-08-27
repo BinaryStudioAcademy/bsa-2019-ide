@@ -1,65 +1,60 @@
-﻿using IDE.BLL.Interfaces;
-using IDE.Common.ModelsDTO.DTO.Common;
-using Microsoft.Extensions.Logging;
+﻿using BuildServer.Interfaces;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Shared.Interfaces;
 using RabbitMQ.Shared.Settings;
-using System.Diagnostics;
+using System;
+using System.IO;
 using System.Text;
 
-namespace IDE.BLL.Services
+namespace BuildServer.Services
 {
     public class QueueService : IQueueService
     {
         private readonly IMessageProducerScope _messageProducerScope;
         private readonly IMessageConsumerScope _messageConsumerScope;
-        private readonly ILogger<QueueService> _logger;
-        private readonly INotificationService _notificationService;
+        private readonly Worker _worker;
 
         public QueueService(IMessageProducerScopeFactory messageProducerScopeFactory,
                             IMessageConsumerScopeFactory messageConsumerScopeFactory,
-                            ILogger<QueueService> logger,
-                            INotificationService notificationService)
+                            IAzureService azureService,
+                            IBuilder builder,
+                            IFileArchiver fileArchiver)
         {
             _messageProducerScope = messageProducerScopeFactory.Open(new MessageScopeSettings
             {
                 ExchangeName = "ClientExchange",
                 ExchangeType = ExchangeType.Direct,
-                QueueName = "SendResponceQueue",
-                RoutingKey = "responce"
+                QueueName = "SendRequestQueue",
+                RoutingKey = "request"
             });
 
             _messageConsumerScope = messageConsumerScopeFactory.Connect(new MessageScopeSettings
             {
                 ExchangeName = "ServerExchange",
                 ExchangeType = ExchangeType.Direct,
-                QueueName = "SendRequestQueue",
-                RoutingKey = "request"
+                QueueName = "SendResponceQueue",
+                RoutingKey = "responce"
             });
-
             _messageConsumerScope.MessageConsumer.Received += MessageConsumer_Received;
-            _logger = logger;
-            _notificationService = notificationService;
+            _worker = new Worker(builder, fileArchiver, azureService);
         }
 
-        private void MessageConsumer_Received(object sender, BasicDeliverEventArgs e)
+        private void MessageConsumer_Received(object sender, BasicDeliverEventArgs evn)
         {
             //just make sure that receiving works. Will be removed
-            var message = Encoding.UTF8.GetString(e.Body);
-            Debug.WriteLine($"--------------------------------------------------{message} receiwed");
+            var message = Encoding.UTF8.GetString(evn.Body);
+            /*_azureService.Download(message)*/;
+            var isBuildSucceeded = _worker.Work(message);
 
-            _messageConsumerScope.MessageConsumer.SetAcknowledge(e.DeliveryTag, true);
-
-            var notification = new NotificationDTO()
-            {
-                Message = message
-            };
-
-            _notificationService.SendNotification(31, notification);
+            _messageConsumerScope.MessageConsumer.SetAcknowledge(evn.DeliveryTag, true);
+            if (isBuildSucceeded)
+                SendMessage($"Build status: Success)");
+            else
+                SendMessage($"Build status: Failed(");
         }
 
-        public bool SendMessage(string value, int projectId)
+        public bool SendMessage(string value)
         {
             try
             {

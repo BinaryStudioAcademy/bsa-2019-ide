@@ -16,7 +16,7 @@ namespace BuildServer.Services
 
         public string Build(string projectName)
         {
-            var commandToBuild = $"/c dotnet build {_buildDirectory}{projectName}\\{projectName}\\{projectName}";
+            var commandToBuild = $"/c dotnet build {_buildDirectory}\\{projectName}";
             var outputMessage = "";
 
             try
