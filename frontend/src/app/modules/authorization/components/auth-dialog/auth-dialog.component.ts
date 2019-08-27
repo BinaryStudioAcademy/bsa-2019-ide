@@ -29,6 +29,7 @@ export class AuthDialogComponent implements OnInit {
             cursorStyle: "line",
             lineHeight: 20,
             theme: "vs",
+            language: ""
         };
     public dialogType = DialogType;
     public firstName: string;
@@ -101,7 +102,7 @@ export class AuthDialogComponent implements OnInit {
             nickName: this.nickName,
             password: this.password,
             email: this.email,
-            editorSettings: JSON.stringify(this.editorOptions)
+            editorSettings: this.editorOptions
         };
         this.tokenService
             .register(user)
