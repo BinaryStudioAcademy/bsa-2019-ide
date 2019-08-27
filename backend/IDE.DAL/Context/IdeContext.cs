@@ -23,7 +23,8 @@ namespace IDE.DAL.Context
         public DbSet<FavouriteProjects> FavouriteProjects { get; private set; }
         public DbSet<VerificationToken> VerificationTokens { get; private set; }
         public DbSet<Notification> Notifications { get; private set; }
-        
+        public DbSet<EditorSetting> EditorSettings { get; private set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Configure();

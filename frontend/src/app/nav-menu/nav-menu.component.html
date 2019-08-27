@@ -12,19 +12,21 @@
                     <div *ngIf="data.length!=0 || notReadNotification.length!=0" class="count-of-notification">
                         {{data.length+notReadNotification.length}}</div>
                 </button>
-                <p-overlayPanel #notifications class="notification">
-                    <div *ngIf="notReadNotification.length!=0">
-                        <div class="notification-item" *ngFor="let item of notReadNotification">
-                            {{item.message}}
+                <p-overlayPanel #notifications [dismissable]="false" class="notification">
+                    <div class="notification-panel-content">
+                        <div *ngIf="notReadNotification.length!=0">
+                            <div class="notification-item" *ngFor="let item of notReadNotification">
+                                {{item.message}}
+                            </div>
                         </div>
-                    </div>
-                    <div *ngIf="data.length!=0">
-                        <div class="notification-item" *ngFor="let item of data">
-                            {{item.message}}
+                        <div *ngIf="data.length!=0">
+                            <div class="notification-item" *ngFor="let item of data">
+                                {{item.message}}
+                            </div>
                         </div>
-                    </div>
-                    <div *ngIf="data.length==0 && notReadNotification.length==0">
-                        There is no notification for you
+                        <div *ngIf="data.length==0 && notReadNotification.length==0">
+                            There is no notification for you
+                        </div>
                     </div>
                 </p-overlayPanel>
 

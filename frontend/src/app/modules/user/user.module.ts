@@ -18,6 +18,8 @@ import { PasswordModule } from 'primeng/password';
 import { UserPrCardComponent } from './components/user-pr-card/user-pr-card.component';
 import { CardModule } from 'primeng/card';
 import { UserProjListComponent } from './components/user-proj-list/user-proj-list.component'; 
+import { EditorModule } from '../editor/editor.module';
+import { TabViewModule } from 'primeng/primeng';
 
 @NgModule({
     declarations: [
@@ -35,6 +37,8 @@ import { UserProjListComponent } from './components/user-proj-list/user-proj-lis
         DialogModule,
         SlideMenuModule,
         ButtonModule,
+        EditorModule,
+        TabViewModule,
         ProgressSpinnerModule,
         ButtonModule,
         ReactiveFormsModule,

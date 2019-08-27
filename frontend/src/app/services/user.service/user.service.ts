@@ -37,7 +37,7 @@ export class UserService {
     }
 
     public getUserInformationById(id: number) {
-        return this.httpService.getRequest<UserDetailsDTO>(`${this.routePrefix}/information/${id}`);
+        return this.httpService.getRequest<UserDetailsDTO>(`${this.routePrefix}/${id}`);
     }
 
     public updateUser(user: UserUpdateDTO) {

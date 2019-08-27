@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/api';
-import { FileService } from 'src/app/services/file.service/file.service';
-import { FileBrowserService } from 'src/app/services/file-browser.service';
+import { InfoService } from 'src/app/services/info.service/info.service';
 
 @Component({
     selector: 'app-file-info',
@@ -21,7 +20,7 @@ export class FileInfoComponent implements OnInit {
     public projectId: number;
 
     constructor(private config: DynamicDialogConfig,
-        private fileBrowserService: FileBrowserService,
+        private infoService: InfoService,
         private ref: DynamicDialogRef) {
 
     }
@@ -35,7 +34,8 @@ export class FileInfoComponent implements OnInit {
         {
             this.getCountOfInternalItem(this.fileInfoData.node);
         }
-        this.fileBrowserService.getFileStructureSize(this.fileInfoData.projectId,this.fileInfoData.node.key).subscribe(
+        console.log(this.fileInfoData);
+        this.infoService.getFileStructureSize(this.fileInfoData.projectId,this.fileInfoData.node.key).subscribe(
             (resp)=>
             {
                 this.size=resp.body;

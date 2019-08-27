@@ -15,56 +15,56 @@
         <p class="property-name">Registred At:</p>
         <p class="property-value p-col-align-center">{{user.registeredAt | date:'MMM d, y'}}</p>
         <p-slideMenu #menu [model]="actions" [popup]="true" [viewportHeight]="200"></p-slideMenu>
-        <button *ngIf="isAuthor" #btn type="button" pButton icon="pi pi-pencil" label="Edit Profile" (click)="menu.toggle($event)"></button>
+        <button *ngIf="isAuthor" #btn type="button" pButton icon="pi pi-pencil" label="Edit Profile"
+            (click)="menu.toggle($event)"></button>
     </div>
     <div *ngIf="!user" class="panel p-col-10 p-md-4 p-lg-3 p-grid  p-justify-center">
         <p-progressSpinner></p-progressSpinner>
     </div>
-    <div class="panel p-col-10 p-md-8 p-lg-7  p-dir-col">
-        <div *ngIf="user">
-            <app-user-proj-list [userId]="user.id"></app-user-proj-list>        
-        </div>
-    </div>
-</div>
-
-<p-dialog  *ngIf="user" [(visible)]="isImageExpended" [style]="{'box-shadow': 'none'}" [showHeader]="false" [draggable]="false" [modal]="true"
-            [dismissableMask]="true"
-            [contentStyle]="{'overflow':'visible', 'padding': '0', 'border': 'none', 'background': 'none', 'align-content': 'center', 'display': 'flex'}">
-    <img class="big-avatar" src="{{user.url}}" alt="avatar">
-</p-dialog>
-
-<p-dialog [(visible)]="isChangeAvatar" [showHeader]="false" appendTo="body" [closable]=false [modal]="true" [responsive]="true"
-          [contentStyle]="{'width':'500px', 'overflow':'visible'}" [positionTop]="10">
-    
-    <span class="modal-close-btn" (click)="close()">&times;</span>
-
-    <div class="ui-g ui-fluid">
-        <div class="ui-g-12">
-            <div class="title">Upload new avatar</div>
-        </div>
+    <div *ngIf="user" class="panel p-col-10 p-md-8 p-lg-7  p-dir-col">
+        <p-tabView>
+            <p-tabPanel header="Projects">
+                <div *ngIf="user">
+                    <app-user-proj-list [userId]="user.id"></app-user-proj-list>
+                </div>
+            </p-tabPanel>
+            <p-tabPanel header="Builds">
+                Content 3
+            </p-tabPanel>
+            <p-tabPanel header="Editor settings">
+                <app-editor-settings [user]="user"></app-editor-settings>
+            </p-tabPanel>
+        </p-tabView>
     </div>
 
-	<div>
-        <input id="uploadfile" type="file" (change)="fileChangeEvent($event)" />
-        <image-cropper
-            [imageChangedEvent]="imageChangedEvent"
-            [maintainAspectRatio]="true"
-            [aspectRatio]="1 / 1"
-            [resizeToWidth]="512"
-            [cropperMinWidth]="128"
-            [onlyScaleDown]="true"
-            [roundCropper]="false"
-            format="png"
-            outputType="base64"
-            (imageCropped)="imageCropped($event)"
-            (imageLoaded)="imageLoaded()"
-            (loadImageFailed)="loadImageFailed()"
-            [style.display]="showCropper ? null : 'none'"
-            [alignImage]="'bottom'"
-        ></image-cropper>
-      </div>
-      <p-button [style]="{'padding-top':'20px'}" label="Update" (onClick)="UpdateProfilePhoto($event)" *ngIf="!hasDetailsSaveResponse && selected"></p-button>
-      <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="hasDetailsSaveResponse && selected">
+    <p-dialog *ngIf="user" [(visible)]="isImageExpended" [style]="{'box-shadow': 'none'}" [showHeader]="false"
+        [draggable]="false" [modal]="true" [dismissableMask]="true"
+        [contentStyle]="{'overflow':'visible', 'padding': '0', 'border': 'none', 'background': 'none', 'align-content': 'center', 'display': 'flex'}">
+        <img class="big-avatar" src="{{user.url}}" alt="avatar">
+    </p-dialog>
+
+    <p-dialog [(visible)]="isChangeAvatar" [showHeader]="false" appendTo="body" [closable]=false [modal]="true"
+        [responsive]="true" [contentStyle]="{'width':'500px', 'overflow':'visible'}" [positionTop]="10">
+
+        <span class="modal-close-btn" (click)="close()">&times;</span>
+
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12">
+                <div class="title">Upload new avatar</div>
+            </div>
+        </div>
+
+        <div>
+            <input id="uploadfile" type="file" (change)="fileChangeEvent($event)" />
+            <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1 / 1"
+                [resizeToWidth]="512" [cropperMinWidth]="128" [onlyScaleDown]="true" [roundCropper]="false" format="png"
+                outputType="base64" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+                (loadImageFailed)="loadImageFailed()" [style.display]="showCropper ? null : 'none'"
+                [alignImage]="'bottom'"></image-cropper>
+        </div>
+        <p-button [style]="{'padding-top':'20px'}" label="Update" (onClick)="UpdateProfilePhoto($event)"
+            *ngIf="!hasDetailsSaveResponse && selected"></p-button>
+        <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="hasDetailsSaveResponse && selected">
             <p-progressSpinner></p-progressSpinner>
-      </div>
+        </div>
     </p-dialog>
