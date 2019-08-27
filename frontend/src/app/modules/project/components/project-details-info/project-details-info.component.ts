@@ -1,9 +1,6 @@
-import { HttpClientWrapperService } from './../../../../services/http-client-wrapper.service';
 import { Component, OnInit, Input } from '@angular/core';
-import { getLocaleDateTimeFormat } from '@angular/common';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { AccessModifier } from 'src/app/models/Enums/accessModifier';
-import { UserDTO } from 'src/app/models/DTO/User/userDTO';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { Router } from '@angular/router';

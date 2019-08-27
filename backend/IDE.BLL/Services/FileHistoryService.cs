@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
 using IDE.Common.DTO.File;
+using IDE.Common.ModelsDTO.DTO.File;
 using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
@@ -58,6 +57,43 @@ namespace IDE.BLL.Services
             }
 
             return _mapper.Map<FileHistoryDTO>(fileHistory);
+        }
+
+        public async Task<IEnumerable<FileShownHistoryDTO>> GetLastHistoriesForProject(int projectId)
+        {
+            var filesForProject = await _fileRepository.GetAllAsync(f => f.ProjectId == projectId);
+
+            var files = new List<FileShownHistoryDTO>();
+            
+            foreach(var file in filesForProject)
+            {
+                var fileHistory = (await _fileHistoryRepository.GetAllAsync(fh => fh.FileId == file.Id)).OrderBy(fh => fh.CreatedAt).Last();
+                var userNickName = (await _userService.GetUserById(fileHistory.CreatorId)).NickName;
+
+                files.Add(new FileShownHistoryDTO()
+                {
+                    Content = fileHistory.Content,
+                    FileName = fileHistory.Name,
+                    Id = fileHistory.Id,
+                    UpdatedAt = fileHistory.CreatedAt,
+                    CreatorNickname = userNickName
+                });
+            }
+
+            return files.OrderByDescending(f => f.UpdatedAt);
+
+            //return filesForProject.Select(async (f) =>
+            //{
+            //    var fileHistory = (await _fileHistoryRepository.GetAllAsync(fh => fh.FileId == f.Id)).OrderBy(fh => fh.CreatedAt).Last();
+            //    return new FileShownHistoryDTO()
+            //    {
+            //        Content = fileHistory.Content,
+            //        FileName = fileHistory.Name,
+            //        Id = fileHistory.Id,
+            //        UpdatedAt = fileHistory.CreatedAt,
+            //        CreatorNickname = (await _userService.GetUserById(fileHistory.CreatorId)).NickName
+            //    };
+            //});
         }
 
         public async Task<FileHistoryDTO> CreateAsync(FileHistoryDTO item)

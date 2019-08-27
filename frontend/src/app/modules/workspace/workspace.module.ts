@@ -14,6 +14,7 @@ import { ContextMenuModule, MenuModule } from 'primeng/primeng';
 import { FileInfoComponent } from './file-info/file-info.component';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {OrderListModule} from 'primeng/orderlist';
+import { EditorSettingsComponent } from '../editor/components/editor-settings/editor-settings.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,11 @@ import {OrderListModule} from 'primeng/orderlist';
     MenuModule,
     ContextMenuModule,
     ProgressBarModule,
-    OrderListModule
+    OrderListModule,
+    ProgressBarModule
+  ],
+  entryComponents: [
+      EditorSettingsComponent
   ]
 })
 export class WorkspaceModule { }

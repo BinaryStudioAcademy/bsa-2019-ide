@@ -9,6 +9,7 @@ namespace IDE.DAL.Interfaces
     public interface IBlobRepository
     {
         Task<Uri> UploadAsync(IFormFile file, int projectId, int buildId);
+        Task<Uri> UploadAsync(byte[] file, int projectId, int buildId);
         Task<IEnumerable<Uri>> ListAsync(int projectId);
         Task<MemoryStream> DownloadFileAsync(string fileUri);
         Task<MemoryStream> DownloadFileAsync(string fileUri, string containerName);

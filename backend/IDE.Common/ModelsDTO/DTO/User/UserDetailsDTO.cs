@@ -1,4 +1,5 @@
 ﻿using System;
+using IDE.Common.ModelsDTO.DTO.Common;
 
 namespace IDE.Common.DTO.User
 {
@@ -14,5 +15,7 @@ namespace IDE.Common.DTO.User
         public DateTime RegisteredAt { get; set; }
         public DateTime LastActive { get; set; }
         public string Url { get; set; }
+        public int? EditorSettingsId { get; set; }
+        public EditorSettingDTO EditorSettings { get; set; }
     }
 }

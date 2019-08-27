@@ -2,6 +2,7 @@ import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { CancelEditableRow } from 'primeng/table';
+import { EditorSettingDTO } from '../../../models/DTO/Common/editorSettingDTO'
 
 export interface TabFileWrapper {
     isChanged: boolean;
@@ -15,7 +16,9 @@ export interface TabFileWrapper {
 })
 export class EditorSectionComponent implements OnInit {
 
+    @Input() public monacoOptions: EditorSettingDTO;
     @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
+    
 
     // FOR REFACTOR
     // think about agregaiting of TabFileWrapper(openedFiles) with MenuItem(tabs)
@@ -24,17 +27,11 @@ export class EditorSectionComponent implements OnInit {
     public openedFiles = [] as TabFileWrapper[];
     @Input() canEdit: boolean;
 
-    public editorOptions;
     code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
 
     constructor() { }
 
     ngOnInit() {
-        this.editorOptions = {
-            theme: 'vs-dark',
-            language: 'typescript',
-            readOnly: this.canEdit
-        };
     }
 
     onChange(ev) {
@@ -75,11 +72,6 @@ export class EditorSectionComponent implements OnInit {
     }
 
     public AddFileToOpened(file: FileUpdateDTO) {
-        this.editorOptions = {
-            theme: 'vs-dark',
-            language: 'typescript',
-            readOnly: this.canEdit
-        };
         const fileWrapper: TabFileWrapper = { isChanged: false, innerFile: file }
         this.openedFiles.push(fileWrapper);
     }

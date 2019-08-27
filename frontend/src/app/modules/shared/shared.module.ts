@@ -6,7 +6,6 @@ import { ConfirmationService } from 'primeng/api';
 import { ProjectTypeDirective } from 'src/app/directives/projectType/project-type.directive';
 import { LanguageDirective } from 'src/app/directives/language/language.directive';
 import { CompilerTypeDirective } from 'src/app/directives/compilerType/compiler-type.directive';
-import {UserAccessDirective} from 'src/app/directives/userAccess/user-access.directive';
 
 @NgModule({
     declarations: [

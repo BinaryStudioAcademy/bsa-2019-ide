@@ -27,9 +27,10 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public isAuthorized: boolean;
     public items: MenuItem[];
     public showNotification = false;
-    public data: NotificationDTO[];
-    public notReadNotification: NotificationDTO[]=[];
+    public data: NotificationDTO[] = [];
+    public notReadNotification: NotificationDTO[] = [];
     private unsubscribe$ = new Subject<void>();
+    private userId: number;
 
     constructor(
         private authDialogService: AuthDialogService,
@@ -42,9 +43,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.getUser();
-        const userId = this.tokenService.getUserId();
-        this.signalRService.startConnection(this.isAuthorized,userId);
-        this.loadNotifications(userId);
+        this.signalRService.startConnection(this.isAuthorized, this.userId);
         this.authUserItems = [
             {
                 label: 'Home',
@@ -66,7 +65,13 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
         this.tokenService.isAuthenticatedEvent$
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe((auth) => (this.isAuthorized = auth));
+            .subscribe((auth) => {
+                this.isAuthorized = auth;
+                if (this.isAuthorized && this.userId) {
+                    this.data = this.signalRService.addTransferChartDataListener();
+                    this.loadNotifications(this.userId);
+                }
+            });
 
         this.items = [
             {
@@ -75,38 +80,31 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                 }
             }
         ];
-        
-        if (this.isAuthorized) {
-            
-            this.signalRService.addToGroup(userId);
-        }
     }
 
-    public loadNotifications(userId: number): void
-    {
+    public loadNotifications(userId: number): void {
         this.notificationService.getUserNotifications(userId)
-        .subscribe(
-            (resp)=>{
-                this.notReadNotification = resp.body;
-            }
-        );
-        this.data = this.signalRService.addTransferChartDataListener();
+            .subscribe(
+                (resp) => {
+                    this.notReadNotification = resp.body;
+                }
+            );
     }
 
     public showNotificationPanel() {
         this.showNotification = !this.showNotification;
-        const dataForDelete =this.data;
+        const dataForDelete = this.data;
         if (!this.showNotification) {
-            this.signalRService.crearData();     
+            this.signalRService.crearData();
             this.signalRService.deleteTransferChartDataListener();
             this.data = this.signalRService.addTransferChartDataListener();
             dataForDelete.forEach(element => {
                 this.signalRService.markNotificationAsRead(element.id);
             });
-            this.notReadNotification.forEach(element=>{
+            this.notReadNotification.forEach(element => {
                 this.signalRService.markNotificationAsRead(element.id);
             })
-            this.notReadNotification=[];
+            this.notReadNotification = [];
         }
     }
 
@@ -141,7 +139,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     }
 
     public goToUserDetails() {
-        this.router.navigate(['/user/details']);
+        this.router.navigate([`/user/details/${this.tokenService.getUserId()}`]);
     }
 
     public getMenuItems() {
@@ -165,6 +163,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.tokenService.logout();
         this.isAuthorized = undefined;
         this.signalRService.crearData();
+        this.signalRService.deleteTransferChartDataListener();
     }
 
     private getUser() {
@@ -175,6 +174,9 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.tokenService
             .IsAuthorized()
             .pipe(takeUntil(this.unsubscribe$))
-            .subscribe((auth) => this.isAuthorized = auth);
+            .subscribe((auth) => {
+                this.isAuthorized = auth;
+                this.userId = this.tokenService.getUserId();
+            });
     }
 }

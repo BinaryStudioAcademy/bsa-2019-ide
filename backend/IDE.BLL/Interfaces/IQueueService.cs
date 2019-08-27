@@ -3,6 +3,7 @@
     //Basic wrapper for queue. 
     public interface IQueueService
     {
-        bool SendMessage(string value);
+        bool SendMessage(string message, int projectId);
+        void ConfigureSubscription();
     }
 }

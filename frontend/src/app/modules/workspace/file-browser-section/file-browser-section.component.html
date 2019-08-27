@@ -1,7 +1,5 @@
 <div class="tree-wrapper">
     <p-progressBar *ngIf="!files || files.length == 0" mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
-    <button *ngIf="!showSearchField" pButton type="button" icon="pi pi-sort" title="Expand all" iconPos="left"
-        class="ui-button-primary expand-btn" (click)="expand()"></button>
     <p-tree *ngIf="files && files.length > 0 && !showSearchField" class="custom-tree" selectionMode="single" [value]="files" [(selection)]="selectedItem"  [contextMenu]="contextMenu"
         (onNodeSelect)="nodeSelect($event)" (onNodeContextMenuSelect)="nodeContextMenuSelect($event)" [filter]="showSearchField"
         filterMode="strict">

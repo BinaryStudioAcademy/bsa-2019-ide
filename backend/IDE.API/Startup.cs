@@ -2,16 +2,14 @@ using FluentValidation.AspNetCore;
 using IDE.API.Extensions;
 using IDE.BLL;
 using IDE.BLL.HubConfig;
+using IDE.BLL.Interfaces;
 using IDE.DAL;
-using IDE.DAL.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using RabbitMQ.Shared;
 
 namespace IDE.API
 {
@@ -22,7 +20,7 @@ namespace IDE.API
         public Startup(IConfiguration configuration , ILogger<Startup> logger)
         {
             Configuration = configuration;
-            this._logger = logger;
+            _logger = logger;
         }
 
         public IConfiguration Configuration { get; }        
@@ -41,8 +39,12 @@ namespace IDE.API
                 .AddJsonFormatters()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation();
+
+            var serviceProvider = services.BuildServiceProvider();
+            var queueService = serviceProvider.GetService<IQueueService>();
+            queueService.ConfigureSubscription();
         }
-        
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())

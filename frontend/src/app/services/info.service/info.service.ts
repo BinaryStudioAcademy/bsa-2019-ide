@@ -16,4 +16,8 @@ export class InfoService {
     public getMostLikedProjects(): Observable<HttpResponse<LikedProjectsInLanguageDTO[]>> {
         return this.httpClient.getRequest(this.address);
     }
+
+    public getFileStructureSize(projectStructureId: string, fileStructureId: string): Observable<HttpResponse<number>>{
+        return this.httpClient.getRequest("projectstructure/size/"+projectStructureId+'/'+fileStructureId);
+    }
 }

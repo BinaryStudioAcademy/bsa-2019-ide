@@ -7,7 +7,7 @@ import { ResizeEvent } from 'angular-resizable-element';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
-import { Observable, of, Subscription } from 'rxjs';
+import { Observable, of, Subscription, Subject } from 'rxjs';
 import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
 
@@ -27,6 +27,9 @@ import { FileBrowserSectionComponent } from '../file-browser-section/file-browse
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
 import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
+import { BuildService } from 'src/app/services/build.service';
+import { Language } from 'src/app/models/Enums/language';
+import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 
 @Component({
     selector: 'app-workspace-root',
@@ -44,11 +47,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public canRun = false;
     public canBuild = false;
     public canNotEdit = false;
-    public expandFolder=false;
+    public expandFolder = false;
     public project: ProjectInfoDTO;
+    public options: EditorSettingDTO;
 
     private routeSub: Subscription;
     private authorId: number;
+
+    public eventsSubject: Subject<void> = new Subject<void>();
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
@@ -58,7 +64,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     constructor(
         private route: ActivatedRoute,
-        private tr: ToastrService,
+        private toast: ToastrService,
         private workSpaceService: WorkspaceService,
         private saveOnExit: LeavePageDialogService,
         private fileService: FileService,
@@ -66,12 +72,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private projectService: ProjectService,
         private projectEditService: ProjectDialogService,
         private tokenService: TokenService,
-        private hotkeys: HotkeyService) { 
-            this.hotkeys.addShortcut({keys: 'shift.h'})
-        .subscribe(()=>{
-            this.hideFileBrowser();
-        });
-        }
+        private hotkeys: HotkeyService,
+        private buildService: BuildService) {
+        this.hotkeys.addShortcut({ keys: 'shift.h' })
+            .subscribe(() => {
+                this.hideFileBrowser();
+            });
+    }
 
     ngOnInit() {
         this.userId = this.tokenService.getUserId();
@@ -89,25 +96,38 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                                 (resp) => {
                                     this.access = resp.body;
                                     this.setUserAccess();
-                                    console.log(this.canNotEdit);
+                                    this.getProjectById();
                                 }
                             )
                     }
-                });    
+                    else {
+                        this.getProjectById();
+                    }
+                });
+    }
+
+    public getProjectById() {
         this.projectService.getProjectById(this.projectId)
             .subscribe(
                 (resp) => {
                     this.project = resp.body;
+                    this.options = this.project.editorProjectSettings;
+                    if (this.canNotEdit) {
+                        this.options.readOnly = true;
+                    }
                 },
                 (error) => {
-                    this.tr.error("Can't load selected project.", 'Error Message');
+                    this.toast.error("Can't load selected project.", 'Error Message');
                 }
             );
     }
 
-    public getProjectColor(): string
-    {
+    public getProjectColor(): string {
         return this.project.color;
+    }
+
+    public Settings() {
+        this.workSpaceService.show(this.project);
     }
 
     public setUserAccess() {
@@ -161,14 +181,32 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
                         this.editor.code = content;
                     } else {
-                        this.tr.error("Can't load selected file.", 'Error Message');
+                        this.toast.error("Can't load selected file.", 'Error Message');
                     }
                 },
                 (error) => {
-                    this.tr.error("Can't load selected file.", 'Error Message');
+                    this.toast.error("Can't load selected file.", 'Error Message');
                     console.error(error.message);
                 }
             );
+    }
+
+    public onBuild() {
+        if (this.project.language !== Language.cSharp) {
+            this.toast.info('Only C# project available for build', 'Info Message', { tapToDismiss: true });
+            return;
+        }
+
+        this.buildService.buildProject(this.project.id).subscribe(
+            (response) => {
+                debugger;
+                this.toast.info('Build was started', 'Info Message', { tapToDismiss: true });
+            },
+            (error) => {
+                console.log(error);
+                this.toast.error('Something bad happened(', 'Error Message', { tapToDismiss: true });
+            }
+        )
     }
 
     public onFilesSave(files?: FileUpdateDTO[]) {
@@ -179,31 +217,33 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             .subscribe(
                 success => {
                     if (success.every(x => x.ok)) {
-                        this.tr.success("Files saved", 'Success', { tapToDismiss: true });
+                        this.toast.success("Files saved", 'Success', { tapToDismiss: true });
                     } else {
-                        this.tr.error("Can't save files", 'Error', { tapToDismiss: true });
+                        this.toast.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
                 },
-                error => { console.log(error); this.tr.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
+                error => { console.log(error); this.toast.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
 
-    public hideSearchField(): void {
+    public hideSearchField() {
         this.showSearchField = !this.showSearchField;
     }
 
-    public hideFileBrowser(): void
-    {
-        this.showFileBrowser= !this.showFileBrowser;
+    public hideFileBrowser() {
+        this.showFileBrowser = !this.showFileBrowser;
     }
-    
+
     public editProjectSettings() {
         this.projectEditService.show(ProjectType.Update, this.projectId);
     }
 
+    public expand() {
+        this.eventsSubject.next()
+    }
+
     private saveFilesRequest(files?: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
-        if(!files)
-        {
-            files = this.editor.openedFiles.map(x => x.innerFile);         
+        if (!files) {
+            files = this.editor.openedFiles.map(x => x.innerFile);
         }
         return this.workSpaceService.saveFilesRequest(files);
     }
@@ -218,31 +258,4 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.routeSub.unsubscribe();
     }
-
-
-    // *********code below for resizing blocks***************
-    //   public style: object = {};
-
-    //   validate(event: ResizeEvent): boolean {
-    //     const MIN_DIMENSIONS_PX: number = 50;
-    //     if (
-    //       event.rectangle.width &&
-    //       event.rectangle.height &&
-    //       (event.rectangle.width < MIN_DIMENSIONS_PX ||
-    //         event.rectangle.height < MIN_DIMENSIONS_PX)
-    //     ) {
-    //       return false;
-    //     }
-    //     return true;
-    //   }
-
-    //   onResizeEnd(event: ResizeEvent): void {
-    //     this.style = {
-    //       position: 'fixed',
-    //       left: `${event.rectangle.left}px`,
-    //       top: `${event.rectangle.top}px`,
-    //       width: `${event.rectangle.width}px`,
-    //       height: `${event.rectangle.height}px`
-    //     };
-    // }
 }
