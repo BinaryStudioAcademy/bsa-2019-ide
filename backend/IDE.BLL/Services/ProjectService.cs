@@ -177,24 +177,37 @@ namespace IDE.BLL.Services
 
         public async Task<int> CreateProject(ProjectCreateDTO projectCreateDto, int userId)
         {
+            // Hot fix ------------------------------------- Start
             var project = _mapper.Map<Project>(projectCreateDto);
             var user = await _userService.GetUserDetailsById(userId);
             project.AuthorId = userId;
             project.CreatedAt = DateTime.Now;
             project.AccessModifier = AccessModifier.Private;
-            var userEditorSettings = (await _userService.GetUserDetailsById(userId)).EditorSettings;
+            var userDetails = await _userService.GetUserDetailsById(userId);
+            var userEditorSettings = userDetails.EditorSettings;
+            //var cursorStyle = userEditorSettings.CursorStyle;
+            //var fontSize = userEditorSettings.FontSize;
+            //var scrollBeyondLastLine = userEditorSettings.ScrollBeyondLastLine;
+            //var roundedSelection = userEditorSettings.RoundedSelection;
+            //var tabSize = userEditorSettings.TabSize;
+            //var lineHeight = userEditorSettings.LineHeight;
+            //var lineNumbers = userEditorSettings.LineNumbers;
+            //var readOnly = userEditorSettings.ReadOnly;
+            //var theme = userEditorSettings.Theme;
             var newProjectEditorSetting = new EditorSettingDTO
             {
-                CursorStyle = userEditorSettings.CursorStyle,
-                FontSize = userEditorSettings.FontSize,
-                ScrollBeyondLastLine = userEditorSettings.ScrollBeyondLastLine,
-                RoundedSelection = userEditorSettings.RoundedSelection,
-                TabSize = userEditorSettings.TabSize,
-                LineHeight = userEditorSettings.LineHeight,
-                LineNumbers = userEditorSettings.LineNumbers,
-                ReadOnly = userEditorSettings.ReadOnly,
-                Theme = userEditorSettings.Theme
+                CursorStyle = "line",
+                FontSize = 14,
+                ScrollBeyondLastLine = false,
+                RoundedSelection = false,
+                TabSize = 15,
+                LineHeight = 14,
+                LineNumbers = "on",
+                ReadOnly = false,
+                Theme = "vs-dark"
             };
+
+            // Hot fix ------------------------------------- End
             var createDTO = await _editorSettingService.CreateEditorSettings(newProjectEditorSetting);
             project.EditorProjectSettingsId = _mapper.Map<EditorSetting>(createDTO).Id;
 
