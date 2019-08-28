@@ -23,6 +23,7 @@ export class UserDialogWindowComponent implements OnInit {
     public nickName: string;
     public email: string;
     public gitHubUrl: string;
+    public birthday: Date;
     
     public userForm: FormGroup;
     
@@ -53,7 +54,8 @@ export class UserDialogWindowComponent implements OnInit {
                 firstName: ['', [Validators.required]],
                 lastName: ['', Validators.required],
                 nickName: ['', Validators.required],
-                gitHubUrl: ['']
+                gitHubUrl: [''],
+                birthday: ['', Validators.required]
             });
 
             this.userService.getUserDetailsFromToken()
@@ -86,7 +88,8 @@ export class UserDialogWindowComponent implements OnInit {
         return this.userForm.get('firsName').value === this.userUpdateStartState.firstName
         && this.userForm.get('lastName').value === this.userUpdateStartState.lastName
         && this.userForm.get('nickName').value === this.userUpdateStartState.nickName
-        && this.userForm.get('gitHubUrl').value === this.userUpdateStartState.gitHubUrl;
+        && this.userForm.get('gitHubUrl').value === this.userUpdateStartState.gitHubUrl
+        && this.userForm.get('birthday').value === this.userUpdateStartState.birthday;
     }
 
     public isUpdateInfo() {
@@ -100,7 +103,7 @@ export class UserDialogWindowComponent implements OnInit {
     public onSubmit() {
         if(this.isUpdateInfo()) {
             this.getValuesForUpdateInfo();
-            this.userService.updateUser(this.userUpdateInfo)
+            this.userService.updateProfile(this.userUpdateInfo)
                 .subscribe(res => {
                         this.toastrService.success("Your profile info was successfully updated");
                         this.hasDetailsSaveResponse = true;
@@ -137,8 +140,9 @@ export class UserDialogWindowComponent implements OnInit {
             firstName: this.userUpdateStartState.firstName,
             lastName: this.userUpdateStartState.lastName,
             nickName: this.userUpdateStartState.nickName,
-            gitHubUrl: this.userUpdateStartState.gitHubUrl
-        });
+            gitHubUrl: this.userUpdateStartState.gitHubUrl,
+            birthday: this.userUpdateStartState.birthday.toString()=='0001-01-01T00:00:00'? null : new Date(this.userUpdateStartState.birthday)
+        });//if(this.user.birthday.toString()=='0001-01-01T00:00:00')
     }
     
     private getValuesForUpdateInfo() {
@@ -148,6 +152,7 @@ export class UserDialogWindowComponent implements OnInit {
             lastName: this.userForm.get('lastName').value,
             nickName: this.userForm.get('nickName').value,
             gitHubUrl: this.userForm.get('gitHubUrl').value,
+            birthday:  this.userForm.get('birthday').value
         }
     }
 

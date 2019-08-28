@@ -54,9 +54,9 @@ export class UserDetailsComponent implements OnInit {
             this.user.url = './assets/img/user-default-avatar.png';
         }
 
-        if(this.user.birthday==new Date())
+        if(this.user.birthday.toString()=='0001-01-01T00:00:00')
         {
-            this.user.birthday==null;
+            this.user.birthday=null;
         }
       });
      

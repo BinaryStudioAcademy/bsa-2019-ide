@@ -6,4 +6,5 @@ export interface UserUpdateDTO {
     lastName: string;
     nickName: string;
     gitHubUrl: string;
+    birthday: Date;
 }
