@@ -283,7 +283,7 @@ namespace IDE.BLL.Services
 
         public async Task<IEnumerable<LikedProjectInLanguageDTO>> GetLikedProjects()
         {
-            return await _context.FavouriteProjects
+            var likedProjects = await _context.FavouriteProjects
                 .Include(x => x.Project)
                 .Include(x => x.Project.Author)
                 .Where(x => x.Project.AccessModifier != AccessModifier.Private)
@@ -300,10 +300,24 @@ namespace IDE.BLL.Services
                                     ProjectDescription = z.FirstOrDefault().Project.Description,
                                     ProjectName = z.FirstOrDefault().Project.Name,
                                     AuthorNickName = z.FirstOrDefault().Project.Author.NickName,
-                                    LikesCount = z.Count()
+                                    LikesCount = z.Count(),
                                 }).OrderByDescending(i => i.LikesCount).Take(5).ToArray()
                     })
                     .OrderBy(x => x.ProjectType).ToListAsync();
+            return await SetLastFileChangedDate(likedProjects);
+        }
+
+        private async Task<IEnumerable<LikedProjectInLanguageDTO>> SetLastFileChangedDate(IEnumerable<LikedProjectInLanguageDTO> likedProjects)
+        {
+            foreach (var projectLang in likedProjects)
+            {
+                foreach (var project in projectLang.LikedProjects)
+                {
+                    var projects = (await _fileService.GetAllForProjectAsync(project.ProjectId)).ToList();
+                    project.LastChangedDate = projects.OrderByDescending(x => x.UpdatedAt).First()?.UpdatedAt;
+                }
+            }
+            return likedProjects;
         }
     }
 }

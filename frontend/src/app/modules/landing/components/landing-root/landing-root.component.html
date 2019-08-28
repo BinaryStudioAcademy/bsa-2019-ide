@@ -1,5 +1,12 @@
 <div class="container">
     <div class="ui-g">
+        <div class="ui-g-12 header">
+            <div class="header-container">
+                <img src="../../../../../assets/img/logo.svg" height="70%">
+                <h1 class="name">Online IDE</h1>
+                <h2 class="name">It was designed to collaborate developers and make writing code for then easier and more available everywhere</h2>
+            </div>
+        </div>
         <div class="ui-g-12 first-block">
             <div class="ui-g-5 center">
                 <img src="https://patimes.org/wp-content/uploads/2015/04/Vaz-collaboration1.jpg" width="80%">
@@ -25,6 +32,16 @@
                 <img src="http://www.illuminationworksllc.com/wp-content/uploads/2017/04/ProjectManagement-1.jpg" width="80%">
             </div>
         </div>
+        <div class="ui-g-12 statistics" *ngIf="!noInfo">
+            <div class="ui-g-5 center image-container">
+                <img src="https://mms.businesswire.com/media/20190415005410/en/546575/23/STATS.jpg" width="80%">
+            </div>
+            <div class="ui-g-7 text-block">
+                <p>Our website have already joined <span class="highlighted">{{websiteInfo.usersCount}}</span> users, which created more than <span class="highlighted">{{websiteInfo.projectsCount}}</span> different project on four different languages.</p>
+                <p *ngIf="websiteInfo.collaboratorsCount">They add <span class="highlighted">{{ websiteInfo.collaboratorsCount }}</span> collaborators to work together</p>
+                <p>This projects contains about <span class="highlighted">{{ websiteInfo.filesCount }}</span> code files.</p>
+            </div>
+        </div>
         <div class="languageContainer" *ngIf="!smthWrong">
             <div class="ui-g-12 line">
             </div>
@@ -41,3 +58,14 @@
                 <app-projects-list [projects]="shownProjects === undefined ? null : shownProjects.likedProjects"></app-projects-list>
             </div>
         </div>
+        <div class="ui-g-12 footer">
+            <div class="ui-g-4">
+                <span>&copy; 2019 Online IDE</span>
+            </div>
+            <div class="ui-g-8 align-right">
+                <a href="https://facebook.com"><i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i></a>
+                <a href="https://github.com"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
+            </div>
+        </div>
+    </div>
+</div>

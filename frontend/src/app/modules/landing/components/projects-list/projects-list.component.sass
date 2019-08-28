@@ -1,3 +1,6 @@
+p
+    margin: 5px 0
+
 .heart
     color: red
 .highlighted
@@ -10,10 +13,38 @@
     margin: 0 auto
     height: 593px
 
-.project
-    padding: 10px 0 10px 10%
+.projectDiv
+    padding: 0 10% 0 10%
 
-.project:nth-child(2n)
+.projectDiv:nth-child(2n)
     background: #5db4e9
     width: 100%
-    padding-left: 50%
+
+.border
+    border-left: 2px solid #5db4e9
+    padding: 10px 0
+    
+.projectDiv:nth-child(2n) .border
+    border-color: white
+
+.date
+    font-size: 0.8em
+    text-align: right
+
+.nickName 
+    font-size: 0.8em
+    text-align: right
+    vertical-align: bottom
+
+.text
+    font-size: 1.1em
+
+.highlighted
+    font-size: 1.2em
+    color: #007bda
+
+.projectDiv:nth-child(2n) .highlighted
+    color: white
+
+.align
+    vertical-align: bottom
