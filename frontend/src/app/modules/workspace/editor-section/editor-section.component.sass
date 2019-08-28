@@ -7,10 +7,23 @@
 ::ng-deep .ui-tabmenu .ui-tabmenu-nav a
     padding: 0
 
+::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem,
+::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem:not(.ui-state-active):not(.ui-state-disabled):hover
+    border: none
+    background-color: #4a4a4a
+
+::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem.ui-state-active
+    border: none
+    background-color: #000
+
+
+.tab-item
+    display: flex
+    align-items: center
+
 .tab-icon
     font-size: 0.8rem
     color: #cfcfcf
-
 
 .tab-text
     font-size: 0.8rem
@@ -24,16 +37,6 @@
 .tab-close .pi
     font-size: 1rem
 
-
-// ::ng-deep .tab-menu-wrapper .ui-menuitem-icon.fa.fa-fw.fa-file
-//     display: block
-// ::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem
-//     width: 15%
-// ::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem a
-//     float: none
-// ::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem .ui-menuitem-link .ui-menuitem-text
-//     margin-left: 30%
-
 .editor-icon
     margin: auto
     display: flex
@@ -44,8 +47,3 @@
     display: flex
     justify-content: center
     margin-top: 25%
-
-.tab-item
-    display: flex
-    align-items: center
-
