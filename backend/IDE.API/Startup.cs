@@ -40,9 +40,9 @@ namespace IDE.API
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation();
 
-            var serviceProvider = services.BuildServiceProvider();
-            var queueService = serviceProvider.GetService<IQueueService>();
-            queueService.ConfigureSubscription();
+            //var serviceProvider = services.BuildServiceProvider();
+            //var queueService = serviceProvider.GetService<IQueueService>();
+            //queueService.ConfigureSubscription();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
