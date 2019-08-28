@@ -1,17 +1,38 @@
-.my-code-editor 
+.my-code-editor
     height: calc(100vh - 100px)
     width: 100%
 
-::ng-deep body .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem .ui-menuitem-link
+::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem .ui-menuitem-link,
+::ng-deep .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem a,
+::ng-deep .ui-tabmenu .ui-tabmenu-nav a
     padding: 0
-::ng-deep .tab-menu-wrapper .ui-menuitem-icon.fa.fa-fw.fa-file
-    display: block
-::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem
-    width: 15%
-::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem a
-    float: none
-::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem .ui-menuitem-link .ui-menuitem-text
-    margin-left: 30%
+
+.tab-icon
+    font-size: 0.8rem
+    color: #cfcfcf
+
+
+.tab-text
+    font-size: 0.8rem
+    padding: 0 4px 0 4px
+    color: #cfcfcf
+
+.tab-close
+    padding: 0
+    color: #cfcfcf
+
+.tab-close .pi
+    font-size: 1rem
+
+
+// ::ng-deep .tab-menu-wrapper .ui-menuitem-icon.fa.fa-fw.fa-file
+//     display: block
+// ::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem
+//     width: 15%
+// ::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem a
+//     float: none
+// ::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem .ui-menuitem-link .ui-menuitem-text
+//     margin-left: 30%
 
 .editor-icon
     margin: auto
@@ -23,3 +44,8 @@
     display: flex
     justify-content: center
     margin-top: 25%
+
+.tab-item
+    display: flex
+    align-items: center
+
