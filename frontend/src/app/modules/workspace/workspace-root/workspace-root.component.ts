@@ -51,7 +51,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public expandFolder = false;
     public project: ProjectInfoDTO;
     public options: EditorSettingDTO;
-    public iOpenFile: FileUpdateDTO[]=[];
+    public iOpenFile: FileUpdateDTO[] = [];
 
     private routeSub: Subscription;
     private authorId: number;
@@ -176,19 +176,25 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             .subscribe(
                 (resp) => {
                     if (resp.ok) {
-                        const { id, name, content, folder, updaterId, isOpen } = resp.body as FileDTO;
-                        const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, isOpen };
-                        console.log(fileUpdateDTO);
+                        const { id, name, content, folder, updaterId, isOpen, updater } = resp.body as FileDTO;
+                        const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, isOpen, updaterId, updater };
+                        var new_str = name.substring(name.indexOf('.')+1, name.length);
+                        this.editor.monacoOptions.language=this.getFileLanguage(new_str);
                         this.editor.AddFileToOpened(fileUpdateDTO);
-                        if (!fileUpdateDTO.isOpen) {
+                        if (!fileUpdateDTO.isOpen && this.project.accessModifier == 0) {
                             fileUpdateDTO.isOpen = true;
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
-                            console.log(this.iOpenFile);
-                            this.editor.monacoOptions.readOnly=false;
+                            this.editor.monacoOptions.readOnly = false;
                         }
-                        else{
-                            this.editor.monacoOptions.readOnly=true;
+                        else if (this.project.accessModifier == 0) {
+                            this.editor.monacoOptions.readOnly = true;
+                        }
+                        else {
+                            this.fileIsOpen(fileUpdateDTO);
+                            console.log(fileUpdateDTO.updater.nickName);
+                            this.iOpenFile.push(fileUpdateDTO);
+                            this.editor.monacoOptions.readOnly = false;
                         }
                         this.editor.tabs.push({ label: name, icon: 'fa fa-fw fa-file', id: id });
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
@@ -222,17 +228,34 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         )
     }
 
+    public getFileLanguage(name: string)
+    {
+        switch(name)
+        {
+            case "js":
+                return "javascript";
+            case "ts":
+                return "typescript";
+            case "cs":
+                return "csharp";
+            case "html":
+                return "html";
+            case "go":
+                return "go";
+            case "css":
+                return "css";
+        }
+    }
+
     public onFilesSave(files?: FileUpdateDTO[]) {
         console.log(this.iOpenFile);
-        if(this.iOpenFile.length!=0)
-        {
-            this.iOpenFile.forEach(element=>
-                {
-                    element.isOpen=false;
-                }
-               )
-            this.iOpenFile=[];
-            this.saveFilesRequest(this.iOpenFile).subscribe();      
+        if (this.iOpenFile.length != 0) {
+            this.iOpenFile.forEach(element => {
+                element.isOpen = false;
+            }
+            )
+            this.iOpenFile = [];
+            this.saveFilesRequest(this.iOpenFile).subscribe();
         }
         if (!this.editor.anyFileChanged()) {
             return;
