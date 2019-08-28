@@ -1,11 +1,11 @@
-﻿using IDE.DAL.Factories.Abstractions;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Storage.Interfaces;
 using System;
 using System.Threading.Tasks;
 
-namespace IDE.DAL.Factories
+namespace Storage
 {
     public class AzureBlobConnectionFactory : IAzureBlobConnectionFactory
     {
@@ -22,8 +22,9 @@ namespace IDE.DAL.Factories
         {
             return await GetBlobContainer("ArchiveArtifactsContainerName").ConfigureAwait(false);
         }
-        
-        public async Task<CloudBlobContainer> GetDownloadedProjectZipsBlobContainer(){
+
+        public async Task<CloudBlobContainer> GetDownloadedProjectZipsBlobContainer()
+        {
             return await GetBlobContainer("DownloadProjectZipContainer").ConfigureAwait(false);
         }
 
@@ -42,7 +43,7 @@ namespace IDE.DAL.Factories
             if (await _blobContainer.CreateIfNotExistsAsync())
             {
                 await _blobContainer.SetPermissionsAsync(new BlobContainerPermissions
-                    {PublicAccess = BlobContainerPublicAccessType.Blob});
+                { PublicAccess = BlobContainerPublicAccessType.Blob });
             }
 
             return _blobContainer;

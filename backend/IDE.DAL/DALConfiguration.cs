@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Storage;
 
 namespace IDE.DAL
 {
@@ -19,18 +20,16 @@ namespace IDE.DAL
     {
         public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IBlobRepository, ArchivesBlobRepository>();
             services.AddScoped<INoSqlRepository<File>, NoSqlRepository<File>>();
             services.AddScoped<INoSqlRepository<FileHistory>, NoSqlRepository<FileHistory>>();
             services.AddScoped<IProjectStructureRepository, ProjectStructureRepository>();
 
-            services.AddSingleton<IAzureBlobConnectionFactory>(new AzureBlobConnectionFactory(configuration));
 
             services.AddDbContext<IdeContext>(option =>
                 option.UseSqlServer(configuration.GetConnectionString("IdeDBConnection")));
 
+            StorageConfigurations.ConfigureServices(services, configuration);
             ConfigureNoSqlDb(services, configuration);
-
             ConfigureElasticSearch(services, configuration);
         }
 

@@ -33,6 +33,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\..\RabbitMQ.Shared\RabbitMQ.Shared.csproj" />
+    <ProjectReference Include="..\..\Storage\Storage.csproj" />
   </ItemGroup>
   
 </Project>

@@ -31,14 +31,15 @@ namespace IDE.BLL.Services
             var users = await _context.ProjectMembers
                 .Where(item => item.ProjectId == projectId)
                 .Select(item => item.User)
-                .ToListAsync().ConfigureAwait(false);
+                .ToListAsync().ConfigureAwait(false) ?? new List<User>();
 
             var author = await _context.Projects
                 .Where(item => item.Id == projectId)
                .Select(item => item.Author)
               .FirstOrDefaultAsync().ConfigureAwait(false);
 
-            users.Add(author);
+            if (author != null)
+                users.Add(author);
 
             var notification = _mapper.Map<Notification>(notificationDTO);
 

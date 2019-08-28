@@ -1,7 +1,7 @@
 ﻿using Microsoft.WindowsAzure.Storage.Blob;
 using System.Threading.Tasks;
 
-namespace IDE.DAL.Factories.Abstractions
+namespace Storage.Interfaces
 {
     public interface IAzureBlobConnectionFactory
     {
