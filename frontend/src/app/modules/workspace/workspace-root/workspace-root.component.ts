@@ -185,6 +185,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
                             console.log(this.iOpenFile);
+                            this.editor.monacoOptions.readOnly=false;
                         }
                         else{
                             this.editor.monacoOptions.readOnly=true;
@@ -226,8 +227,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         if(this.iOpenFile.length!=0)
         {
             this.iOpenFile.forEach(element=>
-                element.isOpen=false)
-            this.saveFilesRequest(this.iOpenFile).subscribe();        
+                {
+                    element.isOpen=false;
+                }
+               )
+            this.iOpenFile=[];
+            this.saveFilesRequest(this.iOpenFile).subscribe();      
         }
         if (!this.editor.anyFileChanged()) {
             return;
