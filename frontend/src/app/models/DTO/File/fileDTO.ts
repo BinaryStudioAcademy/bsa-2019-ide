@@ -11,6 +11,7 @@ export interface FileDTO {
     createdAt: Date;
     creatorId: number;
     creator: UserDTO;
+    isOpen: boolean;
     updatedAt?: Date;
     updaterId?: number;
     updater: UserDTO;

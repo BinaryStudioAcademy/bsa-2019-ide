@@ -74,6 +74,7 @@ namespace IDE.BLL.Services
         public async Task<FileDTO> GetByIdAsync(string id)
         {
             var file = await _fileRepository.GetByIdAsync(id);
+            //file.IsOpen = true;
             if (file == null)
             {
                 _logger.LogWarning(LoggingEvents.GetItemNotFound, $"GetFileById({id}) NOT FOUND");
@@ -97,6 +98,7 @@ namespace IDE.BLL.Services
             var fileCreate = _mapper.Map<File>(fileCreateDto);
             fileCreate.CreatedAt = DateTime.Now;
             fileCreate.CreatorId = creatorId;
+            fileCreate.IsOpen = false;
             var createdFile = await _fileRepository.CreateAsync(fileCreate);
 
             var searchFile = _mapper.Map<FileSearch>(createdFile);
@@ -124,6 +126,7 @@ namespace IDE.BLL.Services
             currentFileDto.Content = fileUpdateDTO.Content;
             currentFileDto.UpdaterId = updaterId;
             currentFileDto.UpdatedAt = DateTime.Now;
+            currentFileDto.IsOpen = fileUpdateDTO.IsOpen;
 
             var fileUpdate = _mapper.Map<File>(currentFileDto);
             await _fileRepository.UpdateAsync(fileUpdate);

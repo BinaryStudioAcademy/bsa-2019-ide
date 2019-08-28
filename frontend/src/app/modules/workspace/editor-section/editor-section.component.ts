@@ -43,9 +43,7 @@ export class EditorSectionComponent implements OnInit {
     }
 
     public closeItem(event, index) {
-        if (this.openedFiles[index].isChanged) {
-            this.saveFiles([this.openedFiles[index].innerFile]);
-        }
+        this.saveFiles([this.openedFiles[index].innerFile]);
         this.tabs = this.tabs.filter((item, i) => i !== index);
         this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
 

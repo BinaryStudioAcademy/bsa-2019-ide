@@ -30,6 +30,7 @@ import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 import { BuildService } from 'src/app/services/build.service';
 import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
+import { element } from 'protractor';
 
 @Component({
     selector: 'app-workspace-root',
@@ -50,6 +51,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public expandFolder = false;
     public project: ProjectInfoDTO;
     public options: EditorSettingDTO;
+    public iOpenFile: FileUpdateDTO[]=[];
 
     private routeSub: Subscription;
     private authorId: number;
@@ -174,9 +176,19 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             .subscribe(
                 (resp) => {
                     if (resp.ok) {
-                        const { id, name, content, folder, updaterId } = resp.body as FileDTO;
-                        const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder };
+                        const { id, name, content, folder, updaterId, isOpen } = resp.body as FileDTO;
+                        const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, isOpen };
+                        console.log(fileUpdateDTO);
                         this.editor.AddFileToOpened(fileUpdateDTO);
+                        if (!fileUpdateDTO.isOpen) {
+                            fileUpdateDTO.isOpen = true;
+                            this.fileIsOpen(fileUpdateDTO);
+                            this.iOpenFile.push(fileUpdateDTO);
+                            console.log(this.iOpenFile);
+                        }
+                        else{
+                            this.editor.monacoOptions.readOnly=true;
+                        }
                         this.editor.tabs.push({ label: name, icon: 'fa fa-fw fa-file', id: id });
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
                         this.editor.code = content;
@@ -210,6 +222,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public onFilesSave(files?: FileUpdateDTO[]) {
+        console.log(this.iOpenFile);
+        if(this.iOpenFile.length!=0)
+        {
+            this.iOpenFile.forEach(element=>
+                element.isOpen=false)
+            this.saveFilesRequest(this.iOpenFile).subscribe();        
+        }
         if (!this.editor.anyFileChanged()) {
             return;
         }
@@ -223,6 +242,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                     }
                 },
                 error => { console.log(error); this.toast.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
+    }
+
+    public fileIsOpen(files: FileUpdateDTO) {
+        this.workSpaceService.saveFileRequest(files).subscribe();
     }
 
     public hideSearchField() {

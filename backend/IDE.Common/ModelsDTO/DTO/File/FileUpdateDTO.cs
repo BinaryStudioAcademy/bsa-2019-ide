@@ -7,5 +7,6 @@
         public string Name { get; set; }
         public string Content { get; set; }
         public string Folder { get; set; }
+        public bool IsOpen { get; set; }
     }
 }

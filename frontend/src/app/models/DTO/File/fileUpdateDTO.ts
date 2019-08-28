@@ -5,4 +5,5 @@ export interface FileUpdateDTO {
     name: string;
     content: string;
     folder: string;
+    isOpen: boolean;
 }

@@ -13,6 +13,8 @@ namespace IDE.DAL.Entities.NoSql
         public DateTime CreatedAt { get; set; }
         public int? CreatorId { get; set; }
 
+        public bool IsOpen { get; set; }
+
         public DateTime? UpdatedAt { get; set; }
         public int? UpdaterId { get; set; }
     }
