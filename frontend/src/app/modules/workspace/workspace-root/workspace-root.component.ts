@@ -176,10 +176,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             .subscribe(
                 (resp) => {
                     if (resp.ok) {
-                        const { id, name, content, folder, updaterId, isOpen, updater } = resp.body as FileDTO;
-                        const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, isOpen, updaterId, updater };
+                        const { id, name, content, folder, updaterId, isOpen, updater, language } = resp.body as FileDTO;
+                        const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, isOpen, updaterId, updater, language };
                         var new_str = name.substring(name.indexOf('.')+1, name.length);
-                        this.editor.monacoOptions.language=this.getFileLanguage(new_str);
                         this.editor.AddFileToOpened(fileUpdateDTO);
                         if (!fileUpdateDTO.isOpen && this.project.accessModifier == 0) {
                             fileUpdateDTO.isOpen = true;
@@ -192,7 +191,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                         }
                         else {
                             this.fileIsOpen(fileUpdateDTO);
-                            console.log(fileUpdateDTO.updater.nickName);
                             this.iOpenFile.push(fileUpdateDTO);
                             this.editor.monacoOptions.readOnly = false;
                         }
@@ -226,25 +224,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                 this.toast.error('Something bad happened(', 'Error Message', { tapToDismiss: true });
             }
         )
-    }
-
-    public getFileLanguage(name: string)
-    {
-        switch(name)
-        {
-            case "js":
-                return "javascript";
-            case "ts":
-                return "typescript";
-            case "cs":
-                return "csharp";
-            case "html":
-                return "html";
-            case "go":
-                return "go";
-            case "css":
-                return "css";
-        }
     }
 
     public onFilesSave(files?: FileUpdateDTO[]) {

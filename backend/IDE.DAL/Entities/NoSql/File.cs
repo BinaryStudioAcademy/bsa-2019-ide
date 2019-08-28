@@ -17,5 +17,6 @@ namespace IDE.DAL.Entities.NoSql
 
         public DateTime? UpdatedAt { get; set; }
         public int? UpdaterId { get; set; }
+        public string Language { get; set; }
     }
 }

@@ -12,5 +12,6 @@ namespace IDE.Common.DTO.File
         public bool IsOpen { get; set; }
         public int? UpdaterId { get; set; }
         public UserDTO Updater { get; set; }
+        public string Language { get; set; }
     }
 }

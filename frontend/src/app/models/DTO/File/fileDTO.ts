@@ -15,4 +15,5 @@ export interface FileDTO {
     updatedAt?: Date;
     updaterId?: number;
     updater: UserDTO;
+    language: string;
 }

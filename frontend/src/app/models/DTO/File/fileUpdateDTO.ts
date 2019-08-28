@@ -10,4 +10,5 @@ export interface FileUpdateDTO {
     isOpen: boolean;
     updaterId?: number;
     updater: UserDTO;
+    language: string;
 }

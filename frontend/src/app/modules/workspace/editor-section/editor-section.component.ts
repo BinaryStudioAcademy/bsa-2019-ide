@@ -63,6 +63,9 @@ export class EditorSectionComponent implements OnInit {
     public onTabSelect(evt, index) {
         this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
+        var language=this.openedFiles[index].innerFile.language;
+        console.log(language);
+        this.monacoOptions.language=language;
     }
 
     public saveFiles(files: FileUpdateDTO[]) {
@@ -72,6 +75,7 @@ export class EditorSectionComponent implements OnInit {
     public AddFileToOpened(file: FileUpdateDTO) {
         const fileWrapper: TabFileWrapper = { isChanged: false, innerFile: file }
         this.openedFiles.push(fileWrapper);
+        this.monacoOptions.language=file.language;
     }
 
     public getFileFromActiveItem(item: MenuItem): TabFileWrapper {
