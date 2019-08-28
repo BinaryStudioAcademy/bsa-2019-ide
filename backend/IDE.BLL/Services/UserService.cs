@@ -111,6 +111,7 @@ namespace IDE.BLL.Services
             targetUser.LastName = userUpdateDto.LastName;
             targetUser.NickName = userUpdateDto.NickName;
             targetUser.GitHubUrl = userUpdateDto.GitHubUrl;
+            targetUser.Birthday = userUpdateDto.Birthday;
 
             _context.Users.Update(targetUser);
             await _context.SaveChangesAsync();

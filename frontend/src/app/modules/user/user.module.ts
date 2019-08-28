@@ -20,6 +20,7 @@ import { CardModule } from 'primeng/card';
 import { UserProjListComponent } from './components/user-proj-list/user-proj-list.component'; 
 import { EditorModule } from '../editor/editor.module';
 import { TabViewModule } from 'primeng/primeng';
+import {CalendarModule} from 'primeng/calendar';
 
 @NgModule({
     declarations: [
@@ -47,7 +48,8 @@ import { TabViewModule } from 'primeng/primeng';
         DynamicDialogModule,
         ImageCropperModule,
         PasswordModule,
-        CardModule
+        CardModule,
+        CalendarModule
     ],
     entryComponents: [
         UserDialogWindowComponent
