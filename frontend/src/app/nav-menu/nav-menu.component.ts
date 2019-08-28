@@ -117,11 +117,16 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
     public checkProject(project: SearchProjectDTO): void {
         this.project = null;
+        if(project.id == -1){
+            this.router.navigate(['/dashboard']);
+            return;
+        }
         this.router.navigate([`/project/${project.id}`]);
     }
 
     public filter(query, projects: SearchProjectDTO[]): SearchProjectDTO[] {
         const filtered: SearchProjectDTO[] = [];
+        filtered.push({id:-1, name: query});
         for (let i = 0; i < projects.length; i++) {
             const project = projects[i];
             if (project.name.toLowerCase().indexOf(query.toLowerCase()) !== -1) {
