@@ -3,6 +3,7 @@ using BuildServer.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Shared;
+using Storage;
 using System;
 using System.IO;
 using System.Reflection;
@@ -28,16 +29,24 @@ namespace BuildServer
             services.Configure<DotNetBuilder>(configuration);
             services.AddTransient<IFileArchiver, FileArchiver>();
             services.Configure<FileArchiver>(configuration);
-            services.AddTransient<IAzureService, AzureService>();
-            services.Configure<AzureService>(configuration);
 
             RabbitMQConfigurations.ConfigureServices(services, configuration);
             services.AddScoped<IQueueService, QueueService>();
+            StorageConfigurations.ConfigureServices(services, configuration);
+            services.AddTransient<IAzureService, AzureService>();
+            services.Configure<AzureService>(configuration);
 
             var serviceProvider = services.BuildServiceProvider();
 
             // This line need for creating instance of QueueService
             var queueService = serviceProvider.GetService<IQueueService>();
+
+            var outputDirectory = configuration.GetSection("OutputDirectory").Value;
+            var buildDirectory = configuration.GetSection("BuildDirectory").Value;
+            var inputDirectory = configuration.GetSection("InputDirectory").Value;
+            Directory.CreateDirectory(outputDirectory);
+            Directory.CreateDirectory(buildDirectory);
+            Directory.CreateDirectory(inputDirectory);
 
             Console.WriteLine("HelloWorld");
 
