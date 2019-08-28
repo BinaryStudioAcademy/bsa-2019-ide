@@ -1,38 +1,38 @@
 <div class="top-panel p-grid p-nogutter">
-  <div class="p-col-12">
-    <button pButton routerLink="/workspace/{{project.id}}" type="button" iconPos="left" icon="pi pi-arrow-left"
-      class="ui-button-raised" label="Go to workspace">
-    </button>
-  </div>
+    <div class="p-col-12">
+        <button pButton routerLink="/workspace/{{project.id}}" type="button" iconPos="left" icon="pi pi-arrow-left"
+            class="ui-button-raised" label="Go to workspace">
+        </button>
+    </div>
 </div>
 <div class="project-tab-menu-wrapper">
-  <p-tabView orientation="left">
-    <p-tabPanel header="Details" leftIcon="pi pi-info-circle">
-      <app-project-details-info [project]="project"></app-project-details-info>
-    </p-tabPanel>
-    <p-tabPanel header="Collaborators" leftIcon="pi pi-comment" class="collaborator">
-      <div class="project-description">
-        <div class="card">
-          <app-add-collaborators [projectId]="projectId"></app-add-collaborators>
-        </div>
-      </div>
-    </p-tabPanel>
-    <p-tabPanel header="Build results" leftIcon="pi pi-eye">
-      Here will be build results
-    </p-tabPanel>
-    <p-tabPanel header="Artifacts" leftIcon="pi pi-cloud-download">
-      Here will be artifacts(list of zip builds)
-    </p-tabPanel>
-    <p-tabPanel header="User statistics" leftIcon="pi pi-chart-bar">
-      <app-project-details-user-statistics [project]="project"></app-project-details-user-statistics>
-    </p-tabPanel>
-    <p-tabPanel header="Git Credentials" leftIcon="pi pi-sitemap">
-      Here will be git url <address></address>
-    </p-tabPanel>
-    <p-tabPanel header="History of changes" leftIcon="pi pi-list">
-        <app-history-changes [projectId]="project.id"></app-history-changes>
-    </p-tabPanel>
-  </p-tabView>
+    <p-tabView orientation="left">
+        <p-tabPanel header="Details" leftIcon="pi pi-info-circle">
+            <app-project-details-info [project]="project"></app-project-details-info>
+        </p-tabPanel>
+        <p-tabPanel header="Collaborators" leftIcon="pi pi-comment" class="collaborator">
+            <div class="project-description">
+                <div class="card">
+                    <app-add-collaborators [projectId]="projectId"></app-add-collaborators>
+                </div>
+            </div>
+        </p-tabPanel>
+        <p-tabPanel header="Build results" leftIcon="pi pi-eye">
+            <app-user-build-history [projectId]="projectId" class="builds-tab"></app-user-build-history>
+        </p-tabPanel>
+        <p-tabPanel header="Artifacts" leftIcon="pi pi-cloud-download">
+            Here will be artifacts(list of zip builds)
+        </p-tabPanel>
+        <p-tabPanel header="User statistics" leftIcon="pi pi-chart-bar">
+            <app-project-details-user-statistics [project]="project"></app-project-details-user-statistics>
+        </p-tabPanel>
+        <p-tabPanel header="Git Credentials" leftIcon="pi pi-sitemap">
+            Here will be git url <address></address>
+        </p-tabPanel>
+        <p-tabPanel header="History of changes" leftIcon="pi pi-list">
+            <app-history-changes [projectId]="project.id"></app-history-changes>
+        </p-tabPanel>
+    </p-tabView>
 </div>
 
 <!--

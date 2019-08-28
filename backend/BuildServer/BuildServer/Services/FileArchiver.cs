@@ -17,10 +17,6 @@ namespace BuildServer.Services
             _outputDirectory = configuration.GetSection("OutputDirectory").Value;
             _buildDirectory = configuration.GetSection("BuildDirectory").Value;
             _inputDirectory = configuration.GetSection("InputDirectory").Value;
-            Directory.CreateDirectory(_outputDirectory);
-            Directory.CreateDirectory(_buildDirectory);
-            Directory.CreateDirectory(_inputDirectory);
-
         }
 
         public void CreateArchive(string project)

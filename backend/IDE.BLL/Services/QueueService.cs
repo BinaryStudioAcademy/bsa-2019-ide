@@ -5,7 +5,6 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Shared.Interfaces;
 using RabbitMQ.Shared.Settings;
-using System.Diagnostics;
 using System.Text;
 
 namespace IDE.BLL.Services
@@ -49,25 +48,20 @@ namespace IDE.BLL.Services
 
         private void MessageConsumer_Received(object sender, BasicDeliverEventArgs e)
         {
-            //just make sure that receiving works. Will be removed
             var message = Encoding.UTF8.GetString(e.Body);
-            Debug.WriteLine($"--------------------------------------------------{message} receiwed");
-
-            _messageConsumerScope.MessageConsumer.SetAcknowledge(e.DeliveryTag, true);
-
             var notification = new NotificationDTO()
             {
                 Message = message
             };
-
-            _notificationService.SendNotification(31, notification);
+            //BUG: Send here real projectId instead hardcoded data
+            _notificationService.SendNotification(21, notification);
+            _messageConsumerScope.MessageConsumer.SetAcknowledge(e.DeliveryTag, true);
         }
 
         public bool SendMessage(string value, int projectId)
         {
             try
             {
-                //here will be sent build params to build server
                 _messageProducerScope.MessageProducer.Send(value);
                 return true;
             }

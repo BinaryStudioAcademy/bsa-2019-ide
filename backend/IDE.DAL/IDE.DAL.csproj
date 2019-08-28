@@ -65,6 +65,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IDE.Common\IDE.Common.csproj" />
+    <ProjectReference Include="..\Storage\Storage.csproj" />
   </ItemGroup>
 
   
