@@ -13,6 +13,7 @@ import {TabMenuModule} from 'primeng/tabmenu';
 import { ContextMenuModule, MenuModule } from 'primeng/primeng';
 import { FileInfoComponent } from './file-info/file-info.component';
 import {ProgressBarModule} from 'primeng/progressbar';
+import {OrderListModule} from 'primeng/orderlist';
 import { EditorSettingsComponent } from '../editor/components/editor-settings/editor-settings.component';
 
 @NgModule({
@@ -34,6 +35,8 @@ import { EditorSettingsComponent } from '../editor/components/editor-settings/ed
     TabMenuModule,
     MenuModule,
     ContextMenuModule,
+    ProgressBarModule,
+    OrderListModule,
     ProgressBarModule
   ],
   entryComponents: [

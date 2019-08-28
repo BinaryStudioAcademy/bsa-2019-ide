@@ -184,7 +184,7 @@ export class EditorSettingsComponent implements OnInit {
             scrollBeyondLastLine: this.editorSettingsForm.get('scrollBeyondLastLine').value,
             tabSize: this.editorSettingsForm.get('tabSize').value,
             cursorStyle: this.editorSettingsForm.get('cursorStyle').value,
-            language: this.project.language.toString().toLowerCase()
+            language: null //this.project.language.toString().toLowerCase()
         }
         if (this.config.data) {
             this.project.editorProjectSettings = this.settingsUpdate;
