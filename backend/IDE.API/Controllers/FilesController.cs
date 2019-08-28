@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 namespace IDE.API.Controllers
 {
     [Route("[controller]")]
-    [Authorize] // TODO: use after authorization launch
+    [Authorize]
     [ApiController]
     public class FilesController : ControllerBase
     {
@@ -44,9 +44,7 @@ namespace IDE.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] FileCreateDTO fileCreateDTO)
         {
-            var authorId = this.GetUserIdFromToken();
-            var creatorId = authorId;
-
+            var creatorId = this.GetUserIdFromToken();
             var createdFile = await _fileService.CreateAsync(fileCreateDTO, creatorId);
             _logger.LogInformation(LoggingEvents.InsertItem, $"Created file {createdFile.Id}");
             return CreatedAtAction(nameof(GetByIdAsync), new { id = createdFile.Id }, createdFile);

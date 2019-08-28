@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
 using IDE.Common.DTO.File;
+using IDE.DAL.Entities.Elastic;
+using IDE.DAL.Entities.NoSql;
+using IDE.DAL.Interfaces;
+using IDE.DAL.Repositories;
 using IDE.Common.ModelsDTO.Enums;
 using IDE.Common.ModelsDTO.DTO.File;
 using IDE.DAL.Entities.NoSql;
@@ -18,18 +22,21 @@ namespace IDE.BLL.Services
     public class FileService
     {
         private readonly INoSqlRepository<File> _fileRepository;
+        private readonly FileSearchRepository _fileSearchRepository;
         private readonly FileHistoryService _fileHistoryService;
         private readonly UserService _userService;
         private readonly IMapper _mapper;
         private readonly ILogger<FileService> _logger;
         public FileService(
-            INoSqlRepository<File> fileRepository, 
+            INoSqlRepository<File> fileRepository,
+            FileSearchRepository fileSearchRepository,
             FileHistoryService fileHistoryService, 
             UserService userService,
             IMapper mapper,
             ILogger<FileService> logger)
         {
             _fileRepository = fileRepository;
+            _fileSearchRepository = fileSearchRepository;
             _fileHistoryService = fileHistoryService;
             _userService = userService;
             _mapper = mapper;
@@ -81,7 +88,7 @@ namespace IDE.BLL.Services
 
         public async Task<int> GetFileSize(string id)
         {
-            var file = await this.GetByIdAsync(id);
+            var file = await GetByIdAsync(id);
             return file.Content.Length;
         }
 
@@ -91,6 +98,9 @@ namespace IDE.BLL.Services
             fileCreate.CreatedAt = DateTime.Now;
             fileCreate.CreatorId = creatorId;
             var createdFile = await _fileRepository.CreateAsync(fileCreate);
+
+            var searchFile = _mapper.Map<FileSearch>(createdFile);
+            await _fileSearchRepository.IndexAsync(searchFile);
 
             var fileHistory = new FileHistoryDTO
             {
@@ -117,7 +127,10 @@ namespace IDE.BLL.Services
 
             var fileUpdate = _mapper.Map<File>(currentFileDto);
             await _fileRepository.UpdateAsync(fileUpdate);
-                                 
+
+            var searchFile = _mapper.Map<FileSearch>(fileUpdate);
+            await _fileSearchRepository.UpdateAsync(searchFile);
+
             var fileHistory = new FileHistoryDTO
             {
                 FileId = fileUpdateDTO.Id,
@@ -166,6 +179,8 @@ namespace IDE.BLL.Services
             }
 
             await _fileRepository.DeleteAsync(id);
+
+            await _fileSearchRepository.DeleteAsync(id);
         }
 
         private async Task AddToFileLinkedItems(FileDTO file)
