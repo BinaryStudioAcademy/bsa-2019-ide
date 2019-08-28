@@ -1,0 +1,6 @@
+<div class="user-build-history-content">
+    <h2 class="title"> Build results: </h2>
+    <div *ngFor="let build of builds">
+        <app-build-history-tab class="build-card" [build]="build"></app-build-history-tab>
+    </div>
+</div>

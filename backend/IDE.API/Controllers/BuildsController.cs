@@ -20,10 +20,10 @@ namespace IDE.API.Controllers
             _buildService = buildService;
         }
 
-        [HttpGet("{userId}")]
-        public async Task<ActionResult<IEnumerable<BuildDTO>>> GetBuildsByUserId(int userId)
+        [HttpGet("{projectId}")]
+        public async Task<ActionResult<IEnumerable<BuildDTO>>> GetBuildsByProjectId(int projectId)
         {
-            return Ok(await _buildService.GetBuildsByUserId(userId));
+            return Ok(await _buildService.GetBuildsByProjectId(projectId));
         }
     }
 }

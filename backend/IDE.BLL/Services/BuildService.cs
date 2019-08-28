@@ -40,10 +40,10 @@ namespace IDE.BLL.Services
             _queueService.SendMessage($"project_{projectId}_for_build_{1}", projectId);
         }
 
-        public async Task<IEnumerable<BuildDescriptionDTO>> GetBuildsByUserId(int userId)
+        public async Task<IEnumerable<BuildDescriptionDTO>> GetBuildsByProjectId(int projectId)
         {
             var builds = await _context.Builds
-                .Where(item => item.UserId == userId)
+                .Where(item => item.ProjectId == projectId)
                 .Include(item=>item.Project)
                 .Include(item => item.User)
                 .Select(item=>_mapper.Map<BuildDescriptionDTO>(item))

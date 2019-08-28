@@ -8,6 +8,6 @@ namespace IDE.BLL.Interfaces
     public interface IBuildService
     {
         Task BuildDotNetProject(int projectId);
-        Task<IEnumerable<BuildDescriptionDTO>> GetBuildsByUserId(int userId);
+        Task<IEnumerable<BuildDescriptionDTO>> GetBuildsByProjectId(int userId);
     }
 }

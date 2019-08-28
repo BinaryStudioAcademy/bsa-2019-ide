@@ -1,6 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ProjectDescriptionDTO } from 'src/app/models/DTO/Project/projectDescriptionDTO';
-import { BuildDTO } from 'src/app/models/DTO/Common/buildDTO';
 import { BuildService } from 'src/app/services/build.service/build.service';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { BuildDescriptionDTO } from 'src/app/models/DTO/Common/buildDescriptionDTO';
@@ -12,18 +11,16 @@ import { BuildDescriptionDTO } from 'src/app/models/DTO/Common/buildDescriptionD
 })
 export class UserBuildHistoryComponent implements OnInit {
 
-
+    @Input()
+    public projectId: number;
     public userProjects: ProjectDescriptionDTO[];
     public builds: BuildDescriptionDTO[] = [];
-    public userId: number;
     constructor(
-        private buildService: BuildService,
-        private tokenService: TokenService
+        private buildService: BuildService
     ) { }
 
     ngOnInit() {
-        this.userId = this.tokenService.getUserId();
-        this.buildService.GetBuildsByUserId(this.userId)
+        this.buildService.GetBuildsByProjectId(this.projectId)
             .subscribe(
                 (resp) => {
                     console.log(resp.body);

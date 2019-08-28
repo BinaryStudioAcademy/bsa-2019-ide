@@ -16,7 +16,7 @@ export class BuildService {
         private http: HttpClientWrapperService
     ) { }
   
-    public GetBuildsByUserId(userId: number): Observable<HttpResponse<BuildDescriptionDTO[]>>{
-        return this.http.getRequest(this.address+"/"+userId);
+    public GetBuildsByProjectId(projectId: number): Observable<HttpResponse<BuildDescriptionDTO[]>>{
+        return this.http.getRequest(this.address+"/"+projectId);
     }
 }
