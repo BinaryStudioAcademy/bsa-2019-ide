@@ -31,6 +31,7 @@ import { BuildService } from 'src/app/services/build.service';
 import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { element } from 'protractor';
+import { ConcatSource } from 'webpack-sources';
 
 @Component({
     selector: 'app-workspace-root',
@@ -180,13 +181,15 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                         const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, isOpen, updaterId, updater, language };
                         var new_str = name.substring(name.indexOf('.')+1, name.length);
                         this.editor.AddFileToOpened(fileUpdateDTO);
-                        if (!fileUpdateDTO.isOpen && this.project.accessModifier == 0) {
+                        console.log(fileUpdateDTO);
+                        console.log(this.project.accessModifier);
+                        if (!fileUpdateDTO.isOpen && this.project.accessModifier == 1) {
                             fileUpdateDTO.isOpen = true;
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
                             this.editor.monacoOptions.readOnly = false;
                         }
-                        else if (this.project.accessModifier == 0) {
+                        else if (this.project.accessModifier == 1) {
                             this.editor.monacoOptions.readOnly = true;
                         }
                         else {
