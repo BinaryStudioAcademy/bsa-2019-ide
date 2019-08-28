@@ -1,7 +1,7 @@
 ﻿using BuildServer.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Storage.Interfaces;
-using System.IO;
+using System;
 using System.Threading.Tasks;
 
 namespace BuildServer.Services
@@ -20,14 +20,14 @@ namespace BuildServer.Services
             _inputDirectory = configuration.GetSection("InputDirectory").Value;
         }
 
-        public async Task Upload(string fileName)
+        public async Task<Uri> Upload(string fileName)
         {
-            _ = await _blobRepository.UploadFileFromPathOnServer($"{_outputDirectory}{fileName}.zip", "Artifacts");
+            return await _blobRepository.UploadArtifactFromPathOnServer($"{_outputDirectory}{fileName}.zip");
         }
 
-        public async Task Download(string fileName)
+        public async Task Download(Uri downloadUri, string fileName)
         {
-            await _blobRepository.DownloadOnDiskAsync($"{fileName}.zip", $"{_inputDirectory}{fileName}.zip").ConfigureAwait(false);
+            await _blobRepository.DownloadFileByUrlAsync(downloadUri, $"{_inputDirectory}{fileName}.zip");
         }
     }
 }
