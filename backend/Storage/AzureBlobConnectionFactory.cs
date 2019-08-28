@@ -18,14 +18,14 @@ namespace Storage
             _configuration = configuration;
         }
 
-        public async Task<CloudBlobContainer> GetArchiveArtifactsBlobContainer()
+        public async Task<CloudBlobContainer> GetArtifactsBlobContainer()
         {
-            return await GetBlobContainer("ArchiveArtifactsContainerName").ConfigureAwait(false);
+            return await GetBlobContainer("ArtifactsContainer").ConfigureAwait(false);
         }
 
-        public async Task<CloudBlobContainer> GetDownloadedProjectZipsBlobContainer()
+        public async Task<CloudBlobContainer> GetProjectZipsBlobContainer()
         {
-            return await GetBlobContainer("DownloadProjectZipContainer").ConfigureAwait(false);
+            return await GetBlobContainer("ProjectsArchiveContainer").ConfigureAwait(false);
         }
 
         public async Task<CloudBlobContainer> GetBlobContainer(string containerNameKey)

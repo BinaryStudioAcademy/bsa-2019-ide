@@ -5,8 +5,8 @@ namespace Storage.Interfaces
 {
     public interface IAzureBlobConnectionFactory
     {
-        Task<CloudBlobContainer> GetArchiveArtifactsBlobContainer();
-        Task<CloudBlobContainer> GetDownloadedProjectZipsBlobContainer();
+        Task<CloudBlobContainer> GetArtifactsBlobContainer();
+        Task<CloudBlobContainer> GetProjectZipsBlobContainer();
         Task<CloudBlobContainer> GetBlobContainer(string containerNameKey);
     }
 }
