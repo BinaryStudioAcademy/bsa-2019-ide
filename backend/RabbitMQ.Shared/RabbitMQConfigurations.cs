@@ -13,14 +13,7 @@ namespace RabbitMQ.Shared
     {
         public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IMessageQueue, MessageQueue>();
-
-            services.AddScoped<IMessageProducer, MessageProducer>();
-            services.AddScoped<IMessageProducerScope, MessageProducerScope>();
             services.AddSingleton<IMessageProducerScopeFactory, MessageProducerScopeFactory>();
-
-            services.AddScoped<IMessageConsumer, MessageConsumer>();
-            services.AddScoped<IMessageConsumerScope, MessageConsumerScope>();
             services.AddSingleton<IMessageConsumerScopeFactory, MessageConsumerScopeFactory>();
 
             RegisterConnectionFactory(services, configuration);
