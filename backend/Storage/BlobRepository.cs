@@ -1,13 +1,12 @@
-﻿using IDE.DAL.Factories.Abstractions;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Storage.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using IDE.DAL.Interfaces;
 
-namespace IDE.DAL.Repositories
+namespace Storage
 {
     public class ArchivesBlobRepository : IBlobRepository
     {
@@ -36,6 +35,17 @@ namespace IDE.DAL.Repositories
 
             await blob.DownloadToStreamAsync(memStream).ConfigureAwait(false);
             return memStream;
+        }
+
+        public async Task DownloadOnDiskAsync(string blobFileName, string destinationFileName)
+        {
+            var blobContainer = await _connectionFactory.GetDownloadedProjectZipsBlobContainer();
+            var dir = blobContainer.GetDirectoryReference($"projectsToBuild");
+            var blockBlob = dir.GetBlockBlobReference(blobFileName);
+            using (var fileStream = File.OpenWrite(destinationFileName))
+            {
+                await blockBlob.DownloadToStreamAsync(fileStream).ConfigureAwait(false);
+            }
         }
 
         public async Task<MemoryStream> DownloadFileAsync(string fileUri, string containerName)
@@ -106,13 +116,13 @@ namespace IDE.DAL.Repositories
             return blob.Uri;
         }
 
-        public async Task<Uri> UploadFileFromPathOnServer(string path)
+        public async Task<Uri> UploadFileFromPathOnServer(string path, string directoryName)
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException();
 
             var blobContainer = await _connectionFactory.GetDownloadedProjectZipsBlobContainer();
-            var dir = blobContainer.GetDirectoryReference($"projectArch");
+            var dir = blobContainer.GetDirectoryReference(directoryName);
             var fileName = Path.GetFileName(path);
             var blob = dir.GetBlockBlobReference(fileName);
             blob.Properties.ContentType = "application/zip";

@@ -1,5 +1,5 @@
 ﻿using IDE.BLL.Interfaces;
-using IDE.DAL.Interfaces;
+using Storage.Interfaces;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Services

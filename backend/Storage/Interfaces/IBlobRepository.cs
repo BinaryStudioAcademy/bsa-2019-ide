@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace IDE.DAL.Interfaces
+namespace Storage.Interfaces
 {
     public interface IBlobRepository
     {
@@ -14,6 +14,7 @@ namespace IDE.DAL.Interfaces
         Task<MemoryStream> DownloadFileAsync(string fileUri);
         Task<MemoryStream> DownloadFileAsync(string fileUri, string containerName);
         Task DeleteAsync(string fileUri);
-        Task<Uri> UploadFileFromPathOnServer(string path);
+        Task<Uri> UploadFileFromPathOnServer(string pathm, string directoryName);
+        Task DownloadOnDiskAsync(string blobFileName, string destinationFileName);
     }
 }
