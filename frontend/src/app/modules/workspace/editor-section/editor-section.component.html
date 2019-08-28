@@ -2,10 +2,10 @@
     <p-tabMenu [model]="tabs" [activeItem]="activeItem">
         <ng-template pTemplate="item" let-item let-i="index">
             <div class="tab-item" (click)="onTabSelect($event, i)">
-                <div class="tab-icon" [ngClass]="item.icon" *ngIf="item.icon"></div>
-                <div class="tab-text">
-                    {{item.label}}
+                <div class="tab-icon">
+                    <span [ngClass]="item.icon" *ngIf="item.icon"></span>
                 </div>
+                <div class="tab-text">{{item.label}}</div>
                 <a tabindex="0" class="tab-close" (click)="closeItem($event, i)">
                     <span class="pi pi-times"></span>
                 </a>

@@ -10,29 +10,37 @@
 ::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem,
 ::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem:not(.ui-state-active):not(.ui-state-disabled):hover
     border: none
-    background-color: #4a4a4a
+    background-color: #dee1e6
 
 ::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem.ui-state-active
     border: none
-    background-color: #000
+    background-color: #fff
 
 
 .tab-item
     display: flex
     align-items: center
+    padding: 2px 4px
 
 .tab-icon
     font-size: 0.8rem
-    color: #cfcfcf
+    color: #000
+    display: flex
+    justify-content: center 
 
 .tab-text
     font-size: 0.8rem
     padding: 0 4px 0 4px
-    color: #cfcfcf
+    color: #000
 
 .tab-close
     padding: 0
-    color: #cfcfcf
+    color: #000
+    display: flex
+    justify-content: center
+
+.tab-close:hover
+    color: #f00
 
 .tab-close .pi
     font-size: 1rem
