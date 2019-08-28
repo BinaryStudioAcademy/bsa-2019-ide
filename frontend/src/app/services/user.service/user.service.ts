@@ -40,8 +40,12 @@ export class UserService {
         return this.httpService.getRequest<UserDetailsDTO>(`${this.routePrefix}/${id}`);
     }
 
-    public updateUser(user: UserUpdateDTO) {
+    public updateUser(user: UserDTO) {
         return this.httpService.putRequest<UserDTO>(`${this.routePrefix}`, user);
+    }
+
+    public updateProfile(user: UserUpdateDTO){
+        return this.httpService.putRequest<UserUpdateDTO>(`${this.routePrefix}/profile`, user);
     }
 
     public confirmEmail(token: VerificationTokenDTO) {

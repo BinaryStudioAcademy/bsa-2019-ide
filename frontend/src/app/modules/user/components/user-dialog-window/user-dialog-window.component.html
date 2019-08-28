@@ -20,7 +20,7 @@
             <div *ngIf="isUpdateInfo()">
 
             <!-- User FirstName -->
-            <div class="label">FirstName</div>
+            <div class="label">First name</div>
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
                     <div class="ui-inputgroup">
@@ -29,10 +29,10 @@
                 </div>
             </div>
 
-            <div class="invalid" *ngIf="userForm.get('firstName').invalid && userForm.get('firstName').dirty">Invalid firstName</div>
+            <div class="invalid" *ngIf="userForm.get('firstName').invalid && userForm.get('firstName').dirty">Invalid first name</div>
 
             <!-- User LastName -->
-            <div class="label">LastName</div>
+            <div class="label">Last name</div>
                 <div class="ui-g ui-fluid">
                     <div class="ui-g-12">
                         <div class="ui-inputgroup">
@@ -41,32 +41,44 @@
                     </div>
                 </div>
 
-                <div class="invalid" *ngIf="userForm.get('lastName').invalid && userForm.get('lastName').dirty">Invalid lastName</div>
+                <div class="invalid" *ngIf="userForm.get('lastName').invalid && userForm.get('lastName').dirty">Invalid last name</div>
 
             <!-- User NickName -->
-            <div class="label">NickName</div>
+            <div class="label">Nickname</div>
                 <div class="ui-g ui-fluid">
                     <div class="ui-g-12">
                         <div class="ui-inputgroup">
-                            <input type="text" pInputText pKeyFilter="alphanum" formControlName="nickName" placeholder="nickName">
+                            <input type="text" pInputText pKeyFilter="alphanum" formControlName="nickName" placeholder="nickname">
                         </div>
                     </div>
                 </div>
 
-                <div class="invalid" *ngIf="userForm.get('nickName').invalid && userForm.get('nickName').dirty">Invalid nickName</div>
+                <div class="invalid" *ngIf="userForm.get('nickName').invalid && userForm.get('nickName').dirty">Invalid nickname</div>
 
             <!-- User GitHub -->
-            <div class="label">GitHubUrl</div>
+            <div class="label">Github url</div>
                 <div class="ui-g ui-fluid">
                     <div class="ui-g-12">
                         <div class="ui-inputgroup">
-                            <input type="text" pInputText pKeyFilter="alphanum" formControlName="gitHubUrl" placeholder="gitHubUrl">
+                            <input type="text" pInputText pKeyFilter="alphanum" formControlName="gitHubUrl" placeholder="github url">
                         </div>
                     </div>
                 </div>
 
                 <div class="invalid" *ngIf="userForm.get('gitHubUrl').invalid && userForm.get('gitHubUrl').dirty">Invalid GitHubUrl</div>
 
+
+            <!-- User Birthday -->
+            <div *ngIf="true" class="label">Birthday</div>
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12">
+                        <div class="ui-inputgroup">
+                            <p-calendar formControlName="birthday" [monthNavigator]="true" [yearNavigator]="true" yearRange="1960:2002"></p-calendar>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="invalid" *ngIf="userForm.get('birthday').invalid && userForm.get('birthday').dirty">Please, input your birthday</div>
 
             </div>
 
