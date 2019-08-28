@@ -1,4 +1,6 @@
 ﻿using IDE.BLL.Interfaces;
+using Newtonsoft.Json;
+using RabbitMQ.Shared.ModelsDTO;
 using Storage.Interfaces;
 using System.Threading.Tasks;
 
@@ -23,8 +25,14 @@ namespace IDE.BLL.Services
         public async Task BuildDotNetProject(int projectId)
         {
             var archive = await _projectStructureService.CreateProjectZipFile(projectId);
-            var uri = await _blobRepo.UploadAsync(archive, projectId, 1);
-            _queueService.SendMessage($"project_{projectId}_for_build_{1}", projectId);
+            var uri = await _blobRepo.UploadProjectArchiveAsync(archive, $"project_{projectId}");
+            var message = new ProjectForBuildDTO()
+            {
+                ProjectId = projectId,
+                UriForProjectDownload = uri
+            };
+            var strMessage = JsonConvert.SerializeObject(message);
+            _queueService.SendMessage(strMessage);
         }
     }
 }
