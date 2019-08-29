@@ -5,7 +5,7 @@ import { HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DialogService, TreeNode } from 'primeng/api';
 import { FileInfoComponent } from '../modules/workspace/file-info/file-info.component';
-
+import { ImportFileComponent } from '../modules/workspace/import-file/import-file.component';
 
 @Injectable({
     providedIn: 'root'
@@ -26,6 +26,10 @@ export class FileBrowserService {
         return this.httpClient.putRequest(this.address, projectStructure);
     }
 
+    public importFile(body) : Observable<HttpResponse<any>>{
+            return this.httpClient.postRequest(`${this.address}import`, body)
+        }
+
     public OpenModalWindow(node: TreeNode, projectId: string)
     {
         const dialog = this.dialogService.open(FileInfoComponent,{
@@ -42,4 +46,21 @@ export class FileBrowserService {
             showHeader : false
         });
     }
+
+    public OpenImportModalWindow(node: TreeNode, projectId: string){
+        const dialog = this.dialogService.open(ImportFileComponent, {
+            data:
+            {
+                node,
+                projectId
+            },
+            width: '30%',
+            contentStyle: {
+              'border-radius' : '5px',
+              'padding': '2%'
+            },
+            showHeader : false
+        })
+    }
+
 }

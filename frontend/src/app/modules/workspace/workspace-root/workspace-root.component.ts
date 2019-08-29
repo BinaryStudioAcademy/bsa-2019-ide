@@ -238,9 +238,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public expand() {
-        this.eventsSubject.next()
+        this.eventsSubject.next();
     }
 
+    public refresh(){
+        this.fileBrowser.ngOnInit();
+    }
+    
     private saveFilesRequest(files?: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
         if (!files) {
             files = this.editor.openedFiles.map(x => x.innerFile);
