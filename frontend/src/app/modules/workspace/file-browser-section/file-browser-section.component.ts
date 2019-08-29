@@ -24,6 +24,11 @@ import { SearchFileService } from 'src/app/services/search-file.service/search-f
 import { FileSearchResultDTO } from 'src/app/models/DTO/File/fileSearchResultDTO';
 import { Observable } from 'rxjs';
 
+export interface SelectedFile {
+    fileId: string;
+    fileIcon: string;
+}
+
 @Component({
     selector: 'app-file-browser-section',
     templateUrl: './file-browser-section.component.html',
@@ -32,7 +37,7 @@ import { Observable } from 'rxjs';
 export class FileBrowserSectionComponent implements OnInit {
     @Input() project: ProjectInfoDTO;
     @Input() showSearchField:boolean;
-    @Output() fileSelected = new EventEmitter<string>();
+    @Output() fileSelected = new EventEmitter<SelectedFile>();
     @Output() renameFile = new EventEmitter<FileRenameDTO>();
     @Input() events: Observable<void>;
     
@@ -463,7 +468,8 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     onFileResultSelected(evt) {
-        this.fileSelected.emit(evt.value[0].fileId);
+        const selectedFile: SelectedFile = {fileId: evt.value[0].fileId, fileIcon: 'fa fa-fw fa-file'};
+        this.fileSelected.emit(selectedFile);
     }
 
     private expandRecursive(node:TreeNode, isExpand:boolean){
@@ -491,7 +497,8 @@ export class FileBrowserSectionComponent implements OnInit {
         this.cacheElement(evt);
         const nodeSelected: TreeNode = evt.node;
         if (nodeSelected.type === TreeNodeType.file.toString()) {
-            this.fileSelected.emit(nodeSelected.key);
+            const selectedFile: SelectedFile = {fileId: nodeSelected.key, fileIcon: nodeSelected.icon};
+            this.fileSelected.emit(selectedFile);
         }
     }
 
