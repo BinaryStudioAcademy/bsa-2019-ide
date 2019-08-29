@@ -26,10 +26,6 @@ export class FileBrowserService {
         return this.httpClient.putRequest(this.address, projectStructure);
     }
 
-    public importFile(body) : Observable<HttpResponse<any>>{
-            return this.httpClient.postRequest(`${this.address}import`, body)
-        }
-
     public OpenModalWindow(node: TreeNode, projectId: string)
     {
         const dialog = this.dialogService.open(FileInfoComponent,{

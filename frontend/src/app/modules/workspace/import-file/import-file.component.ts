@@ -3,6 +3,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/api';
 import { ToastrService } from 'ngx-toastr';
 import { FileBrowserService } from 'src/app/services/file-browser.service';
 import { ImportProjectDTO } from 'src/app/models/DTO/Workspace/importProjectDTO';
+import { ProjectStructureService } from 'src/app/services/project-structure/project-structure.service';
 
 @Component({
   selector: 'app-import-file',
@@ -23,7 +24,7 @@ export class ImportFileComponent implements OnInit {
         private config: DynamicDialogConfig,
         private ref: DynamicDialogRef,
         private toastr: ToastrService,
-        private fileBrowserService: FileBrowserService) {
+        private projectStructure: ProjectStructureService) {
     }
 
     ngOnInit() {
@@ -65,7 +66,7 @@ export class ImportFileComponent implements OnInit {
         formData.append('parentNodeIds', JSON.stringify(this.listOfParents));
         formData.append("file", fileToUpload);                
 
-        this.fileBrowserService.importFile(formData)
+        this.projectStructure.importFile(formData)
             .subscribe(response =>{
                 this.toastr.success('File uploaded successfully');
                 this.hasDetailsSaveResponse = true;
