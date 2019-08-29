@@ -1,7 +1,7 @@
 <div class="top-panel p-grid p-nogutter">
     <div class="hor-navbar p-col-12">
         <button pButton *ngIf="canRun || isAuthor()" type="button" icon="pi pi-play" iconPos="left"
-            class="ui-button-secondary" label="Run"></button>
+            class="ui-button-secondary" label="Run" (click)="onRun()"></button>
         <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-arrow-down" iconPos="left"
             class="ui-button-secondary" label="Build" (click)="onBuild()"></button>
         <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onFilesSave()" icon="pi pi-save" iconPos="left"
