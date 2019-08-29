@@ -61,6 +61,14 @@ namespace IDE.BLL.Services
                 await _buildService.BuildDotNetProject(projectId);
         }
 
+        public async Task RunProject(int projectId, string connectiondId)
+        {
+            var project = _context.Projects.FirstOrDefault(p => p.Id == projectId);
+            if (project == null)
+                return;
+            if (project.Language == Language.CSharp)
+                await _buildService.RunDotNetProject(projectId, connectiondId);
+        }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
         public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)
