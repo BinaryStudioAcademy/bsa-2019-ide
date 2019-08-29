@@ -1,21 +1,17 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
 using IDE.Common.DTO.File;
+using IDE.Common.ModelsDTO.DTO.File;
+using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Entities.Elastic;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
 using IDE.DAL.Repositories;
-using IDE.Common.ModelsDTO.Enums;
-using IDE.Common.ModelsDTO.DTO.File;
-using IDE.DAL.Entities.NoSql;
-using IDE.DAL.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
-using MongoDB.Driver;
-using MongoDB.Bson;
+using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
 {
