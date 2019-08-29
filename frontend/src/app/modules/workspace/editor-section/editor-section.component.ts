@@ -25,6 +25,7 @@ export class EditorSectionComponent implements OnInit {
     public tabs = [] as MenuItem[]; // maybe reneme on "tab"
     public activeItem: MenuItem;
     public openedFiles = [] as TabFileWrapper[];
+    public language:string;
     @Input() canEdit: boolean;
 
     code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
@@ -41,6 +42,7 @@ export class EditorSectionComponent implements OnInit {
                 touchedFile.isChanged = true;
                 touchedFile.innerFile.content = this.code;
             }
+            this.monacoOptions.language = this.language;
         }
     }
 
@@ -65,8 +67,8 @@ export class EditorSectionComponent implements OnInit {
     public onTabSelect(evt, index) {
         this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
-        var language = this.openedFiles[index].innerFile.language;
-        this.monacoOptions.language = language;
+        this.language = this.openedFiles[index].innerFile.language;
+        
     }
 
     public saveFiles(files: FileUpdateDTO[]) {
