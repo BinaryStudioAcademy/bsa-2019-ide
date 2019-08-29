@@ -179,25 +179,27 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                     if (resp.ok) {
                         const { id, name, content, folder, updaterId, isOpen, updater, language } = resp.body as FileDTO;
                         const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, isOpen, updaterId, updater, language };
-                        var new_str = name.substring(name.indexOf('.')+1, name.length);
+                        var tabName=name;
                         this.editor.AddFileToOpened(fileUpdateDTO);
-                        console.log(fileUpdateDTO);
-                        console.log(this.project.accessModifier);
-                        if (!fileUpdateDTO.isOpen && this.project.accessModifier == 1) {
+                        if (!fileUpdateDTO.isOpen) {
                             fileUpdateDTO.isOpen = true;
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
                             this.editor.monacoOptions.readOnly = false;
+                            this.fileBrowser.selectedItem.label=tabName;
                         }
                         else if (this.project.accessModifier == 1) {
-                            this.editor.monacoOptions.readOnly = true;
-                        }
-                        else {
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
                             this.editor.monacoOptions.readOnly = false;
+                            tabName+=" (editing...)";
+                            this.fileBrowser.selectedItem.label+=" (editing...)";
                         }
-                        this.editor.tabs.push({ label: name, icon: selectedFile.fileIcon,  id: id });
+                        else {
+                            
+                            this.editor.monacoOptions.readOnly = true;
+                        }
+                        this.editor.tabs.push({ label: tabName, icon: selectedFile.fileIcon,  id: id });
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
                         this.editor.code = content;
                     } else {

@@ -37,7 +37,7 @@ export class EditorSectionComponent implements OnInit {
     onChange(ev) {
         if (!this.canEdit) {
             const touchedFile = this.getFileFromActiveItem(this.activeItem);
-            if (!touchedFile.innerFile.isOpen) {
+            if (!this.monacoOptions.readOnly) {
                 touchedFile.isChanged = true;
                 touchedFile.innerFile.content = this.code;
             }
