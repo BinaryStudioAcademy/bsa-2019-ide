@@ -8,13 +8,12 @@ namespace Storage.Interfaces
 {
     public interface IBlobRepository
     {
-        Task<Uri> UploadAsync(IFormFile file, int projectId, int buildId);
-        Task<Uri> UploadAsync(byte[] file, int projectId, int buildId);
+        Task<Uri> UploadProjectArchiveAsync(byte[] file, string destinationFileNameSufix);
+        Task<Uri> UploadArtifactArchiveAsync(byte[] file, string destinationFileNameSufix);
+        Task<Uri> UploadArtifactFromPathOnServer(string path);
+        Task DownloadFileByUrlAsync(Uri fileUri, string destinationFileName);
         Task<IEnumerable<Uri>> ListAsync(int projectId);
-        Task<MemoryStream> DownloadFileAsync(string fileUri);
         Task<MemoryStream> DownloadFileAsync(string fileUri, string containerName);
         Task DeleteAsync(string fileUri);
-        Task<Uri> UploadFileFromPathOnServer(string pathm, string directoryName);
-        Task DownloadOnDiskAsync(string blobFileName, string destinationFileName);
     }
 }

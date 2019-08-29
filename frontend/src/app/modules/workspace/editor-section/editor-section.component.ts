@@ -18,7 +18,7 @@ export class EditorSectionComponent implements OnInit {
 
     @Input() public monacoOptions: EditorSettingDTO;
     @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
-    
+
 
     // FOR REFACTOR
     // think about agregaiting of TabFileWrapper(openedFiles) with MenuItem(tabs)
@@ -37,8 +37,10 @@ export class EditorSectionComponent implements OnInit {
     onChange(ev) {
         if (!this.canEdit) {
             const touchedFile = this.getFileFromActiveItem(this.activeItem);
-            touchedFile.isChanged = true;
-            touchedFile.innerFile.content = this.code;
+            if (!touchedFile.innerFile.isOpen) {
+                touchedFile.isChanged = true;
+                touchedFile.innerFile.content = this.code;
+            }
         }
     }
 
@@ -63,9 +65,8 @@ export class EditorSectionComponent implements OnInit {
     public onTabSelect(evt, index) {
         this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
-        var language=this.openedFiles[index].innerFile.language;
-        console.log(language);
-        this.monacoOptions.language=language;
+        var language = this.openedFiles[index].innerFile.language;
+        this.monacoOptions.language = language;
     }
 
     public saveFiles(files: FileUpdateDTO[]) {
@@ -75,7 +76,7 @@ export class EditorSectionComponent implements OnInit {
     public AddFileToOpened(file: FileUpdateDTO) {
         const fileWrapper: TabFileWrapper = { isChanged: false, innerFile: file }
         this.openedFiles.push(fileWrapper);
-        this.monacoOptions.language=file.language;
+        this.monacoOptions.language = file.language;
     }
 
     public getFileFromActiveItem(item: MenuItem): TabFileWrapper {

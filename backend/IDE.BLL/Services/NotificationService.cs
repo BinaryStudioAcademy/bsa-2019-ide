@@ -6,6 +6,7 @@ using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,45 +18,52 @@ namespace IDE.BLL.Services
 
         private readonly IHubContext<NotificationHub> _hubContext;
         private readonly IdeContext _context;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IMapper _mapper;
         public NotificationService(IHubContext<NotificationHub> hubContext,
             IdeContext context,
+            IServiceScopeFactory serviceScopeFactory,
             IMapper mapper)
         {
             _hubContext = hubContext;
             _context = context;
             _mapper = mapper;
+            _serviceScopeFactory = serviceScopeFactory;
         }
         public async Task SendNotification(int projectId, NotificationDTO notificationDTO)
         {
-            var users = await _context.ProjectMembers
-                .Where(item => item.ProjectId == projectId)
-                .Select(item => item.User)
-                .ToListAsync().ConfigureAwait(false) ?? new List<User>();
-
-            var author = await _context.Projects
-                .Where(item => item.Id == projectId)
-               .Select(item => item.Author)
-              .FirstOrDefaultAsync().ConfigureAwait(false);
-
-            if (author != null)
-                users.Add(author);
-
-            var notification = _mapper.Map<Notification>(notificationDTO);
-
-            foreach (var user in users)
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                // BUG: Ovveriding uderId in notification
-                user.Notifications.Add(notification);
-                _context.Update(user);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
+                var _context = scope.ServiceProvider.GetService<IdeContext>();
+
+                var users = await _context.ProjectMembers
+                    .Where(item => item.ProjectId == projectId)
+                    .Select(item => item.User)
+                    .ToListAsync().ConfigureAwait(false) ?? new List<User>();
+
+                var author = await _context.Projects
+                    .Where(item => item.Id == projectId)
+                   .Select(item => item.Author)
+                  .FirstOrDefaultAsync().ConfigureAwait(false);
+
+                if (author != null)
+                    users.Add(author);
+
+                var notification = _mapper.Map<Notification>(notificationDTO);
+
+                foreach (var user in users)
+                {
+                    // BUG: Ovveriding uderId in notification
+                    user.Notifications.Add(notification);
+                    _context.Update(user);
+                    await _context.SaveChangesAsync().ConfigureAwait(false);
+                }
+
+                notificationDTO = _mapper.Map<NotificationDTO>(notification);
+                await _hubContext.Clients.Groups(projectId.ToString())
+                    .SendAsync("transferchartdata", notificationDTO)
+                    .ConfigureAwait(false);
             }
-
-            notificationDTO = _mapper.Map<NotificationDTO>(notification);
-            await _hubContext.Clients.Groups(projectId.ToString())
-                .SendAsync("transferchartdata", notificationDTO)
-                .ConfigureAwait(false);
-
         }
 
         public async Task<IEnumerable<NotificationDTO>> GetNotificationByUserId(int userId)
