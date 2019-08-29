@@ -38,6 +38,10 @@ export class EditorSectionComponent implements OnInit {
 
     constructor() { }
 
+    ngOnInit() {
+              
+    }
+
     onChange(ev) {
         if (!this.canEdit) {
             const touchedFile = this.getFileFromActiveItem(this.activeItem);
