@@ -32,6 +32,14 @@ export class EditorSectionComponent implements OnInit {
     constructor() { }
 
     ngOnInit() {
+        const element = document.querySelector('body');
+        element.style.setProperty('--active-tab-color', 'red');
+        element.style.setProperty('--inactive-tab-color', '#dee1e6');
+        element.style.setProperty('--active-tab-color', '#fff');
+        element.style.setProperty('--icon-tab-color', '#000');
+        element.style.setProperty('--text-tab-color', '#000');
+        element.style.setProperty('--close-cross-tab-color', '#8b8b8b');
+        element.style.setProperty('--close-cross-hover-tab-color', '#000');
     }
 
     onChange(ev) {

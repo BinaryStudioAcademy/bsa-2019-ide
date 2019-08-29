@@ -10,11 +10,11 @@
 ::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem,
 ::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem:not(.ui-state-active):not(.ui-state-disabled):hover
     border: none
-    background-color: #dee1e6
+    background-color: var(--inactive-tab-color)
 
 ::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem.ui-state-active
     border: none
-    background-color: #fff
+    background-color: var(--active-tab-color)
 
 
 .tab-item
@@ -24,23 +24,23 @@
 
 .tab-icon
     font-size: 0.8rem
-    color: #000
+    color: var(--icon-tab-color)
     display: flex
     justify-content: center 
 
 .tab-text
     font-size: 0.8rem
     padding: 0 4px 0 4px
-    color: #000
+    color: var(--text-tab-color)
 
 .tab-close
     padding: 0
-    color: #8b8b8b
+    color: var(--close-cross-tab-color)
     display: flex
     justify-content: center
 
 .tab-close:hover
-    color: #000
+    color: var(--close-cross-hover-tab-color)
 
 .tab-close .pi
     font-size: 1rem
