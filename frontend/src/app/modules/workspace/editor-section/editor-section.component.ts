@@ -1,5 +1,5 @@
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy, SimpleChanges, SimpleChange } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { EditorSettingDTO } from '../../../models/DTO/Common/editorSettingDTO'
 import editorTabsThemes from '../../../assets/editor-tabs-themes.json';
@@ -15,11 +15,17 @@ export interface TabFileWrapper {
     styleUrls: ['./editor-section.component.sass']
 })
 export class EditorSectionComponent implements OnInit {
-
-    @Input() public monacoOptions: EditorSettingDTO;
     @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
 
-    
+    private _monacoOptions: EditorSettingDTO; 
+    get monacoOptions(): EditorSettingDTO {
+        return this._monacoOptions;
+    }  
+    @Input()
+    set monacoOptions(monacoOptions: EditorSettingDTO) {
+        this._monacoOptions = monacoOptions;
+        this.setEditorTabTheme();  
+    }
     
     // FOR REFACTOR
     // think about agregaiting of TabFileWrapper(openedFiles) with MenuItem(tabs)
@@ -32,16 +38,12 @@ export class EditorSectionComponent implements OnInit {
 
     constructor() { }
 
-    ngOnInit() {
-        this.setEditorTabTheme();        
-    }
-
     onChange(ev) {
         if (!this.canEdit) {
             const touchedFile = this.getFileFromActiveItem(this.activeItem);
             touchedFile.isChanged = true;
             touchedFile.innerFile.content = this.code;
-        }
+        }        
     }
 
     public closeItem(event, index) {

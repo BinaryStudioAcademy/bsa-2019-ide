@@ -127,7 +127,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public Settings() {
-        this.workSpaceService.show(this.project);
+        const a = this.workSpaceService.show(this.project);
+        a.subscribe(
+            (resp) => {
+                if(resp) {
+                    this.options = resp as EditorSettingDTO;
+                }
+            }
+        );  
     }
 
     public setUserAccess() {
