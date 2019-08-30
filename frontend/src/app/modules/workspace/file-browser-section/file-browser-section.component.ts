@@ -93,14 +93,13 @@ export class FileBrowserSectionComponent implements OnInit {
         this.fileNameRegex = /^[A-Z0-9.]+$/gi
         this.extensions = filesExtensions;
         this.items = [
-            { label: 'create file', icon: 'pi pi-file', command: () => this.createFile(this.selectedItem),  },
-            { label: 'create folder', icon: 'pi pi-folder', command: () => this.createFolder(this.selectedItem) },
-            { label: 'delete', icon: 'pi pi-times', command: () => this.delete(this.selectedItem) },
-            { label: 'info', icon: 'pi pi-info-circle', command: () => this.openInfoWindow(this.selectedItem)},
-            { label: 'rename', icon: 'pi pi-refresh', command: () => this.rename(this.selectedItem)},
+            { label: 'create file', icon: 'pi pi-fw pi-file', command: () => this.createFile(this.selectedItem),  },
+            { label: 'create folder', icon: 'pi pi-fw pi-folder', command: () => this.createFolder(this.selectedItem) },
+            { label: 'delete', icon: 'pi pi-fw pi-trash', command: () => this.delete(this.selectedItem) },
+            { label: 'info', icon: 'pi pi-fw pi-info', command: () => this.openInfoWindow(this.selectedItem)},
+            { label: 'rename', icon: 'pi pi-fw pi-refresh', command: () => this.rename(this.selectedItem)},
             { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) },
             { label: 'import', icon: 'pi pi-upload', command: ()=> this.openImportWindow(this.selectedItem)}
-
         ];
 
         this.eventsSubscription = this.events.subscribe(() => this.expand())

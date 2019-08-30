@@ -32,6 +32,7 @@ export class EditorSectionComponent implements OnInit {
     public tabs = [] as MenuItem[]; // maybe reneme on "tab"
     public activeItem: MenuItem;
     public openedFiles = [] as TabFileWrapper[];
+    public language:string;
     @Input() canEdit: boolean;
 
     code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
@@ -45,15 +46,16 @@ export class EditorSectionComponent implements OnInit {
     onChange(ev) {
         if (!this.canEdit) {
             const touchedFile = this.getFileFromActiveItem(this.activeItem);
-            touchedFile.isChanged = true;
-            touchedFile.innerFile.content = this.code;
-        }        
+            if (!this.monacoOptions.readOnly) {
+                touchedFile.isChanged = true;
+                touchedFile.innerFile.content = this.code;
+            }
+            this.monacoOptions.language = this.language;
+        }
     }
 
     public closeItem(event, index) {
-        if (this.openedFiles[index].isChanged) {
-            this.saveFiles([this.openedFiles[index].innerFile]);
-        }
+        this.saveFiles([this.openedFiles[index].innerFile]);
         this.tabs = this.tabs.filter((item, i) => i !== index);
         this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
 
@@ -73,6 +75,8 @@ export class EditorSectionComponent implements OnInit {
     public onTabSelect(evt, index) {
         this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
+        this.language = this.openedFiles[index].innerFile.language;
+        
     }
 
     public saveFiles(files: FileUpdateDTO[]) {
@@ -82,6 +86,7 @@ export class EditorSectionComponent implements OnInit {
     public AddFileToOpened(file: FileUpdateDTO) {
         const fileWrapper: TabFileWrapper = { isChanged: false, innerFile: file }
         this.openedFiles.push(fileWrapper);
+        this.monacoOptions.language = file.language;
     }
 
     public getFileFromActiveItem(item: MenuItem): TabFileWrapper {
