@@ -84,7 +84,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
 
     public onNotificationClick(notification: NotificationDTO){
         console.log(this.router);
-        this.router.navigate(['/workspace/25']);
+        //this.router.navigate(['/workspace/3']);
         this.notificationService.OpenConsole(notification.message);
     }
 
