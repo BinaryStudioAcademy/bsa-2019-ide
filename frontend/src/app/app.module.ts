@@ -35,6 +35,7 @@ import { ProjectSettingsRouteGuard } from './guards/project-settings-route.guard
 import { AddCollaboratorsComponent } from './modules/collaborator/components/add-collaborators/add-collaborators.component';
 import { FileInfoComponent } from './modules/workspace/file-info/file-info.component';
 import { ChartsModule } from 'ng2-charts';
+import { ImportFileComponent } from './modules/workspace/import-file/import-file.component';
 
 
 @NgModule({
@@ -95,7 +96,8 @@ import { ChartsModule } from 'ng2-charts';
     ],
     entryComponents: [
         AddCollaboratorsComponent,
-        FileInfoComponent
+        FileInfoComponent,
+        ImportFileComponent
     ],
     bootstrap: [AppComponent]
 })
