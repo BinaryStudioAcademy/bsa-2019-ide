@@ -1,0 +1,20 @@
+<span class="modal-close-btn" (click)="close()">&times;</span>
+
+<div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+        <div class="title">Import existing zip file</div>
+    </div>
+</div>
+
+<p-fileUpload name="myFile[]" maxFileSize="10485760" customUpload="true" mode="basic" auto="auto"
+ (uploadHandler)="Uploader($event)" chooseLabel="Browse" accept=".zip" multiple="false">
+    <!--<ng-template pTemplate="content">
+        <ul *ngIf="uploadedFiles.length">
+            <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+        </ul>
+    </ng-template>-->
+</p-fileUpload>
+
+<div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
+    <p-progressSpinner></p-progressSpinner>
+</div>

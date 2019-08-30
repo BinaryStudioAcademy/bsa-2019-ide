@@ -130,7 +130,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public Settings() {
-        this.workSpaceService.show(this.project);
+        const a = this.workSpaceService.show(this.project);
+        a.subscribe(
+            (resp) => {
+                if(resp) {
+                    this.options = resp as EditorSettingDTO;
+                }
+            }
+        );  
     }
 
     public setUserAccess() {
@@ -272,9 +279,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public expand() {
-        this.eventsSubject.next()
+        this.eventsSubject.next();
     }
 
+    public refresh(){
+        this.fileBrowser.ngOnInit();
+    }
+    
     private saveFilesRequest(files?: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
         if (!files) {
             files = this.editor.openedFiles.map(x => x.innerFile);

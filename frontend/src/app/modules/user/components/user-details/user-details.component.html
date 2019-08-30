@@ -40,7 +40,7 @@
                     <app-user-proj-list [userId]="user.id"></app-user-proj-list>
                 </div>
             </p-tabPanel>
-            <p-tabPanel header="Editor settings">
+            <p-tabPanel *ngIf="isAuthor" header="Editor settings">
                 <app-editor-settings [user]="user"></app-editor-settings>
             </p-tabPanel>
         </p-tabView>

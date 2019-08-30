@@ -98,7 +98,8 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'delete', icon: 'pi pi-fw pi-trash', command: () => this.delete(this.selectedItem) },
             { label: 'info', icon: 'pi pi-fw pi-info', command: () => this.openInfoWindow(this.selectedItem)},
             { label: 'rename', icon: 'pi pi-fw pi-refresh', command: () => this.rename(this.selectedItem)},
-            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) }
+            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) },
+            { label: 'import', icon: 'pi pi-upload', command: ()=> this.openImportWindow(this.selectedItem)}
         ];
 
         this.eventsSubscription = this.events.subscribe(() => this.expand())
@@ -162,11 +163,19 @@ export class FileBrowserSectionComponent implements OnInit {
         }
     }
 
-    private openInfoWindow(node: TreeNode)
-    {
+    private openInfoWindow(node: TreeNode){
         this.fileBrowserService.OpenModalWindow(node,this.projectId.toString());
     }
   
+    private openImportWindow(node: TreeNode){
+        if(node.type == TreeNodeType.file.toString()){
+            this.toast.info("Select folder, please")
+        }
+        else{
+            this.fileBrowserService.OpenImportModalWindow(node, this.projectId.toString());
+        }
+    }
+
     private getFolderName(node: TreeNode): string{
         if (node.type === TreeNodeType.file.toString()) {
             return node.parent.label;
