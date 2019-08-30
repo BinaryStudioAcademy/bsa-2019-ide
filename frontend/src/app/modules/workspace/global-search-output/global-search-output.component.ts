@@ -4,12 +4,12 @@ import { WorkspaceService } from './../../../services/workspace.service';
 import { ToastrService } from 'ngx-toastr';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap, catchError, timeout, mergeMap, take } from 'rxjs/operators';
 import { query } from '@angular/animations';
 import { SearchFileService } from 'src/app/services/search-file.service/search-file.service';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { EventService } from 'src/app/services/event.service/event.service';
-import { Observable } from 'rxjs';
+import { Observable, of, interval, throwError } from 'rxjs';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 
 @Component({
@@ -18,7 +18,7 @@ import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
     styleUrls: ['./global-search-output.component.sass']
 })
 export class GlobalSearchOutputComponent implements OnInit {
-    public isSpinner = true;
+    public isSpinner = false;
     public projectName;
     public query;
     public projectId;
@@ -39,7 +39,7 @@ export class GlobalSearchOutputComponent implements OnInit {
                 this.query = param['query']; 
                 return this.searchFileService.findFilesGlobal(param['query']);
             })
-            )
+            ).pipe(tap(x => this.isSpinner = true),timeout(60000))
             .subscribe(response => {
                 this.fileSearchResults = response.body;
                 this.filesToShow$ = forkJoin(this.fileSearchResults
@@ -56,11 +56,12 @@ export class GlobalSearchOutputComponent implements OnInit {
                                     )
                                 )
                         ),
-                        tap(x => this.isSpinner = false)
+                        tap(x => this.isSpinner = false),
+                        
                     ))
                 )
                                         
-            });
+            }, error => {this.isSpinner= false; console.log(error)});
 
     }
     getProjectNameFromId(projectId) {

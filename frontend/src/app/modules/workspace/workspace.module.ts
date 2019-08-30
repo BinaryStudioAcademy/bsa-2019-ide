@@ -17,7 +17,7 @@ import {OrderListModule} from 'primeng/orderlist';
 import { EditorSettingsComponent } from '../editor/components/editor-settings/editor-settings.component';
 import { ImportFileComponent } from './import-file/import-file.component';
 import {FileUploadModule} from 'primeng/fileupload';
-import { ProgressSpinnerModule} from 'primeng/progressspinner';
+
 import { GlobalSearchOutputComponent } from './global-search-output/global-search-output.component';
 import { HighlightMatchDirective } from 'src/app/directives/highlight-match.directive';
 
