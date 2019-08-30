@@ -19,11 +19,9 @@ import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 })
 export class GlobalSearchOutputComponent implements OnInit {
     public isSpinner = false;
-    public projectName;
+    public projectName: string;
     public query;
-    public projectId;
     public fileSearchResults: FileSearchResultDTO[];
-    public content;
     public filesToShow$;
     constructor(private route: ActivatedRoute,
         private searchFileService: SearchFileService,
@@ -31,48 +29,48 @@ export class GlobalSearchOutputComponent implements OnInit {
         private ws: WorkspaceService,
         private projS: ProjectService,
         private router: Router,
-       ) { }
+    ) { }
 
     ngOnInit() {
-        this.route.queryParams.pipe(switchMap(param => 
-            {
-                this.query = param['query']; 
-                return this.searchFileService.findFilesGlobal(param['query']);
-            })
-            ).pipe(tap(x => this.isSpinner = true),timeout(60000))
+        this.route.queryParams.pipe(switchMap(param => {
+            this.query = param['query'];
+            return this.searchFileService.findFilesGlobal(param['query']);
+        })
+        ).pipe(tap(x => this.isSpinner = true), timeout(60000))
             .subscribe(response => {
                 this.fileSearchResults = response.body;
                 this.filesToShow$ = forkJoin(this.fileSearchResults
                     .map(r => this.ws.getFileById(r.fileId)
-                    .pipe(
-                        switchMap(f => 
-                            this.getProjectNameFromId(f.body.projectId)
-                            .pipe(
-                                map(projName => 
-                                        ({
-                                            file:f.body,
-                                            proj:projName
-                                        })
+                        .pipe(
+                            switchMap(f =>
+                                this.getProjectNameFromId(f.body.projectId)
+                                    .pipe(
+                                        map(projName =>
+                                            ({
+                                                file: f.body,
+                                                proj: projName
+                                            })
+                                        )
                                     )
-                                )
-                        ),
-                        tap(x => this.isSpinner = false),
-                        
-                    ))
+                            ),
+                            tap(x => this.isSpinner = false),
+
+                        ))
                 )
-                                        
-            }, error => {this.isSpinner= false; console.log(error)});
+
+            }, error => { this.isSpinner = false; console.log(error) });
 
     }
-    getProjectNameFromId(projectId) {
-        return this.projS.getProjectById(projectId).pipe(map(pr  => { return pr.body.name}));
+    public getProjectNameFromId(projectId: number) {
+        return this.projS.getProjectById(projectId).pipe(map(pr => { return pr.body.name }));
     }
 
-    clicked(file){
+   public  clicked(file) {
         this.router.navigate([`/workspace/${file.projectId}`], {
             queryParams: {
-              fileId: file.id,
-            }});
+                fileId: file.id,
+            }
+        });
     }
 
 }
