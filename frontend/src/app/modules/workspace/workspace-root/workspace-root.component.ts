@@ -203,7 +203,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
         this.buildService.buildProject(this.project.id).subscribe(
             (response) => {
-                debugger;
                 this.toast.info('Build was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {
@@ -225,7 +224,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             return;
         }
 
-        this.buildService.runProject(this.project.id, this.signalRService.getConnectionId()).subscribe(
+        this.buildService.runProject(this.project.id, connectionId).subscribe(
             (response) => {
                 this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
             },
