@@ -6,7 +6,7 @@
             class="ui-button-secondary" label="Build" (click)="onBuild()"></button>
         <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onFilesSave()" icon="pi pi-save" iconPos="left"
             class="ui-button-secondary" label="Save"></button>
-        <button pButton type="button" *ngIf="isAuthor()" (click)="Settings()" icon="pi pi-save" iconPos="left"
+        <button pButton type="button" *ngIf="isAuthor()" (click)="Settings()" icon="pi pi-cog" iconPos="left"
             class="ui-button-secondary" label="Settings"></button>
     </div>
 

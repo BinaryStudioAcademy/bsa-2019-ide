@@ -60,12 +60,14 @@
                 <div class="ui-g ui-fluid">
                     <div class="ui-g-12">
                         <div class="ui-inputgroup">
-                            <input type="text" pInputText pKeyFilter="alphanum" formControlName="gitHubUrl" placeholder="github url">
+                            <input type="text" pInputText pattern="https://github.com/[a-zA-Z]{2,}" formControlName="gitHubUrl" placeholder="github url">
                         </div>
                     </div>
                 </div>
 
-                <div class="invalid" *ngIf="userForm.get('gitHubUrl').invalid && userForm.get('gitHubUrl').dirty">Invalid GitHubUrl</div>
+                <div class="invalid" *ngIf="userForm.get('gitHubUrl').invalid && userForm.get('gitHubUrl').dirty">
+                    input https://github.com/[your nickname]
+                </div>
 
 
             <!-- User Birthday -->

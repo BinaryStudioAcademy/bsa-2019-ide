@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { AuthDialogService } from '../services/auth-dialog.service/auth-dialog.service';
 import { DialogType } from '../modules/authorization/models/auth-dialog-type';
@@ -11,6 +11,7 @@ import { SearchProjectDTO } from '../models/DTO/Project/searchProjectDTO'
 import { SignalRService } from '../services/signalr.service/signal-r.service';
 import { NotificationDTO } from '../models/DTO/Common/notificationDTO';
 import { NotificationService } from '../services/notification.service/notification.service';
+import { UserService } from '../services/user.service/user.service';
 
 @Component({
     selector: 'app-nav-menu',
@@ -31,10 +32,14 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public notReadNotification: NotificationDTO[] = [];
     private unsubscribe$ = new Subject<void>();
     private userId: number;
+    private userName: string;
+    private userAvatar: string;
+
 
     constructor(
         private authDialogService: AuthDialogService,
         private router: Router,
+        private userService: UserService,
         private tokenService: TokenService,
         private projectService: ProjectService,
         private signalRService: SignalRService,
@@ -139,7 +144,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     }
 
     public goToUserDetails() {
-        this.router.navigate([`/user/details/${this.tokenService.getUserId()}`]);
+        this.router.navigate([`/user/details/${this.userId}`]);
     }
 
     public getMenuItems() {
@@ -166,6 +171,23 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.signalRService.deleteTransferChartDataListener();
     }
 
+    private getAvatarAndName(){
+        this.userService
+        .getUserDetailsFromToken()
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(resp =>{
+            this.userAvatar = './assets/img/user-default-avatar.png';
+            if(resp.body.url)
+                this.userAvatar = resp.body.url;
+
+            this.userId = resp.body.id;
+            this.userName = resp.body.firstName;
+        },
+        error =>{
+            console.log(error);
+        })
+    };
+
     private getUser() {
         if (!this.tokenService.areTokensExist()) {
             return;
@@ -176,7 +198,10 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((auth) => {
                 this.isAuthorized = auth;
-                this.userId = this.tokenService.getUserId();
-            });
-    }
+                //this.userId = this.tokenService.getUserId();
+                
+                this.getAvatarAndName();
+            });    
+
+        }
 }

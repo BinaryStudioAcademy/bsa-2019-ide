@@ -8,7 +8,7 @@ import { ImageCropperComponent, ImageCroppedEvent } from 'ngx-image-cropper';
 import { ImageUploadBase64DTO } from 'src/app/models/DTO/Image/imageUploadBase64DTO';
 import { ToastrService } from 'ngx-toastr';
 import { TokenService } from 'src/app/services/token.service/token.service';
-import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-user-details',
