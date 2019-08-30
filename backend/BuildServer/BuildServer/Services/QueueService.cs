@@ -1,10 +1,10 @@
 ﻿using BuildServer.Interfaces;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Shared.Interfaces;
+using RabbitMQ.Shared.ModelsDTO;
 using RabbitMQ.Shared.Settings;
-using System;
-using System.IO;
 using System.Text;
 
 namespace BuildServer.Services
@@ -23,18 +23,18 @@ namespace BuildServer.Services
         {
             _messageProducerScope = messageProducerScopeFactory.Open(new MessageScopeSettings
             {
-                ExchangeName = "ClientExchange",
+                ExchangeName = "BuildServerExchange",
                 ExchangeType = ExchangeType.Direct,
-                QueueName = "SendRequestQueue",
-                RoutingKey = "request"
+                QueueName = "BuildResultQueue",
+                RoutingKey = "responce"
             });
 
             _messageConsumerScope = messageConsumerScopeFactory.Connect(new MessageScopeSettings
             {
-                ExchangeName = "ServerExchange",
+                ExchangeName = "IdeExchange",
                 ExchangeType = ExchangeType.Direct,
-                QueueName = "SendResponceQueue",
-                RoutingKey = "responce"
+                QueueName = "ProjectsForBuildingQueue",
+                RoutingKey = "request"
             });
             _messageConsumerScope.MessageConsumer.Received += MessageConsumer_Received;
             _worker = new Worker(builder, fileArchiver, azureService);
@@ -42,23 +42,27 @@ namespace BuildServer.Services
 
         private void MessageConsumer_Received(object sender, BasicDeliverEventArgs evn)
         {
-            //just make sure that receiving works. Will be removed
             var message = Encoding.UTF8.GetString(evn.Body);
-            /*_azureService.Download(message)*/;
-            var isBuildSucceeded = _worker.Work(message);
+            var projectForBuild = JsonConvert.DeserializeObject<ProjectForBuildDTO>(message);
+            var projectName = $"project_{projectForBuild.ProjectId}";
+            var isBuildSucceeded = _worker.Work(projectForBuild.UriForProjectDownload, projectName,  out var artifactArchiveUri);
 
+            var buildResult = new BuildResultDTO()
+            {
+                ProjectId = projectForBuild.ProjectId,
+                WasBuildSucceeded = isBuildSucceeded,
+                UriForArtifactsDownload = artifactArchiveUri
+            };
+
+            var jsonMessage = JsonConvert.SerializeObject(buildResult);
             _messageConsumerScope.MessageConsumer.SetAcknowledge(evn.DeliveryTag, true);
-            if (isBuildSucceeded)
-                SendMessage($"Build status: Success)");
-            else
-                SendMessage($"Build status: Failed(");
+            SendMessage(jsonMessage);
         }
 
         public bool SendMessage(string value)
         {
             try
             {
-                //here will be sent build params to build server
                 _messageProducerScope.MessageProducer.Send(value);
                 return true;
             }

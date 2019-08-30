@@ -1,9 +1,10 @@
-﻿using IDE.BLL.Services;
+﻿using IDE.API.Extensions;
+using IDE.BLL.Services;
 using IDE.Common.ModelsDTO.DTO.Workspace;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
@@ -60,6 +61,18 @@ namespace IDE.API.Controllers
                     return await _projectStructureService.GetFileStructureSize(item, fileStructureId);
             }
             return 0;
+        }
+
+        [HttpPost("import")]
+        public async Task ImportFile([FromForm] ImportProjectDTO importProjectDTO)
+        {
+            var author = this.GetUserIdFromToken();
+            await _projectStructureService.ImportProject(
+                importProjectDTO.projectStructureId,
+                Request.Form.Files[0],
+                importProjectDTO.fileStructureId,
+                author, true,
+               importProjectDTO.ParentNodeIds);
         }
     }
 }

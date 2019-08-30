@@ -24,13 +24,15 @@ import { ProjectType } from '../../project/models/project-type';
 import { RightsService } from 'src/app/services/rights.service/rights.service';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
-import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
+import { FileBrowserSectionComponent, SelectedFile } from '../file-browser-section/file-browser-section.component';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
 import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 import { BuildService } from 'src/app/services/build.service';
 import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
+import { element } from 'protractor';
+import { ConcatSource } from 'webpack-sources';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -55,6 +57,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     public expandFolder = false;
     public project: ProjectInfoDTO;
     public options: EditorSettingDTO;
+    public iOpenFile: FileUpdateDTO[] = [];
 
     private routeSub: Subscription;
     private authorId: number;
@@ -87,7 +90,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.hideFileBrowser();
             });
     }
-    
+
     ngAfterViewInit() {
         console.log("afterviewinit");
         this.route.queryParams.subscribe(params => {
@@ -172,7 +175,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     }
 
     public Settings() {
-        this.workSpaceService.show(this.project);
+        const a = this.workSpaceService.show(this.project);
+        a.subscribe(
+            (resp) => {
+                if(resp) {
+                    this.options = resp as EditorSettingDTO;
+                }
+            }
+        );
     }
 
     public setUserAccess() {
@@ -208,21 +218,40 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         }
     }
 
-    public onFileSelected(fileId: string): void {
-        if (this.editor && this.editor.openedFiles.some(f => f.innerFile.id === fileId)) {
-            this.editor.activeItem = this.editor.tabs.find(i => i.id === fileId);
-            this.editor.code = this.editor.openedFiles.find(f => f.innerFile.id === fileId).innerFile.content;
+    public onFileSelected(selectedFile: SelectedFile): void {
+        if (this.editor && this.editor.openedFiles.some(f => f.innerFile.id === selectedFile.fileId)) {
+            this.editor.activeItem = this.editor.tabs.find(i => i.id === selectedFile.fileId);
+            this.editor.code = this.editor.openedFiles.find(f => f.innerFile.id === selectedFile.fileId).innerFile.content;
             return;
         }
-        console.log(this.editor);
-        this.workSpaceService.getFileById(fileId)
+
+        this.workSpaceService.getFileById(selectedFile.fileId)
             .subscribe(
                 (resp) => {
                     if (resp.ok) {
-                        const { id, name, content, folder, updaterId } = resp.body as FileDTO;
-                        const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder };
+                        const { id, name, content, folder, updaterId, isOpen, updater, language } = resp.body as FileDTO;
+                        const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, isOpen, updaterId, updater, language };
+                        var tabName=name;
                         this.editor.AddFileToOpened(fileUpdateDTO);
-                        this.editor.tabs.push({ label: name, icon: 'fa fa-fw fa-file', id: id });
+                        if (!fileUpdateDTO.isOpen) {
+                            fileUpdateDTO.isOpen = true;
+                            this.fileIsOpen(fileUpdateDTO);
+                            this.iOpenFile.push(fileUpdateDTO);
+                            this.editor.monacoOptions.readOnly = false;
+                            this.fileBrowser.selectedItem.label=tabName;
+                        }
+                        else if (this.project.accessModifier == 1) {
+                            this.fileIsOpen(fileUpdateDTO);
+                            this.iOpenFile.push(fileUpdateDTO);
+                            this.editor.monacoOptions.readOnly = false;
+                            tabName+=" (editing...)";
+                            this.fileBrowser.selectedItem.label+=" (editing...)";
+                        }
+                        else {
+
+                            this.editor.monacoOptions.readOnly = true;
+                        }
+                        this.editor.tabs.push({ label: tabName, icon: selectedFile.fileIcon,  id: id });
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
                         this.editor.code = content;
                     } else {
@@ -255,6 +284,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     }
 
     public onFilesSave(files?: FileUpdateDTO[]) {
+        if (this.iOpenFile.length != 0) {
+            this.iOpenFile.forEach(element => {
+                element.isOpen = false;
+            })
+            this.saveFilesRequest(this.iOpenFile).subscribe();
+
+            this.iOpenFile = [];
+        }
         if (!this.editor.anyFileChanged()) {
             return;
         }
@@ -270,6 +307,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 error => { console.log(error); this.toast.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
     }
 
+    public fileIsOpen(files: FileUpdateDTO) {
+        this.workSpaceService.saveFileRequest(files).subscribe();
+    }
+
     public hideSearchField() {
         this.showSearchField = !this.showSearchField;
     }
@@ -283,7 +324,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     }
 
     public expand() {
-        this.eventsSubject.next()
+        this.eventsSubject.next();
+    }
+
+    public refresh(){
+        this.fileBrowser.ngOnInit();
     }
 
     private saveFilesRequest(files?: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {

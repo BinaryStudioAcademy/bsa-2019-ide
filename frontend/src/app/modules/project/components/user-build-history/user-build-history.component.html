@@ -1,0 +1,9 @@
+<div class="user-build-history-content">
+    <h2 *ngIf="builds.length!=0" class="title"> Build results: </h2>
+    <div *ngIf="builds.length==0">
+        <p class="no-build-results">No build results</p>
+    </div>
+    <div  *ngFor="let build of builds">
+        <app-build-history-tab class="build-card" [build]="build"></app-build-history-tab>
+    </div>
+</div>

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildServer", "BuildServer\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RabbitMQ.Shared", "..\RabbitMQ.Shared\RabbitMQ.Shared.csproj", "{E997900C-C53B-4654-A3AC-7A7ACA1F8CE8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Storage", "..\Storage\Storage.csproj", "{36275077-E04F-4687-894E-2D6D29CA22E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{E997900C-C53B-4654-A3AC-7A7ACA1F8CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E997900C-C53B-4654-A3AC-7A7ACA1F8CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E997900C-C53B-4654-A3AC-7A7ACA1F8CE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36275077-E04F-4687-894E-2D6D29CA22E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36275077-E04F-4687-894E-2D6D29CA22E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36275077-E04F-4687-894E-2D6D29CA22E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36275077-E04F-4687-894E-2D6D29CA22E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -35,14 +35,16 @@ import { ProjectSettingsRouteGuard } from './guards/project-settings-route.guard
 import { AddCollaboratorsComponent } from './modules/collaborator/components/add-collaborators/add-collaborators.component';
 import { FileInfoComponent } from './modules/workspace/file-info/file-info.component';
 import { ChartsModule } from 'ng2-charts';
+
 import { HighlightMatchDirective } from './directives/highlight-match.directive';
+import { ImportFileComponent } from './modules/workspace/import-file/import-file.component';
 
 
 @NgModule({
     declarations: [
         AppComponent,
         NavMenuComponent,
-        
+
     ],
     imports: [
         OverlayPanelModule,
@@ -97,7 +99,8 @@ import { HighlightMatchDirective } from './directives/highlight-match.directive'
     ],
     entryComponents: [
         AddCollaboratorsComponent,
-        FileInfoComponent
+        FileInfoComponent,
+        ImportFileComponent
     ],
     bootstrap: [AppComponent]
 })

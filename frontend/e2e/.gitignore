@@ -1,0 +1,7 @@
+node_modules
+/lib/driver
+debug.log
+npm-debug.log
+debug.json
+output
+allure-results

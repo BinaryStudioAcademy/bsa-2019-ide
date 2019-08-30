@@ -1,5 +1,4 @@
-﻿using BuildServer.Helpers;
-using BuildServer.Interfaces;
+﻿using BuildServer.Interfaces;
 using System;
 
 namespace BuildServer
@@ -20,10 +19,10 @@ namespace BuildServer
             _azureService = azureService;
         }
 
-        public bool Work(string projectName)
+        public bool Work(Uri uriForDownload, string projectName, out Uri artifactArchiveUri)
         {
             Console.WriteLine("Downloading...");
-            _azureService.Download(projectName);
+            _azureService.Download(uriForDownload, projectName).GetAwaiter().GetResult();
 
             Console.WriteLine("UnZiping...");
             _fileArchiver.UnZip(projectName);
@@ -40,15 +39,10 @@ namespace BuildServer
                 //executeResult = _builder.Execute(projectName);
             }
 
-            //I left it here because we won`t use it later
-            //RabbitMq can send this data
-            FileHelper.WriteToFile($"..\\..\\..\\..\\Build\\{projectName}\\BuildResult.txt", buildResult);
-            FileHelper.WriteToFile($"..\\..\\..\\..\\Build\\{projectName}\\Output.txt", executeResult);
-
             _fileArchiver.CreateArchive(projectName);
 
             Console.WriteLine("Uploading artifacts to blob...");
-            _azureService.Upload(projectName);
+            artifactArchiveUri = _azureService.Upload(projectName).GetAwaiter().GetResult();
 
             Console.WriteLine("Removing temporrary files...");
             _fileArchiver.RemoveTemporaryFiles(projectName);
@@ -58,8 +52,11 @@ namespace BuildServer
             //Console.WriteLine("program output:");
             //Console.WriteLine(executeResult);
 
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Message was handled! Is build succeeded: {isBuildSucceeded}");
+            Console.ForegroundColor = ConsoleColor.White;
+
             return isBuildSucceeded;
         }
     }
-
 }

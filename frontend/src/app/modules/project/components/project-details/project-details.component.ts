@@ -11,7 +11,7 @@ import { EventService } from 'src/app/services/event.service/event.service';
 })
 export class ProjectDetailsComponent implements OnInit {
     public project: ProjectInfoDTO;
-    projectId: number;
+    public projectId: number;
     public userId: number;
 
     constructor(

@@ -15,14 +15,20 @@ import { FileInfoComponent } from './file-info/file-info.component';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {OrderListModule} from 'primeng/orderlist';
 import { EditorSettingsComponent } from '../editor/components/editor-settings/editor-settings.component';
+import { ImportFileComponent } from './import-file/import-file.component';
+import {FileUploadModule} from 'primeng/fileupload';
+import { ProgressSpinnerModule} from 'primeng/progressspinner';
 import { GlobalSearchOutputComponent } from './global-search-output/global-search-output.component';
 import { HighlightMatchDirective } from 'src/app/directives/highlight-match.directive';
 
+
 @NgModule({
   declarations: [
-      WorkspaceRootComponent, 
-      FileBrowserSectionComponent, 
-      EditorSectionComponent, FileInfoComponent, GlobalSearchOutputComponent,HighlightMatchDirective
+      WorkspaceRootComponent,
+      FileBrowserSectionComponent,
+      EditorSectionComponent,
+      FileInfoComponent,
+      ImportFileComponent, GlobalSearchOutputComponent,HighlightMatchDirective
     ],
   imports: [
     MenuModule,
@@ -44,6 +50,7 @@ import { HighlightMatchDirective } from 'src/app/directives/highlight-match.dire
     CardModule,
     ScrollPanelModule,
     PanelModule,
+    FileUploadModule,
     ProgressSpinnerModule
   ],
   entryComponents: [

@@ -11,7 +11,7 @@ import { ProgressSpinnerModule}  from 'primeng/progressspinner';
 import { EmailVerificationComponent } from './components/email-verification/email-verification.component';
 import { UserDialogWindowComponent } from './components/user-dialog-window/user-dialog-window.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { InputTextModule, KeyFilterModule } from 'primeng/primeng';
+import { InputTextModule, KeyFilterModule, AccordionModule } from 'primeng/primeng';
 import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { PasswordModule } from 'primeng/password';
@@ -20,6 +20,7 @@ import { CardModule } from 'primeng/card';
 import { UserProjListComponent } from './components/user-proj-list/user-proj-list.component'; 
 import { EditorModule } from '../editor/editor.module';
 import { TabViewModule } from 'primeng/primeng';
+import {CalendarModule} from 'primeng/calendar';
 
 @NgModule({
     declarations: [
@@ -47,7 +48,10 @@ import { TabViewModule } from 'primeng/primeng';
         DynamicDialogModule,
         ImageCropperModule,
         PasswordModule,
-        CardModule
+        CardModule,
+        AccordionModule,
+        CardModule,
+        CalendarModule
     ],
     entryComponents: [
         UserDialogWindowComponent

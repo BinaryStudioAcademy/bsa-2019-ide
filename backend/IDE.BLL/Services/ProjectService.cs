@@ -186,7 +186,7 @@ namespace IDE.BLL.Services
             var user = await _userService.GetUserDetailsById(userId);
             project.AuthorId = userId;
             project.CreatedAt = DateTime.Now;
-            project.AccessModifier = AccessModifier.Private;
+            project.AccessModifier = projectCreateDto.Access;
             var userEditorSettings = (await _userService.GetUserDetailsById(userId)).EditorSettings;
             var newProjectEditorSetting = new EditorSettingDTO
             {
