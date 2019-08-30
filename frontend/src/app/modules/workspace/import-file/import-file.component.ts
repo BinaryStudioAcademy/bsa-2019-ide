@@ -12,8 +12,8 @@ import { ProjectStructureService } from 'src/app/services/project-structure/proj
 })
 export class ImportFileComponent implements OnInit {
 
-    uploadedFiles: any[] = [];
     public fileInfoData;
+    uploadedFiles: any[] = [];
     fileId: string;
     projectStrId: string;
     hasDetailsSaveResponse = true;
@@ -40,7 +40,7 @@ export class ImportFileComponent implements OnInit {
         }
 
         this.listOfParents.reverse();
-        console.log(this.listOfParents);
+
         if(this.fileInfoData.parent === undefined)
             console.log('Its root folder');
 

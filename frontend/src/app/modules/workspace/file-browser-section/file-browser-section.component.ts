@@ -159,13 +159,17 @@ export class FileBrowserSectionComponent implements OnInit {
         }
     }
 
-    private openInfoWindow(node: TreeNode)
-    {
+    private openInfoWindow(node: TreeNode){
         this.fileBrowserService.OpenModalWindow(node,this.projectId.toString());
     }
   
     private openImportWindow(node: TreeNode){
-        this.fileBrowserService.OpenImportModalWindow(node, this.projectId.toString());
+        if(node.type == TreeNodeType.file.toString()){
+            this.toast.info("Select folder, please")
+        }
+        else{
+            this.fileBrowserService.OpenImportModalWindow(node, this.projectId.toString());
+        }
     }
 
     private getFolderName(node: TreeNode): string{
