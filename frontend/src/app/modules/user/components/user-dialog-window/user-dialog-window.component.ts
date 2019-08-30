@@ -54,7 +54,7 @@ export class UserDialogWindowComponent implements OnInit {
                 firstName: ['', [Validators.required]],
                 lastName: ['', Validators.required],
                 nickName: ['', Validators.required],
-                gitHubUrl: ['', Validators.pattern("^[-a-zA-Z0-9.:\/]+$")],
+                gitHubUrl: ['', Validators.pattern("^[-a-zA-Z0-9._:\/]+$")],
                 birthday: ['', Validators.required]
             });
 
