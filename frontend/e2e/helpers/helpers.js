@@ -37,8 +37,9 @@ class HelpClass
     generateEmail(){
         const localPart = generateRandomString(12);
         const domainPart = generateRandomString(3);
-        return email = localPart+"@"+domainPart+".com"
-
+        console.log(`${localPart}@${domainPart}.com`);
+        return `${localPart}@${domainPart}.com`;
+        
     }
     /*clickItemInList(name) {
         const place = $$(`//div[contains(@class, "place-item")]//h3/a[contains(., "${name}")]`);
@@ -51,11 +52,13 @@ class HelpClass
 
     browserClick(elm){ return browser.execute((e) => {document.querySelector(e).click(); }, elm); }
 
+    browserClickXPath(elm){ return browser.execute((e) => {document.evaluate(e, document).iterateNext().click(); }, elm); }
+
     browserClickOnArrayElement(elm, index){return browser.execute((e, i) => {document.querySelectorAll(e)[i - 1].click();}, elm, index);}
        
     loginWithDefaultUser() {
-        browser.maximizeWindow();
-        browser.url(credentials.appUrl);
+        
+        
         page.clickloginbtn();
         page.enterEmail(credentials.email);
         page.enterPassword(credentials.password);
@@ -63,15 +66,25 @@ class HelpClass
     }
     
     loginWithCustomUser(email, password) {
-        browser.maximizeWindow();
-        browser.url(credentials.appUrl);
+       
+        
         page.clickloginbtn();
         page.enterEmail(email);
         page.enterPassword(password);
         page.clickCreateButton();
     }
-
-    registerNewAccount(name, surname, nickname, email, password) {
+    clickInDropdownListArrowOf(ListName){
+        const el = $(`//p[contains(text(), "${ListName}")]/../p-dropdown//div[contains(@class, "ui-dropdown-trigger")]`);
+        el.click();
+    }
+    clickInDropdownListOptionOf(ListName, ListOption){
+        browser.pause(2000);
+        const el = `//p[contains(text(), "${ListName}")]/../p-dropdown//span[contains(text(),"${ListOption}")]/..`;
+        const bel = $(el);
+        this.browserClickXPath(el);
+        bel.waitForExist(3000, true);
+    }
+   /* registerNewAccount(name, surname, nickname, email, password) {
 
         page.clickSignupbtn();
      
@@ -85,18 +98,15 @@ class HelpClass
     }
     recoveryPassword(email) {
 
-        page.clickloginbtn();
-     
-        browser.pause(3000);
+        page.clickloginbtn();       
         page.clickRecoveryPassword();
         page.enterEmail(email);
         
         page.clickCreateButton();
-    }
+    }*/
     logOut() {
 
         browser.url(credentials.appUrl);
-        browser.pause(5000);
         page.clickLogOutButton();
         this.browserClickOnArrayElement("a.ui-menuitem-link.ui-corner-all.ng-star-inserted", 2);
     }

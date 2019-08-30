@@ -12,6 +12,7 @@
     "nickname": "testUser",
     "changedName":"Martin",
     "changedSurname":"Luthor",
+    "PhotoPath": "./../image.jpg",
     "notificationRegistrationSuccess": "You have successfully signed in!",
     "notificationLoginError": "Http failure response for http://bsa-ide.azurewebsites.net/api/auth/login: 500 Internal Server Error",
     "notificationLoginSuccess": "You have successfully signed in!",

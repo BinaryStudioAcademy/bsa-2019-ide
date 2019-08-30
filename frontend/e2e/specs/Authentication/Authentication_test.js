@@ -3,11 +3,17 @@ const Help = require('../../helpers/helpers');
 const Assert = require('../../helpers/validators');
 const Wait = require('../../helpers/waiters');
 const LoginPage = require('./page/Auhtentication_po');
-const page = new LoginPage();
+const pageObject = new LoginPage();
 const validate = new Assert();
 const wait = new Wait();
 const assert = require('chai').assert;
-function generateRandomString(length) {
+
+const ProfileActions = require('./actions/Authentication_pa');
+const loginActions = new ProfileActions();
+
+
+
+/*function generateRandomString(length) {
 
     var text = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -18,13 +24,13 @@ function generateRandomString(length) {
     
     return text;
   
-  }
+  }*/
 describe('Online-IDE authorization', () => {
     
     beforeEach(() => {
        browser.maximizeWindow();
        browser.url(credentials.appUrl);
-       browser.pause(1000);
+      
 
     
    });
@@ -33,89 +39,89 @@ describe('Online-IDE authorization', () => {
        browser.reloadSession();
    });
 
-   xit('registion a new account', () => {
+   it('should register a new account', () => {
        
     
-    const email = `${generateRandomString(12)}@${generateRandomString(3)}.com`;
-   
-    Help.registerNewAccount(credentials.name, credentials.surname, credentials.nickname, email, credentials.password);
-      /* validate.notificationTextIs(credentials.notificationRegistrationSuccess);
-       wait.forNotificationToDisappear();      
-       validate.notificationTextIs(credentials.notificationInfo);
-       wait.forNotificationToDisappear(); */
-
-    browser.pause(5000); 
-    Help.logOut();
-    Help.loginWithCustomUser(email, credentials.password);
-    validate.notificationTextIs(credentials.notificationLoginSuccess);
-    wait.forNotificationToDisappear(); 
+   // const email = `${generateRandomString(12)}@${generateRandomString(3)}.com`;
+        const email = Help.generateEmail();
+        loginActions.registerNewAccount(credentials.name, credentials.surname, credentials.nickname, email, credentials.password);
+       // wait.forSpinner();
+      // validate.notificationTextIs(credentials.notificationRegistrationSuccess);
+       //wait.forNotificationToDisappear();      
+      //  validate.notificationTextIs(credentials.notificationInfo);
+      //  wait.forNotificationToDisappear(); 
+       browser.pause(3000);
+        validate.successnavigationToPage(credentials.dashboardUrl);
+        Help.logOut();
+        Help.loginWithCustomUser(email, credentials.password);
+        validate.notificationTextIs(credentials.notificationLoginSuccess);
+        wait.forNotificationToDisappear(); 
 
     Help.logOut();
        
    });
 
-   xit('log in with valid data', () => {
+   it('should login with valid data', () => {
        
       
     Help.loginWithDefaultUser();
     validate.notificationTextIs(credentials.notificationLoginSuccess);
     wait.forNotificationToDisappear(); 
-    browser.pause(5000); 
     Help.logOut();
     
     });
 
-    xit('log in with invalid data', () => {
+    it('should try to login with invalid data', () => {
        
       
         Help.loginWithCustomUser(credentials.email, credentials.changedPassword);
         validate.notificationTextIs(credentials.notificationLoginError);
-        wait.forNotificationToDisappear(); 
+        
        
         
         });
-    xit('log in with empty fields', () => {
+    it('should try to login with empty fields', () => {
        
       
         Help.loginWithCustomUser('', '');
         validate.notificationTextIs(credentials.notificationLoginError);
-        wait.forNotificationToDisappear(); 
+        
        
         
         });
-    xit('registration with empty fields', () => {
+    it('should register with empty fields', () => {
        
       
-        Help.registerNewAccount('', '', '', '', '');
+        loginActions.registerNewAccount('', '', '', '', '');
         validate.notificationTextIs(credentials.notificationError);
-        wait.forNotificationToDisappear(); 
+        
            
             
         });
-    xit('register with already used email', () => {
+    it('should try register a new account with already used email', () => {
        
       
-        Help.registerNewAccount(credentials.name, credentials.surname, credentials.nickname, credentials.email, credentials.password);
+        loginActions.registerNewAccount(credentials.name, credentials.surname, credentials.nickname, credentials.email, credentials.password);
         validate.notificationTextIs(credentials.notificationError);
-        wait.forNotificationToDisappear(); 
+         
                    
                     
         });
-    xit('register with email without domain', () => {
+    it('should register with email without domain', () => {
            
           
-        Help.registerNewAccount(credentials.name, credentials.surname, credentials.nickname, 'test@test', credentials.password);
+        loginActions.registerNewAccount(credentials.name, credentials.surname, credentials.nickname, 'test@test', credentials.password);
         validate.notificationTextIs(credentials.notificationError);
-        wait.forNotificationToDisappear(); 
+        
                
                 
         });
-    xit('recovery password with not registered email', () => {
+    it('should recovery password with not registered email', () => {
            
           
-        Help.recoveryPassword(credentials.notRegisteredEmail);
+        loginActions.recoveryPassword(credentials.notRegisteredEmail);
         validate.notificationTextIs(credentials.notificationErrorRecovery);
-        wait.forNotificationToDisappear(); 
+        
                
                 
         });
@@ -128,12 +134,10 @@ describe('Online-IDE authorization', () => {
                    
                     
         });*/
-    xit('recovery password with invalid data', () => {
+    it('should recovery password with invalid data', () => {
            
           
-        Help.recoveryPassword(credentials.invalidEmail);
-      
-        browser.pause(500);
+        loginActions.recoveryPassword(credentials.invalidEmail);
         validate.notificationTextIs(credentials.notificationInvalidDataRecovery);
        
                        

@@ -48,6 +48,26 @@ class LoginActions {
        // page.logOutLink.click();
     }
 
+    registerNewAccount(name, surname, nickname, email, password) {
+
+        this.clickSignupbtn();
+     
+       // browser.pause(3000);
+        this.enterFirstName(name);
+        this.enterLastName(surname);
+        this.enterNickname(nickname);
+        this.enterEmail(email);
+        this.enterPassword(password);
+        this.clickCreateButton();
+    }
+    recoveryPassword(email) {
+
+        this.clickloginbtn();       
+        this.clickRecoveryPassword();
+        this.enterEmail(email);
+        this.clickCreateButton();
+    }
+
 }
 
 module.exports = LoginActions;

@@ -25,7 +25,7 @@ describe('Online-IDE Dashboard', () => {
 
 
     xit('add project to favourite', () => {
-        browser.pause(3000);   
+        
         projectNameToFavourite = Help.addToFavourite(0);
         Help.navigateToFavouriteProjects();
         
@@ -41,11 +41,9 @@ describe('Online-IDE Dashboard', () => {
     xit('search project by title', () => {
         
         
-        browser.pause(1000);
+        
         Help.searchProjectByTitle("testproject", 1);
-        browser.pause(3000);
-        
-        
+              
         validate.navigationToPage(credentials.projectDetailsUrl);
         validate.checkProjectDetailsData(0, `Name: ${credentials.projectName}`);
         Help.logOut();

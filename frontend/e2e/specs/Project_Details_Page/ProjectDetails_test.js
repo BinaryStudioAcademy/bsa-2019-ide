@@ -26,18 +26,16 @@ describe('Online-IDE ProjectDetails Page', () => {
 
     xit('change project settings', () => {
         
-        browser.pause(1000);
+       
         Help.clickProjectSettingsOnCard();
-        //wait.forSpinner();
-        browser.pause(3000);
+       
         Help.inputChangedDataInForm(credentials.changedProjectName, credentials.changeddescription, credentials.changedBuildsNumber, credentials.changedBuildAttempts, 4);
-        //wait.forSpinner();
-
+        
         validate.notificationTextIs(credentials.successchangedsettingsnotification);
         wait.forNotificationToDisappear();
 
         Help.clickProjectDetailsOnCard();
-        browser.pause(3000);
+        
         validate.checkProjectDetailsData(0, "Name: "+ credentials.changedProjectName);
         validate.checkProjectDetailsData(1, "Description: "+ credentials.changeddescription);
         validate.checkProjectDetailsData(7, "Amount of saved builds: "+ credentials.changedBuildsNumber);
@@ -51,7 +49,7 @@ describe('Online-IDE ProjectDetails Page', () => {
     xit('navigate to project details page', () => {
         
         Help.clickProjectDetailsOnCard();
-        browser.pause(1000);
+        
         validate.navigationToPage(credentials.projectDetailsUrl);
         
         Help.logOut();
@@ -62,12 +60,12 @@ describe('Online-IDE ProjectDetails Page', () => {
     xit('add collaborator', () => {
         
         Help.clickProjectDetailsOnCard();
-        browser.pause(3000);
+        
         Help.addCollaborators("test");
-        browser.pause(3000);
+        
         validate.notificationTextIs(credentials.notificationSuccessAddCollaborator);
         Help.checkDetails();
-        browser.pause(2000);
+        
         validate.verifyText($$("div.collaborator-item div")[0], "testUser1");
         validate.verifyText($("div label"), "Can edit and build");
         Help.logOut();
@@ -76,12 +74,12 @@ describe('Online-IDE ProjectDetails Page', () => {
     xit('change collaborators rights', () => {
         
         Help.clickProjectDetailsOnCard();
-        browser.pause(3000);
+        
         Help.changeCollaboratorsRights(4);
-       // browser.pause(3000);
+       
         validate.notificationTextIs(credentials.notificationSuccessChangeCollaboratorRight);
         Help.checkDetails();
-        browser.pause(2000);
+        
         validate.verifyText($$("div.collaborator-item div")[0], "testUser1");
         validate.verifyText($("div label"), "Provide all access rights");
         Help.logOut();
@@ -90,12 +88,12 @@ describe('Online-IDE ProjectDetails Page', () => {
     xit('delete collaborator', () => {
         
         Help.clickProjectDetailsOnCard();
-        browser.pause(3000);
+        
         Help.deleteCollaborator(0);
-        browser.pause(3000);
+        
         //validate.notificationTextIs(credentials.notificationSuccessDeleteCollaborator);
         Help.checkDetails();
-        browser.pause(2000);
+        
         validate.verifyAbsence();
        // validate.verifyText($$("div.collaborator-item div")[0], "test");
        // validate.verifyText($("div label"), "Can read");
@@ -110,7 +108,7 @@ describe('Online-IDE ProjectDetails Page', () => {
         expectednotification = Help.returnExpectedNotificationDeletionProject();
         
         Help.clickProjectDetailsOnCard();
-        browser.pause(3000);
+        
         validate.navigationToPage(credentials.projectDetailsUrl);
         const projectUrl = Help.returnUrl();
         Help.DeleteProject();

@@ -61,7 +61,7 @@ class CustomValidates {
    
     successnavigationToPage(expectedUrl) {
         const url = new URL(browser.getUrl());
-        const actualUrl = url.hostname.toString() + url.pathname.toString();
+        const actualUrl = 'http://' + url.hostname.toString() + url.pathname.toString();
         assert.equal(actualUrl, expectedUrl);
     }
     navigationToPage(expectedUrl) {
