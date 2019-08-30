@@ -30,8 +30,6 @@ import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 import { BuildService } from 'src/app/services/build.service';
 import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
-import { element } from 'protractor';
-import { ConcatSource } from 'webpack-sources';
 
 @Component({
     selector: 'app-workspace-root',

@@ -15,7 +15,6 @@
     <div class="left-panel p-col-fixed">
         <button pButton type="button" icon="pi pi-clone" title="Hide or show project structure" iconPos="left"
             class="ui-button-secondary" (click)="hideFileBrowser()"></button>
-        <button pButton type="button" icon="pi pi-file" iconPos="left" class="ui-button-secondary" disabled></button>
         <button pButton routerLink="/project/{{projectId}}" title="Project details" type="button" icon="pi pi-info"
             iconPos="left" class="ui-button-secondary"></button>
         <button *ngIf="isAuthor()" pButton type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary"
