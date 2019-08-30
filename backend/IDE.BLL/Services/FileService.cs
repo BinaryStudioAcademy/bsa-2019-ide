@@ -70,6 +70,7 @@ namespace IDE.BLL.Services
         public async Task<FileDTO> GetByIdAsync(string id)
         {
             var file = await _fileRepository.GetByIdAsync(id);
+            //file.IsOpen = true;
             if (file == null)
             {
                 _logger.LogWarning(LoggingEvents.GetItemNotFound, $"GetFileById({id}) NOT FOUND");
@@ -93,6 +94,11 @@ namespace IDE.BLL.Services
             var fileCreate = _mapper.Map<File>(fileCreateDto);
             fileCreate.CreatedAt = DateTime.Now;
             fileCreate.CreatorId = creatorId;
+            fileCreate.IsOpen = false;
+            var index = fileCreate.Name.IndexOf('.') + 1;
+            var name = fileCreate.Name;
+            var expantion = name.Substring(index, name.Length- index);
+            fileCreate.Language= GetFileLanguage(expantion);
             var createdFile = await _fileRepository.CreateAsync(fileCreate);
 
             var searchFile = _mapper.Map<FileSearch>(createdFile);
@@ -120,6 +126,7 @@ namespace IDE.BLL.Services
             currentFileDto.Content = fileUpdateDTO.Content;
             currentFileDto.UpdaterId = updaterId;
             currentFileDto.UpdatedAt = DateTime.Now;
+            currentFileDto.IsOpen = fileUpdateDTO.IsOpen;
 
             var fileUpdate = _mapper.Map<File>(currentFileDto);
             await _fileRepository.UpdateAsync(fileUpdate);
@@ -145,6 +152,7 @@ namespace IDE.BLL.Services
             currentFileDto.Name = fileRenameDTO.Name;
             currentFileDto.UpdaterId = updaterId;
             currentFileDto.UpdatedAt = DateTime.Now;
+            currentFileDto.Language= GetFileLanguage(fileRenameDTO.Name);
 
             var fileUpdate = _mapper.Map<File>(currentFileDto);
             await _fileRepository.UpdateAsync(fileUpdate);
@@ -183,6 +191,26 @@ namespace IDE.BLL.Services
         {
             file.Creator = await _userService.GetUserById(file.CreatorId);
             file.Updater = file.UpdaterId.HasValue ? await _userService.GetUserById(file.UpdaterId.Value) : null;
+        }
+
+        private string  GetFileLanguage(string name)
+        {
+            switch (name)
+            {
+                case "js":
+                    return "javascript";
+                case "ts":
+                    return "typescript";
+                case "cs":
+                    return "csharp";
+                case "html":
+                    return "html";
+                case "go":
+                    return "go";
+                case "css":
+                    return "css";
+            }
+            return "";
         }
     }
 }

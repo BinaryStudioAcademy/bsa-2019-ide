@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { BuildDTO } from 'src/app/models/DTO/Common/buildDTO';
 import { BuildDescriptionDTO } from 'src/app/models/DTO/Common/buildDescriptionDTO';
 
 @Component({

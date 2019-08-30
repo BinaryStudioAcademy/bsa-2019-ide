@@ -1,0 +1,24 @@
+[
+    { 
+        "name": "light",
+        "colors": {
+            "--inactive-tab-color": "#dee1e6",
+            "--active-tab-color": "#fff",
+            "--icon-tab-color": "#000",
+            "--text-tab-color": "#000",
+            "--close-cross-tab-color": "#8b8b8b",
+            "--close-cross-hover-tab-color": "#000"
+        }
+    },
+    { 
+        "name": "dark",
+        "colors": {
+            "--inactive-tab-color": "#444",
+            "--active-tab-color": "#1e1e1e",
+            "--icon-tab-color": "#d3d3d3",
+            "--text-tab-color": "#d3d3d3",
+            "--close-cross-tab-color": "#8b8b8b",
+            "--close-cross-hover-tab-color": "#d3d3d3"
+        }
+    }    
+]

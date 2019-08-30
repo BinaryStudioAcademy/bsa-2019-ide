@@ -7,6 +7,7 @@ import { FileDTO } from '../models/DTO/File/fileDTO';
 import { DialogService } from 'primeng/api';
 import { EditorSettingsComponent } from '../modules/editor/components/editor-settings/editor-settings.component';
 import { ProjectInfoDTO } from '../models/DTO/Project/projectInfoDTO';
+import { EditorSettingDTO } from '../models/DTO/Common/editorSettingDTO';
 import { ConsoleComponent } from '../modules/workspace/console/console.component';
 
 @Injectable({
@@ -19,25 +20,27 @@ export class WorkspaceService {
         private req: HttpClientWrapperService
         ) { }
 
-    public show(project: ProjectInfoDTO) {
+    public show(project: ProjectInfoDTO): Observable<any> {
         const ref = this.dialogService.open(EditorSettingsComponent,
-          {
-              data: { 
-                  project: project,
-                  type: "workspace"
-              },
-              width: '500px',
-              style: {
-                  'box-shadow': '0 0 3px 0 #000',
-              },
-              contentStyle: {
-                  'border-radius': '3px',
-                  'overflow-y': 'auto',
-                  'max-height': '90vh'
-              },
-              showHeader: false
-          })
-      }
+        {
+            data: { 
+                project: project,
+                type: "workspace"
+            },
+            width: '500px',
+            style: {
+                'box-shadow': '0 0 3px 0 #000',
+            },
+            contentStyle: {
+                'border-radius': '3px',
+                'overflow-y': 'auto',
+                'max-height': '90vh'
+            },
+            showHeader: false,
+            closeOnEscape: true
+        });
+        return ref.onClose;
+    }
 
     public getFileById(fileId): Observable<HttpResponse<FileDTO>> {
         return this.req.getRequest(`files/${fileId}`);

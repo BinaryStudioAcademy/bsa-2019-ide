@@ -15,14 +15,18 @@ import { FileInfoComponent } from './file-info/file-info.component';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {OrderListModule} from 'primeng/orderlist';
 import { EditorSettingsComponent } from '../editor/components/editor-settings/editor-settings.component';
+import { ImportFileComponent } from './import-file/import-file.component';
+import {FileUploadModule} from 'primeng/fileupload';
+import { ProgressSpinnerModule} from 'primeng/progressspinner';
 import { ConsoleComponent } from './console/console.component';
 
 @NgModule({
   declarations: [
       WorkspaceRootComponent, 
       FileBrowserSectionComponent, 
-      EditorSectionComponent, 
-      FileInfoComponent, 
+      EditorSectionComponent,
+      FileInfoComponent,
+      ImportFileComponent,
       ConsoleComponent
     ],
   imports: [
@@ -40,7 +44,9 @@ import { ConsoleComponent } from './console/console.component';
     ContextMenuModule,
     ProgressBarModule,
     OrderListModule,
-    ProgressBarModule
+    ProgressBarModule,
+    FileUploadModule,
+    ProgressSpinnerModule
   ],
   entryComponents: [
       EditorSettingsComponent,

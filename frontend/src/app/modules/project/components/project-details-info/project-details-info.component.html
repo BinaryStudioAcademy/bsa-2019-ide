@@ -75,7 +75,7 @@
 <div class="proj-info-button-wrapper p-grid">
     <div *ngIf="IsAuthor()" class="p-col-9 p-col-align-start">
         <div>
-            <button pButton icon="pi pi-pencil" routerLink="/project/{{project.id}}/settings" label="Edit"></button>
+            <button pButton icon="pi pi-pencil" (click)="showSettings()" label="Edit"></button>
             <app-confirmation-dialog buttonName="Delete" [header]="getRemovingHeader()"
                 message="Do you want to delete this project?" (IsConfirmed)="remove($event)"></app-confirmation-dialog>
         </div>
