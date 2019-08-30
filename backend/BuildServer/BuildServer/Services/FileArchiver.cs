@@ -21,7 +21,6 @@ namespace BuildServer.Services
 
         public void CreateArchive(string project)
         {
-
             ZipFile.CreateFromDirectory(_buildDirectory + project, _outputDirectory + project + ".zip");
         }
 

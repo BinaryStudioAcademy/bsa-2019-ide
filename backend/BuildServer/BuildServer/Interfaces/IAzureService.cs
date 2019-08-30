@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace BuildServer.Interfaces
 {
     public interface IAzureService
     {
-        Task Upload(string fileName);
-        Task Download(string fileName);
+        Task<Uri> Upload(string fileName);
+        Task Download(Uri downloadUri, string fileName);
     }
 }

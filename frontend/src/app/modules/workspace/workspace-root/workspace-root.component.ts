@@ -23,7 +23,7 @@ import { ProjectType } from '../../project/models/project-type';
 import { RightsService } from 'src/app/services/rights.service/rights.service';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
-import { FileBrowserSectionComponent } from '../file-browser-section/file-browser-section.component';
+import { FileBrowserSectionComponent, SelectedFile } from '../file-browser-section/file-browser-section.component';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
 import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
@@ -127,7 +127,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public Settings() {
-        this.workSpaceService.show(this.project);
+        const a = this.workSpaceService.show(this.project);
+        a.subscribe(
+            (resp) => {
+                if(resp) {
+                    this.options = resp as EditorSettingDTO;
+                }
+            }
+        );  
     }
 
     public setUserAccess() {
@@ -163,21 +170,21 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         }
     }
 
-    public onFileSelected(fileId: string): void {
-        if (this.editor && this.editor.openedFiles.some(f => f.innerFile.id === fileId)) {
-            this.editor.activeItem = this.editor.tabs.find(i => i.id === fileId);
-            this.editor.code = this.editor.openedFiles.find(f => f.innerFile.id === fileId).innerFile.content;
+    public onFileSelected(selectedFile: SelectedFile): void {
+        if (this.editor && this.editor.openedFiles.some(f => f.innerFile.id === selectedFile.fileId)) {
+            this.editor.activeItem = this.editor.tabs.find(i => i.id === selectedFile.fileId);
+            this.editor.code = this.editor.openedFiles.find(f => f.innerFile.id === selectedFile.fileId).innerFile.content;
             return;
         }
 
-        this.workSpaceService.getFileById(fileId)
+        this.workSpaceService.getFileById(selectedFile.fileId)
             .subscribe(
                 (resp) => {
                     if (resp.ok) {
                         const { id, name, content, folder, updaterId } = resp.body as FileDTO;
                         const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder };
                         this.editor.AddFileToOpened(fileUpdateDTO);
-                        this.editor.tabs.push({ label: name, icon: 'fa fa-fw fa-file', id: id });
+                        this.editor.tabs.push({ label: name, icon: selectedFile.fileIcon, id: id });
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
                         this.editor.code = content;
                     } else {
