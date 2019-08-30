@@ -6,5 +6,6 @@
         public long UsersCount { get; set; }
         public long ProjectsCount { get; set; }
         public long CollaboratorsCount { get; set; }
+        public long BuildCount { get; set; }
     }
 }

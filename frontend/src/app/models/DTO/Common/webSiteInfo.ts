@@ -5,4 +5,5 @@ export interface WebSiteInfo {
     usersCount: number;
     projectsCount: number;
     collaboratorsCount: number;
+    buildCount: number;
 }

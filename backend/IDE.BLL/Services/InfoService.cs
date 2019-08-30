@@ -30,7 +30,8 @@ namespace IDE.BLL.Services
                 FilesCount = await _fileRepository.GetItemsCount(),
                 CollaboratorsCount = _context.ProjectMembers.LongCount(),
                 ProjectsCount = _context.Projects.LongCount(),
-                UsersCount = _context.Users.LongCount()
+                UsersCount = _context.Users.LongCount(),
+                BuildCount = _context.Builds.Count()
             };
         }
     }

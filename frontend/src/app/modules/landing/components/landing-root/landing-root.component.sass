@@ -1,31 +1,9 @@
 .container 
     width: 100%
 
-.center
-    text-align: center
-
-.text-block
-    padding: 20px
-    display: flex
-    justify-content: center
-    flex-direction: column
-    height: 100%
-.text-block-categories 
-    margin-top: 0
-
-.first-block, .statistics
-    color: #6E6D6D
-    padding: 0 5%
-
-.statistics
-    height: 40vh
-
-.second-block 
+.header
     background: #5db4e9
     color: white
-    padding: 40px 5%
-
-.header
     height: 95vh
     position: relative
     
@@ -41,6 +19,59 @@
     height: 100%
     text-align: center
 
+.first-block, .statistics
+    color: #6E6D6D
+    padding: 0 5%
+    
+.second-block 
+    background: #5db4e9
+    color: white
+    padding: 40px 5%
+
+.statistics, .join-us
+    height: 40vh
+
+.comments
+    padding: 20px 7%
+    color: #6E6D6D
+.comments h3
+    font-size: 3em
+
+.join-us
+    background: #5db4e9
+    padding: 0 5%
+    font-size: 1.5em
+    color: white
+
+.join-us button
+    width: 40%
+    height: 10vh
+    font-size: 2em
+    border: none
+    cursor: pointer
+    border-radius: 5px
+    margin: 0 auto
+    box-shadow: 0 0 10px rgba(0,0,0,0.5)
+    background: orange
+
+.text-block
+    padding: 20px
+    height: 100%
+    display: flex
+    justify-content: center
+    flex-direction: column
+
+.text-block-center
+    padding: 20px
+    display: flex
+    justify-content: center
+    flex-direction: column
+    text-align: center
+    height: 100%
+
+.text-block-categories 
+    margin-top: 0
+
 .image-container
     position: relative
 
@@ -51,7 +82,10 @@
     bottom: 0
     left: 0
     right: 0
-    height: 40vh
+
+.img-center
+    display: inline-block
+    margin: 0 auto
 
 h3
     text-align: center
@@ -93,6 +127,8 @@ h3
     vertical-align: center
     margin: 12px auto 0 auto
     font-size: 0.7em
+    display: flex
+    justify-content: space-between
 
 .footer span
     margin-top: 15px
@@ -100,7 +136,5 @@ h3
 .footer i
     margin: -7px 0 0 6px
 
-.align-right
-    text-align: right
 a  
     color: black
