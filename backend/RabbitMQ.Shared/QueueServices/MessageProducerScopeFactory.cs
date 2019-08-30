@@ -7,6 +7,7 @@ namespace RabbitMQ.Shared.QueueServices
     public class MessageProducerScopeFactory : IMessageProducerScopeFactory
     {
         private readonly IConnectionFactory _connectionFactory;
+        private IMessageProducerScope _mqProducerScope;
 
         public MessageProducerScopeFactory(IConnectionFactory connectionFactory)
         {
@@ -15,7 +16,10 @@ namespace RabbitMQ.Shared.QueueServices
 
         public IMessageProducerScope Open(MessageScopeSettings messageScopeSettings)
         {
-            return new MessageProducerScope(_connectionFactory, messageScopeSettings);
+            if (_mqProducerScope == null)
+                _mqProducerScope = new MessageProducerScope(_connectionFactory, messageScopeSettings);
+
+            return _mqProducerScope;
         }
     }
 }

@@ -27,6 +27,8 @@ import {FileUploadModule} from 'primeng/fileupload';
 import { HistoryChangesComponent } from './components/history-changes/history-changes.component';
 import {AccordionModule} from 'primeng/accordion';
 import { HistorySearchPipe } from './pipes/history-search.pipe';
+import { UserBuildHistoryComponent } from './components/user-build-history/user-build-history.component';
+import { BuildHistoryTabComponent } from './components/build-history-tab/build-history-tab.component';
 
 
 @NgModule({
@@ -37,7 +39,9 @@ import { HistorySearchPipe } from './pipes/history-search.pipe';
     ProjectDetailsUserStatisticsComponent,
     ProjectWindowComponent,
     HistoryChangesComponent,
-    HistorySearchPipe
+    HistorySearchPipe,
+    UserBuildHistoryComponent,
+    BuildHistoryTabComponent
   ],
   imports: [
     FormsModule,

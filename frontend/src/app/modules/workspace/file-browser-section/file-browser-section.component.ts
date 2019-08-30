@@ -24,6 +24,11 @@ import { SearchFileService } from 'src/app/services/search-file.service/search-f
 import { FileSearchResultDTO } from 'src/app/models/DTO/File/fileSearchResultDTO';
 import { Observable } from 'rxjs';
 
+export interface SelectedFile {
+    fileId: string;
+    fileIcon: string;
+}
+
 @Component({
     selector: 'app-file-browser-section',
     templateUrl: './file-browser-section.component.html',
@@ -32,7 +37,7 @@ import { Observable } from 'rxjs';
 export class FileBrowserSectionComponent implements OnInit {
     @Input() project: ProjectInfoDTO;
     @Input() showSearchField:boolean;
-    @Output() fileSelected = new EventEmitter<string>();
+    @Output() fileSelected = new EventEmitter<SelectedFile>();
     @Output() renameFile = new EventEmitter<FileRenameDTO>();
     @Input() events: Observable<void>;
     
@@ -88,12 +93,13 @@ export class FileBrowserSectionComponent implements OnInit {
         this.fileNameRegex = /^[A-Z0-9.]+$/gi
         this.extensions = filesExtensions;
         this.items = [
-            { label: 'create file', icon: 'fa fa-file', command: () => this.createFile(this.selectedItem),  },
-            { label: 'create folder', icon: 'fa fa-folder', command: () => this.createFolder(this.selectedItem) },
-            { label: 'delete', icon: 'fa fa-remove', command: () => this.delete(this.selectedItem) },
-            { label: 'info', icon: 'fa fa-info', command: () => this.openInfoWindow(this.selectedItem)},
-            { label: 'rename', icon: 'fa fa-refresh', command: () => this.rename(this.selectedItem)},
-            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) }
+            { label: 'create file', icon: 'pi pi-fw pi-file', command: () => this.createFile(this.selectedItem),  },
+            { label: 'create folder', icon: 'pi pi-fw pi-folder', command: () => this.createFolder(this.selectedItem) },
+            { label: 'delete', icon: 'pi pi-fw pi-trash', command: () => this.delete(this.selectedItem) },
+            { label: 'info', icon: 'pi pi-fw pi-info', command: () => this.openInfoWindow(this.selectedItem)},
+            { label: 'rename', icon: 'pi pi-fw pi-refresh', command: () => this.rename(this.selectedItem)},
+            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) },
+            { label: 'import', icon: 'pi pi-upload', command: ()=> this.openImportWindow(this.selectedItem)}
         ];
 
         this.eventsSubscription = this.events.subscribe(() => this.expand())
@@ -157,11 +163,19 @@ export class FileBrowserSectionComponent implements OnInit {
         }
     }
 
-    private openInfoWindow(node: TreeNode)
-    {
+    private openInfoWindow(node: TreeNode){
         this.fileBrowserService.OpenModalWindow(node,this.projectId.toString());
     }
   
+    private openImportWindow(node: TreeNode){
+        if(node.type == TreeNodeType.file.toString()){
+            this.toast.info("Select folder, please")
+        }
+        else{
+            this.fileBrowserService.OpenImportModalWindow(node, this.projectId.toString());
+        }
+    }
+
     private getFolderName(node: TreeNode): string{
         if (node.type === TreeNodeType.file.toString()) {
             return node.parent.label;
@@ -463,7 +477,8 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     onFileResultSelected(evt) {
-        this.fileSelected.emit(evt.value[0].fileId);
+        const selectedFile: SelectedFile = {fileId: evt.value[0].fileId, fileIcon: 'fa fa-fw fa-file'};
+        this.fileSelected.emit(selectedFile);
     }
 
     private expandRecursive(node:TreeNode, isExpand:boolean){
@@ -491,7 +506,8 @@ export class FileBrowserSectionComponent implements OnInit {
         this.cacheElement(evt);
         const nodeSelected: TreeNode = evt.node;
         if (nodeSelected.type === TreeNodeType.file.toString()) {
-            this.fileSelected.emit(nodeSelected.key);
+            const selectedFile: SelectedFile = {fileId: nodeSelected.key, fileIcon: nodeSelected.icon};
+            this.fileSelected.emit(selectedFile);
         }
     }
 
