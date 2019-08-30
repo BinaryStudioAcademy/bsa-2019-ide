@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
-import { LikedProjectsInLanguageDTO } from 'src/app/models/DTO/Project/likedProjectsInLanguageDTO';
 import { WebSiteInfo } from 'src/app/models/DTO/Common/webSiteInfo';
+import { LikedProjectDTO } from 'src/app/models/DTO/Project/likedProjectDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +14,7 @@ export class InfoService {
 
     constructor(private httpClient: HttpClientWrapperService) { }
 
-    public getMostLikedProjects(): Observable<HttpResponse<LikedProjectsInLanguageDTO[]>> {
+    public getMostLikedProjects(): Observable<HttpResponse<LikedProjectDTO[]>> {
         return this.httpClient.getRequest(this.address);
     }
 

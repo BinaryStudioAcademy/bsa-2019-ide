@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { InfoService } from 'src/app/services/info.service/info.service';
-import { LikedProjectsInLanguageDTO } from 'src/app/models/DTO/Project/likedProjectsInLanguageDTO';
 import { WebSiteInfo } from 'src/app/models/DTO/Common/webSiteInfo';
 import { AuthDialogService } from 'src/app/services/auth-dialog.service/auth-dialog.service';
 import { DialogType } from 'src/app/modules/authorization/models/auth-dialog-type';
 import { Comment } from '../../model/comment';
+import { LikedProjectDTO } from 'src/app/models/DTO/Project/likedProjectDTO';
 
 @Component({
   selector: 'app-landing-root',
@@ -12,10 +12,9 @@ import { Comment } from '../../model/comment';
   styleUrls: ['./landing-root.component.sass']
 })
 export class LandingRootComponent implements OnInit {
-    private MAX_DESCRIPTION_LENGTH = 47;
+    private MAX_DESCRIPTION_LENGTH = 197;
     menuItems: { name: string, url?: string }[];
-    shownProjects: LikedProjectsInLanguageDTO;
-    allLikedProjects: LikedProjectsInLanguageDTO[];
+    likedProjects: LikedProjectDTO[];
     smthWrong = true;
     noInfo = true;
     constructor(private infoService: InfoService,
@@ -52,9 +51,8 @@ export class LandingRootComponent implements OnInit {
 
         this.infoService.getMostLikedProjects()
             .subscribe(data => {
-                    this.allLikedProjects = this.makeDescriptionShorter(data.body);
+                    this.likedProjects = this.makeDescriptionShorter(data.body);
                     this.smthWrong = false;
-                    this.shownProjects = this.allLikedProjects.find(x => x.projectType === 1);
                     this.active = 1;
                 }, error => this.smthWrong = true);
         this.infoService.getWebSiteStats()
@@ -69,19 +67,13 @@ export class LandingRootComponent implements OnInit {
         this.authDialogService.openAuthDialog(DialogType.SignUp);
     }
 
-    showProjects(i) {
-        this.active = i;
-        this.shownProjects = this.allLikedProjects.find(x => x.projectType === i);
-    }
-
-    private makeDescriptionShorter(projects: LikedProjectsInLanguageDTO[]) {
+    private makeDescriptionShorter(projects: LikedProjectDTO[]) {
         const MAX_LENGTH = this.MAX_DESCRIPTION_LENGTH + 3;
-        projects.forEach(element => {
-            element.likedProjects.forEach(project => {
-                if (project.projectDescription.length > MAX_LENGTH) {
-                    project.projectDescription = project.projectDescription.substr(0, this.MAX_DESCRIPTION_LENGTH) + '...';
-                }
-            });
+        console.log(projects);
+        projects.forEach(project => {
+            if (project.projectDescription.length > MAX_LENGTH) {
+                project.projectDescription = project.projectDescription.substr(0, this.MAX_DESCRIPTION_LENGTH) + '...';
+            }
         });
         return projects;
     }

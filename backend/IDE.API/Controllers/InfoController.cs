@@ -25,7 +25,7 @@ namespace IDE.API.Controllers
         }
 
         [HttpGet]
-        public Task<IEnumerable<LikedProjectInLanguageDTO>> GetMostLikedProjects()
+        public Task<IEnumerable<LikedProjectDTO>> GetMostLikedProjects()
         {
             return _projectService.GetLikedProjects();
         }

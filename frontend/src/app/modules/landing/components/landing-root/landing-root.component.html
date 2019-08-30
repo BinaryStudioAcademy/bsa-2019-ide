@@ -54,6 +54,15 @@
             </div>
         </div>
 
+        <div class="ui-g-12 projects" *ngIf="!smthWrong">
+            <div class="ui-g-12">
+                <h3>Our most popular projects</h3>
+            </div>
+            <div class="ui-g-4" *ngFor="let project of likedProjects">
+                <app-project-card [project]="project"></app-project-card>
+            </div>
+        </div>
+        
         <div class="comments ui-g-12">
             <div class="ui-g-12">
                 <h3>What other people tell about us</h3>
@@ -69,23 +78,6 @@
             <p>We promise, you would like it</p>
         </div>
 
-
-        <div class="languageContainer" *ngIf="!smthWrong">
-            <div class="ui-g-12 line">
-            </div>
-            <div class="p-grid ui-g-12">
-                <div class="p-col language" *ngFor="let item of menuItems; index as i">
-                    <div class="block">
-                        <div class="image" [ngClass]="{'active': active === i}"
-                         (click)="showProjects(i)" [style.background-image]="'url(' + item.url + ')'"></div>
-                        <p>{{item.name}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="projects ui-g-12">
-                <app-projects-list [projects]="shownProjects === undefined ? null : shownProjects.likedProjects"></app-projects-list>
-            </div>
-        </div>
         <div class="ui-g-12 footer">
             <div>
                 <span>&copy; 2019 Online IDE</span>
