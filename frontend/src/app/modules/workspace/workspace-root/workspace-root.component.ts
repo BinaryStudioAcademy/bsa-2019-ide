@@ -1,8 +1,9 @@
+import { EventService } from './../../../services/event.service/event.service';
 import { LeavePageDialogService } from './../../../services/leave-page-dialog.service';
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, OnChanges, ChangeDetectorRef, AfterContentInit } from '@angular/core';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -30,14 +31,18 @@ import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 import { BuildService } from 'src/app/services/build.service';
 import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
+import { filter } from 'rxjs/operators';
 
 @Component({
     selector: 'app-workspace-root',
     templateUrl: './workspace-root.component.html',
     styleUrls: ['./workspace-root.component.sass']
 })
-export class WorkspaceRootComponent implements OnInit, OnDestroy {
-
+export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+    ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
+        throw new Error("Method not implemented.");
+    }
+    public prepareQuery;
     public projectId: number;
     public userId: number;
     public access: UserAccess;
@@ -59,7 +64,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
-    @ViewChild('fileBrowser', { static: false })
+    @ViewChild(FileBrowserSectionComponent, { static: false })
     private fileBrowser: FileBrowserSectionComponent;
 
     constructor(
@@ -73,18 +78,55 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private projectEditService: ProjectDialogService,
         private tokenService: TokenService,
         private hotkeys: HotkeyService,
-        private buildService: BuildService) {
+        private buildService: BuildService,
+        private eventService: EventService,
+        private cdr: ChangeDetectorRef) {
+
         this.hotkeys.addShortcut({ keys: 'shift.h' })
             .subscribe(() => {
                 this.hideFileBrowser();
             });
     }
+    
+    ngAfterViewInit() {
+        console.log("afterviewinit");
+        this.route.queryParams.subscribe(params => {
+            if (!!params['query']) {
+                this.fileBrowser.curSearch = params['query'];
+                this.showSearchField = true;
+                this.cdr.detectChanges();
+            }
+            // if (!!params['fileId']) {
+            //     console.log(params['fileId']);
+            //     setTimeout(() => {
+            //         this.onFileSelected(params['fileId']);
+            //     }, 6000)
+            //     this.onFileSelected(params['fileId']);
+            // }
+        });
+    }
+
+
 
     ngOnInit() {
+        this.eventService.initComponentFinished$.
+            pipe(
+                filter(m => m === "EditorSectionComponent"),
+                switchMap(m => {
+                    return this.route.queryParams;
+                }),
+                filter(params => !!params['fileId']),
+                map(params => params['fileId']))
+                .subscribe(fileId => this.onFileSelected(fileId));
+
         this.userId = this.tokenService.getUserId();
         this.routeSub = this.route.params.subscribe(params => {
             this.projectId = params['id'];
+
+
         });
+
+
         this.projectService.getAuthorId(this.projectId)
             .subscribe(
                 (resp) => {
@@ -106,6 +148,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                 });
     }
 
+
+
     public getProjectById() {
         this.projectService.getProjectById(this.projectId)
             .subscribe(
@@ -115,6 +159,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                     if (this.canNotEdit) {
                         this.options.readOnly = true;
                     }
+                    this.eventService.currProjectSwitch({ id: this.project.id, name: this.project.name });
                 },
                 (error) => {
                     this.toast.error("Can't load selected project.", 'Error Message');
@@ -169,7 +214,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
             this.editor.code = this.editor.openedFiles.find(f => f.innerFile.id === fileId).innerFile.content;
             return;
         }
-
+        console.log(this.editor);
         this.workSpaceService.getFileById(fileId)
             .subscribe(
                 (resp) => {

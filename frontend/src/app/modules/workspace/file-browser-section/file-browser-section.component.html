@@ -12,11 +12,11 @@
                         (input)="setIcon(node)" (keyup.enter)="focusout(node)" (keydown)="inputKeyDown($event)" disabled>
         </ng-template>
     </p-tree>
-
+    
     <div *ngIf="showSearchField">
         <div class="file-search">
-            <input type="text" class="file-search-keyword" placeholder="Keyword" #keywordInput>
-            <button pButton class="file-search-submit" type="submit" label="Search" (click)="searchByFiles(keywordInput.value)"></button>
+            <input type="text" [(ngModel)]="curSearch" (ngModelChange)="showChange()" class="file-search-keyword" placeholder="Keyword" #keywordinput>
+            <button pButton class="file-search-submit" type="submit" label="Search" (click)="searchByFiles(keywordinput.value)"></button>
         </div>
         <p-orderList *ngIf="fileSearchResults" [value]="fileSearchResults" (onSelectionChange) = "onFileResultSelected($event)">
             <ng-template let-result pTemplate="item">

@@ -72,11 +72,15 @@ namespace IDE.BLL.Services
             return _mapper.Map<ProjectDTO>(project);
         }
 
-        public async Task<ICollection<SearchProjectDTO>> GetProjectsName()
+        public async Task<ICollection<SearchProjectDTO>> GetProjectsName(int userId)
         {
-            var project = await _context.Projects
-                .Select(item => new SearchProjectDTO { Id = item.Id, Name = item.Name }).ToListAsync();
-            return project;
+            var availableProjects = _context.Projects
+            .Where(pr => pr.AccessModifier == AccessModifier.Public
+                    || pr.AuthorId == userId
+                    || pr.ProjectMembers.Any(prM => prM.UserId == userId))
+            .Select(item => new SearchProjectDTO { Id = item.Id, Name = item.Name }).ToListAsync();
+            
+            return await availableProjects;
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId)

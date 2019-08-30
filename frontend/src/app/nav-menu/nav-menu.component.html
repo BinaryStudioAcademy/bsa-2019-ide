@@ -1,13 +1,16 @@
 <div class="menu-wrapper">
   <p-menubar [model]="getMenuItems()">
+        
     <div class="right-part">
+           
       <div *ngIf="isAuthorized">
+        <span style="display:inline-block;margin: 5px;"> {{currProject ? 'Current Project: ' + currProject.name: 'Project not selected' }}</span>
         <p-autoComplete class="auto-complete" [(ngModel)]="project" [suggestions]="filterProhects"
           (completeMethod)="filterProject($event)" field="name" [size]="30" placeholder="Project title..."
           [minLength]="1" (onSelect)="checkProject(project)">
           <ng-template let-proj pTemplate="item">
             <div class="ui-helper-clearfix" style="" [ngSwitch]="proj.id">
-              <svg *ngSwitchCase="-1" height="16" width="16" title="Search" aria-label="Search" viewBox="0 0 16 16"
+              <svg *ngIf="proj.id == -1 || proj.id == -3" height="16" width="16" title="Search" aria-label="Search" viewBox="0 0 16 16"
                 version="1.1" role="img"
                 style="width:32px;display:inline-block;margin:5px 0 -2px 5px">
                 <path fill-rule="evenodd"
@@ -15,7 +18,7 @@
                 </path>
               </svg>
             
-              <svg *ngSwitchDefault height="16" width="16" title="Repository" aria-label="Repository"
+              <svg  *ngIf="proj.id >= 0 " height="16" width="16" title="Repository" aria-label="Repository"
                 viewBox="0 0 12 16" version="1.1" role="img"
                 style="width:32px;display:inline-block;margin:5px 0 -2px 5px">
                 <path fill-rule="evenodd"
@@ -24,9 +27,11 @@
               </svg>
               <div style="font-size:16px;display:inline-block;margin:5px 10px 2px 5px">{{proj.name}}</div>
               <span *ngSwitchCase="-1" pButton type="button" class="ui-button-secondary" label="in this project" style="display:inline-block;margin:2px 0 2px 0;float:right;font-size:10px;"></span>
+              <span *ngSwitchCase="-3" pButton type="button" class="ui-button-secondary" label="in All projects" style="display:inline-block;margin:2px 0 2px 0;float:right;font-size:10px;"></span>
             </div>
           </ng-template>
         </p-autoComplete>
+        
         <p-splitButton label="My Profile" icon="pi pi-user" (onClick)="goToUserDetails()" [model]="items">
         </p-splitButton>
         <button class="bell-wrapper ui-button-secondary" pButton icon="pi pi-bell"

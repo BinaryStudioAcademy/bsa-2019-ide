@@ -1,8 +1,9 @@
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, AfterViewInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { CancelEditableRow } from 'primeng/table';
 import { EditorSettingDTO } from '../../../models/DTO/Common/editorSettingDTO'
+import { EventService } from 'src/app/services/event.service/event.service';
 
 export interface TabFileWrapper {
     isChanged: boolean;
@@ -14,10 +15,11 @@ export interface TabFileWrapper {
     templateUrl: './editor-section.component.html',
     styleUrls: ['./editor-section.component.sass']
 })
-export class EditorSectionComponent implements OnInit {
+export class EditorSectionComponent implements OnInit , AfterViewInit{
 
     @Input() public monacoOptions: EditorSettingDTO;
     @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
+
     
 
     // FOR REFACTOR
@@ -29,8 +31,11 @@ export class EditorSectionComponent implements OnInit {
 
     code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
 
-    constructor() { }
+    constructor(private eventService: EventService) { }
 
+    ngAfterViewInit() {
+        this.eventService.componentAfterInit("EditorSectionComponent");
+    }
     ngOnInit() {
     }
 

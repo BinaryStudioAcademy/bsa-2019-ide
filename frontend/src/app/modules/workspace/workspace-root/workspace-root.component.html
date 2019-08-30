@@ -28,7 +28,7 @@
     <div class="p-col">
         <div class="inner-wrapper p-grid p-nogutter ">
             <div *ngIf="showFileBrowser" class="file-browser-content p-col-12 p-md-4 p-xl-2 p-align-stretch">
-                <app-file-browser-section #fileBrowser (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
+                <app-file-browser-section  (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
                     [showSearchField]="showSearchField" [events]="eventsSubject.asObservable()" [project]="project">
                 </app-file-browser-section>
             </div>

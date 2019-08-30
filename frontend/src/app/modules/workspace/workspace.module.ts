@@ -10,17 +10,19 @@ import {TreeModule} from 'primeng/tree';
 import {MonacoEditorModule} from '@materia-ui/ngx-monaco-editor';
 import { FormsModule } from '@angular/forms';
 import {TabMenuModule} from 'primeng/tabmenu';
-import { ContextMenuModule, MenuModule } from 'primeng/primeng';
+import { ContextMenuModule, MenuModule, FieldsetModule, CardModule, ScrollPanelModule, PanelModule, ProgressSpinnerModule } from 'primeng/primeng';
 import { FileInfoComponent } from './file-info/file-info.component';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {OrderListModule} from 'primeng/orderlist';
 import { EditorSettingsComponent } from '../editor/components/editor-settings/editor-settings.component';
+import { GlobalSearchOutputComponent } from './global-search-output/global-search-output.component';
+import { HighlightMatchDirective } from 'src/app/directives/highlight-match.directive';
 
 @NgModule({
   declarations: [
       WorkspaceRootComponent, 
       FileBrowserSectionComponent, 
-      EditorSectionComponent, FileInfoComponent
+      EditorSectionComponent, FileInfoComponent, GlobalSearchOutputComponent,HighlightMatchDirective
     ],
   imports: [
     MenuModule,
@@ -37,7 +39,12 @@ import { EditorSettingsComponent } from '../editor/components/editor-settings/ed
     ContextMenuModule,
     ProgressBarModule,
     OrderListModule,
-    ProgressBarModule
+    ProgressBarModule,
+    FieldsetModule,
+    CardModule,
+    ScrollPanelModule,
+    PanelModule,
+    ProgressSpinnerModule
   ],
   entryComponents: [
       EditorSettingsComponent

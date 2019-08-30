@@ -1,6 +1,6 @@
 import { MenuItem, TreeNode } from 'primeng/primeng';
 import { FileBrowserService } from './../../../services/file-browser.service';
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { TreeNodeType } from "../../../models/Enums/treeNodeType"
 import { ActivatedRoute } from '@angular/router';
 import { FileService } from 'src/app/services/file.service/file.service';
@@ -30,12 +30,15 @@ import { Observable } from 'rxjs';
     styleUrls: ['./file-browser-section.component.sass']
 })
 export class FileBrowserSectionComponent implements OnInit {
+
+    
+    
     @Input() project: ProjectInfoDTO;
     @Input() showSearchField:boolean;
     @Output() fileSelected = new EventEmitter<string>();
     @Output() renameFile = new EventEmitter<FileRenameDTO>();
     @Input() events: Observable<void>;
-    
+    public curSearch;
     items: MenuItem[];
     public files: TreeNode[];
     public selectedItem: TreeNode;
@@ -73,6 +76,7 @@ export class FileBrowserSectionComponent implements OnInit {
     contextMenuSaveButton: MenuItem[];
     
     ngOnInit() {
+        
         this.projectStructureService.getProjectStructureById(this.projectId).subscribe(
             (response) => {
                 this.files = [];
@@ -96,9 +100,12 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) }
         ];
 
-        this.eventsSubscription = this.events.subscribe(() => this.expand())
+        this.eventsSubscription = this.events.subscribe(() => this.expand());
+        
     }
-
+    showChange(){
+        console.log(this.curSearch);
+    }
     ngOnDestroy() {
         this.eventsSubscription.unsubscribe()
     }
@@ -226,6 +233,7 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     public inputKeyDown(event: any) {
+        
         const pos = event.target.selectionStart;
         switch(event.keyCode) {
             case 37:
