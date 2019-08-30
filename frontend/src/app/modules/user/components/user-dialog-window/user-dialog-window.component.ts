@@ -55,7 +55,7 @@ export class UserDialogWindowComponent implements OnInit {
                 lastName: ['', Validators.required],
                 nickName: ['', Validators.required],
                 gitHubUrl: ['', Validators.pattern("^[-a-zA-Z0-9._:\/]+$")],
-                birthday: ['', Validators.required]
+                birthday: ['']
             });
 
             this.userService.getUserDetailsFromToken()
@@ -146,13 +146,15 @@ export class UserDialogWindowComponent implements OnInit {
     }
     
     private getValuesForUpdateInfo() {
+        console.log(this.userForm.get('birthday').value)
+        const birthday = this.userForm.get('birthday').value;
         this.userUpdateInfo = {
             id: this.tokenService.getUserId(),
             firstName: this.userForm.get('firstName').value,
             lastName: this.userForm.get('lastName').value,
             nickName: this.userForm.get('nickName').value,
             gitHubUrl: this.userForm.get('gitHubUrl').value,
-            birthday:  this.userForm.get('birthday').value
+            birthday:  birthday === null ? '0001-01-01T00:00:00' : birthday
         }
     }
 
