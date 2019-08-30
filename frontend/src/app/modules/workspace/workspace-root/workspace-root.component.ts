@@ -270,6 +270,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     public hideFileBrowser() {
         this.showFileBrowser = !this.showFileBrowser;
+        this.showFileBrowser=false;
     }
 
     public editProjectSettings() {
