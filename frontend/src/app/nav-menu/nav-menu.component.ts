@@ -32,8 +32,8 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public notReadNotification: NotificationDTO[] = [];
     private unsubscribe$ = new Subject<void>();
     private userId: number;
-    private userName: string;
-    private userAvatar: string;
+    userName: string;
+    userAvatar: string;
 
 
     constructor(
@@ -171,7 +171,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.signalRService.deleteTransferChartDataListener();
     }
 
-    private getAvatarAndName(){
+    private getAvatarAndName(): void{
         this.userService
         .getUserDetailsFromToken()
         .pipe(takeUntil(this.unsubscribe$))
@@ -199,9 +199,8 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             .subscribe((auth) => {
                 this.isAuthorized = auth;
                 //this.userId = this.tokenService.getUserId();
-                
-                this.getAvatarAndName();
             });    
 
+            this.getAvatarAndName();
         }
 }
