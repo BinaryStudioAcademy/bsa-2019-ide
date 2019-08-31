@@ -8,12 +8,16 @@ import { HttpResponse } from '@angular/common/http';
 })
 export class BuildService {
 
-    private address = 'Project/build/';
+    private address = 'Project/';
 
     constructor(private httpClient: HttpClientWrapperService)
     { }
 
     public buildProject(id: number): Observable<HttpResponse<boolean>> {
-        return this.httpClient.getRequest(`${this.address}${id}`);
+        return this.httpClient.getRequest(`${this.address}build/${id}`);
+    }
+
+    public runProject(id: number, connectionId: string): Observable<HttpResponse<boolean>> {
+        return this.httpClient.getRequest(`${this.address}run/${id}/${connectionId}`);
     }
 }

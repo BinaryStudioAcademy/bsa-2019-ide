@@ -2,6 +2,7 @@
 {
     public interface IQueueService
     {
-        bool SendMessage(string message);
+        bool SendBuildMessage(string message);
+        bool SendRunMessage(string value);
     }
 }

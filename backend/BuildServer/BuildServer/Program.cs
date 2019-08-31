@@ -1,4 +1,5 @@
-﻿using BuildServer.Interfaces;
+﻿using BuildServer.Helpers;
+using BuildServer.Interfaces;
 using BuildServer.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +31,10 @@ namespace BuildServer
             services.AddTransient<IFileArchiver, FileArchiver>();
             services.Configure<FileArchiver>(configuration);
 
+            services.AddTransient<IAzureService, AzureService>();
+            services.Configure<AzureService>(configuration);
+            services.AddTransient(x => new ProcessKiller(configuration));
+
             RabbitMQConfigurations.ConfigureServices(services, configuration);
             services.AddScoped<IQueueService, QueueService>();
             StorageConfigurations.ConfigureServices(services, configuration);
@@ -50,10 +55,7 @@ namespace BuildServer
 
             Console.WriteLine("HelloWorld");
 
-            while (true)
-            {
-
-            }
+            while (true) { }
         }
     }
 }

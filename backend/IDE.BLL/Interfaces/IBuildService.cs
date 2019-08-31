@@ -9,5 +9,6 @@ namespace IDE.BLL.Interfaces
     {
         Task BuildDotNetProject(int projectId);
         Task<IEnumerable<BuildDescriptionDTO>> GetBuildsByProjectId(int userId);
+        Task RunDotNetProject(int projectId, string userIdentifier);
     }
 }
