@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { UserComment } from '../../model/userComment';
 
 @Component({
   selector: 'app-comment-card',
@@ -6,7 +7,7 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./comment-card.component.sass']
 })
 export class CommentCardComponent implements OnInit {
-    @Input() comment: Comment;
+    @Input() comment: UserComment;
     constructor() { }
 
     ngOnInit() {

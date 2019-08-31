@@ -3,7 +3,7 @@ import { InfoService } from 'src/app/services/info.service/info.service';
 import { WebSiteInfo } from 'src/app/models/DTO/Common/webSiteInfo';
 import { AuthDialogService } from 'src/app/services/auth-dialog.service/auth-dialog.service';
 import { DialogType } from 'src/app/modules/authorization/models/auth-dialog-type';
-import { Comment } from '../../model/comment';
+import { UserComment } from '../../model/userComment';
 import { LikedProjectDTO } from 'src/app/models/DTO/Project/likedProjectDTO';
 
 @Component({
@@ -21,7 +21,7 @@ export class LandingRootComponent implements OnInit {
                 private authDialogService: AuthDialogService) { }
     active: number;
     websiteInfo: WebSiteInfo;
-    comments: Comment[];
+    comments: UserComment[];
     
     ngOnInit() {
         this.menuItems = [
