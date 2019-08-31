@@ -47,6 +47,11 @@ namespace IDE.DAL.Repositories
         {
             await _items.DeleteOneAsync(item => item.Id == id);
         }
+        
+        public async Task<long> GetItemsCount()
+        {
+            return await _items.EstimatedDocumentCountAsync();
+        }
 
         private string GetItemsCollectionName()
         {

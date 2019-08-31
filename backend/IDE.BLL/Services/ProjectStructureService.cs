@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using File = System.IO.File;
+using Newtonsoft.Json;
 
 namespace IDE.BLL.Services
 {
@@ -109,26 +110,83 @@ namespace IDE.BLL.Services
             return await GetByIdAsync(createdProjectStructure.Id);
         }
 
-        public async Task UnzipProject(ProjectStructureDTO projectStructure, IFormFile zipFile, int userId, int projectId)
+        //public async Task UnzipProject(ProjectStructureDTO projectStructure, IFormFile zipFile, int userId, int projectId)
+        //{
+        //    string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\Temp", Guid.NewGuid().ToString());
+        //    try
+        //    {
+        //        if (!Directory.Exists(tempFolder))
+        //        {
+        //            Directory.CreateDirectory(tempFolder);
+        //        }
+        //        if (zipFile.Length > 0)
+        //        {
+        //            string fullPathToFile = Path.Combine(tempFolder, zipFile.FileName);
+        //            using (var stream = new FileStream(fullPathToFile, FileMode.Create))
+        //            {
+        //                await zipFile.CopyToAsync(stream).ConfigureAwait(false);
+        //            }
+        //            var pathToProject = UnzipProject(fullPathToFile, tempFolder);
+        //            var rootFileStructure = projectStructure.NestedFiles.FirstOrDefault();
+
+        //            await GetFilesRecursive(pathToProject, rootFileStructure, userId, projectId).ConfigureAwait(false);
+        //            var projectStructureDto = _mapper.Map<ProjectStructureDTO>(projectStructure);
+        //            await UpdateAsync(projectStructureDto);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine(ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (Directory.Exists(tempFolder))
+        //        {
+        //            Directory.Delete(tempFolder, true);
+        //        }
+        //    }
+        //}
+
+        public async Task ImportProject(string projectStructureId, IFormFile file, string fileStructureId, int userId, bool partial, string nodeids)
         {
             string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\Temp", Guid.NewGuid().ToString());
+            var filesFolder = Path.Combine(tempFolder, file.FileName.Substring(0, file.FileName.LastIndexOf('.')));
+            var ids = JsonConvert.DeserializeObject<List<string>>(nodeids);
+            var projectStructure = _mapper.Map<ProjectStructureDTO>(await _projectStructureRepository.GetByIdAsync(projectStructureId));
+
+            var rootFileStructure = projectStructure.NestedFiles.SingleOrDefault();
+
+            if (partial)
+            {
+                rootFileStructure = projectStructure.NestedFiles.SingleOrDefault(u => u.Id == ids[0]);
+
+                for (int i = 1; i<ids.Count(); i++)
+                {
+                    rootFileStructure = rootFileStructure.NestedFiles.SingleOrDefault(n => n.Id == ids[i]);
+                }
+            }
+            else
+            {
+                rootFileStructure = projectStructure.NestedFiles.SingleOrDefault();
+            }
             try
             {
                 if (!Directory.Exists(tempFolder))
                 {
                     Directory.CreateDirectory(tempFolder);
                 }
-                if (zipFile.Length > 0)
+
+                if (file.Length > 0)
                 {
-                    string fullPathToFile = Path.Combine(tempFolder, zipFile.FileName);
+                    string fullPathToFile = Path.Combine(tempFolder, file.FileName);
                     using (var stream = new FileStream(fullPathToFile, FileMode.Create))
                     {
-                        await zipFile.CopyToAsync(stream).ConfigureAwait(false);
+                        await file.CopyToAsync(stream).ConfigureAwait(false);
                     }
-                    var pathToProject = UnzipProject(fullPathToFile, tempFolder);
-                    var rootFileStructure = projectStructure.NestedFiles.FirstOrDefault();
 
-                    await GetFilesRecursive(pathToProject, rootFileStructure, userId, projectId).ConfigureAwait(false);
+                    var pathToProject = UnzipProject(fullPathToFile, filesFolder);
+
+                    await GetFilesRecursive(filesFolder, rootFileStructure, userId, Convert.ToInt32(projectStructureId)).ConfigureAwait(false);
                     var projectStructureDto = _mapper.Map<ProjectStructureDTO>(projectStructure);
                     await UpdateAsync(projectStructureDto);
                 }

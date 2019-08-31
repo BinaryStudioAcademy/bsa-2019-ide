@@ -101,9 +101,9 @@ export class EditorSettingsComponent implements OnInit {
         this.ref.close();
     }
 
-    public SaveToAllUserProjects() {
-        this.ref.close();
-    }
+    // public SaveToAllUserProjects() {
+    //     this.ref.close();
+    // }
 
     public onSubmit(event) {
         if (!this.IsSettingsNotChange()) {
@@ -116,7 +116,7 @@ export class EditorSettingsComponent implements OnInit {
                             this.hasDetailsSaveResponse = true;
                             this.toastService.success('New details have successfully saved!');
                             this.startEditorOptions = this.settingsUpdate;
-                            this.ref.close();
+                            this.ref.close(this.settingsUpdate);
                             //this.router.navigate([`workspace/${this.project.id}`]);
                         },
                         (error) => {
@@ -133,7 +133,7 @@ export class EditorSettingsComponent implements OnInit {
                             this.hasDetailsSaveResponse = true;
                             this.toastService.success('New details have successfully saved!');
                             this.startEditorOptions = this.settingsUpdate;
-                            this.ref.close();
+                            this.ref.close(this.settingsUpdate);
                         },
                         (error) => {
                             this.hasDetailsSaveResponse = true;

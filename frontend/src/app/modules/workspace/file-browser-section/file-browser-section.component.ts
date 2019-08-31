@@ -45,7 +45,7 @@ export class FileBrowserSectionComponent implements OnInit {
     public files: TreeNode[];
     public selectedItem: TreeNode;
     public projectId: number;
-    public expandFolder = false;
+    public expandFolder = true;
     public fileSearchResults: FileSearchResultDTO[]
 
     private lastSelectedElement: any;
@@ -93,12 +93,13 @@ export class FileBrowserSectionComponent implements OnInit {
         this.fileNameRegex = /^[A-Z0-9.]+$/gi
         this.extensions = filesExtensions;
         this.items = [
-            { label: 'create file', icon: 'fa fa-file', command: () => this.createFile(this.selectedItem),  },
-            { label: 'create folder', icon: 'fa fa-folder', command: () => this.createFolder(this.selectedItem) },
-            { label: 'delete', icon: 'fa fa-remove', command: () => this.delete(this.selectedItem) },
-            { label: 'info', icon: 'fa fa-info', command: () => this.openInfoWindow(this.selectedItem)},
-            { label: 'rename', icon: 'fa fa-refresh', command: () => this.rename(this.selectedItem)},
-            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) }
+            { label: 'create file', icon: 'pi pi-fw pi-file', command: () => this.createFile(this.selectedItem),  },
+            { label: 'create folder', icon: 'pi pi-fw pi-folder', command: () => this.createFolder(this.selectedItem) },
+            { label: 'delete', icon: 'pi pi-fw pi-trash', command: () => this.delete(this.selectedItem) },
+            { label: 'info', icon: 'pi pi-fw pi-info', command: () => this.openInfoWindow(this.selectedItem)},
+            { label: 'rename', icon: 'pi pi-fw pi-refresh', command: () => this.rename(this.selectedItem)},
+            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) },
+            { label: 'import', icon: 'pi pi-upload', command: ()=> this.openImportWindow(this.selectedItem)}
         ];
 
         this.eventsSubscription = this.events.subscribe(() => this.expand())
@@ -162,11 +163,19 @@ export class FileBrowserSectionComponent implements OnInit {
         }
     }
 
-    private openInfoWindow(node: TreeNode)
-    {
+    private openInfoWindow(node: TreeNode){
         this.fileBrowserService.OpenModalWindow(node,this.projectId.toString());
     }
   
+    private openImportWindow(node: TreeNode){
+        if(node.type == TreeNodeType.file.toString()){
+            this.toast.info("Select folder, please")
+        }
+        else{
+            this.fileBrowserService.OpenImportModalWindow(node, this.projectId.toString());
+        }
+    }
+
     private getFolderName(node: TreeNode): string{
         if (node.type === TreeNodeType.file.toString()) {
             return node.parent.label;

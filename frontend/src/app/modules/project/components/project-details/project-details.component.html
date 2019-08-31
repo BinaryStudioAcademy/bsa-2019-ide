@@ -11,26 +11,34 @@
             <app-project-details-info [project]="project"></app-project-details-info>
         </p-tabPanel>
         <p-tabPanel header="Collaborators" leftIcon="pi pi-comment" class="collaborator">
-            <div class="project-description">
-                <div class="card">
-                    <app-add-collaborators [projectId]="projectId"></app-add-collaborators>
+            <ng-template pTemplate="content">
+                <div class="project-description">
+                    <div class="card">
+                        <app-add-collaborators [projectId]="projectId"></app-add-collaborators>
+                    </div>
                 </div>
-            </div>
+            </ng-template>
         </p-tabPanel>
         <p-tabPanel header="Build results" leftIcon="pi pi-eye">
-            <app-user-build-history [projectId]="projectId" class="builds-tab"></app-user-build-history>
+            <ng-template pTemplate="content">
+                <app-user-build-history [projectId]="projectId" class="builds-tab"></app-user-build-history>
+            </ng-template>
         </p-tabPanel>
         <p-tabPanel header="Artifacts" leftIcon="pi pi-cloud-download">
             Here will be artifacts(list of zip builds)
         </p-tabPanel>
         <p-tabPanel header="User statistics" leftIcon="pi pi-chart-bar">
-            <app-project-details-user-statistics [project]="project"></app-project-details-user-statistics>
+            <ng-template pTemplate="content">
+                <app-project-details-user-statistics [project]="project"></app-project-details-user-statistics>
+            </ng-template>
         </p-tabPanel>
         <p-tabPanel header="Git Credentials" leftIcon="pi pi-sitemap">
             Here will be git url <address></address>
         </p-tabPanel>
         <p-tabPanel header="History of changes" leftIcon="pi pi-list">
-            <app-history-changes [projectId]="project.id"></app-history-changes>
+            <ng-template pTemplate="content">
+                <app-history-changes [projectId]="project.id"></app-history-changes>
+            </ng-template>
         </p-tabPanel>
     </p-tabView>
 </div>

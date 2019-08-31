@@ -122,7 +122,8 @@ namespace IDE.API.Controllers
             {
                 var projectStructure  = await _projectStructureService.CreateEmptyAsync(projectId, project.Name);
                 var zipFile = Request.Form.Files[0];
-                await _projectStructureService.UnzipProject(projectStructure, zipFile, author, projectId);
+                //await _projectStructureService.UnzipProject(projectStructure, zipFile, author, projectId);
+                await _projectStructureService.ImportProject(projectStructure.Id, zipFile, projectId.ToString(), author, false, null);
             }
             else
             {

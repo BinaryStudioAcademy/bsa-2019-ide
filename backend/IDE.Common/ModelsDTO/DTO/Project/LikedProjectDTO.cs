@@ -1,4 +1,6 @@
-﻿namespace IDE.Common.ModelsDTO.DTO.Project
+﻿using System;
+
+namespace IDE.Common.ModelsDTO.DTO.Project
 {
     public class LikedProjectDTO
     {
@@ -7,5 +9,6 @@
         public string ProjectName { get; set; }
         public string ProjectDescription { get; set; }
         public string AuthorNickName { get; set; }
+        public DateTime? LastChangedDate { get; set; }
     }
 }

@@ -13,7 +13,8 @@
         </p>
         <p>
             <span class="property-name">Github URL: </span>
-            <span *ngIf="user.gitHubUrl" class="property-value">{{user.gitHubUrl}}</span>
+            <span *ngIf="user.gitHubUrl" class="property-value"><a href="{{user.gitHubUrl}}">
+                github</a></span>
             <span *ngIf="!user.gitHubUrl" class="property-value">GitHub not specified</span>
         </p>
         <p>
@@ -40,7 +41,7 @@
                     <app-user-proj-list [userId]="user.id"></app-user-proj-list>
                 </div>
             </p-tabPanel>
-            <p-tabPanel header="Editor settings">
+            <p-tabPanel *ngIf="isAuthor" header="Editor settings">
                 <app-editor-settings [user]="user"></app-editor-settings>
             </p-tabPanel>
         </p-tabView>

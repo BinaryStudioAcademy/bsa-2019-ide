@@ -2,11 +2,11 @@
     <div class="hor-navbar p-col-12">
         <button pButton *ngIf="canRun || isAuthor()" type="button" icon="pi pi-play" iconPos="left"
             class="ui-button-secondary" label="Run" (click)="onRun()"></button>
-        <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-arrow-down" iconPos="left"
+        <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-inbox" iconPos="left"
             class="ui-button-secondary" label="Build" (click)="onBuild()"></button>
         <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onFilesSave()" icon="pi pi-save" iconPos="left"
             class="ui-button-secondary" label="Save"></button>
-        <button pButton type="button" *ngIf="isAuthor()" (click)="Settings()" icon="pi pi-save" iconPos="left"
+        <button pButton type="button" *ngIf="isAuthor()" (click)="Settings()" icon="pi pi-cog" iconPos="left"
             class="ui-button-secondary" label="Settings"></button>
     </div>
 
@@ -15,15 +15,16 @@
     <div class="left-panel p-col-fixed">
         <button pButton type="button" icon="pi pi-clone" title="Hide or show project structure" iconPos="left"
             class="ui-button-secondary" (click)="hideFileBrowser()"></button>
-        <button pButton type="button" icon="pi pi-file" iconPos="left" class="ui-button-secondary" disabled></button>
         <button pButton routerLink="/project/{{projectId}}" title="Project details" type="button" icon="pi pi-info"
             iconPos="left" class="ui-button-secondary"></button>
-        <button *ngIf="isAuthor()" pButton type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary"
+        <button *ngIf="isAuthor()" pButton type="button" icon="pi pi-pencil" title="Edit project" iconPos="left" class="ui-button-secondary"
             (click)="editProjectSettings()"></button>
         <button pButton type="button" icon="pi pi-search" iconPos="left" class="ui-button-secondary"
             (click)="hideSearchField()"></button>
         <button pButton type="button" icon="pi pi-sort" title="Expand or collapse all" iconPos="left" class="ui-button-secondary"
-                (click)="expand()"></button>
+            (click)="expand()"></button>
+        <button pButton type="button" icon="pi pi-refresh" title="Refresh file section" iconPos="left" class="ui-button-secondary"
+            (click)="refresh()"></button>
     </div>
     <div class="p-col">
         <div class="inner-wrapper p-grid p-nogutter ">

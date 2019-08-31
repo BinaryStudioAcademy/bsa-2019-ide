@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { BuildDTO } from 'src/app/models/DTO/Common/buildDTO';
 import { BuildDescriptionDTO } from 'src/app/models/DTO/Common/buildDescriptionDTO';
 
 @Component({
@@ -20,9 +19,9 @@ export class BuildHistoryTabComponent implements OnInit {
     {
         if(build.buildStatus==0)
         {
-            return "green";
+            return "red";
         }
-        return "red";
+        return "green";
     }
 
 }
