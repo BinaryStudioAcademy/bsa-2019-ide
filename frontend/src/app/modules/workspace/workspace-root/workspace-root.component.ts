@@ -175,6 +175,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         if (this.editor && this.editor.openedFiles.some(f => f.innerFile.id === selectedFile.fileId)) {
             this.editor.activeItem = this.editor.tabs.find(i => i.id === selectedFile.fileId);
             this.editor.code = this.editor.openedFiles.find(f => f.innerFile.id === selectedFile.fileId).innerFile.content;
+            this.editor.monacoOptions.language=this.editor.openedFiles.find(f => f.innerFile.id === selectedFile.fileId).innerFile.language;
             return;
         }
 
@@ -270,7 +271,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     public hideFileBrowser() {
         this.showFileBrowser = !this.showFileBrowser;
-        this.showFileBrowser=false;
+        if(!this.showFileBrowser && this.showSearchField)
+        {
+            this.showFileBrowser=true;
+        }
+        if(this.showFileBrowser)
+        {
+            this.showSearchField=false;
+        }
     }
 
     public editProjectSettings() {
