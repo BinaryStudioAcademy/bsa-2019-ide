@@ -37,13 +37,25 @@ namespace RabbitMQ.Shared.QueueServices
 
         public void SetAcknowledge(ulong deliveryTag, bool processed)
         {
-            if (processed)
+            try
             {
-                _settings.Channel.BasicAck(deliveryTag, false);
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"SetAcknowledge deliveryTag: {deliveryTag}; processed: {processed}");
+                Console.ForegroundColor = ConsoleColor.White;
+                if (processed && deliveryTag != 2)
+                {
+                    _settings.Channel.BasicAck(deliveryTag, false);
+                }
+                else
+                {
+                    _settings.Channel.BasicNack(deliveryTag, false, true);
+                }
             }
-            else
+            catch(Exception e)
             {
-                _settings.Channel.BasicNack(deliveryTag, false, true);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"SetAcknowledge Error deliveryTag: {deliveryTag}; processed: {processed}");
+                Console.ForegroundColor = ConsoleColor.White;
             }
         }
     }

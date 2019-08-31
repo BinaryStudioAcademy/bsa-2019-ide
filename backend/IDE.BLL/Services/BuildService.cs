@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using RabbitMQ.Shared.ModelsDTO;
 using Storage.Interfaces;
 using System.Threading.Tasks;
+using System;
 
 namespace IDE.BLL.Services
 {
@@ -46,7 +47,8 @@ namespace IDE.BLL.Services
             var message = new ProjectForBuildDTO()
             {
                 ProjectId = projectId,
-                UriForProjectDownload = uri
+                UriForProjectDownload = uri,
+                TimeStamp = DateTime.Now
             };
             var strMessage = JsonConvert.SerializeObject(message);
             _queueService.SendBuildMessage(strMessage);
@@ -72,7 +74,8 @@ namespace IDE.BLL.Services
             {
                 ProjectId = projectId,
                 UriForProjectDownload = uri,
-                ConnectionId = connectionId
+                ConnectionId = connectionId,
+                TimeStamp = DateTime.Now
             };
 
             var strMessage = JsonConvert.SerializeObject(message);

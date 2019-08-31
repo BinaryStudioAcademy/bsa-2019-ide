@@ -10,5 +10,7 @@ namespace RabbitMQ.Shared.ModelsDTO
         public string ConnectionId { get; set; }
 
         public Uri UriForProjectDownload { get; set; }
+
+        public DateTime TimeStamp { get; set; }
     }
 }
