@@ -547,11 +547,13 @@ namespace IDE.DAL.Context
         {
             IMongoCollection<ProjectStructure> projectStructureItems;
             IMongoCollection<File> filesItems;
+            IMongoCollection<FileHistory> fileHistoriesItems;
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
             var itemsCollectionName = GetProjectStructureItemsCollectionName();
             projectStructureItems = database.GetCollection<ProjectStructure>(itemsCollectionName);
             filesItems = database.GetCollection<File>(GetFileItemsCollectionName());
+            fileHistoriesItems = database.GetCollection<FileHistory>(GetFileHistoryItemsCollectionName());
 
             foreach (var project in projects)
             {
@@ -597,10 +599,32 @@ namespace IDE.DAL.Context
                     Type = Common.ModelsDTO.Enums.TreeNodeType.File
                 });
 
+                FileHistory fileHistory1 = new FileHistory()
+                {
+                    Content = f1.Content,
+                    CreatedAt = f1.CreatedAt,
+                    FileId = f1.Id,
+                    Name = f1.Name,
+                    Folder = f1.Folder,
+                    CreatorId = 1
+                };
+                FileHistory fileHistory2 = new FileHistory()
+                {
+                    Content = f2.Content,
+                    CreatedAt = f2.CreatedAt,
+                    FileId = f2.Id,
+                    Name = f2.Name,
+                    Folder = f2.Folder,
+                    CreatorId = 1
+                };
+
                 var emptyStructure = new ProjectStructure();
                 emptyStructure.Id = project.Id.ToString();
                 emptyStructure.NestedFiles.Add(fileStructure);
 
+
+                fileHistoriesItems.InsertOne(fileHistory1);
+                fileHistoriesItems.InsertOne(fileHistory2);
                 filesItems.InsertOne(f1);
                 filesItems.InsertOne(f2);
                 projectStructureItems.InsertOne(emptyStructure);
@@ -625,8 +649,14 @@ namespace IDE.DAL.Context
             var itemsCollectionName = itemClassName.Pluralize();
             return itemsCollectionName;
         }
+        private static string GetFileHistoryItemsCollectionName()
+        {
+            var itemClassName = typeof(FileHistory).ToString().Split('.').Last();
+            var itemsCollectionName = itemClassName.Pluralize();
+            return itemsCollectionName;
+        }
 
-        
+
         private static ICollection<Build> GenerateRandomBuilds(ICollection<User> users, ICollection<Project> projects)
         {
             var date = projects.OrderByDescending(p => p.CreatedAt).First().CreatedAt;
