@@ -31,8 +31,11 @@ namespace IDE.API
             services.ConfigureJwt(Configuration);
             services.RegisterCustomValidators();
 
-            services.AddCors();   
-            services.AddSignalR();
+            services.AddCors();
+            services.AddSignalR(o =>
+            {
+                o.EnableDetailedErrors = true;
+            });
 
             services.AddMvcCore()
                 .AddAuthorization()

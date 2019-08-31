@@ -15,12 +15,12 @@
                 <p-overlayPanel #notifications [dismissable]="false" class="notification">
                     <div class="notification-panel-content">
                         <div *ngIf="notReadNotification.length!=0">
-                            <div class="notification-item" *ngFor="let item of notReadNotification">
+                            <div class="notification-item" *ngFor="let item of notReadNotification" (click)='onNotificationClick(item)'>
                                 {{item.message}}
                             </div>
                         </div>
                         <div *ngIf="data.length!=0">
-                            <div class="notification-item" *ngFor="let item of data">
+                            <div class="notification-item" *ngFor="let item of data" (click)='onNotificationClick(item)'>
                                 {{item.message}}
                             </div>
                         </div>

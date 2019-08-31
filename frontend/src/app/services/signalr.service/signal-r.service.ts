@@ -12,10 +12,12 @@ export class SignalRService {
 
     public notifications: NotificationDTO[] = [];
 
-    private hubConnection: signalR.HubConnection
-
+    private hubConnection: signalR.HubConnection;
+    private connectionId: string;
+    private userId: number;
 
     public startConnection = (isAuth: boolean, userId: number) => {
+        this.userId = userId;
         this.hubConnection = new signalR.HubConnectionBuilder()
             .withUrl(`${environment.apiUrl}notification`)
             .build();
@@ -23,10 +25,12 @@ export class SignalRService {
         this.hubConnection
             .start()
             .then(() => {
+                this.addConnectionIdListener();
                 console.log('Connection started');
                 if (isAuth)
                 {
                     this.addToGroup(userId);
+                    this.join(userId);
                 }
             })
             .catch(err => console.log('Error while starting connection: ' + err))
@@ -46,21 +50,55 @@ export class SignalRService {
             .catch((error) => console.log(error));
     }
 
+    public join(userId: number): void {
+        this.hubConnection.invoke("Join", userId)
+            .catch((error) => console.log(error));
+    }
+
     public addTransferChartDataListener(): NotificationDTO[] {
         this.hubConnection.on('transferchartdata', (notification) => {
             this.notifications.push(notification);
         });
         return this.notifications;
+    }   
+
+    public addProjectRunResultDataListener(): void {
+        this.hubConnection.on('projectRunResult', (project) => {
+            console.log(project);
+        });
+    }  
+
+    public addConnectionIdListener(): void{
+        this.hubConnection.on('sendConnectionId', (connectionId, userId) => {
+            if (userId === this.userId) {
+                console.log('id get')
+                this.connectionId = connectionId;
+            }
+        });
+    }
+
+    public getConnectionId(): string {
+        return this.connectionId;
     }
 
     public markNotificationAsRead(notificationId: number): void
     {
         this.hubConnection.invoke("MarkAsRead", notificationId)
             .catch((error) => console.log(error));
-    }
+    }    
 
     public deleteTransferChartDataListener()
     {
         this.hubConnection.off('transferchartdata');
+        this.hubConnection.off('sendConnectionId');
     }
+
+    public deleteConnectionIdListener()
+    {
+        this.hubConnection.off('sendConnectionId');
+    }
+
+    public deleteProjectRunDataListener(): void {
+        this.hubConnection.off('projectRunResult');
+    }  
 }

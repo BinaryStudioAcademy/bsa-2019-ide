@@ -40,6 +40,12 @@ namespace IDE.BLL.HubConfig
             }
         }
 
+        public void Join(int userId)
+        {
+            Clients.Client(Context.ConnectionId)
+                .SendAsync("sendConnectionId", Context.ConnectionId, userId)
+                .ConfigureAwait(false);
+        }
         public async Task MarkAsRead(int notificationId)
         {
             await _notificationService.MarkAsRead(notificationId).ConfigureAwait(false);
