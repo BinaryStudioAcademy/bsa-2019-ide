@@ -4,5 +4,6 @@
     {
         string Build(string projectName);
         string Execute(string projectName);
+        string Run(string projectName);
     }
 }

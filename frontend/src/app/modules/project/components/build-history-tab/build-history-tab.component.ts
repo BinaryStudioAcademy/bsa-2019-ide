@@ -19,9 +19,9 @@ export class BuildHistoryTabComponent implements OnInit {
     {
         if(build.buildStatus==0)
         {
-            return "green";
+            return "red";
         }
-        return "red";
+        return "green";
     }
 
 }

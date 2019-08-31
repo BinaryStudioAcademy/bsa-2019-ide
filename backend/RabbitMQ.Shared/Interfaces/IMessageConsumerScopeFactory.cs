@@ -1,10 +1,11 @@
-﻿using RabbitMQ.Shared.Settings;
+﻿using RabbitMQ.Shared.ModelsDTO;
+using RabbitMQ.Shared.Settings;
 
 namespace RabbitMQ.Shared.Interfaces
 {
     public interface IMessageConsumerScopeFactory
     {
-        IMessageConsumerScope Open(MessageScopeSettings messageScopeSettings);
-        IMessageConsumerScope Connect(MessageScopeSettings messageScopeSettings);
+        IMessageConsumerScope Open(MessageScopeSettings messageScopeSettings, QueueType type);
+        IMessageConsumerScope Connect(MessageScopeSettings messageScopeSettings, QueueType type);
     }
 }

@@ -8,6 +8,7 @@ import { DialogService } from 'primeng/api';
 import { EditorSettingsComponent } from '../modules/editor/components/editor-settings/editor-settings.component';
 import { ProjectInfoDTO } from '../models/DTO/Project/projectInfoDTO';
 import { EditorSettingDTO } from '../models/DTO/Common/editorSettingDTO';
+import { ConsoleComponent } from '../modules/workspace/console/console.component';
 
 @Injectable({
     providedIn: 'root'

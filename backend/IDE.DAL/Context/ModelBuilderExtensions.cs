@@ -6,6 +6,7 @@ using IDE.DAL.Entities;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -19,12 +20,12 @@ namespace IDE.DAL.Context
         private const int USER_COUNT = 2;
         private static DateTime DATE_TIME = new DateTime(2018, 1, 1);
         private static Random random = new Random(2048);
-        
+
         public static void EnsureSeeded(this IdeContext context, IFileStorageNoSqlDbSettings settings)
         {
-            if(context.Users.Count() == 0)
+            if (context.Users.Count() == 0)
             {
-                context.Seed(settings);
+                context.SeedWithCorrectData(settings);
             }
         }
 
@@ -39,7 +40,7 @@ namespace IDE.DAL.Context
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ProjectMember>()
-                .HasKey(pm => new {pm.ProjectId, pm.UserId});
+                .HasKey(pm => new { pm.ProjectId, pm.UserId });
 
             modelBuilder.Entity<ProjectMember>()
                 .HasOne(pm => pm.Project)
@@ -78,194 +79,600 @@ namespace IDE.DAL.Context
                 .OnDelete(DeleteBehavior.ClientSetNull);
         }
 
-        public static void Seed(this IdeContext context, IFileStorageNoSqlDbSettings settings)
+        public static void SeedWithCorrectData(this IdeContext context, IFileStorageNoSqlDbSettings settings)
         {
-            Randomizer.Seed = new Random(2048);
-
-            var avatars = GenerateRandomAvatars();
+            var avatars = GenerateCorrectImages();
             context.Images.AddRange(avatars);
+            var editorSettings = GenerateCorrectEditorSettings();
+            context.EditorSettings.AddRange(editorSettings);
             context.SaveChanges();
 
-            var users = GenerateRandomUsers(context.Images.ToList());
+            var users = GenerateCorrectUsers(context.Images.ToArray(), context.EditorSettings.ToArray());
             context.Users.AddRange(users);
-            //context.SaveChanges();
-
-            var gits = GenerateRandomGitCredentials();
-            context.GitCredentials.AddRange(gits);
             context.SaveChanges();
 
-            var projects = GenerateRandomProjects(context.Users.ToList(), context.GitCredentials.ToList(), settings);
+            var dBUsers = context.Users.ToArray();
+
+            var projects = GenerateCorrectProjects(dBUsers, context.EditorSettings.ToArray());
             context.Projects.AddRange(projects);
             context.SaveChanges();
 
-            EnsureNoSqlDbSeeded(settings, context.Projects.ToList());
+            var dBProjects = context.Projects.ToArray();
+
+            var projectMembers = GenerateCorrectProjectMembers(dBProjects, dBUsers);
+            context.ProjectMembers.AddRange(projectMembers);
+
+            var favouriteProjects = GenerateCorrectFavouriteProjects(dBProjects, dBUsers);
+            context.FavouriteProjects.AddRange(favouriteProjects);
+
+            context.SaveChanges();
+
+            EnsureNoSqlDbSeeded(settings, dBProjects);
 
             var builds = GenerateRandomBuilds(context.Users.ToList(), context.Projects.ToList());
             context.Builds.AddRange(builds);
-            //context.SaveChanges();
-
-            var projectMembers = GenerateRandomProjectMembers(context.Users.ToList(), context.Projects.ToList())
-                .GroupBy(x => x.ProjectId + " " + x.UserId).Select(x => x.First());
-            context.ProjectMembers.AddRange(projectMembers);
             context.SaveChanges();
+        }
+
+        private static Image[] GenerateCorrectImages()
+        {
+            return new Image[]
+            {
+                new Image()
+                {
+                    Url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTACMl9I3lcMYfz6RKTnHFsm6cGRel0IPA_PkwT7mn5GriUgSWiGw"
+                },
+                new Image()
+                {
+                    Url = "https://ichef.bbci.co.uk/news/660/cpsprodpb/1189D/production/_101673817_kendrick_reuters.jpg"
+                },
+                new Image()
+                {
+                    Url = "https://thenypost.files.wordpress.com/2017/08/shutterstock_157245107.jpg?quality=90&strip=all&w=618&h=410&crop=1"
+                }
+            };
+        }
+        private static EditorSetting[] GenerateCorrectEditorSettings()
+        {
+            return new EditorSetting[]
+            {
+                new EditorSetting()
+                {
+                    LineNumbers = "on",
+                    RoundedSelection = false,
+                    ScrollBeyondLastLine = false,
+                    ReadOnly = false,
+                    FontSize = 20,
+                    TabSize = 5,
+                    CursorStyle = "line",
+                    LineHeight = 20,
+                    Theme = "vs"
+                },
+                new EditorSetting()
+                {
+                    LineNumbers = "off",
+                    RoundedSelection = false,
+                    ScrollBeyondLastLine = false,
+                    ReadOnly = false,
+                    FontSize = 22,
+                    TabSize = 5,
+                    CursorStyle = "line",
+                    LineHeight = 20,
+                    Theme = "hc-black"
+                }
+            };
+        }
+        private static User[] GenerateCorrectUsers(Image[] images, EditorSetting[] settings)
+        {
+            var salt = Convert.ToBase64String(SecurityHelper.GetRandomBytes());
+
+            return new User[]
+            {
+                new User()
+                {   
+                    AvatarId = images[0].Id,
+                    Birthday = DateTime.Now.AddYears(-20),
+                    EditorSettingsId = settings[0].Id,
+                    Email  = "tania.gutiy@gmail.com",
+                    EmailConfirmed = true,
+                    FirstName = "Tatiana",
+                    LastName = "Hutii",
+                    LastActive = DateTime.Now,
+                    NickName = "taniagutiy",
+                    RegisteredAt = DateTime.Now.AddDays(-35),
+                    PasswordHash = SecurityHelper.HashPassword("tania12345", Convert.FromBase64String(salt)),
+                    PasswordSalt = salt
+                },
+                new User()
+                {
+                    AvatarId = images[1].Id,
+                    Birthday = DateTime.Now.AddYears(-36),
+                    EditorSettingsId = settings[1].Id,
+                    Email  = "denchik.collab@gmail.com",
+                    EmailConfirmed = true,
+                    FirstName = "Danil",
+                    LastName = "Agienko",
+                    LastActive = DateTime.Now,
+                    NickName = "Den4ik",
+                    RegisteredAt = DateTime.Now.AddDays(-156),
+                    PasswordHash = SecurityHelper.HashPassword("0987654321", Convert.FromBase64String(salt)),
+                    PasswordSalt = salt
+                },
+                new User()
+                {
+                    AvatarId = images[2].Id,
+                    Birthday = DateTime.Now.AddYears(-20),
+                    EditorSettingsId = settings[0].Id,
+                    Email  = "binary.studio@gmail.com",
+                    EmailConfirmed = true,
+                    FirstName = "Online",
+                    LastName = "IDEAdmin",
+                    LastActive = DateTime.Now,
+                    NickName = "TheBestUser",
+                    RegisteredAt = DateTime.Now.AddDays(-15),
+                    PasswordHash = SecurityHelper.HashPassword("12345678", Convert.FromBase64String(salt)),
+                    PasswordSalt = salt
+                },
+                new User()
+                {
+                    AvatarId = images[1].Id,
+                    Birthday = DateTime.Now.AddYears(-20),
+                    EditorSettingsId = settings[0].Id,
+                    Email  = "test@gmail.com",
+                    EmailConfirmed = true,
+                    FirstName = "TestUser",
+                    LastName = "TestUser",
+                    LastActive = DateTime.Now,
+                    NickName = "Solomon",
+                    RegisteredAt = DateTime.Now.AddDays(-35),
+                    PasswordHash = SecurityHelper.HashPassword("12345678", Convert.FromBase64String(salt)),
+                    PasswordSalt = salt
+                },
+            };
+        }
+        private static Project[] GenerateCorrectProjects(User[] users, EditorSetting[] settings)
+        {
+            return new Project[]
+            {
+                new Project()
+                {
+                    Name = "Parking",
+                    Description = "Parking is the act of stopping and disengaging a vehicle and leaving it unoccupied. Parking on one or both sides of a road is often permitted, though sometimes with restrictions. Some buildings have parking facilities for use of the buildings' users.",
+                    AuthorId = users[0].Id,
+                    Color = "#0000ff",
+                    CreatedAt = DateTime.Now.AddDays(-13),
+                    EditorProjectSettingsId = settings[0].Id,
+                    AccessModifier = AccessModifier.Public,
+                    CompilerType = CompilerType.CoreCLR,
+                    Language = Language.CSharp,
+                    ProjectType = ProjectType.Console,
+                    CountOfBuildAttempts = 10,
+                    CountOfSaveBuilds = 10
+                },
+                new Project()
+                {
+                    Name = "Sudoku",
+                    Description = "Sudoku (数独 sūdoku, digit-single) (/suːˈdoʊkuː/, /-ˈdɒk-/, /sə-/, originally called Number Place) is a logic-based, combinatorial number-placement puzzle. The objective is to fill a 9×9 grid with digits so that each column, each row, and each of the nine 3×3 subgrids that compose the grid (also called \"boxes\", \"blocks\", or \"regions\") contain all of the digits from 1 to 9.",
+                    AuthorId = users[0].Id,
+                    Color = "#000000",
+                    CreatedAt = DateTime.Now.AddDays(-22),
+                    EditorProjectSettingsId = settings[0].Id,
+                    AccessModifier = AccessModifier.Public,
+                    CompilerType = CompilerType.CoreCLR,
+                    Language = Language.CSharp,
+                    ProjectType = ProjectType.Console,
+                    CountOfBuildAttempts = 10,
+                    CountOfSaveBuilds = 10
+                },
+                new Project()
+                {
+                    Name = "OnlineShopWebsite",
+                    Description = "Online shopping is a form of electronic commerce which allows consumers to directly buy goods or services from a seller over the Internet using a web browser. Consumers find a product of interest by visiting the website of the retailer directly or by searching among alternative vendors using a shopping search engine, which displays the same product's availability and pricing at different e-retailers. As of 2016, customers can shop online using a range of different computers and devices, including desktop computers, laptops, tablet computers and smartphones.",
+                    AuthorId = users[0].Id,
+                    Color = "#ffd700",
+                    CreatedAt = DateTime.Now.AddDays(-3),
+                    EditorProjectSettingsId = settings[1].Id,
+                    AccessModifier = AccessModifier.Public,
+                    CompilerType = CompilerType.CoreCLR,
+                    Language = Language.CSharp,
+                    ProjectType = ProjectType.Console,
+                    CountOfBuildAttempts = 10,
+                    CountOfSaveBuilds = 10
+                },
+                new Project()
+                {
+                    Name = "BakeryStats",
+                    Description = "A bakery (also baker's shop or bake shop) is an establishment that produces and sells flour-based food baked in an oven such as bread, cookies, cakes, pastries, and pies. Some retail bakeries are also cafés, serving coffee and tea to customers who wish to consume the baked goods on the premises.",
+                    AuthorId = users[1].Id,
+                    Color = "#8b008b",
+                    CreatedAt = DateTime.Now.AddDays(-6),
+                    EditorProjectSettingsId = settings[0].Id,
+                    AccessModifier = AccessModifier.Public,
+                    CompilerType = CompilerType.CoreCLR,
+                    Language = Language.CSharp,
+                    ProjectType = ProjectType.Console,
+                    CountOfBuildAttempts = 10,
+                    CountOfSaveBuilds = 10
+                },
+                new Project()
+                {
+                    Name = "OnlineCalendar",
+                    Description = "A calendar is a system of organizing days for social, religious, commercial or administrative purposes. This is done by giving names to periods of time, typically days, weeks, months and years. ",
+                    AuthorId = users[1].Id,
+                    Color = "#778899",
+                    CreatedAt = DateTime.Now.AddDays(-7),
+                    EditorProjectSettingsId = settings[0].Id,
+                    AccessModifier = AccessModifier.Public,
+                    CompilerType = CompilerType.CoreCLR,
+                    Language = Language.CSharp,
+                    ProjectType = ProjectType.Console,
+                    CountOfBuildAttempts = 10,
+                    CountOfSaveBuilds = 10
+                },
+                new Project()
+                {
+                    Name = "DuckDuckGo",
+                    Description = "DuckDuckGo (DDG) is an internet search engine that emphasizes protecting searchers' privacy and avoiding the filter bubble of personalized search results. DuckDuckGo distinguishes itself from other search engines by not profiling its users and by showing all users the same search results for a given search term.",
+                    AuthorId = users[1].Id,
+                    Color = "#ff8c00",
+                    CreatedAt = DateTime.Now.AddDays(-4),
+                    EditorProjectSettingsId = settings[1].Id,
+                    AccessModifier = AccessModifier.Public,
+                    CompilerType = CompilerType.CoreCLR,
+                    Language = Language.CSharp,
+                    ProjectType = ProjectType.Console,
+                    CountOfBuildAttempts = 10,
+                    CountOfSaveBuilds = 10
+                },
+                new Project()
+                {
+                    Name = "OnlineIDE",
+                    Description = "Online IDE was created to save, build and run your projects from browser, without installing some special programms. Also it's great idea, because now programm work speed won't depend on characteristics of your PC or notebook.",
+                    AuthorId = users[2].Id,
+                    Color = "#0080ff",
+                    CreatedAt = DateTime.Now.AddDays(-10),
+                    EditorProjectSettingsId = settings[0].Id,
+                    AccessModifier = AccessModifier.Public,
+                    CompilerType = CompilerType.CoreCLR,
+                    Language = Language.CSharp,
+                    ProjectType = ProjectType.Console,
+                    CountOfBuildAttempts = 10,
+                    CountOfSaveBuilds = 10
+                },
+                new Project()
+                {
+                    Name = "ConsoleCalclator",
+                    Description = "This project was created to use as simple calculator, so we wont need anything else near us, to sum, divide or multiply really huge numbers.",
+                    AuthorId = users[2].Id,
+                    Color = "#ff0000",
+                    CreatedAt = DateTime.Now.AddDays(-12),
+                    EditorProjectSettingsId = settings[1].Id,
+                    AccessModifier = AccessModifier.Private,
+                    CompilerType = CompilerType.CoreCLR,
+                    Language = Language.CSharp,
+                    ProjectType = ProjectType.Console,
+                    CountOfBuildAttempts = 10,
+                    CountOfSaveBuilds = 10
+                }
+            };
+        }
+        private static ProjectMember[] GenerateCorrectProjectMembers(Project[] projects, User[] users)
+        {
+            return new ProjectMember[]
+            {
+                new ProjectMember()
+                {
+                    ProjectId = projects[0].Id,
+                    UserId = users[1].Id,
+                    UserAccess = UserAccess.CanBuild
+                },
+                new ProjectMember()
+                {
+                    ProjectId = projects[0].Id,
+                    UserId = users[2].Id,
+                    UserAccess = UserAccess.CanRead
+                },
+                new ProjectMember()
+                {
+                    ProjectId = projects[1].Id,
+                    UserId = users[1].Id,
+                    UserAccess = UserAccess.CanBuild
+                },
+                new ProjectMember()
+                {
+                    ProjectId = projects[1].Id,
+                    UserId = users[2].Id,
+                    UserAccess = UserAccess.CanWrite
+                },
+                new ProjectMember()
+                {
+                    ProjectId = projects[2].Id,
+                    UserId = users[1].Id,
+                    UserAccess = UserAccess.CanBuild
+                },
+                new ProjectMember()
+                {
+                    ProjectId = projects[2].Id,
+                    UserId = users[2].Id,
+                    UserAccess = UserAccess.CanBuild
+                },
+                new ProjectMember()
+                {
+                    ProjectId = projects[3].Id,
+                    UserId = users[0].Id,
+                    UserAccess = UserAccess.CanBuild
+                },
+                new ProjectMember()
+                {
+                    ProjectId = projects[3].Id,
+                    UserId = users[2].Id,
+                    UserAccess = UserAccess.CanRun
+                },
+                new ProjectMember()
+                {
+                    ProjectId = projects[4].Id,
+                    UserId = users[0].Id,
+                    UserAccess = UserAccess.CanBuild
+                },
+                new ProjectMember()
+                {
+                    ProjectId = projects[5].Id,
+                    UserId = users[0].Id,
+                    UserAccess = UserAccess.CanBuild
+                },
+                new ProjectMember()
+                {
+                    ProjectId = projects[6].Id,
+                    UserId = users[1].Id,
+                    UserAccess = UserAccess.CanBuild
+                },
+                new ProjectMember()
+                {
+                    ProjectId = projects[7].Id,
+                    UserId = users[1].Id,
+                    UserAccess = UserAccess.CanBuild
+                },
+                new ProjectMember()
+                {
+                    ProjectId = projects[7].Id,
+                    UserId = users[0].Id,
+                    UserAccess = UserAccess.CanBuild
+                },
+            };
+        }
+        private static FavouriteProjects[] GenerateCorrectFavouriteProjects(Project[] projects, User[] users)
+        {
+            return new FavouriteProjects[]
+            {
+                new FavouriteProjects() //0
+                {
+                    ProjectId = projects[0].Id,
+                    UserId = users[0].Id
+                },
+                new FavouriteProjects()
+                {
+                    ProjectId = projects[0].Id,
+                    UserId = users[1].Id
+                },
+                new FavouriteProjects()
+                {
+                    ProjectId = projects[0].Id,
+                    UserId = users[2].Id
+                },
+                new FavouriteProjects() //1
+                {
+                    ProjectId = projects[1].Id,
+                    UserId = users[0].Id
+                },
+                new FavouriteProjects()
+                {
+                    ProjectId = projects[1].Id,
+                    UserId = users[1].Id
+                },
+                new FavouriteProjects()
+                {
+                    ProjectId = projects[1].Id,
+                    UserId = users[2].Id
+                },
+                new FavouriteProjects() //2
+                {
+                    ProjectId = projects[2].Id,
+                    UserId = users[0].Id
+                },
+                new FavouriteProjects()
+                {
+                    ProjectId = projects[2].Id,
+                    UserId = users[1].Id
+                },
+                new FavouriteProjects()
+                {
+                    ProjectId = projects[2].Id,
+                    UserId = users[2].Id
+                },
+                new FavouriteProjects() //3
+                {
+                    ProjectId = projects[3].Id,
+                    UserId = users[0].Id
+                },
+                new FavouriteProjects()
+                {
+                    ProjectId = projects[3].Id,
+                    UserId = users[1].Id
+                },
+                new FavouriteProjects()
+                {
+                    ProjectId = projects[3].Id,
+                    UserId = users[2].Id
+                },
+                new FavouriteProjects() //4
+                {
+                    ProjectId = projects[4].Id,
+                    UserId = users[0].Id
+                },
+                new FavouriteProjects()
+                {
+                    ProjectId = projects[4].Id,
+                    UserId = users[1].Id
+                },
+                new FavouriteProjects() //5
+                {
+                    ProjectId = projects[5].Id,
+                    UserId = users[0].Id
+                },
+
+                new FavouriteProjects()
+                {
+                    ProjectId = projects[5].Id,
+                    UserId = users[1].Id
+                },
+                new FavouriteProjects() //6
+                {
+                    ProjectId = projects[6].Id,
+                    UserId = users[1].Id
+                },
+                new FavouriteProjects() //7
+                {
+                    ProjectId = projects[7].Id,
+                    UserId = users[1].Id
+                },
+                new FavouriteProjects()
+                {
+                    ProjectId = projects[7].Id,
+                    UserId = users[0].Id
+                }
+            };
         }
 
         private static void EnsureNoSqlDbSeeded(IFileStorageNoSqlDbSettings settings, ICollection<Project> projects)
         {
-            IMongoCollection<ProjectStructure> items;
+            IMongoCollection<ProjectStructure> projectStructureItems;
+            IMongoCollection<File> filesItems;
+            IMongoCollection<FileHistory> fileHistoriesItems;
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
-            var itemsCollectionName = GetItemsCollectionName();
-            items = database.GetCollection<ProjectStructure>(itemsCollectionName);
+            var itemsCollectionName = GetProjectStructureItemsCollectionName();
+            projectStructureItems = database.GetCollection<ProjectStructure>(itemsCollectionName);
+            filesItems = database.GetCollection<File>(GetFileItemsCollectionName());
+            fileHistoriesItems = database.GetCollection<FileHistory>(GetFileHistoryItemsCollectionName());
 
             foreach (var project in projects)
             {
-                var fileStructure = new FileStructure();
-                fileStructure.Id = Guid.NewGuid().ToString();
-                fileStructure.Type = Common.ModelsDTO.Enums.TreeNodeType.Folder;
-                fileStructure.Details = $"Super important details of file {project.Name}";
-                fileStructure.Name = project.Name;
+                var fileStructure = new FileStructure()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Type = Common.ModelsDTO.Enums.TreeNodeType.Folder,
+                    Details = "Project details",
+                    Name = project.Name
+                };
+                File f1 = new File()
+                {
+                    Id = Guid.NewGuid().ToString("N").Substring(0, 24),
+                    Name = "Program.cs",
+                    Folder = project.Name,
+                    CreatorId = 1,
+                    ProjectId = project.Id,
+                    CreatedAt = DateTime.Now,
+                    Content = GetCSFileContent(project.Name),
+                    Language = "csharp"
+                };
+                File f2 = new File()
+                {
+                    Id = Guid.NewGuid().ToString("N").Substring(0,24),
+                    Name = project.Name + ".csproj",
+                    Folder = project.Name,
+                    CreatorId = 1,
+                    ProjectId = project.Id,
+                    CreatedAt = DateTime.Now,
+                    Content = GetCSProjFileContent(),
+                    Language = "xml"
+                };
+                fileStructure.NestedFiles.Add(new FileStructure()
+                {
+                    Id = f1.Id,
+                    Name = "Program.cs",
+                    Type = Common.ModelsDTO.Enums.TreeNodeType.File
+                });
+                fileStructure.NestedFiles.Add(new FileStructure()
+                {
+                    Id = f2.Id,
+                    Name = project.Name + ".csproj",
+                    Type = Common.ModelsDTO.Enums.TreeNodeType.File
+                });
+
+                FileHistory fileHistory1 = new FileHistory()
+                {
+                    Content = f1.Content,
+                    CreatedAt = f1.CreatedAt,
+                    FileId = f1.Id,
+                    Name = f1.Name,
+                    Folder = f1.Folder,
+                    CreatorId = 1
+                };
+                FileHistory fileHistory2 = new FileHistory()
+                {
+                    Content = f2.Content,
+                    CreatedAt = f2.CreatedAt,
+                    FileId = f2.Id,
+                    Name = f2.Name,
+                    Folder = f2.Folder,
+                    CreatorId = 1
+                };
 
                 var emptyStructure = new ProjectStructure();
                 emptyStructure.Id = project.Id.ToString();
                 emptyStructure.NestedFiles.Add(fileStructure);
 
-                items.InsertOne(emptyStructure);
+
+                fileHistoriesItems.InsertOne(fileHistory1);
+                fileHistoriesItems.InsertOne(fileHistory2);
+                filesItems.InsertOne(f1);
+                filesItems.InsertOne(f2);
+                projectStructureItems.InsertOne(emptyStructure);
             }
         }
 
-        private static ICollection<ProjectMember> GenerateRandomProjectMembers(ICollection<User> users,
-            ICollection<Project> projects)
+        private static string GetCSProjFileContent() => "<Project Sdk=\"Microsoft.NET.Sdk\">\n\n <PropertyGroup>\n    <OutputType>Exe</OutputType>\n" +
+                                "    <TargetFramework>netcoreapp2.2</TargetFramework>\n  </PropertyGroup>\n\n</Project>";
+        private static string GetCSFileContent(string projectName) => "using System;\n\nnamespace " + projectName + "\n{\n    class Program\n    {\n" +
+                   "        static void Main(string[] args)\n        {\n            Console.WriteLine(\"Hello World!\");\n" +
+                   "        }\n    }\n}\n";
+
+        private static string GetProjectStructureItemsCollectionName()
         {
-            var testProjectMembersFake = new Faker<ProjectMember>()
-                .RuleFor(p => p.ProjectId, f => f.PickRandom(projects).Id)
-                .RuleFor(p => p.UserId, f => f.PickRandom(users).Id)
-                .RuleFor(p => p.UserAccess, f => f.PickRandom<UserAccess>());
-
-            var generatedProjectMembers = testProjectMembersFake.Generate(ENTITY_COUNT);
-
-            return generatedProjectMembers;
+            var itemClassName = typeof(ProjectStructure).ToString().Split('.').Last();
+            var itemsCollectionName = itemClassName.Pluralize();
+            return itemsCollectionName;
         }
+        private static string GetFileItemsCollectionName()
+        {
+            var itemClassName = typeof(File).ToString().Split('.').Last();
+            var itemsCollectionName = itemClassName.Pluralize();
+            return itemsCollectionName;
+        }
+        private static string GetFileHistoryItemsCollectionName()
+        {
+            var itemClassName = typeof(FileHistory).ToString().Split('.').Last();
+            var itemsCollectionName = itemClassName.Pluralize();
+            return itemsCollectionName;
+        }
+
 
         private static ICollection<Build> GenerateRandomBuilds(ICollection<User> users, ICollection<Project> projects)
         {
+            var date = projects.OrderByDescending(p => p.CreatedAt).First().CreatedAt;
             var testBuildsFake = new Faker<Build>()
-                .RuleFor(p => p.BuildFinished, f => f.Date.Between(DATE_TIME.AddMonths(9), DATE_TIME.AddMonths(10)))
-                .RuleFor(p => p.BuildMessage, f => f.Lorem.Sentence(10))
-                .RuleFor(p => p.BuildStarted, f => f.Date.Between(DATE_TIME.AddMonths(8), DATE_TIME.AddMonths(9)))
+                .RuleFor(p => p.BuildStarted, f => f.Date.Between(date, DateTime.Now))
                 .RuleFor(p => p.BuildStatus, f => f.PickRandom<BuildStatus>())
                 .RuleFor(p => p.ProjectId, f => f.PickRandom(projects).Id)
                 .RuleFor(p => p.UserId, f => f.PickRandom(users).Id);
 
 
-            var generatedProjectMembers = testBuildsFake.Generate(ENTITY_COUNT * 2);
+            var generatedBuilds = testBuildsFake.Generate(ENTITY_COUNT * 2);
 
-            return generatedProjectMembers;
-        }
+            generatedBuilds.ForEach(b => b.BuildFinished = b.BuildStarted.AddHours(2));
+            generatedBuilds.ForEach(b => b.BuildMessage = b.BuildStatus == BuildStatus.Successfull ? "Build was successfully finished" : "Build failed with 214 error. Details will be available later");
 
-        private static ICollection<User> GenerateRandomUsers(ICollection<Image> avatars)
-        {
-            var testUsersFake = new Faker<User>()
-                .RuleFor(u => u.Birthday, f => f.Date.Between(DATE_TIME.AddYears(-20), DATE_TIME.AddYears(-16)))
-                .RuleFor(u => u.FirstName, f => f.Name.FirstName())
-                .RuleFor(u => u.LastName, f => f.Name.LastName())
-                .RuleFor(u => u.RegisteredAt, f => f.Date.Between(DATE_TIME.AddDays(1), DATE_TIME.AddDays(180)))
-                .RuleFor(u => u.LastActive, f => f.Date.Between(DATE_TIME.AddDays(180), DATE_TIME.AddDays(190)))
-                .RuleFor(u => u.GitHubUrl, f => f.Internet.Url())
-                .RuleFor(u => u.PasswordSalt, f => Convert.ToBase64String(GetRandomBytes()))
-                .RuleFor(u => u.PasswordHash,
-                    (f, u) => SecurityHelper.HashPassword(f.Internet.Password(12),
-                        Convert.FromBase64String(u.PasswordSalt)))
-                .RuleFor(u => u.Email, f => f.Internet.Email())
-                .RuleFor(u => u.AvatarId, f => f.PickRandom(avatars).Id)
-                .RuleFor(u => u.NickName, f => f.Internet.UserName());
-
-            var generatedUsers = testUsersFake.Generate(USER_COUNT);
-
-            var salt = Convert.ToBase64String(SecurityHelper.GetRandomBytes());
-            var hashedPassword = SecurityHelper.HashPassword("12345678", Convert.FromBase64String(salt));
-
-            var myUser = new User
-            {
-                Email = "test@gmail.com",
-                PasswordHash = hashedPassword,
-                PasswordSalt = salt,
-                FirstName = "testUser",
-                LastName = "testUser",
-                NickName = "TheBestUser",
-                AvatarId = avatars.ToList()[0].Id,
-                Birthday = DateTime.Now.AddYears(-14),
-                LastActive = DateTime.Now,
-                RegisteredAt = DateTime.Now
-            };
-
-            generatedUsers.Add(myUser);
-
-            return generatedUsers;
-        }
-
-        private static ICollection<Project> GenerateRandomProjects(ICollection<User> authors,
-            ICollection<GitCredential> gits, IFileStorageNoSqlDbSettings settings)
-        {
-            var testProjectFake = new Faker<Project>()
-                .RuleFor(i => i.AccessModifier, f => f.PickRandom<AccessModifier>())
-                .RuleFor(i => i.AuthorId, f => f.PickRandom(authors).Id)
-                .RuleFor(i => i.CompilerType, f => f.PickRandom<CompilerType>())
-                .RuleFor(i => i.CountOfBuildAttempts, f => f.Random.Number(5, 10))
-                .RuleFor(i => i.CountOfSaveBuilds, f => f.Random.Number(5, 10))
-                .RuleFor(i => i.CreatedAt, f => f.Date.Between(DATE_TIME, DATE_TIME.AddDays(180)))
-                .RuleFor(i => i.Description, f => f.Lorem.Sentence(5))
-                .RuleFor(i => i.GitCredentialId, f => f.PickRandom(gits).Id)
-                .RuleFor(i => i.Language, f => f.PickRandom<Language>())
-                .RuleFor(i => i.Name, f => f.Lorem.Word())
-                .RuleFor(i => i.Color, f => f.Internet.Color(50, 50, 50))
-                .RuleFor(i => i.ProjectLink, f => f.Internet.Url())
-                .RuleFor(i => i.ProjectType, f => f.PickRandom<ProjectType>());
-
-            var generatedProjects = testProjectFake.Generate(ENTITY_COUNT);
-
-            return generatedProjects;
-        }
-
-        private static ICollection<GitCredential> GenerateRandomGitCredentials()
-        {
-            var testGitFake = new Faker<GitCredential>()
-                .RuleFor(i => i.Url, f => f.Internet.Url())
-                .RuleFor(i => i.Login, f => f.Internet.UserName())
-                .RuleFor(i => i.Provider, f => f.PickRandom<GitProvider>())
-                .RuleFor(u => u.PasswordSalt, f => Convert.ToBase64String(GetRandomBytes()))
-                .RuleFor(u => u.PasswordHash,
-                    (f, u) => SecurityHelper.HashPassword(f.Internet.Password(12),
-                        Convert.FromBase64String(u.PasswordSalt)));
-
-            var generatedGits = testGitFake.Generate(ENTITY_COUNT);
-
-            return generatedGits;
-        }
-
-        private static ICollection<Image> GenerateRandomAvatars()
-        {
-            var testImageFake = new Faker<Image>()
-                .RuleFor(i => i.Url, f => f.Internet.Avatar());
-
-            var generatedImages = testImageFake.Generate(USER_COUNT + 1);
-
-            return generatedImages;
-        }
-
-        private static byte[] GetRandomBytes(int length = 32)
-        {
-            var bytes = new byte[32];
-            for (int i = 0; i < length; i++)
-                bytes[i] = (byte)random.Next(255);
-            return bytes;
-        }
-
-        private static string GetItemsCollectionName()
-        {
-            var itemClassName = typeof(ProjectStructure).ToString().Split('.').Last();
-            var itemsCollectionName = itemClassName.Pluralize();
-            return itemsCollectionName;
+            return generatedBuilds;
         }
     }
 }

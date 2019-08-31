@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { AuthDialogService } from '../services/auth-dialog.service/auth-dialog.service';
 import { DialogType } from '../modules/authorization/models/auth-dialog-type';
@@ -11,6 +11,7 @@ import { SearchProjectDTO } from '../models/DTO/Project/searchProjectDTO'
 import { SignalRService } from '../services/signalr.service/signal-r.service';
 import { NotificationDTO } from '../models/DTO/Common/notificationDTO';
 import { NotificationService } from '../services/notification.service/notification.service';
+import { UserService } from '../services/user.service/user.service';
 import { EventService } from '../services/event.service/event.service';
 
 @Component({
@@ -22,7 +23,9 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     authUserItems: MenuItem[];
     unAuthUserItems: MenuItem[];
 
-    public project: SearchProjectDTO = null;
+    public userName: string;
+    public userAvatar: string;
+    public project: SearchProjectDTO;
     public currProject: SearchProjectDTO;
     public filterProhects: SearchProjectDTO[]
     public dialogType = DialogType;
@@ -37,6 +40,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     constructor(
         private authDialogService: AuthDialogService,
         private router: Router,
+        private userService: UserService,
         private tokenService: TokenService,
         private projectService: ProjectService,
         private signalRService: SignalRService,
@@ -71,6 +75,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             .subscribe((auth) => {
                 this.isAuthorized = auth;
                 if (this.isAuthorized && this.userId) {
+                    this.getUser();
                     this.data = this.signalRService.addTransferChartDataListener();
                     this.loadNotifications(this.userId);
                 }
@@ -89,6 +94,12 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                 }
             }
         ];
+    }
+
+    public onNotificationClick(notification: NotificationDTO){
+        console.log(this.router);
+        //this.router.navigate(['/workspace/3']);
+        this.notificationService.OpenConsole(notification.message);
     }
 
     public loadNotifications(userId: number): void {
@@ -152,7 +163,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         filtered.push({ id: -3, name: query });
        if(!!this.currProject){
            filtered.push({ id: -1, name: query });
-       } 
+       }
         for (let i = 0; i < projects.length; i++) {
             const project = projects[i];
             if (project.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
@@ -170,7 +181,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     }
 
     public goToUserDetails() {
-        this.router.navigate([`/user/details/${this.tokenService.getUserId()}`]);
+        this.router.navigate([`/user/details/${this.userId}`]);
     }
 
     public getMenuItems() {
@@ -197,6 +208,23 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.signalRService.deleteTransferChartDataListener();
     }
 
+    public getAvatarAndName(): void{
+        this.userService
+        .getUserDetailsFromToken()
+        .pipe(takeUntil(this.unsubscribe$))
+        .subscribe(resp =>{
+            this.userAvatar = './assets/img/user-default-avatar.png';
+            if(resp.body.url)
+                this.userAvatar = resp.body.url;
+
+            this.userId = resp.body.id;
+            this.userName = resp.body.firstName;
+        },
+        error =>{
+            console.log(error);
+        })
+    };
+
     private getUser() {
         if (!this.tokenService.areTokensExist()) {
             return;
@@ -207,7 +235,9 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((auth) => {
                 this.isAuthorized = auth;
-                this.userId = this.tokenService.getUserId();
+                //this.userId = this.tokenService.getUserId();
+
+                this.getAvatarAndName();
             });
-    }
+        }
 }

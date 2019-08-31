@@ -33,7 +33,9 @@ import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { element } from 'protractor';
 import { ConcatSource } from 'webpack-sources';
+import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 import { filter } from 'rxjs/operators';
+
 
 @Component({
     selector: 'app-workspace-root',
@@ -83,7 +85,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         private hotkeys: HotkeyService,
         private buildService: BuildService,
         private eventService: EventService,
-        private cdr: ChangeDetectorRef) {
+        private cdr: ChangeDetectorRef,
+    private signalRService: SignalRService) {
 
         this.hotkeys.addShortcut({ keys: 'shift.h' })
             .subscribe(() => {
@@ -123,46 +126,34 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 .subscribe(fileId => this.onFileSelected(fileId));
 
         this.userId = this.tokenService.getUserId();
+        // this.signalRService.startConnection(true, this.userId);
+
         this.routeSub = this.route.params.subscribe(params => {
             this.projectId = params['id'];
 
 
         });
 
-
-        this.projectService.getAuthorId(this.projectId)
+        this.projectService.getProjectById(this.projectId)
             .subscribe(
                 (resp) => {
-                    this.authorId = resp.body;
-
-                    if (this.userId != this.authorId) {
+                    this.project = resp.body;
+                    this.eventService.currProjectSwitch({ id: this.project.id, name: this.project.name });
+                    this.authorId=resp.body.authorId;
+                    this.options = this.project.editorProjectSettings;
+                    if (this.canNotEdit) {
+                        this.options.readOnly = true;
+                    }
+                    if(this.project.authorId!=this.userId)
+                    {
                         this.rightService.getUserRightById(this.userId, this.projectId)
                             .subscribe(
                                 (resp) => {
                                     this.access = resp.body;
                                     this.setUserAccess();
-                                    this.getProjectById();
                                 }
                             )
                     }
-                    else {
-                        this.getProjectById();
-                    }
-                });
-    }
-
-
-
-    public getProjectById() {
-        this.projectService.getProjectById(this.projectId)
-            .subscribe(
-                (resp) => {
-                    this.project = resp.body;
-                    this.options = this.project.editorProjectSettings;
-                    if (this.canNotEdit) {
-                        this.options.readOnly = true;
-                    }
-                    this.eventService.currProjectSwitch({ id: this.project.id, name: this.project.name });
                 },
                 (error) => {
                     this.toast.error("Can't load selected project.", 'Error Message');
@@ -222,6 +213,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         if (this.editor && this.editor.openedFiles.some(f => f.innerFile.id === selectedFile.fileId)) {
             this.editor.activeItem = this.editor.tabs.find(i => i.id === selectedFile.fileId);
             this.editor.code = this.editor.openedFiles.find(f => f.innerFile.id === selectedFile.fileId).innerFile.content;
+            this.editor.monacoOptions.language = this.editor.openedFiles.find(f => f.innerFile.id === selectedFile.fileId).innerFile.language;
             return;
         }
 
@@ -273,7 +265,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
         this.buildService.buildProject(this.project.id).subscribe(
             (response) => {
-                debugger;
                 this.toast.info('Build was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {
@@ -281,6 +272,30 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.toast.error('Something bad happened(', 'Error Message', { tapToDismiss: true });
             }
         )
+    }
+
+    public onRun() {
+        if (this.project.language !== Language.cSharp) {
+            this.toast.info('Only C# project available for run', 'Info Message', { tapToDismiss: true });
+            return;
+        }
+
+        const connectionId = this.signalRService.getConnectionId();
+        if (connectionId == null) {
+            this.toast.error('Please check your internet connection and refresh page before run', 'Info Message', { tapToDismiss: true });
+            return;
+        }
+
+        this.buildService.runProject(this.project.id, connectionId).subscribe(
+            (response) => {
+                this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
+            },
+            (error) => {
+                console.log(error);
+                this.toast.error('Something bad happened(', 'Error Message', { tapToDismiss: true });
+            }
+        )
+        this.signalRService.addProjectRunResultDataListener();
     }
 
     public onFilesSave(files?: FileUpdateDTO[]) {
@@ -317,6 +332,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     public hideFileBrowser() {
         this.showFileBrowser = !this.showFileBrowser;
+        if(!this.showFileBrowser && this.showSearchField)
+        {
+            this.showFileBrowser=true;
+        }
+        if(this.showFileBrowser)
+        {
+            this.showSearchField=false;
+        }
     }
 
     public editProjectSettings() {
@@ -347,5 +370,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     ngOnDestroy() {
         this.routeSub.unsubscribe();
+        this.signalRService.deleteProjectRunDataListener();
+        this.signalRService.deleteConnectionIdListener();
     }
 }
