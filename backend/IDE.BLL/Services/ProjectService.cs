@@ -298,7 +298,7 @@ namespace IDE.BLL.Services
                         ProjectName = z.FirstOrDefault().Project.Name,
                         AuthorNickName = z.FirstOrDefault().Project.Author.NickName,
                         LikesCount = z.Count(),
-                    }).OrderByDescending(i => i.LikesCount).Take(12).ToListAsync();
+                    }).OrderByDescending(i => i.LikesCount).Take(6).ToListAsync();
             return await SetLastFileChangedDate(likedProjects);
         }
 
