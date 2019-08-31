@@ -9,7 +9,6 @@ import { UserService } from 'src/app/services/user.service/user.service';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
 import { UserChangePasswordDTO } from 'src/app/models/DTO/User/userChangePasswordDTO';
-import { UserDetailsComponent } from '../user-details/user-details.component';
 
 @Component({
   selector: 'app-user-dialog-window',
