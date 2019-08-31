@@ -18,6 +18,7 @@ import { EditorSettingsComponent } from '../editor/components/editor-settings/ed
 import { ImportFileComponent } from './import-file/import-file.component';
 import {FileUploadModule} from 'primeng/fileupload';
 import { ProgressSpinnerModule} from 'primeng/progressspinner';
+import { ConsoleComponent } from './console/console.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { ProgressSpinnerModule} from 'primeng/progressspinner';
       FileBrowserSectionComponent, 
       EditorSectionComponent,
       FileInfoComponent,
-      ImportFileComponent
+      ImportFileComponent,
+      ConsoleComponent
     ],
   imports: [
     MenuModule,
@@ -47,7 +49,8 @@ import { ProgressSpinnerModule} from 'primeng/progressspinner';
     ProgressSpinnerModule
   ],
   entryComponents: [
-      EditorSettingsComponent
+      EditorSettingsComponent,
+      ConsoleComponent
   ]
 })
 export class WorkspaceModule { }
