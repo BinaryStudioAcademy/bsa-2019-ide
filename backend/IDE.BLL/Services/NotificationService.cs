@@ -67,10 +67,10 @@ namespace IDE.BLL.Services
             //}
         }
 
-        public async Task SendProjectRunResult(RunResultDTO runResult)
+        public async Task SendRunResultNotificationToUser(NotificationDTO notification, string connectionId)
         {
-            await _hubContext.Clients.Client(runResult.ConnectionId)
-                .SendAsync("projectRunResult", runResult)
+            await _hubContext.Clients.Client(connectionId)
+                .SendAsync("transferRunResult", notification)
                 .ConfigureAwait(false);
         }
 

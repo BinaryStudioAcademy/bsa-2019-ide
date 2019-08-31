@@ -41,14 +41,14 @@ namespace IDE.BLL.Services
         {
             // we just print this message   
             _logger.LogInformation($"consumer received {content}");
-            var buildResult = JsonConvert.DeserializeObject<RunResultDTO>(content);
+            var runResult = JsonConvert.DeserializeObject<RunResultDTO>(content);
 
-            var notification = new NotificationDTO() { Message = "anhkjsdghabsl" };
+            var notification = new NotificationDTO() { Message = runResult.Result };
 
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var notificationService = scope.ServiceProvider.GetService<INotificationService>();
-                await notificationService.SendNotification(buildResult.ProjectId, notification);
+                await notificationService.SendRunResultNotificationToUser(notification, runResult.ConnectionId);
             }
 
         }
