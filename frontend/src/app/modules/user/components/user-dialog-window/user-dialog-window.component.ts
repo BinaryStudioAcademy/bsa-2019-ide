@@ -9,7 +9,6 @@ import { UserService } from 'src/app/services/user.service/user.service';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
 import { UserChangePasswordDTO } from 'src/app/models/DTO/User/userChangePasswordDTO';
-import { UserDetailsComponent } from '../user-details/user-details.component';
 
 @Component({
   selector: 'app-user-dialog-window',
@@ -54,8 +53,8 @@ export class UserDialogWindowComponent implements OnInit {
                 firstName: ['', [Validators.required]],
                 lastName: ['', Validators.required],
                 nickName: ['', Validators.required],
-                gitHubUrl: [''],
-                birthday: ['', Validators.required]
+                gitHubUrl: ['', Validators.pattern("^[-a-zA-Z0-9._:\/]+$")],
+                birthday: ['']
             });
 
             this.userService.getUserDetailsFromToken()
@@ -146,13 +145,15 @@ export class UserDialogWindowComponent implements OnInit {
     }
     
     private getValuesForUpdateInfo() {
+        console.log(this.userForm.get('birthday').value)
+        const birthday = this.userForm.get('birthday').value;
         this.userUpdateInfo = {
             id: this.tokenService.getUserId(),
             firstName: this.userForm.get('firstName').value,
             lastName: this.userForm.get('lastName').value,
             nickName: this.userForm.get('nickName').value,
             gitHubUrl: this.userForm.get('gitHubUrl').value,
-            birthday:  this.userForm.get('birthday').value
+            birthday:  birthday === null ? '0001-01-01T00:00:00' : birthday
         }
     }
 

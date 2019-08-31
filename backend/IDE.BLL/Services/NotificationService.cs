@@ -7,6 +7,7 @@ using IDE.DAL.Entities;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using RabbitMQ.Shared.ModelsDTO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -66,6 +67,13 @@ namespace IDE.BLL.Services
             }
         }
 
+        public async Task SendProjectRunResult(RunResultDTO runResult)
+        {
+            await _hubContext.Clients.Client(runResult.ConnectionId)
+                .SendAsync("projectRunResult", runResult)
+                .ConfigureAwait(false);
+        }
+
         public async Task<IEnumerable<NotificationDTO>> GetNotificationByUserId(int userId)
         {
             var notifications = await _context.Notifications
@@ -98,7 +106,7 @@ namespace IDE.BLL.Services
             await _context.SaveChangesAsync()
                 .ConfigureAwait(false);
 
-            return _mapper.Map<NotificationDTO>(notification); ;
+            return _mapper.Map<NotificationDTO>(notification);
         }
     }
 }
