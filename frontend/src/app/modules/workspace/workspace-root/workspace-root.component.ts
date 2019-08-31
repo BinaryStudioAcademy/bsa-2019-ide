@@ -92,35 +92,25 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         this.routeSub = this.route.params.subscribe(params => {
             this.projectId = params['id'];
         });
-        this.projectService.getAuthorId(this.projectId)
+
+        this.projectService.getProjectById(this.projectId)
             .subscribe(
                 (resp) => {
-                    this.authorId = resp.body;
-
-                    if (this.userId != this.authorId) {
+                    this.project = resp.body;
+                    this.authorId=resp.body.authorId;
+                    this.options = this.project.editorProjectSettings;
+                    if (this.canNotEdit) {
+                        this.options.readOnly = true;
+                    }
+                    if(this.project.authorId!=this.userId)
+                    {
                         this.rightService.getUserRightById(this.userId, this.projectId)
                             .subscribe(
                                 (resp) => {
                                     this.access = resp.body;
                                     this.setUserAccess();
-                                    this.getProjectById();
                                 }
                             )
-                    }
-                    else {
-                        this.getProjectById();
-                    }
-                });
-    }
-
-    public getProjectById() {
-        this.projectService.getProjectById(this.projectId)
-            .subscribe(
-                (resp) => {
-                    this.project = resp.body;
-                    this.options = this.project.editorProjectSettings;
-                    if (this.canNotEdit) {
-                        this.options.readOnly = true;
                     }
                 },
                 (error) => {
