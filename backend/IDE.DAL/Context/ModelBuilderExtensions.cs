@@ -212,7 +212,22 @@ namespace IDE.DAL.Context
                     RegisteredAt = DateTime.Now.AddDays(-15),
                     PasswordHash = SecurityHelper.HashPassword("12345678", Convert.FromBase64String(salt)),
                     PasswordSalt = salt
-                }
+                },
+                new User()
+                {
+                    AvatarId = images[1].Id,
+                    Birthday = DateTime.Now.AddYears(-20),
+                    EditorSettingsId = settings[0].Id,
+                    Email  = "test@gmail.com",
+                    EmailConfirmed = true,
+                    FirstName = "TestUser",
+                    LastName = "TestUser",
+                    LastActive = DateTime.Now,
+                    NickName = "Solomon",
+                    RegisteredAt = DateTime.Now.AddDays(-35),
+                    PasswordHash = SecurityHelper.HashPassword("12345678", Convert.FromBase64String(salt)),
+                    PasswordSalt = salt
+                },
             };
         }
         private static Project[] GenerateCorrectProjects(User[] users, EditorSetting[] settings)
@@ -616,17 +631,18 @@ namespace IDE.DAL.Context
         {
             var date = projects.OrderByDescending(p => p.CreatedAt).First().CreatedAt;
             var testBuildsFake = new Faker<Build>()
-                .RuleFor(p => p.BuildFinished, f => f.Date.Between(date, DateTime.Now))
-                .RuleFor(p => p.BuildMessage, f => f.Lorem.Sentence(10))
                 .RuleFor(p => p.BuildStarted, f => f.Date.Between(date, DateTime.Now))
                 .RuleFor(p => p.BuildStatus, f => f.PickRandom<BuildStatus>())
                 .RuleFor(p => p.ProjectId, f => f.PickRandom(projects).Id)
                 .RuleFor(p => p.UserId, f => f.PickRandom(users).Id);
 
 
-            var generatedProjectMembers = testBuildsFake.Generate(ENTITY_COUNT * 2);
+            var generatedBuilds = testBuildsFake.Generate(ENTITY_COUNT * 2);
 
-            return generatedProjectMembers;
+            generatedBuilds.ForEach(b => b.BuildFinished = b.BuildStarted.AddHours(2));
+            generatedBuilds.ForEach(b => b.BuildMessage = b.BuildStatus == BuildStatus.Successfull ? "Build was successfully finished" : "Build failed with 214 error. Details will be available later");
+
+            return generatedBuilds;
         }
     }
 }
