@@ -2,7 +2,7 @@
     <div class="hor-navbar p-col-12">
         <button pButton *ngIf="canRun || isAuthor()" type="button" icon="pi pi-play" iconPos="left"
             class="ui-button-secondary" label="Run" (click)="onRun()"></button>
-        <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-arrow-down" iconPos="left"
+        <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-inbox" iconPos="left"
             class="ui-button-secondary" label="Build" (click)="onBuild()"></button>
         <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onFilesSave()" icon="pi pi-save" iconPos="left"
             class="ui-button-secondary" label="Save"></button>
@@ -15,10 +15,9 @@
     <div class="left-panel p-col-fixed">
         <button pButton type="button" icon="pi pi-clone" title="Hide or show project structure" iconPos="left"
             class="ui-button-secondary" (click)="hideFileBrowser()"></button>
-        <button pButton type="button" icon="pi pi-file" iconPos="left" class="ui-button-secondary" disabled></button>
         <button pButton routerLink="/project/{{projectId}}" title="Project details" type="button" icon="pi pi-info"
             iconPos="left" class="ui-button-secondary"></button>
-        <button *ngIf="isAuthor()" pButton type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary"
+        <button *ngIf="isAuthor()" pButton type="button" icon="pi pi-pencil" title="Edit project" iconPos="left" class="ui-button-secondary"
             (click)="editProjectSettings()"></button>
         <button pButton type="button" icon="pi pi-search" iconPos="left" class="ui-button-secondary"
             (click)="hideSearchField()"></button>

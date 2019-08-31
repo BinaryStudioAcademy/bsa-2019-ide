@@ -45,7 +45,7 @@ export class FileBrowserSectionComponent implements OnInit {
     public files: TreeNode[];
     public selectedItem: TreeNode;
     public projectId: number;
-    public expandFolder = false;
+    public expandFolder = true;
     public fileSearchResults: FileSearchResultDTO[]
 
     private lastSelectedElement: any;
