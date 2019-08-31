@@ -5,8 +5,12 @@
                 <p-autoComplete class="auto-complete" [(ngModel)]="project" [suggestions]="filterProhects"
                     (completeMethod)="filterProject($event)" field="name" [size]="30" placeholder="Project title..."
                     [minLength]="1" (onSelect)="checkProject(project)"></p-autoComplete>
-                <p-splitButton label="My Profile" icon="pi pi-user" (onClick)="goToUserDetails()" [model]="items">
+
+                    <span class="avatar" [ngStyle]="{'content': 'url(' + userAvatar + ')'}"></span>
+                
+                <p-splitButton label="{{userName}}" icon="pi" (onClick)="goToUserDetails()" [model]="items">
                 </p-splitButton>
+                
                 <button class="bell-wrapper ui-button-secondary" pButton icon="pi pi-bell"
                     (click)="notifications.toggle($event)" (click)="showNotificationPanel()">
                     <div *ngIf="data.length!=0 || notReadNotification.length!=0" class="count-of-notification">
