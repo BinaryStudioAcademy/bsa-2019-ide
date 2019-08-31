@@ -72,11 +72,19 @@ export class UserDialogWindowComponent implements OnInit {
         if(this.isUpdatePassword()){
             this.userForm = this.fb.group({
                 password: ['', [Validators.required]],
-                newPassword: ['', Validators.required]
-            });
+                newPassword: ['', Validators.required],
+                repeatPassword: ['', Validators.required]
+            }, {validator: this.checkPasswords });
 
             this.isPageLoaded = true;
         }
+    }
+
+    checkPasswords(group: FormGroup) { 
+        let pass = group.get('newPassword').value;
+        let confirmPass = group.get('repeatPassword').value;
+    
+        return pass === confirmPass ? null : { notSame: true }     
     }
 
     public userItemIsNotChange(): boolean {
