@@ -49,11 +49,11 @@ export class AddCollaboratorsComponent implements OnInit {
     public ngOnInit(): void {
         this.userId=this.tokenService.getUserId();
         this.projectService.getAuthorId(this.projectId)
-        .subscribe(
-            (resp)=>{
-                this.authorId=resp.body;
-            }
-        );
+            .subscribe(
+                (resp)=>{
+                    this.authorId=resp.body;
+                }
+            );
         this.projectService.getProjectCollaborators(this.projectId)
             .subscribe(
                 (resp) => {
@@ -75,13 +75,14 @@ export class AddCollaboratorsComponent implements OnInit {
     }
 
     public wasInStartList(deleteItem: DeleteCollaboratorRightDTO): boolean{
+        let deletedItemWasEarlier = false
         this.startCollaborators.forEach(element => {
-            if(deleteItem.id==element.id)
+            if (deleteItem.id==element.id)
             {
-                return true;
+                deletedItemWasEarlier = true;
             }
         });
-        return false;
+        return deletedItemWasEarlier;
     }
 
     public save(): void {
@@ -98,44 +99,47 @@ export class AddCollaboratorsComponent implements OnInit {
                 this.rightService.deleteCollaborator(deleteItem)
                     .subscribe(
                         (resp) => {
-                            //this.ref.close();
+                            this.toastService.success(`Collaborator ${deleteItem.nickName} was deleted`);
                         },
                         (error) => {
-                            this.toastService.error('Can\'t delete collacortors access', 'Error Message');
+                            this.toastService.error('Can\'t delete collaborators access', 'Error Message');
                         }
                     );
+                this.UpdateNewCollaborators();
             }
         });
-        this.newCollaborators.forEach(item => {
-            const update: UpdateUserRightDTO =
-            {
-                projectId: this.projectId,
-                access: item.access,
-                userId: item.id
-            }
-            this.rightService.setUsersRigths(update)
-                .subscribe(
-                    (resp) => {
-                        this.deleteCollaborators = [];
-                        this.startCollaborators = [];
-                        this.newCollaborators.forEach(element => {
-                            var colaborator: CollaboratorDTO = {
-                                id: element.access,
-                                nickName: element.nickName,
-                                access: element.access
+        this.deleteCollaborators = [];
+        if (this.newCollaborators.length > 0) {
+            this.newCollaborators.forEach(item => {
+                const update: UpdateUserRightDTO =
+                {
+                    projectId: this.projectId,
+                    access: item.access,
+                    userId: item.id
+                }
+                this.rightService.setUsersRigths(update)
+                    .subscribe(
+                        (resp) => {
+                            this.deleteCollaborators = [];
+                            this.startCollaborators = [];
+                            this.UpdateNewCollaborators();
+                            if (!this.isCollaboratorsSaved) {
+                                this.toastService.success('New collaborators access have successfully saved!');
                             }
-                            this.startCollaborators.push(colaborator);
-                        })
-                        this.isCollaboratorsSaved = true;
-                        this.isCollaboratorChange = true;
-                        this.toastService.success('New collacortors access have successfully saved!');
-                    },
-                    (error) => {
-                        this.isCollaboratorsSaved = true;
-                        this.toastService.error('Can\'t save new collacortors access', 'Error Message');
-                    }
-                );
-        });
+                            this.isCollaboratorsSaved = true;
+                            this.isCollaboratorChange = true;
+                        },
+                        (error) => {
+                            this.isCollaboratorsSaved = true;
+                            this.toastService.error('Can\'t save new collaborators access', 'Error Message');
+                        }
+                    );
+                });
+        } else {
+            this.isCollaboratorsSaved = true;
+            this.startCollaborators = [];
+            this.UpdateNewCollaborators();
+        }
     }
 
 
@@ -156,6 +160,7 @@ export class AddCollaboratorsComponent implements OnInit {
                 return false;
             }
         }
+
         return true;
 
     }
@@ -188,7 +193,6 @@ export class AddCollaboratorsComponent implements OnInit {
         for (let i = 0; i < collaborators.length; i++) {
             const collaborator = collaborators[i];
             if (collaborator.nickName.toLowerCase().indexOf(query.toLowerCase()) !== -1) {
-                console.log(this.IsSelected(collaborator));
                 if (!this.IsSelected(collaborator)) {
                     filtered.push(collaborator);
                 }
@@ -218,16 +222,19 @@ export class AddCollaboratorsComponent implements OnInit {
         return result;
     }
 
+    private UpdateNewCollaborators() {
+        this.newCollaborators.forEach(element => {
+            var colaborator: CollaboratorDTO = {
+                id: element.id,
+                nickName: element.nickName,
+                access: element.access
+            }
+            this.startCollaborators.push(colaborator);
+        })
+    }
+
     private SetCollaboratorsFromResponse(resp: HttpResponse<CollaboratorDTO[]>): void {
         this.newCollaborators = resp.body;
-        this.newCollaborators.forEach(element => {
-            let newElement: CollaboratorDTO =
-            {
-                id: element.id,
-                access: element.access,
-                nickName: element.nickName
-            }
-            this.startCollaborators.push(newElement);
-        });
+        this.UpdateNewCollaborators();
     }
 }

@@ -32,6 +32,7 @@ import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { element } from 'protractor';
 import { ConcatSource } from 'webpack-sources';
+import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 
 @Component({
     selector: 'app-workspace-root',
@@ -76,7 +77,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private projectEditService: ProjectDialogService,
         private tokenService: TokenService,
         private hotkeys: HotkeyService,
-        private buildService: BuildService) {
+        private buildService: BuildService,
+        private signalRService: SignalRService) {
         this.hotkeys.addShortcut({ keys: 'shift.h' })
             .subscribe(() => {
                 this.hideFileBrowser();
@@ -85,38 +87,30 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.userId = this.tokenService.getUserId();
+        // this.signalRService.startConnection(true, this.userId);
+
         this.routeSub = this.route.params.subscribe(params => {
             this.projectId = params['id'];
         });
-        this.projectService.getAuthorId(this.projectId)
+
+        this.projectService.getProjectById(this.projectId)
             .subscribe(
                 (resp) => {
-                    this.authorId = resp.body;
-
-                    if (this.userId != this.authorId) {
+                    this.project = resp.body;
+                    this.authorId=resp.body.authorId;
+                    this.options = this.project.editorProjectSettings;
+                    if (this.canNotEdit) {
+                        this.options.readOnly = true;
+                    }
+                    if(this.project.authorId!=this.userId)
+                    {
                         this.rightService.getUserRightById(this.userId, this.projectId)
                             .subscribe(
                                 (resp) => {
                                     this.access = resp.body;
                                     this.setUserAccess();
-                                    this.getProjectById();
                                 }
                             )
-                    }
-                    else {
-                        this.getProjectById();
-                    }
-                });
-    }
-
-    public getProjectById() {
-        this.projectService.getProjectById(this.projectId)
-            .subscribe(
-                (resp) => {
-                    this.project = resp.body;
-                    this.options = this.project.editorProjectSettings;
-                    if (this.canNotEdit) {
-                        this.options.readOnly = true;
                     }
                 },
                 (error) => {
@@ -228,7 +222,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
         this.buildService.buildProject(this.project.id).subscribe(
             (response) => {
-                debugger;
                 this.toast.info('Build was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {
@@ -236,6 +229,30 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                 this.toast.error('Something bad happened(', 'Error Message', { tapToDismiss: true });
             }
         )
+    }
+
+    public onRun() {
+        if (this.project.language !== Language.cSharp) {
+            this.toast.info('Only C# project available for run', 'Info Message', { tapToDismiss: true });
+            return;
+        }
+
+        const connectionId = this.signalRService.getConnectionId();
+        if (connectionId == null) {
+            this.toast.error('Please check your internet connection and refresh page before run', 'Info Message', { tapToDismiss: true });
+            return;
+        }
+
+        this.buildService.runProject(this.project.id, connectionId).subscribe(
+            (response) => {
+                this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
+            },
+            (error) => {
+                console.log(error);
+                this.toast.error('Something bad happened(', 'Error Message', { tapToDismiss: true });
+            }
+        )
+        this.signalRService.addProjectRunResultDataListener();
     }
 
     public onFilesSave(files?: FileUpdateDTO[]) {
@@ -302,5 +319,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.routeSub.unsubscribe();
+        this.signalRService.deleteProjectRunDataListener();
+        this.signalRService.deleteConnectionIdListener();
     }
 }

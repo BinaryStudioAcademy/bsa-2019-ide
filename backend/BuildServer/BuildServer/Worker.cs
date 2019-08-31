@@ -58,5 +58,35 @@ namespace BuildServer
 
             return isBuildSucceeded;
         }
+
+        public string Run(Uri uriForDownload, string projectName)
+        {
+            Console.WriteLine("Downloading...");
+            _azureService.Download(uriForDownload, projectName).GetAwaiter().GetResult();
+            Console.WriteLine("UnZiping...");
+            _fileArchiver.UnZip(projectName);
+
+            Console.WriteLine("Build project");
+            string buildResult = _builder.Build(projectName);
+            Console.WriteLine(buildResult);
+
+            //if (!buildResult.ToLower().Contains("Build succeeded".ToLower()))
+            //{
+            //    Console.WriteLine("Removing temporrary files...");
+            //    _fileArchiver.RemoveTemporaryFiles(projectName);
+            //    return "Fail while building \n" + buildResult;
+            //}
+
+            Console.WriteLine("Running project");
+            string executeResult = _builder.Run(projectName);
+
+            Console.WriteLine("Removing temporrary files...");
+            _fileArchiver.RemoveTemporaryFiles(projectName);
+            
+            Console.WriteLine("program output:");
+            Console.WriteLine(executeResult);
+
+            return executeResult;
+        }
     }
 }

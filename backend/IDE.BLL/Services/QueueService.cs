@@ -14,43 +14,66 @@ namespace IDE.BLL.Services
 {
     public class QueueService : IQueueService
     {
-        private readonly IMessageProducerScope _messageProducerScope;
-        private readonly IMessageConsumerScope _messageConsumerScope;
+        private readonly IMessageProducerScope _messageProducerScopeBuild;
+        private readonly IMessageProducerScope _messageProducerScopeRun;
+        private readonly IMessageConsumerScope _messageConsumerScopeBuild;
+        private readonly IMessageConsumerScope _messageConsumerScopeRun;
         private readonly ILogger<QueueService> _logger;
         private readonly INotificationService _notificationService;
-        private static bool isConsumerSubscribed = false;
+        private static bool isBuildConsumerSubscribed = false;
+        private static bool isRunConsumerSubscribed = false;
 
         public QueueService(IMessageProducerScopeFactory messageProducerScopeFactory,
                             IMessageConsumerScopeFactory messageConsumerScopeFactory,
                             ILogger<QueueService> logger,
                             INotificationService notificationService)
         {
-            _messageProducerScope = messageProducerScopeFactory.Open(new MessageScopeSettings
-            {
-                ExchangeName = "IdeExchange",
-                ExchangeType = ExchangeType.Direct,
-                QueueName = "ProjectsForBuildingQueue",
-                RoutingKey = "request"
-            });
 
-            _messageConsumerScope = messageConsumerScopeFactory.Connect(new MessageScopeSettings
+            _messageProducerScopeRun = messageProducerScopeFactory.Open(new MessageScopeSettings
             {
-                ExchangeName = "BuildServerExchange",
+                ExchangeName = "IdeExchangeRun",
+                ExchangeType = ExchangeType.Direct,
+                QueueName = "SendRunRequestQueue",
+                RoutingKey = "runRequest"
+            }, QueueType.Run);
+            _messageProducerScopeBuild = messageProducerScopeFactory.Open(new MessageScopeSettings
+            {
+                ExchangeName = "IdeExchangeBuild",
+                ExchangeType = ExchangeType.Direct,
+                QueueName = "SendBuildRequestQueue",
+                RoutingKey = "buildRequest"
+            }, QueueType.Build);
+
+            _messageConsumerScopeBuild = messageConsumerScopeFactory.Connect(new MessageScopeSettings
+            {
+                ExchangeName = "BuildServerExchangeBuild",
                 ExchangeType = ExchangeType.Direct,
                 QueueName = "BuildResultQueue",
-                RoutingKey = "responce"
-            });
+                RoutingKey = "buildResponse"
+            }, QueueType.Build);
+            _messageConsumerScopeRun = messageConsumerScopeFactory.Connect(new MessageScopeSettings
+            {
+                ExchangeName = "BuildServerExchangeRun",
+                ExchangeType = ExchangeType.Direct,
+                QueueName = "RunResultQueue",
+                RoutingKey = "runResponse"
+            }, QueueType.Run);
 
             _logger = logger;
             _notificationService = notificationService;
-            if (!isConsumerSubscribed)
+            if (!isBuildConsumerSubscribed)
             {
-                _messageConsumerScope.MessageConsumer.Received += MessageConsumer_Received;
-                isConsumerSubscribed = true;
+                _messageConsumerScopeBuild.MessageConsumer.Received += MessageBuildConsumer_Received;
+                isBuildConsumerSubscribed = true;
+            }
+            if (!isRunConsumerSubscribed)
+            {
+                _messageConsumerScopeRun.MessageConsumer.Received += MessageRunConsumer_Received;
+                isRunConsumerSubscribed = true;
             }
         }
 
-        private void MessageConsumer_Received(object sender, BasicDeliverEventArgs @event)
+        private void MessageBuildConsumer_Received(object sender, BasicDeliverEventArgs @event)
         {
             var message = Encoding.UTF8.GetString(@event.Body);
             var buildResult = JsonConvert.DeserializeObject<BuildResultDTO>(message);
@@ -60,16 +83,41 @@ namespace IDE.BLL.Services
                 notification.Message = "Build status: Success)";
             else
                 notification.Message = "Build status: Failed(";
-
+            
             _notificationService.SendNotification(buildResult.ProjectId, notification);
-            _messageConsumerScope.MessageConsumer.SetAcknowledge(@event.DeliveryTag, true);
+            _messageConsumerScopeBuild.MessageConsumer.SetAcknowledge(@event.DeliveryTag, true);
         }
 
-        public bool SendMessage(string message)
+        private void MessageRunConsumer_Received(object sender, BasicDeliverEventArgs @event)
+        {
+            var message = Encoding.UTF8.GetString(@event.Body);
+            var buildResult = JsonConvert.DeserializeObject<RunResultDTO>(message);
+
+            var notification = new NotificationDTO() { Message = "anhkjsdghabsl" };
+
+            _notificationService.SendNotification(buildResult.ProjectId, notification);
+            _messageConsumerScopeBuild.MessageConsumer.SetAcknowledge(@event.DeliveryTag, true);
+        }
+
+        public bool SendBuildMessage(string value)
         {
             try
             {
-                _messageProducerScope.MessageProducer.Send(message);
+                //here will be sent build params to build server
+                _messageProducerScopeBuild.MessageProducer.Send(value);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool SendRunMessage(string value)
+        {
+            try
+            {
+                _messageProducerScopeRun.MessageProducer.Send(value);
                 return true;
             }
             catch
@@ -80,7 +128,8 @@ namespace IDE.BLL.Services
 
         public void Dispose()
         {
-            _messageProducerScope.Dispose();
+            _messageProducerScopeBuild.Dispose();
+            _messageProducerScopeRun.Dispose();
         }
     }
 }

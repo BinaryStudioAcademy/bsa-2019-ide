@@ -22,6 +22,8 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     authUserItems: MenuItem[];
     unAuthUserItems: MenuItem[];
 
+    public userName: string;
+    public userAvatar: string;
     public project: SearchProjectDTO;
     public filterProhects: SearchProjectDTO[]
     public dialogType = DialogType;
@@ -32,9 +34,6 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public notReadNotification: NotificationDTO[] = [];
     private unsubscribe$ = new Subject<void>();
     private userId: number;
-    userName: string;
-    userAvatar: string;
-
 
     constructor(
         private authDialogService: AuthDialogService,
@@ -85,6 +84,12 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                 }
             }
         ];
+    }
+
+    public onNotificationClick(notification: NotificationDTO){
+        console.log(this.router);
+        //this.router.navigate(['/workspace/3']);
+        this.notificationService.OpenConsole(notification.message);
     }
 
     public loadNotifications(userId: number): void {
@@ -171,7 +176,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.signalRService.deleteTransferChartDataListener();
     }
 
-    private getAvatarAndName(): void{
+    public getAvatarAndName(): void{
         this.userService
         .getUserDetailsFromToken()
         .pipe(takeUntil(this.unsubscribe$))
@@ -199,8 +204,8 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             .subscribe((auth) => {
                 this.isAuthorized = auth;
                 //this.userId = this.tokenService.getUserId();
-            });    
 
-            this.getAvatarAndName();
+                this.getAvatarAndName();
+            });    
         }
 }
