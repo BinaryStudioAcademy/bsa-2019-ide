@@ -91,9 +91,10 @@
     </div>
     
     <button type="submit" pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignUp && !isSpinner"
-    (click)="signUp()">CREATE ACCOUNT</button>
+    (click)="signUp()" [disabled]="!isDataFull()">CREATE ACCOUNT</button>
     
-    <button pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignIn && !isSpinner && !isRecoverPassword" (click)="signIn()">LOG IN ACCOUNT</button>
+    <button pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignIn && !isSpinner && !isRecoverPassword" (click)="signIn()"
+        [disabled]="!isDataFull()">LOG IN ACCOUNT</button>
     <p class="auth-recover" *ngIf="config.data.dialogType === dialogType.SignIn && !isRecoverPassword"><span (click)="recoverPassword()">Forgot password?</span></p>
 
     <button pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignIn && !isSpinner && isRecoverPassword" (click)="recoverPassword()">Recover password</button>
