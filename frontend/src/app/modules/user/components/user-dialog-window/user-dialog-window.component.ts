@@ -108,6 +108,8 @@ export class UserDialogWindowComponent implements OnInit {
     }
 
     public onSubmit() {
+        this.hasDetailsSaveResponse = false;
+
         if(this.isUpdateInfo()) {
             this.getValuesForUpdateInfo();
             this.userService.updateProfile(this.userUpdateInfo)
@@ -129,6 +131,7 @@ export class UserDialogWindowComponent implements OnInit {
             .subscribe(res => {
                 this.toastrService.success("Your password was updated");
                 this.hasDetailsSaveResponse = true;
+                this.close();
             },
             error => {
                 this.toastrService.error('Incorrect password');                        

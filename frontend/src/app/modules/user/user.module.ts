@@ -21,6 +21,7 @@ import { UserProjListComponent } from './components/user-proj-list/user-proj-lis
 import { EditorModule } from '../editor/editor.module';
 import { TabViewModule } from 'primeng/primeng';
 import { CalendarModule } from 'primeng/calendar';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
 
 @NgModule({
     declarations: [
@@ -51,7 +52,8 @@ import { CalendarModule } from 'primeng/calendar';
         CardModule,
         AccordionModule,
         CardModule,
-        CalendarModule
+        CalendarModule,
+        ConfirmDialogModule
     ],
     entryComponents: [
         UserDialogWindowComponent

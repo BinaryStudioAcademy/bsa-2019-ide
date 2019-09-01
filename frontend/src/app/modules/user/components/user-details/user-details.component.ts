@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { UserService } from 'src/app/services/user.service/user.service';
-import { MenuItem } from 'primeng/api';
+import { MenuItem, ConfirmationService } from 'primeng/api';
 import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
 import { UserDialogType } from '../models/project-dialog-type';
 import { UserDetailsDialogService } from 'src/app/services/user-dialog/user-details-dialog.service';
@@ -40,6 +40,7 @@ export class UserDetailsComponent implements OnInit {
       private tokenService: TokenService,
       private activateRoute: ActivatedRoute,
       private toastrService: ToastrService,
+      private confirmationService: ConfirmationService,
       private userDialogService: UserDetailsDialogService) { }
 
   ngOnInit() {
@@ -65,7 +66,7 @@ export class UserDetailsComponent implements OnInit {
             this.userPhotoUpdate();
         }},
         {label: 'Delete Image', icon: 'pi pi-trash', command: () => {
-            this.DeleteProfilePhoto();
+            this.confirm();
         }},
         {label: 'Update Info', icon: 'pi pi-refresh', command: () => {
             this.userInfoUpdate();
@@ -75,6 +76,20 @@ export class UserDetailsComponent implements OnInit {
         }}
     ];
   }
+
+  confirm() {
+    this.confirmationService.confirm({
+        message: 'Do you want to remove your avatar?',
+        header: 'Delete Confirmation',
+        icon: 'pi pi-info-circle',
+        accept: () => {
+            this.DeleteProfilePhoto();
+        },
+        reject: () => {
+            this.toastrService.info("Ok, your avatar won`t be removed");
+        }
+    });
+}
 
   public showEditorSettingsForUser()
   {
