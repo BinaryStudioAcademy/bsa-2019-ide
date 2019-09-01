@@ -19,33 +19,33 @@ namespace IDE.BLL.Services
 
         private readonly IHubContext<NotificationHub> _hubContext;
         private readonly IdeContext _context;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+        //private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IMapper _mapper;
         public NotificationService(IHubContext<NotificationHub> hubContext,
             IdeContext context,
-            IServiceScopeFactory serviceScopeFactory,
+            //IServiceScopeFactory serviceScopeFactory,
             IMapper mapper)
         {
             _hubContext = hubContext;
             _context = context;
             _mapper = mapper;
-            _serviceScopeFactory = serviceScopeFactory;
+            //_serviceScopeFactory = serviceScopeFactory;
         }
         public async Task SendNotification(int projectId, NotificationDTO notificationDTO)
         {
-            using (var scope = _serviceScopeFactory.CreateScope())
-            {
-                var _context = scope.ServiceProvider.GetService<IdeContext>();
+            //using (var scope = _serviceScopeFactory.CreateScope())
+            //{
+            //    var _context = scope.ServiceProvider.GetService<IdeContext>();
 
                 var users = await _context.ProjectMembers
                     .Where(item => item.ProjectId == projectId)
                     .Select(item => item.User)
-                    .ToListAsync().ConfigureAwait(false) ?? new List<User>();
+                    .ToListAsync() ?? new List<User>();
 
                 var author = await _context.Projects
                     .Where(item => item.Id == projectId)
                    .Select(item => item.Author)
-                  .FirstOrDefaultAsync().ConfigureAwait(false);
+                  .FirstOrDefaultAsync();
 
                 if (author != null)
                     users.Add(author);
@@ -64,13 +64,13 @@ namespace IDE.BLL.Services
                 await _hubContext.Clients.Groups(projectId.ToString())
                     .SendAsync("transferchartdata", notificationDTO)
                     .ConfigureAwait(false);
-            }
+            //}
         }
 
-        public async Task SendProjectRunResult(RunResultDTO runResult)
+        public async Task SendRunResultNotificationToUser(NotificationDTO notification, string connectionId)
         {
-            await _hubContext.Clients.Client(runResult.ConnectionId)
-                .SendAsync("projectRunResult", runResult)
+            await _hubContext.Clients.Client(connectionId)
+                .SendAsync("transferRunResult", notification)
                 .ConfigureAwait(false);
         }
 

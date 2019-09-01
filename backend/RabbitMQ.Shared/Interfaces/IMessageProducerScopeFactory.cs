@@ -5,6 +5,6 @@ namespace RabbitMQ.Shared.Interfaces
 {
     public interface IMessageProducerScopeFactory
     {
-        IMessageProducerScope Open(MessageScopeSettings messageScopeSettings, QueueType type);
+        IMessageProducerScope Open(MessageScopeSettings messageScopeSettings);
     }
 }

@@ -16,7 +16,7 @@ export class ConsoleComponent implements OnInit {
     }
 
   ngOnInit() {
-      this.message=this.config.data.message;
+      this.message = this.config.data.message;
   }
 
 }

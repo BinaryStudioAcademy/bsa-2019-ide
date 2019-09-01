@@ -229,14 +229,14 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         if (!this.tokenService.areTokensExist()) {
             return;
         }
+        this.userId = this.tokenService.getUserId();
 
         this.tokenService
             .IsAuthorized()
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((auth) => {
                 this.isAuthorized = auth;
-                //this.userId = this.tokenService.getUserId();
-
+                this.userId = this.tokenService.getUserId();
                 this.getAvatarAndName();
             });
         }
