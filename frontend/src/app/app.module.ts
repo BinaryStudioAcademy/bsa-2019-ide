@@ -38,12 +38,14 @@ import { ChartsModule } from 'ng2-charts';
 
 import { HighlightMatchDirective } from './directives/highlight-match.directive';
 import { ImportFileComponent } from './modules/workspace/import-file/import-file.component';
+import { NotificationStatusDirective } from './directives/notification-status/notification-status.directive';
 
 
 @NgModule({
     declarations: [
         AppComponent,
         NavMenuComponent,
+        NotificationStatusDirective,
 
     ],
     imports: [
