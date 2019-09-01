@@ -154,6 +154,8 @@ export class ProjectWindowComponent implements OnInit {
     }
 
     public onSubmit() {
+        this.hasDetailsSaveResponse = false;
+        
         if(this.isCreateForm()) {
             this.getValuesForProjectCreate();
             const formData = new FormData();
@@ -181,7 +183,6 @@ export class ProjectWindowComponent implements OnInit {
                         this.hasDetailsSaveResponse = true;
                     })
         } else {
-            this.hasDetailsSaveResponse = false;
             if (!this.IsProjectNotChange()) {
                 this.getValuesForProjectUpdate();
                 this.projectService.updateProject(this.projectUpdate)
