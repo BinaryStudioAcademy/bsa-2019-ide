@@ -1,9 +1,10 @@
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
-import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy, SimpleChanges, SimpleChange,AfterViewInit  } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy, SimpleChanges, SimpleChange,AfterViewInit, ViewChild  } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { EditorSettingDTO } from '../../../models/DTO/Common/editorSettingDTO'
 import editorTabsThemes from '../../../assets/editor-tabs-themes.json';
 import { EventService } from 'src/app/services/event.service/event.service';
+import { MonacoEditorComponent } from '@materia-ui/ngx-monaco-editor';
 
 export interface TabFileWrapper {
     isChanged: boolean;
@@ -35,7 +36,9 @@ export class EditorSectionComponent implements OnInit {
     public openedFiles = [] as TabFileWrapper[];
     public language:string;
     @Input() canEdit: boolean;
-
+    @ViewChild('monacoEditor', { static: false })
+    private monacoEditor: MonacoEditorComponent;
+    
     code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
 
     constructor(private eventService: EventService) { }
@@ -56,6 +59,20 @@ export class EditorSectionComponent implements OnInit {
             }
             this.monacoOptions.language = this.language;
         }
+    }
+
+    public hightlineMatches(substring: string){
+        console.log(substring);
+
+        var matches = this.monacoEditor.editor.getModel().findMatches(substring, false, false, false, "", true);
+        const linesToDecorate = matches.map(match => {
+            return {
+                range: match.range,
+                options: { inlineClassName: 'hightliter', stickiness: 2 }
+            }
+        })
+        console.log(linesToDecorate);
+        var decorations = this.monacoEditor.editor.deltaDecorations([], linesToDecorate);
     }
 
     public closeItem(event, index) {

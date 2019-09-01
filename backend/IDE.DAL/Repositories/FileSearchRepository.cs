@@ -45,16 +45,8 @@ namespace IDE.DAL.Repositories
                             .Field(f => f.Content)
                                 .Type(HighlighterType.Plain)
                                 .FragmentSize(20)
-                                .PreTags("<b style='color:red'>")
-                                .PostTags("</b>"),
-                        fs => fs
-                            .Field(f => f.Name)
-                                .PreTags("<b style='color:yellow'>")
-                                .PostTags("</b>"),
-                        fs => fs
-                            .Field(f => f.Folder)
-                                .PreTags("<b style='color:orange'>")
-                                .PostTags("</b>")
+                                .PreTags("<mark>")
+                                .PostTags("</mark>")
                     )
                 )
             );

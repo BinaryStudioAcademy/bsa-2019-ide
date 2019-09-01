@@ -27,6 +27,7 @@ import { Observable } from 'rxjs';
 export interface SelectedFile {
     fileId: string;
     fileIcon: string;
+    filterString?: string;
 }
 
 @Component({
@@ -35,8 +36,6 @@ export interface SelectedFile {
     styleUrls: ['./file-browser-section.component.sass']
 })
 export class FileBrowserSectionComponent implements OnInit {
-
-    
     
     @Input() project: ProjectInfoDTO;
     @Input() showSearchField:boolean;
@@ -50,6 +49,11 @@ export class FileBrowserSectionComponent implements OnInit {
     public projectId: number;
     public expandFolder = true;
     public fileSearchResults: FileSearchResultDTO[]
+
+    public filteredFiles: TreeNode[];
+    public searchField: string = '';
+    public selectedFilteredFile: TreeNode;
+    public searchLoading: boolean = false;
 
     private lastSelectedElement: any;
     private extensions: Extension[];
@@ -109,9 +113,7 @@ export class FileBrowserSectionComponent implements OnInit {
         this.eventsSubscription = this.events.subscribe(() => this.expand());
         
     }
-    showChange(){
-        console.log(this.curSearch);
-    }
+
     ngOnDestroy() {
         this.eventsSubscription.unsubscribe()
     }
@@ -253,14 +255,13 @@ export class FileBrowserSectionComponent implements OnInit {
             case 37:
                 if (pos > 0) {
                     (this.lastSelectedElement as HTMLInputElement).setSelectionRange(pos, pos);
-                    event.stopPropagation();
                 }
                 break;
             case 39:
                 (this.lastSelectedElement as HTMLInputElement).setSelectionRange(pos, pos);
-                event.stopPropagation();
                 break;
         }
+        event.stopPropagation();
     }
 
     private createFile(node: TreeNode) {
@@ -367,7 +368,7 @@ export class FileBrowserSectionComponent implements OnInit {
             return;
         }
         const newName = this.lastSelectedElement.value.trim();
-        if (!this.fileNameRegex.test(newName)) {
+        if (node.type === TreeNodeType.file.toString() && !this.fileNameRegex.test(newName)) {
             this.toast.error("Name should contain only latin letters, numbers and dots!", "Error Message", { tapToDismiss: true });
             this.lastSelectedElement.focus();
             return;
@@ -390,6 +391,11 @@ export class FileBrowserSectionComponent implements OnInit {
             return;
         }
         node.label = newName;
+
+        if (node.type === TreeNodeType.folder.toString()){
+            this.updateProjectStructure();
+            return;
+        }
         const fileRename: FileRenameDTO = { name: node.label, id: node.key };
         this.fileService.updateFileName(fileRename).subscribe((response) => {
             this.toast.success(`Successfully renamed to "${newName}"`, "Success Message", { tapToDismiss: true })
@@ -472,20 +478,74 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     public searchByFiles(query) {
+        this.searchLoading = true;
+        query = query.trim();
+        if (query.length === 0){
+            this.searchLoading = false;
+            return;
+        }
         this.searchFileService.find(query, this.projectId).subscribe(
             (response) => {
                 console.log(response.body);
                 this.fileSearchResults = response.body;
+                let id : number = 1;
+                this.filteredFiles = [];
+                if (!this.fileSearchResults){
+                    this.searchLoading = false;
+                    return;
+                }
+
+                this.fileSearchResults.forEach(file => {
+                    const newNode : TreeNode = {
+                        type: TreeNodeType.file.toString(),
+                        label: file.fileName,
+                        key: file.fileId
+                    };
+                    newNode.children = [];
+                    newNode.expanded = true;
+                    if (file.hightlights && file.hightlights.content)
+                    {
+                        file.hightlights.content.forEach(highlight => { 
+                            const newChildNode : TreeNode = {
+                                type: TreeNodeType.file.toString(),
+                                label: highlight,
+                                key: (id++).toString()
+                            }
+                            newNode.children.push(newChildNode);
+    
+                        });
+                    }
+                    
+                    this.setTreeIcons(newNode);
+                    this.filteredFiles.push(newNode);
+                })
+                console.log(this.filteredFiles);
+                this.searchLoading = false;
             },
             (error) => {
                 this.toast.error(error.Message, "Error Message", { tapToDismiss: true })
                 console.log(error);
+                this.searchLoading = false;
             }
         );
     }
 
-    onFileResultSelected(evt) {
-        const selectedFile: SelectedFile = {fileId: evt.value[0].fileId, fileIcon: 'fa fa-fw fa-file'};
+    public onSearchFieldClear(){
+        this.searchField = '';
+        this.filteredFiles = null;
+    }
+
+    public onFilteredFileSelected(event){
+        const selectedItem = this.selectedFilteredFile.parent === undefined ? 
+            this.selectedFilteredFile :
+            this.selectedFilteredFile.parent;
+
+        const selectedFile: SelectedFile = {
+            fileId: selectedItem.key,
+            fileIcon: selectedItem.icon,
+            filterString: this.searchField
+        };
+        console.log(selectedFile);
         this.fileSelected.emit(selectedFile);
     }
 
