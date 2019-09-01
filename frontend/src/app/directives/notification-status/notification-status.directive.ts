@@ -11,19 +11,16 @@ export class NotificationStatusDirective {
     constructor(private elementRef: ElementRef)  {  }
 
     ngOnInit(){
-        console.log(this.notificationStatus, this.elementRef);
         switch (this.notificationStatus) {
             case NotificationStatus.message:
-                this.elementRef.nativeElement.style.backgroundColor = 'green';
+                this.elementRef.nativeElement.style.backgroundColor = '#33b5e5';
                 break;
             case NotificationStatus.warning: 
-                this.elementRef.nativeElement.style.backgroundColor = 'orange';
+                this.elementRef.nativeElement.style.backgroundColor = '#ffbb33';
                 break;
             case NotificationStatus.error:
-                this.elementRef.nativeElement.style.backgroundColor = 'red';
+                this.elementRef.nativeElement.style.backgroundColor = '#ff4444';
                 break;           
         }
-
     }
-
 }
