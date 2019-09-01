@@ -227,7 +227,7 @@ namespace IDE.BLL.Services
 
             NotificationDTO notification = new NotificationDTO
             {
-                Message = $"get project {project.Name}",
+                Message = $"get project {project.Name} sdgad gasg aw farg aegeargret ert ertg er gtertag",
                 DateTime = DateTime.Now,
                 ProjectId = project.Id,
                 Status = NotificationStatus.Message,
