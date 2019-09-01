@@ -1,4 +1,5 @@
 ﻿using IDE.BLL.Interfaces;
+using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Shared.Interfaces;
 using RabbitMQ.Shared.ModelsDTO;
 using RabbitMQ.Shared.Settings;
+using System;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Services.Queue
@@ -19,7 +21,7 @@ namespace IDE.BLL.Services.Queue
 
         public BuildQueueSubscriberService(IMessageConsumerScopeFactory messageConsumerScopeFactory,
                             ILogger<BuildQueueSubscriberService> logger,
-                            IServiceScopeFactory serviceScopeFactory): base(messageConsumerScopeFactory, logger)
+                            IServiceScopeFactory serviceScopeFactory) : base(messageConsumerScopeFactory, logger)
         {
             _serviceScopeFactory = serviceScopeFactory;
         }
@@ -44,9 +46,21 @@ namespace IDE.BLL.Services.Queue
 
             var notification = new NotificationDTO();
             if (buildResult.WasBuildSucceeded)
-                notification.Message = "Build status: Success)";
+            {
+                notification.Status = NotificationStatus.Message;
+            }
             else
-                notification.Message = "Build status: Failed(";
+            {
+                notification.Status = NotificationStatus.Error;
+            }
+
+            notification.Type = NotificationType.ProjectBuild;
+            notification.ProjectId = buildResult.ProjectId;
+            notification.Message = buildResult.Message;
+            notification.DateTime = DateTime.Now;
+
+
+            //notification.Message = buildResult.;
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var notificationService = scope.ServiceProvider.GetService<INotificationService>();

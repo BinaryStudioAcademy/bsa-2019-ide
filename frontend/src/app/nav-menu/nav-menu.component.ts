@@ -13,6 +13,8 @@ import { NotificationDTO } from '../models/DTO/Common/notificationDTO';
 import { NotificationService } from '../services/notification.service/notification.service';
 import { UserService } from '../services/user.service/user.service';
 import { EventService } from '../services/event.service/event.service';
+import { NotificationStatus } from '../models/Enums/notificationStatus';
+import { NotificationType } from '../models/Enums/notificationType';
 
 @Component({
     selector: 'app-nav-menu',
@@ -97,9 +99,11 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     }
 
     public onNotificationClick(notification: NotificationDTO){
-        console.log(this.router);
-        //this.router.navigate(['/workspace/3']);
-        this.notificationService.OpenConsole(notification.message);
+        if(notification.type!=NotificationType.assinedToProject)
+        {
+            this.notificationService.OpenConsole(notification.message);
+        }
+        this.router.navigate([`/workspace/${notification.projectId}`]);
     }
 
     public loadNotifications(userId: number): void {

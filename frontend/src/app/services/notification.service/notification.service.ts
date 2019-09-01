@@ -27,7 +27,7 @@ export class NotificationService {
                 data: { 
                     message: message
                 },
-                width: '500px',
+                width: '60vw',
                 style: {
                     'box-shadow': '0 0 3px 0 #000',
                 },

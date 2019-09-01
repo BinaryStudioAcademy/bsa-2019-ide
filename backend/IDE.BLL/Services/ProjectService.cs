@@ -225,17 +225,6 @@ namespace IDE.BLL.Services
                 .Include(i => i.EditorProjectSettings)
                 .SingleOrDefaultAsync(p => p.Id == projectId);
 
-            NotificationDTO notification = new NotificationDTO
-            {
-                Message = $"get project {project.Name}",
-                DateTime = DateTime.Now,
-                ProjectId = project.Id,
-                Status = NotificationStatus.Message,
-                Type = NotificationType.ProjectBuild
-            };
-
-            await _notificationService.SendNotification(projectId, notification);
-
             return _mapper.Map<ProjectInfoDTO>(project);
         }
 
