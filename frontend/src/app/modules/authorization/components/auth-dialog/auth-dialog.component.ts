@@ -38,7 +38,7 @@ export class AuthDialogComponent implements OnInit {
     public email: string;
     public nickName: string;
     public isRecoverPassword: boolean = false;
-    public emailRegexp = new RegExp('^[^.]{0}[a-zA-Z0-9._]{1,35}[^.]{0}@[^-]{0}[a-zA-Z0-9]{1,17}[^-]{0}[.]{1}[a-zA-Z]{1,17}$');
+    public emailRegexp = new RegExp('^[a-zA-Z0-9]{1}[-a-zA-Z0-9._]{1,33}[a-zA-Z0-9]{1}@[a-zA-Z0-9]{1,17}[.][a-zA-Z]{1,17}$');
     public namesRegexp = new RegExp("[а-яА-Яa-zA-ZіІїЇ]{2,32}");
     public nickNameRegexp = new RegExp("[a-zA-Z0-9]{2,32}");
     public passwordRegexp = new RegExp("[а-яА-Яa-zA-Z0-9]{8,16}");
