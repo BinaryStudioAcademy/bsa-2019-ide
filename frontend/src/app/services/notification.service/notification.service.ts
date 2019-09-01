@@ -27,7 +27,7 @@ export class NotificationService {
                 data: { 
                     message: message
                 },
-                width: '60vw',
+                width: '70vw',
                 style: {
                     'box-shadow': '0 0 3px 0 #000',
                 },
@@ -36,6 +36,7 @@ export class NotificationService {
                     'overflow-y': 'auto',
                     'height': '60vh',
                     'background-color': 'black',
+                    'font-size': '13px',
                     'color': 'white'
                 },
                 showHeader: true,
