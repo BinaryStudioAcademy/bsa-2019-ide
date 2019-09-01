@@ -43,24 +43,12 @@
                     <div class="notification-panel-content">
                         <div *ngIf="notReadNotification.length!=0">
                             <div class="notification-item" *ngFor="let item of notReadNotification" (click)='onNotificationClick(item)'>
-                                <div appNotificationStatus [notificationStatus]="item.status" class="notification-header">
-                                    <span class="notification-type">Type</span>
-                                    <span class="notification-datetime">{{item.dateTime | date: 'HH:mm dd.MM.yyyy'}}</span>
-                                </div>
-                                <div class="notification-body">
-                                    <p>{{item.message}}</p>
-                                </div>   
+                                <app-notification [notification]="item"></app-notification>
                             </div>
                         </div>
                         <div *ngIf="data.length!=0">
                             <div class="notification-item" *ngFor="let item of data" (click)='onNotificationClick(item)'>
-                                <div appNotificationStatus [notificationStatus]="item.status" class="notification-header">
-                                    <span class="notification-type">Type</span>
-                                    <span class="notification-datetime">{{item.dateTime | date: 'HH:mm dd.MM.yyyy'}}</span>
-                                </div>
-                                <div class="notification-body">
-                                    <p>{{item.message}}</p>
-                                </div> 
+                               <app-notification [notification]="item"></app-notification>
                             </div>
                         </div>
                         <div *ngIf="data.length==0 && notReadNotification.length==0">

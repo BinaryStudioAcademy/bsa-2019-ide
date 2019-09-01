@@ -1,0 +1,9 @@
+<div appNotificationStatus [notificationStatus]="notification.status" class="notification-wrp">
+    <div class="notification-header">
+        <span class="notification-status">Type</span>
+        <span class="notification-datetime">{{notification.dateTime | date: 'HH:mm dd.MM.yyyy'}}</span>
+    </div>
+    <div class="notification-body">
+        <p>{{notification.message}}</p>
+    </div> 
+</div>
