@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/api';
 
 @Component({
-  selector: 'app-console',
-  templateUrl: './console.component.html',
-  styleUrls: ['./console.component.sass']
+    selector: 'app-console',
+    templateUrl: './console.component.html',
+    styleUrls: ['./console.component.sass']
 })
 export class ConsoleComponent implements OnInit {
 
@@ -15,8 +15,8 @@ export class ConsoleComponent implements OnInit {
 
     }
 
-  ngOnInit() {
-      this.message = this.config.data.message;
-  }
+    ngOnInit() {
+        this.message = this.config.data.message;
+    }
 
 }
