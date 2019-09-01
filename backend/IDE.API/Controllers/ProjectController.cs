@@ -72,7 +72,8 @@ namespace IDE.API.Controllers
         [HttpGet("name")]
         public async Task<ActionResult<IEnumerable<SearchProjectDTO>>> GetProjectName()
         {
-            return Ok(await _projectService.GetProjectsName());
+            int userId = this.GetUserIdFromToken();
+            return Ok(await _projectService.GetProjectsName(userId));
         }
 
         [HttpGet("my")]
@@ -135,7 +136,7 @@ namespace IDE.API.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<ProjectInfoDTO>> UpdateProject([FromBody] ProjectInfoDTO project)
+        public async Task<ActionResult<ProjectInfoDTO>> UpdateProject([FromBody] ProjectUpdateDTO project)
         {
             var updatedProject = await _projectService.UpdateProject(project);
             _logger.LogInformation(LoggingEvents.UpdateItem, $"Project updated {project.Id}");

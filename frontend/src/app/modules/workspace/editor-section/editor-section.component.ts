@@ -1,8 +1,9 @@
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
-import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy, SimpleChanges, SimpleChange } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy, SimpleChanges, SimpleChange,AfterViewInit  } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { EditorSettingDTO } from '../../../models/DTO/Common/editorSettingDTO'
 import editorTabsThemes from '../../../assets/editor-tabs-themes.json';
+import { EventService } from 'src/app/services/event.service/event.service';
 
 export interface TabFileWrapper {
     isChanged: boolean;
@@ -17,16 +18,16 @@ export interface TabFileWrapper {
 export class EditorSectionComponent implements OnInit {
     @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
 
-    private _monacoOptions: EditorSettingDTO; 
+    private _monacoOptions: EditorSettingDTO;
     get monacoOptions(): EditorSettingDTO {
         return this._monacoOptions;
-    }  
+    }
     @Input()
     set monacoOptions(monacoOptions: EditorSettingDTO) {
         this._monacoOptions = monacoOptions;
-        this.setEditorTabTheme();  
+        this.setEditorTabTheme();
     }
-    
+
     // FOR REFACTOR
     // think about agregaiting of TabFileWrapper(openedFiles) with MenuItem(tabs)
     public tabs = [] as MenuItem[]; // maybe reneme on "tab"
@@ -37,10 +38,13 @@ export class EditorSectionComponent implements OnInit {
 
     code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
 
-    constructor() { }
+    constructor(private eventService: EventService) { }
 
+    ngAfterViewInit() {
+        this.eventService.componentAfterInit("EditorSectionComponent");
+    }
     ngOnInit() {
-              
+
     }
 
     onChange(ev) {
@@ -76,7 +80,7 @@ export class EditorSectionComponent implements OnInit {
         this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
         this.language = this.openedFiles[index].innerFile.language;
-        
+
     }
 
     public saveFiles(files: FileUpdateDTO[]) {
@@ -105,26 +109,26 @@ export class EditorSectionComponent implements OnInit {
         const element = document.querySelector('body');
         let tabsThemeName: string;
 
-        switch(this.monacoOptions.theme) { 
-            case 'vs': { 
+        switch(this.monacoOptions.theme) {
+            case 'vs': {
                 tabsThemeName = 'light';
-                break; 
-            } 
+                break;
+            }
             case 'vs-dark':
-            case 'hc-black': { 
+            case 'hc-black': {
                 tabsThemeName = 'dark';
-                break; 
-            } 
-            default: { 
+                break;
+            }
+            default: {
                 tabsThemeName = 'light';
-                break; 
-            }    
-        } 
-        
+                break;
+            }
+        }
+
         const tabTheme = editorTabsThemes.find(tt => tt.name === tabsThemeName);
 
         for (const key in tabTheme.colors) {
             element.style.setProperty(key, tabTheme.colors[key]);
-        }   
+        }
     }
 }
