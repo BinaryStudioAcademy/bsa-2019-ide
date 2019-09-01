@@ -18,7 +18,7 @@
             <button pButton class="ui-button-secondary" icon="pi pi-times" (click)="onSearchFieldClear()"></button>            
             <button pButton  type="submit" icon="pi pi-search" (click)="searchByFiles(keywordInput.value)"></button>
         </div>
-        <p-tree [loading]="loading" emptyMessage="No files found..." selectionMode="single"  [(selection)]="selectedFilteredFile" [value]="filteredFiles"
+        <p-tree [loading]="isLoading" emptyMessage="No files found..." selectionMode="single"  [(selection)]="selectedFilteredFile" [value]="filteredFiles"
                 filterMode="strict" (onNodeSelect)="onFilteredFileSelected($event)">
             <ng-template let-node  pTemplate="1">
                 <div [innerHTML]="node.label"></div>

@@ -53,7 +53,8 @@ export class FileBrowserSectionComponent implements OnInit {
     public filteredFiles: TreeNode[];
     public searchField: string = '';
     public selectedFilteredFile: TreeNode;
-    public searchLoading: boolean = false;
+    public isSearchLoading: boolean = false;
+
 
     private lastSelectedElement: any;
     private extensions: Extension[];
@@ -478,12 +479,11 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     public searchByFiles(query) {
-        this.searchLoading = true;
         query = query.trim();
         if (query.length === 0){
-            this.searchLoading = false;
             return;
         }
+        this.isSearchLoading = true;
         this.searchFileService.find(query, this.projectId).subscribe(
             (response) => {
                 console.log(response.body);
@@ -491,7 +491,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 let id : number = 1;
                 this.filteredFiles = [];
                 if (!this.fileSearchResults){
-                    this.searchLoading = false;
+                    this.isSearchLoading = false;
                     return;
                 }
 
@@ -520,12 +520,12 @@ export class FileBrowserSectionComponent implements OnInit {
                     this.filteredFiles.push(newNode);
                 })
                 console.log(this.filteredFiles);
-                this.searchLoading = false;
+                this.isSearchLoading = false;
             },
             (error) => {
                 this.toast.error(error.Message, "Error Message", { tapToDismiss: true })
                 console.log(error);
-                this.searchLoading = false;
+                this.isSearchLoading = false;
             }
         );
     }
