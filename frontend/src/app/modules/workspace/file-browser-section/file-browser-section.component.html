@@ -1,8 +1,7 @@
 <div class="tree-wrapper">
     <p-progressBar *ngIf="!files || files.length == 0" mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
-    <p-tree *ngIf="files && files.length > 0 && !showSearchField" class="custom-tree" selectionMode="single" [value]="files" [(selection)]="selectedItem"  [contextMenu]="contextMenu"
-        (onNodeSelect)="nodeSelect($event)" (onNodeContextMenuSelect)="nodeContextMenuSelect($event)" [filter]="showSearchField"
-        filterMode="strict">
+    <p-tree *ngIf="files && files.length > 0 && !showSearchField" class="custom-tree" selectionMode="single" [value]="files" [(selection)]="selectedItem" 
+            [contextMenu]="contextMenu" (onNodeSelect)="nodeSelect($event)" (onNodeContextMenuSelect)="nodeContextMenuSelect($event)">
         <ng-template let-node pTemplate="0">
                 <input class="input-item" [value]="node.label" (focusout)="focusout(node)" 
                         (keyup.enter)="focusout(node)" (keydown)="inputKeyDown($event)" disabled>
@@ -15,16 +14,16 @@
     
     <div *ngIf="showSearchField">
         <div class="file-search">
-            <input type="text" [(ngModel)]="curSearch" (ngModelChange)="showChange()" class="file-search-keyword" placeholder="Keyword" #keywordinput>
-            <button pButton class="file-search-submit" type="submit" label="Search" (click)="searchByFiles(keywordinput.value)"></button>
+            <input type="text" [(ngModel)]="searchField" class="file-search-keyword" placeholder="Search..." #keywordInput>
+            <button pButton class="ui-button-secondary" icon="pi pi-times" (click)="onSearchFieldClear()"></button>            
+            <button pButton  type="submit" icon="pi pi-search" (click)="searchByFiles(keywordInput.value)"></button>
         </div>
-        <p-orderList *ngIf="fileSearchResults" [value]="fileSearchResults" (onSelectionChange) = "onFileResultSelected($event)">
-            <ng-template let-result pTemplate="item">
-                <div class="ui-helper-clearfix">
-                    <div>{{result.fileName}}</div>
-                </div>
+        <p-tree [loading]="isSearchLoading" emptyMessage="No files found..." selectionMode="single"  [(selection)]="selectedFilteredFile" [value]="filteredFiles"
+                filterMode="strict" (onNodeSelect)="onFilteredFileSelected($event)">
+            <ng-template let-node  pTemplate="1">
+                <div [innerHTML]="node.label"></div>
             </ng-template>
-        </p-orderList>
+        </p-tree>
     </div>
     <p-contextMenu #contextMenu [model]="items"></p-contextMenu>
 </div>

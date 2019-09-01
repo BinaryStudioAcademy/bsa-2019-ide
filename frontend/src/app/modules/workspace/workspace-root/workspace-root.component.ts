@@ -72,6 +72,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     @ViewChild(FileBrowserSectionComponent, { static: false })
     private fileBrowser: FileBrowserSectionComponent;
 
+    @ViewChild('monacoEditor', { static: false })
+    private monacoEditor: FileBrowserSectionComponent;
+
     constructor(
         private route: ActivatedRoute,
         private toast: ToastrService,
@@ -161,6 +164,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             );
     }
 
+    private findAllOccurence(substring?: string){
+        if (substring == null)
+            return;
+        setTimeout(() =>{
+            this.editor.hightlineMatches(substring);
+        }, 500)
+    }
+
     public getProjectColor(): string {
         return this.project.color;
     }
@@ -214,6 +225,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             this.editor.activeItem = this.editor.tabs.find(i => i.id === selectedFile.fileId);
             this.editor.code = this.editor.openedFiles.find(f => f.innerFile.id === selectedFile.fileId).innerFile.content;
             this.editor.monacoOptions.language = this.editor.openedFiles.find(f => f.innerFile.id === selectedFile.fileId).innerFile.language;
+            this.findAllOccurence(selectedFile.filterString);
             return;
         }
 
@@ -237,7 +249,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                             this.iOpenFile.push(fileUpdateDTO);
                             this.editor.monacoOptions.readOnly = false;
                             tabName+=" (editing...)";
-                            this.fileBrowser.selectedItem.label+=" (editing...)";
+                            if (this.fileBrowser.selectedItem)
+                                this.fileBrowser.selectedItem.label+=" (editing...)";
                         }
                         else {
 
@@ -245,6 +258,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                         }
                         this.editor.tabs.push({ label: tabName, icon: selectedFile.fileIcon,  id: id });
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
+                        this.findAllOccurence(selectedFile.filterString);
                         this.editor.code = content;
                     } else {
                         this.toast.error("Can't load selected file.", 'Error Message');
