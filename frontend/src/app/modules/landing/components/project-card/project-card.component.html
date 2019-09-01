@@ -12,8 +12,8 @@
         <div class="description">{{project.projectDescription}}</div>
     </div>
     <div>
-        <div class="date" *ngIf="project.lastChangedDate">
-            Last change: <span class="highlighted">{{ project.lastChangedDate | date: 'dd MMM hh:mm' }}</span>
+        <div class="date" > <!--*ngIf="project.lastChangedDate"-->
+            Last change: <span class="highlighted">1{{ project.lastChangedDate | date: 'dd MMM hh:mm' }}</span>
         </div>
         <div class="nickName" *ngIf="project.authorNickName">
             Author: <span class="highlighted">{{ project.authorNickName }}</span>

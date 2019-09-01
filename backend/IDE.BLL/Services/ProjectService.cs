@@ -80,11 +80,15 @@ namespace IDE.BLL.Services
             return _mapper.Map<ProjectDTO>(project);
         }
 
-        public async Task<ICollection<SearchProjectDTO>> GetProjectsName()
+        public async Task<ICollection<SearchProjectDTO>> GetProjectsName(int userId)
         {
-            var project = await _context.Projects
-                .Select(item => new SearchProjectDTO { Id = item.Id, Name = item.Name }).ToListAsync();
-            return project;
+            var availableProjects = _context.Projects
+            .Where(pr => pr.AccessModifier == AccessModifier.Public
+                    || pr.AuthorId == userId
+                    || pr.ProjectMembers.Any(prM => prM.UserId == userId))
+            .Select(item => new SearchProjectDTO { Id = item.Id, Name = item.Name }).ToListAsync();
+            
+            return await availableProjects;
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId)
@@ -221,17 +225,17 @@ namespace IDE.BLL.Services
                 .Include(i => i.EditorProjectSettings)
                 .SingleOrDefaultAsync(p => p.Id == projectId);
 
-            NotificationDTO notification = new NotificationDTO
-            {
-                Message = $"get project {project.Name}"
-            };
+            //NotificationDTO notification = new NotificationDTO
+            //{
+            //    Message = $"get project {project.Name}"
+            //};
 
-            await _notificationService.SendNotification(projectId, notification);
+            //await _notificationService.SendNotification(projectId, notification);
 
             return _mapper.Map<ProjectInfoDTO>(project);
         }
 
-        public async Task<ProjectInfoDTO> UpdateProject(ProjectInfoDTO projectUpdateDTO)
+        public async Task<ProjectInfoDTO> UpdateProject(ProjectUpdateDTO projectUpdateDTO)
         {
             var targetProject = await _context.Projects.SingleOrDefaultAsync(p => p.Id == projectUpdateDTO.Id);
 
@@ -247,11 +251,6 @@ namespace IDE.BLL.Services
             targetProject.CountOfSaveBuilds = projectUpdateDTO.CountOfSaveBuilds;
             targetProject.AccessModifier = projectUpdateDTO.AccessModifier;
             targetProject.Color = projectUpdateDTO.Color;
-            if(projectUpdateDTO.EditorProjectSettings != null)
-            {
-                var updateDTO = await _editorSettingService.UpdateEditorSetting(projectUpdateDTO.EditorProjectSettings);
-                targetProject.EditorProjectSettings = _mapper.Map<EditorSetting>(updateDTO);
-            }
 
             _context.Projects.Update(targetProject);
             await _context.SaveChangesAsync();

@@ -21,7 +21,7 @@ export class NotificationService {
     }
 
     public OpenConsole(message: string)
-      {
+    {
         const ref = this.dialogService.open(ConsoleComponent,
             {
                 data: { 

@@ -10,14 +10,14 @@ namespace IDE.BLL.Interfaces
     public interface IProjectService
     {
         Task<ProjectInfoDTO> GetProjectById(int projectId);
-        Task<ICollection<SearchProjectDTO>> GetProjectsName();
+        Task<ICollection<SearchProjectDTO>> GetProjectsName(int userId);
         Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId);
         Task<ICollection<ProjectDescriptionDTO>> GetFavouriteUserProjects(int userId);
         Task<ICollection<CollaboratorDTO>> GetProjectCollaborators(int projectId, int authorId);
         Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId);
         Task<ICollection<ProjectUserPageDTO>> GetProjectsByUserId(int userId);
         Task<ICollection<ProjectUserPageDTO>> GetAssignedProjectsByUserId(int userId);
-        Task<ProjectInfoDTO> UpdateProject(ProjectInfoDTO project);
+        Task<ProjectInfoDTO> UpdateProject(ProjectUpdateDTO project);
         Task<int> GetAuthorId(int projectId);
         Task<int> CreateProject(ProjectCreateDTO project, int userId);
         Task<ProjectDTO> GetProjectByIdAsync(int projectId);

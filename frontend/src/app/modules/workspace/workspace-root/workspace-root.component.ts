@@ -1,8 +1,9 @@
+import { EventService } from './../../../services/event.service/event.service';
 import { LeavePageDialogService } from './../../../services/leave-page-dialog.service';
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, OnChanges, ChangeDetectorRef, AfterContentInit } from '@angular/core';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -33,14 +34,19 @@ import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { element } from 'protractor';
 import { ConcatSource } from 'webpack-sources';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
+import { filter } from 'rxjs/operators';
+
 
 @Component({
     selector: 'app-workspace-root',
     templateUrl: './workspace-root.component.html',
     styleUrls: ['./workspace-root.component.sass']
 })
-export class WorkspaceRootComponent implements OnInit, OnDestroy {
-
+export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+    ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
+        throw new Error("Method not implemented.");
+    }
+    public prepareQuery;
     public projectId: number;
     public userId: number;
     public access: UserAccess;
@@ -63,7 +69,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
-    @ViewChild('fileBrowser', { static: false })
+    @ViewChild(FileBrowserSectionComponent, { static: false })
     private fileBrowser: FileBrowserSectionComponent;
 
     constructor(
@@ -78,25 +84,61 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private tokenService: TokenService,
         private hotkeys: HotkeyService,
         private buildService: BuildService,
-        private signalRService: SignalRService) {
+        private eventService: EventService,
+        private cdr: ChangeDetectorRef,
+    private signalRService: SignalRService) {
+
         this.hotkeys.addShortcut({ keys: 'shift.h' })
             .subscribe(() => {
                 this.hideFileBrowser();
             });
     }
 
+    ngAfterViewInit() {
+        console.log("afterviewinit");
+        this.route.queryParams.subscribe(params => {
+            if (!!params['query']) {
+                this.fileBrowser.curSearch = params['query'];
+                this.showSearchField = true;
+                this.cdr.detectChanges();
+            }
+            // if (!!params['fileId']) {
+            //     console.log(params['fileId']);
+            //     setTimeout(() => {
+            //         this.onFileSelected(params['fileId']);
+            //     }, 6000)
+            //     this.onFileSelected(params['fileId']);
+            // }
+        });
+    }
+
+
+
     ngOnInit() {
+        this.eventService.initComponentFinished$.
+            pipe(
+                filter(m => m === "EditorSectionComponent"),
+                switchMap(m => {
+                    return this.route.queryParams;
+                }),
+                filter(params => !!params['fileId']),
+                map(params => params['fileId']))
+                .subscribe(fileId => this.onFileSelected(fileId));
+
         this.userId = this.tokenService.getUserId();
         // this.signalRService.startConnection(true, this.userId);
 
         this.routeSub = this.route.params.subscribe(params => {
             this.projectId = params['id'];
+
+
         });
 
         this.projectService.getProjectById(this.projectId)
             .subscribe(
                 (resp) => {
                     this.project = resp.body;
+                    this.eventService.currProjectSwitch({ id: this.project.id, name: this.project.name });
                     this.authorId=resp.body.authorId;
                     this.options = this.project.editorProjectSettings;
                     if (this.canNotEdit) {
@@ -131,7 +173,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                     this.options = resp as EditorSettingDTO;
                 }
             }
-        );  
+        );
     }
 
     public setUserAccess() {
@@ -198,7 +240,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                             this.fileBrowser.selectedItem.label+=" (editing...)";
                         }
                         else {
-                            
+
                             this.editor.monacoOptions.readOnly = true;
                         }
                         this.editor.tabs.push({ label: tabName, icon: selectedFile.fileIcon,  id: id });
@@ -262,7 +304,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                 element.isOpen = false;
             })
             this.saveFilesRequest(this.iOpenFile).subscribe();
-            
+
             this.iOpenFile = [];
         }
         if (!this.editor.anyFileChanged()) {
@@ -311,7 +353,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     public refresh(){
         this.fileBrowser.ngOnInit();
     }
-    
+
     private saveFilesRequest(files?: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
         if (!files) {
             files = this.editor.openedFiles.map(x => x.innerFile);

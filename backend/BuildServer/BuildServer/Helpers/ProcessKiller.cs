@@ -36,7 +36,7 @@ namespace BuildServer.Helpers
             }
             catch (Exception)
             {
-                Console.WriteLine("process dont start");
+                Console.WriteLine("Process stopped by itself");
             }
         }
     }
