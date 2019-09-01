@@ -223,7 +223,7 @@ namespace IDE.BLL.Services
             return _mapper.Map<ProjectInfoDTO>(project);
         }
 
-        public async Task<ProjectInfoDTO> UpdateProject(ProjectInfoDTO projectUpdateDTO)
+        public async Task<ProjectInfoDTO> UpdateProject(ProjectUpdateDTO projectUpdateDTO)
         {
             var targetProject = await _context.Projects.SingleOrDefaultAsync(p => p.Id == projectUpdateDTO.Id);
 
@@ -239,8 +239,6 @@ namespace IDE.BLL.Services
             targetProject.CountOfSaveBuilds = projectUpdateDTO.CountOfSaveBuilds;
             targetProject.AccessModifier = projectUpdateDTO.AccessModifier;
             targetProject.Color = projectUpdateDTO.Color;
-            var updateDTO = await _editorSettingService.UpdateEditorSetting(projectUpdateDTO.EditorProjectSettings);
-            targetProject.EditorProjectSettings = _mapper.Map<EditorSetting>(updateDTO);
 
             _context.Projects.Update(targetProject);
             await _context.SaveChangesAsync();
