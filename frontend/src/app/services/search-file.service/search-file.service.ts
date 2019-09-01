@@ -1,3 +1,4 @@
+import { query } from '@angular/animations';
 import { Injectable } from '@angular/core';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
 import { Observable } from 'rxjs';
@@ -14,6 +15,11 @@ export class SearchFileService {
     constructor(private httpClient: HttpClientWrapperService) { }
 
     public find(query: string, projectId: number): Observable<HttpResponse<FileSearchResultDTO[]>> {
+        
         return this.httpClient.getRequest(this.address, {query, projectId});
+    }
+
+    public findFilesGlobal(query: string): Observable<HttpResponse<FileSearchResultDTO[]>>{
+        return this.httpClient.getRequest("filesearch/globalsearch", {query});
     }
 }

@@ -72,7 +72,8 @@ namespace IDE.API.Controllers
         [HttpGet("name")]
         public async Task<ActionResult<IEnumerable<SearchProjectDTO>>> GetProjectName()
         {
-            return Ok(await _projectService.GetProjectsName());
+            int userId = this.GetUserIdFromToken();
+            return Ok(await _projectService.GetProjectsName(userId));
         }
 
         [HttpGet("my")]
