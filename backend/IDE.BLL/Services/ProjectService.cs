@@ -61,6 +61,14 @@ namespace IDE.BLL.Services
                 await _buildService.BuildDotNetProject(projectId);
         }
 
+        public async Task RunProject(int projectId, string connectiondId)
+        {
+            var project = _context.Projects.FirstOrDefault(p => p.Id == projectId);
+            if (project == null)
+                return;
+            if (project.Language == Language.CSharp)
+                await _buildService.RunDotNetProject(projectId, connectiondId);
+        }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
         public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)
@@ -279,29 +287,32 @@ namespace IDE.BLL.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<LikedProjectInLanguageDTO>> GetLikedProjects()
+        public async Task<IEnumerable<LikedProjectDTO>> GetLikedProjects()
         {
-            return await _context.FavouriteProjects
+            var likedProjects = await _context.FavouriteProjects
                 .Include(x => x.Project)
                 .Include(x => x.Project.Author)
                 .Where(x => x.Project.AccessModifier != AccessModifier.Private)
-                .GroupBy(x => x.Project.Language)
-                .Select(x =>
-                    new LikedProjectInLanguageDTO()
+                .GroupBy(x => x.ProjectId)
+                    .Select(z => new LikedProjectDTO()
                     {
-                        ProjectType = x.Key,
-                        LikedProjects =
-                                x.GroupBy(y => y.ProjectId)
-                                .Select(z => new LikedProjectDTO()
-                                {
-                                    ProjectId = z.FirstOrDefault().ProjectId,
-                                    ProjectDescription = z.FirstOrDefault().Project.Description,
-                                    ProjectName = z.FirstOrDefault().Project.Name,
-                                    AuthorNickName = z.FirstOrDefault().Project.Author.NickName,
-                                    LikesCount = z.Count()
-                                }).OrderByDescending(i => i.LikesCount).Take(5).ToArray()
-                    })
-                    .OrderBy(x => x.ProjectType).ToListAsync();
+                        ProjectId = z.FirstOrDefault().ProjectId,
+                        ProjectDescription = z.FirstOrDefault().Project.Description,
+                        ProjectName = z.FirstOrDefault().Project.Name,
+                        AuthorNickName = z.FirstOrDefault().Project.Author.NickName,
+                        LikesCount = z.Count(),
+                    }).OrderByDescending(i => i.LikesCount).Take(6).ToListAsync();
+            return await SetLastFileChangedDate(likedProjects);
+        }
+
+        private async Task<IEnumerable<LikedProjectDTO>> SetLastFileChangedDate(IEnumerable<LikedProjectDTO> likedProjects)
+        {
+            foreach (var project in likedProjects)
+            {
+                var projects = (await _fileService.GetAllForProjectAsync(project.ProjectId)).ToList();
+                project.LastChangedDate = projects.OrderByDescending(x => x.UpdatedAt).First()?.UpdatedAt;
+            }
+            return likedProjects;
         }
     }
 }

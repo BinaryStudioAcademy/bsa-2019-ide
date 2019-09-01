@@ -6,4 +6,5 @@ export interface LikedProjectDTO {
     projectName: string;
     projectDescription: string;
     authorNickName: string;
+    lastChangedDate?: Date;
 }

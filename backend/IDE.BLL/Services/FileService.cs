@@ -93,6 +93,7 @@ namespace IDE.BLL.Services
         {
             var fileCreate = _mapper.Map<File>(fileCreateDto);
             fileCreate.CreatedAt = DateTime.Now;
+            fileCreate.UpdatedAt = DateTime.Now;
             fileCreate.CreatorId = creatorId;
             fileCreate.IsOpen = false;
             var index = fileCreate.Name.IndexOf('.') + 1;
