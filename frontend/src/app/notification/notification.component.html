@@ -1,0 +1,12 @@
+<div appNotificationStatus [notificationStatus]="notification.status" class="notification-wrp">
+    <div class="notification-header">
+        <span class="notification-status">{{status}}</span>
+        <span class="notification-datetime">{{notification.dateTime | date: 'MMM d, y \'at\' HH:mm'}}</span>
+    </div>
+    <div class="notification-body">
+        <p>{{notification.message}}</p>
+    </div> 
+    <div class="notification-link">
+        <a href="#">View result</a>
+    </div> 
+</div>

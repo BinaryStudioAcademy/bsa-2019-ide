@@ -1,5 +1,6 @@
 ﻿using IDE.BLL.Interfaces;
 using IDE.BLL.Services.Queue;
+using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Shared.Interfaces;
 using RabbitMQ.Shared.ModelsDTO;
 using RabbitMQ.Shared.Settings;
+using System;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Services
@@ -36,14 +38,20 @@ namespace IDE.BLL.Services
             //_messageConsumerScopeBuild.MessageConsumer.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
         }
 
-
         public override async Task HandleMessageAsync(string content)
         {
             // we just print this message   
             _logger.LogInformation($"consumer received {content}");
             var runResult = JsonConvert.DeserializeObject<RunResultDTO>(content);
 
-            var notification = new NotificationDTO() { Message = runResult.Result };
+            var notification = new NotificationDTO()
+            {
+                Type = NotificationType.ProjectRun,
+                ProjectId = runResult.ProjectId,
+                DateTime = DateTime.Now,
+                Message = runResult.Result,
+                Status = NotificationStatus.Message
+            };
 
             using (var scope = _serviceScopeFactory.CreateScope())
             {
