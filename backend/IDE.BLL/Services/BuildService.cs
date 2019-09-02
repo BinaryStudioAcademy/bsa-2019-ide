@@ -104,12 +104,12 @@ namespace IDE.BLL.Services
             if(result.WasBuildSucceeded)
             {
                 build.BuildStatus = BuildStatus.Successfull;
-                build.BuildMessage = "Build was successfully finished";
+                build.BuildMessage = string.IsNullOrWhiteSpace(result.Message) ? "Build finished successfully" : result.Message;
             }
             else
             {
                 build.BuildStatus = BuildStatus.Failed;
-                build.BuildMessage = "Build was successfully failed";
+                build.BuildMessage = "Build failed with message: "+ result.Message;
             }
             _context.Builds.Update(build);
             await _context.SaveChangesAsync();
