@@ -13,6 +13,8 @@ import { NotificationDTO } from '../models/DTO/Common/notificationDTO';
 import { NotificationService } from '../services/notification.service/notification.service';
 import { UserService } from '../services/user.service/user.service';
 import { EventService } from '../services/event.service/event.service';
+import { NotificationStatus } from '../models/Enums/notificationStatus';
+import { NotificationType } from '../models/Enums/notificationType';
 
 @Component({
     selector: 'app-nav-menu',
@@ -81,7 +83,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                 }
             });
 
-            this.eventService.currProjectChanged$.
+        this.eventService.currProjectChanged$.
             pipe(takeUntil(this.unsubscribe$))
             .subscribe((currProj) => {
                 this.currProject = currProj;
@@ -96,10 +98,11 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         ];
     }
 
-    public onNotificationClick(notification: NotificationDTO){
-        console.log(this.router);
-        //this.router.navigate(['/workspace/3']);
-        this.notificationService.OpenConsole(notification.message);
+    public onNotificationClick(notification: NotificationDTO) {
+        if (notification.type != NotificationType.assinedToProject) {
+            this.notificationService.OpenConsole(notification.metadata);
+        }
+        this.router.navigate([`/workspace/${notification.projectId}`]);
     }
 
     public loadNotifications(userId: number): void {
@@ -119,10 +122,15 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             this.signalRService.deleteTransferChartDataListener();
             this.data = this.signalRService.addTransferChartDataListener();
             dataForDelete.forEach(element => {
-                this.signalRService.markNotificationAsRead(element.id);
+                if (element.type != 1) {
+                    this.signalRService.markNotificationAsRead(element.id);
+                }
             });
             this.notReadNotification.forEach(element => {
-                this.signalRService.markNotificationAsRead(element.id);
+                console.log(element);
+                if (element.type != 1) {
+                    this.signalRService.markNotificationAsRead(element.id);
+                }
             })
             this.notReadNotification = [];
         }
@@ -143,16 +151,18 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         if (project.id == -1) {
             this.router.navigate([`/workspace/${this.currProject.id}`], {
                 queryParams: {
-                  id: this.currProject.id,
-                  query: project.name
-                }});
+                    id: this.currProject.id,
+                    query: project.name
+                }
+            });
             return;
         }
         if (project.id == -3) {
             this.router.navigate(['/searchoutput'], {
                 queryParams: {
-                  query: project.name
-                }});
+                    query: project.name
+                }
+            });
             return;
         }
         this.router.navigate([`/project/${project.id}`]);
@@ -161,9 +171,9 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public filter(query, projects: SearchProjectDTO[]): SearchProjectDTO[] {
         const filtered: SearchProjectDTO[] = [];
         filtered.push({ id: -3, name: query });
-       if(!!this.currProject){
-           filtered.push({ id: -1, name: query });
-       }
+        if (!!this.currProject) {
+            filtered.push({ id: -1, name: query });
+        }
         for (let i = 0; i < projects.length; i++) {
             const project = projects[i];
             if (project.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
@@ -208,21 +218,21 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.signalRService.deleteTransferChartDataListener();
     }
 
-    public getAvatarAndName(): void{
+    public getAvatarAndName(): void {
         this.userService
-        .getUserDetailsFromToken()
-        .pipe(takeUntil(this.unsubscribe$))
-        .subscribe(resp =>{
-            this.userAvatar = './assets/img/user-default-avatar.png';
-            if(resp.body.url)
-                this.userAvatar = resp.body.url;
+            .getUserDetailsFromToken()
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(resp => {
+                this.userAvatar = './assets/img/user-default-avatar.png';
+                if (resp.body.url)
+                    this.userAvatar = resp.body.url;
 
-            this.userId = resp.body.id;
-            this.userName = resp.body.firstName;
-        },
-        error =>{
-            console.log(error);
-        })
+                this.userId = resp.body.id;
+                this.userName = resp.body.firstName;
+            },
+                error => {
+                    console.log(error);
+                })
     };
 
     private getUser() {
@@ -239,5 +249,5 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                 this.userId = this.tokenService.getUserId();
                 this.getAvatarAndName();
             });
-        }
+    }
 }

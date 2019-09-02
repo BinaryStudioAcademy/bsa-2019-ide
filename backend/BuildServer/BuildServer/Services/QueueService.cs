@@ -69,16 +69,17 @@ namespace BuildServer.Services
             var projectName = $"project_{projectForBuild.ProjectId}";
             Console.WriteLine($"{projectName} = =========  {projectForBuild.TimeStamp}");
             Console.ForegroundColor = ConsoleColor.White;
-            var isBuildSucceeded = _worker.Work(projectForBuild.UriForProjectDownload, projectName,  out var artifactArchiveUri);
+            var isBuildSucceeded = _worker.Work(projectForBuild.UriForProjectDownload, projectName,  out var artifactArchiveUri, out string buildResult);
 
-            var buildResult = new BuildResultDTO()
+            var resultDTO = new BuildResultDTO()
             {
                 ProjectId = projectForBuild.ProjectId,
                 WasBuildSucceeded = isBuildSucceeded,
-                UriForArtifactsDownload = artifactArchiveUri
+                UriForArtifactsDownload = artifactArchiveUri,
+                Message=buildResult
             };
             
-            var jsonMessage = JsonConvert.SerializeObject(buildResult);
+            var jsonMessage = JsonConvert.SerializeObject(resultDTO);
             _messageConsumerScopeBuild.MessageConsumer.SetAcknowledge(evn.DeliveryTag, true);
             SendBuildMessage(jsonMessage);
         }

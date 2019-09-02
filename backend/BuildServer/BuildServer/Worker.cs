@@ -19,7 +19,7 @@ namespace BuildServer
             _azureService = azureService;
         }
 
-        public bool Work(Uri uriForDownload, string projectName, out Uri artifactArchiveUri)
+        public bool Work(Uri uriForDownload, string projectName, out Uri artifactArchiveUri, out string buildResult)
         {
             Console.WriteLine("Downloading...");
             _azureService.Download(uriForDownload, projectName).GetAwaiter().GetResult();
@@ -28,7 +28,7 @@ namespace BuildServer
             _fileArchiver.UnZip(projectName);
 
 
-            string buildResult = _builder.Build(projectName);
+            buildResult = _builder.Build(projectName);
 
             bool isBuildSucceeded = false;
             string executeResult = "Execution was not performed!!!";

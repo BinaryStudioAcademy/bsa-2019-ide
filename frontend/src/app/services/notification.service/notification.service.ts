@@ -20,14 +20,14 @@ export class NotificationService {
         return this.httpService.getRequest<NotificationDTO[]>(`${this.routePrefix}/getUserNotification/${userId}`);
     }
 
-    public OpenConsole(message: string)
+    public OpenConsole(metadata: string)
     {
         const ref = this.dialogService.open(ConsoleComponent,
             {
                 data: { 
-                    message: message
+                    metadata: metadata
                 },
-                width: '500px',
+                width: '70vw',
                 style: {
                     'box-shadow': '0 0 3px 0 #000',
                 },
@@ -36,6 +36,7 @@ export class NotificationService {
                     'overflow-y': 'auto',
                     'height': '60vh',
                     'background-color': 'black',
+                    'font-size': '13px',
                     'color': 'white'
                 },
                 showHeader: true,

@@ -21,7 +21,7 @@ namespace IDE.BLL.Services.Queue
 
         public BuildQueueSubscriberService(IMessageConsumerScopeFactory messageConsumerScopeFactory,
                             ILogger<BuildQueueSubscriberService> logger,
-                            IServiceScopeFactory serviceScopeFactory): base(messageConsumerScopeFactory, logger)
+                            IServiceScopeFactory serviceScopeFactory) : base(messageConsumerScopeFactory, logger)
         {
             _serviceScopeFactory = serviceScopeFactory;
         }
@@ -50,15 +50,22 @@ namespace IDE.BLL.Services.Queue
             notification.DateTime = DateTime.Now;
             if (buildResult.WasBuildSucceeded)
             {
-                notification.Message = "Build status: Success)";
                 notification.Status = NotificationStatus.Message;
             }
             else
             {
-                notification.Message = "Build status: Failed(";
                 notification.Status = NotificationStatus.Error;
+
             }
 
+            notification.Message=$"Build project";
+            notification.Type = NotificationType.ProjectBuild;
+            notification.ProjectId = buildResult.ProjectId;
+            notification.Metadata = buildResult.Message;
+            notification.DateTime = DateTime.Now;
+
+
+            //notification.Message = buildResult.;
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var notificationService = scope.ServiceProvider.GetService<INotificationService>();

@@ -8,7 +8,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/api';
 })
 export class ConsoleComponent implements OnInit {
 
-    public message: string;
+    public metadata: string;
 
     constructor(private config: DynamicDialogConfig,
         private ref: DynamicDialogRef) {
@@ -16,7 +16,7 @@ export class ConsoleComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.message = this.config.data.message;
+        this.metadata = this.config.data.metadata;
     }
 
 }
