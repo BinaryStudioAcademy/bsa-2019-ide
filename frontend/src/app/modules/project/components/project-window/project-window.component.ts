@@ -98,7 +98,8 @@ export class ProjectWindowComponent implements OnInit {
                 countOfSavedBuilds: ['', [Validators.required, Validators.max(10)]],
                 countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
                 access: ['', Validators.required],
-                color: ['', Validators.required]
+                color: ['', Validators.required],
+                githuburl: ['']
             });
             this.projectForm.get('access').setValue(0);
         } else {
@@ -321,7 +322,8 @@ export class ProjectWindowComponent implements OnInit {
             countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value,
             countOfSaveBuilds: this.projectForm.get('countOfSavedBuilds').value,
             language: this.projectForm.get('language').value,
-            projectType: this.projectForm.get('projectType').value
+            projectType: this.projectForm.get('projectType').value,
+            githubUrl: !!this.projectForm.get('githuburl') ? this.projectForm.get('githuburl').value : null
         }
     }
 }

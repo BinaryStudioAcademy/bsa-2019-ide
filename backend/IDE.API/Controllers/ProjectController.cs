@@ -11,6 +11,8 @@ using Microsoft.Extensions.Logging;
 using Storage.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
@@ -115,6 +117,21 @@ namespace IDE.API.Controllers
         public async Task<ActionResult> CreateProject([FromForm] ProjectCreateDTO project)
         {
             var author = this.GetUserIdFromToken();
+            if(project.GithubUrl != null){
+                System.Diagnostics.Debug.WriteLine(project.GithubUrl);
+                Uri url = new Uri(project.GithubUrl);
+                UriBuilder uriBuilder = new UriBuilder(url);
+                uriBuilder.Path = Path.Combine(url.AbsolutePath, "archive/master.zip");
+                using (HttpClient client = new HttpClient())
+                {
+                    
+                    HttpResponseMessage response = await client.GetAsync(uriBuilder.ToString());
+                    if (response.IsSuccessStatusCode)
+                    {
+                        System.Diagnostics.Debug.WriteLine("*************** success ******************");
+                    }
+                }
+            }
             var projectId = await _projectService.CreateProject(project, author);
             _logger.LogInformation(LoggingEvents.InsertItem, $"Created project {projectId}");
 
