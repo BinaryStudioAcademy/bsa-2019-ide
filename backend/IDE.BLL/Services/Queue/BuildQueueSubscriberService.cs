@@ -55,11 +55,13 @@ namespace IDE.BLL.Services.Queue
             else
             {
                 notification.Status = NotificationStatus.Error;
+
             }
 
+            notification.Message=$"Build project";
             notification.Type = NotificationType.ProjectBuild;
             notification.ProjectId = buildResult.ProjectId;
-            notification.Message = buildResult.Message;
+            notification.Metadata = buildResult.Message;
             notification.DateTime = DateTime.Now;
 
 

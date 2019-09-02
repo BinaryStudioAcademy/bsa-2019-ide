@@ -101,7 +101,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public onNotificationClick(notification: NotificationDTO){
         if(notification.type!=NotificationType.assinedToProject)
         {
-            this.notificationService.OpenConsole(notification.message);
+            this.notificationService.OpenConsole(notification.metadata);
         }
         this.router.navigate([`/workspace/${notification.projectId}`]);
     }

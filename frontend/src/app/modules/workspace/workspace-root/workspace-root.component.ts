@@ -89,7 +89,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         private buildService: BuildService,
         private eventService: EventService,
         private cdr: ChangeDetectorRef,
-    private signalRService: SignalRService) {
+        private signalRService: SignalRService) {
 
         this.hotkeys.addShortcut({ keys: 'shift.h' })
             .subscribe(() => {
@@ -105,6 +105,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.showSearchField = true;
                 this.cdr.detectChanges();
             }
+            this.signalRService.addProjectRunResultDataListener();
             // if (!!params['fileId']) {
             //     console.log(params['fileId']);
             //     setTimeout(() => {
@@ -126,7 +127,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 }),
                 filter(params => !!params['fileId']),
                 map(params => params['fileId']))
-                .subscribe(fileId => this.onFileSelected(fileId));
+            .subscribe(fileId => this.onFileSelected(fileId));
 
         this.userId = this.tokenService.getUserId();
         // this.signalRService.startConnection(true, this.userId);
@@ -142,13 +143,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 (resp) => {
                     this.project = resp.body;
                     this.eventService.currProjectSwitch({ id: this.project.id, name: this.project.name });
-                    this.authorId=resp.body.authorId;
+                    this.authorId = resp.body.authorId;
                     this.options = this.project.editorProjectSettings;
                     if (this.canNotEdit) {
                         this.options.readOnly = true;
                     }
-                    if(this.project.authorId!=this.userId)
-                    {
+                    if (this.project.authorId != this.userId) {
                         this.rightService.getUserRightById(this.userId, this.projectId)
                             .subscribe(
                                 (resp) => {
@@ -164,10 +164,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             );
     }
 
-    private findAllOccurence(substring?: string){
+    private findAllOccurence(substring?: string) {
         if (substring == null)
             return;
-        setTimeout(() =>{
+        setTimeout(() => {
             this.editor.hightlineMatches(substring);
         }, 500)
     }
@@ -180,7 +180,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         const a = this.workSpaceService.show(this.project);
         a.subscribe(
             (resp) => {
-                if(resp) {
+                if (resp) {
                     this.options = resp as EditorSettingDTO;
                 }
             }
@@ -235,28 +235,28 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                     if (resp.ok) {
                         const { id, name, content, folder, updaterId, isOpen, updater, language } = resp.body as FileDTO;
                         const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, isOpen, updaterId, updater, language };
-                        var tabName=name;
+                        var tabName = name;
                         this.editor.AddFileToOpened(fileUpdateDTO);
                         if (!fileUpdateDTO.isOpen) {
                             fileUpdateDTO.isOpen = true;
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
                             this.editor.monacoOptions.readOnly = false;
-                            this.fileBrowser.selectedItem.label=tabName;
+                            this.fileBrowser.selectedItem.label = tabName;
                         }
                         else if (this.project.accessModifier == 1) {
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
                             this.editor.monacoOptions.readOnly = false;
-                            tabName+=" (editing...)";
+                            tabName += " (editing...)";
                             if (this.fileBrowser.selectedItem)
-                                this.fileBrowser.selectedItem.label+=" (editing...)";
+                                this.fileBrowser.selectedItem.label += " (editing...)";
                         }
                         else {
 
                             this.editor.monacoOptions.readOnly = true;
                         }
-                        this.editor.tabs.push({ label: tabName, icon: selectedFile.fileIcon,  id: id });
+                        this.editor.tabs.push({ label: tabName, icon: selectedFile.fileIcon, id: id });
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
                         this.findAllOccurence(selectedFile.filterString);
                         this.editor.code = content;
@@ -309,7 +309,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.toast.error('Something bad happened(', 'Error Message', { tapToDismiss: true });
             }
         )
-        this.signalRService.addProjectRunResultDataListener();
     }
 
     public onFilesSave(files?: FileUpdateDTO[]) {
@@ -346,13 +345,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     public hideFileBrowser() {
         this.showFileBrowser = !this.showFileBrowser;
-        if(!this.showFileBrowser && this.showSearchField)
-        {
-            this.showFileBrowser=true;
+        if (!this.showFileBrowser && this.showSearchField) {
+            this.showFileBrowser = true;
         }
-        if(this.showFileBrowser)
-        {
-            this.showSearchField=false;
+        if (this.showFileBrowser) {
+            this.showSearchField = false;
         }
     }
 
@@ -364,7 +361,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.eventsSubject.next();
     }
 
-    public refresh(){
+    public refresh() {
         this.fileBrowser.ngOnInit();
     }
 
