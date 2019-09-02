@@ -76,7 +76,8 @@ namespace BuildServer.Services
                 ProjectId = projectForBuild.ProjectId,
                 WasBuildSucceeded = isBuildSucceeded,
                 UriForArtifactsDownload = artifactArchiveUri,
-                Message=buildResult
+                Message=buildResult,
+                BuildId=projectForBuild.BuildId
             };
             
             var jsonMessage = JsonConvert.SerializeObject(resultDTO);
