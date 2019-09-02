@@ -57,7 +57,6 @@ export class LandingRootComponent implements OnInit {
                 }, error => this.smthWrong = true);
         this.infoService.getWebSiteStats()
             .subscribe(data => {
-                console.log(data.body)
                 this.websiteInfo = data.body;
                 this.noInfo = false;
             }, error => this.noInfo = true);
@@ -69,7 +68,6 @@ export class LandingRootComponent implements OnInit {
 
     private makeDescriptionShorter(projects: LikedProjectDTO[]) {
         const MAX_LENGTH = this.MAX_DESCRIPTION_LENGTH + 3;
-        console.log(projects);
         projects.forEach(project => {
             if (project.projectDescription.length > MAX_LENGTH) {
                 project.projectDescription = project.projectDescription.substr(0, this.MAX_DESCRIPTION_LENGTH) + '...';
