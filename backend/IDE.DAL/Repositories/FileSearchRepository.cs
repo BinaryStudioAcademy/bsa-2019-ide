@@ -44,7 +44,7 @@ namespace IDE.DAL.Repositories
                         fs => fs
                             .Field(f => f.Content)
                                 .Type(HighlighterType.Plain)
-                                .FragmentSize(20)
+                                .FragmentSize(30)
                                 .PreTags("<mark>")
                                 .PostTags("</mark>")
                     )
