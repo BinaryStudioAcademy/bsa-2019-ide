@@ -50,20 +50,19 @@ namespace IDE.BLL.Services
             _logger = logger;
             _editorSettingService = editorSettingService;
             _userService = userService;
-            _buildService = buildService;
             _queueService = queueService;
             _buildService = buildService;
         }
 
-        public async Task BuildProject(int projectId)
+        public async Task BuildProject(int projectId, int userId)
         {
             var project = await GetProjectById(projectId);
-            if (project.Language == Language.CSharp)
-                await _buildService.BuildProject(projectId, ProjectLanguageType.CSharpConsoleApp);
+            if (project.Language == Language.CSharp && project.ProjectType == ProjectType.Console)
+                await _buildService.BuildProject(projectId, userId, ProjectLanguageType.CSharpConsoleApp);
             else if (project.Language == Language.Go)
-                await _buildService.BuildProject(projectId, ProjectLanguageType.GoConsoleApp);
+                await _buildService.BuildProject(projectId, userId, ProjectLanguageType.GoConsoleApp);
             else if (project.Language == Language.TypeScript)
-                await _buildService.BuildProject(projectId, ProjectLanguageType.TypeScriptConsoleApp);
+                await _buildService.BuildProject(projectId, userId, ProjectLanguageType.TypeScriptConsoleApp);
         }
 
         public async Task RunProject(int projectId, string connectiondId)

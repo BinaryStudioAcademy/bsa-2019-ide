@@ -52,7 +52,8 @@ namespace IDE.API.Controllers
         [HttpGet("build/{projectId}")]
         public async Task<ActionResult> BuildProjectById(int projectId)
         {
-            await _projectService.BuildProject(projectId);
+            var userId = this.GetUserIdFromToken();
+            await _projectService.BuildProject(projectId, userId);
             return Ok();
         }
 
