@@ -67,6 +67,11 @@ export class LandingRootComponent implements OnInit {
         this.authDialogService.openAuthDialog(DialogType.SignUp);
     }
 
+    public OnProjectCardClick(project: LikedProjectDTO)
+    {
+        this.authDialogService.openAuthDialog(DialogType.SignIn, project.projectId);
+    }
+
     private makeDescriptionShorter(projects: LikedProjectDTO[]) {
         const MAX_LENGTH = this.MAX_DESCRIPTION_LENGTH + 3;
         console.log(projects);
