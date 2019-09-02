@@ -65,7 +65,7 @@ export class SignalRService {
 
     public addProjectRunResultDataListener(): void {
         this.hubConnection.on('transferRunResult', (notification) => {
-            this.notificationService.OpenConsole('Run result: \n' + notification.message);
+            this.notifications.push(notification);
         });
     }  
 

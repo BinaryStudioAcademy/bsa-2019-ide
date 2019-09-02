@@ -9,5 +9,6 @@ namespace RabbitMQ.Shared.ModelsDTO
         public Uri UriForArtifactsDownload { get; set; }
 
         public bool WasBuildSucceeded { get; set; }
+        public string Message { get; set; }
     }
 }
