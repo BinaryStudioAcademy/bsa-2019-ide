@@ -12,6 +12,7 @@ using RabbitMQ.Shared.ModelsDTO;
 using Storage.Interfaces;
 using System.Threading.Tasks;
 using System;
+using RabbitMQ.Shared.ModelsDTO.Enums;
 
 namespace IDE.BLL.Services
 {
@@ -40,7 +41,7 @@ namespace IDE.BLL.Services
             this.notificationService = notificationService;
         }
 
-        public async Task BuildDotNetProject(int projectId)
+        public async Task BuildProject(int projectId, ProjectLanguageType languageType)
         {
             var archive = await _projectStructureService.CreateProjectZipFile(projectId);
             var uri = await _blobRepo.UploadProjectArchiveAsync(archive, $"project_{projectId}");
@@ -48,6 +49,7 @@ namespace IDE.BLL.Services
             {
                 ProjectId = projectId,
                 UriForProjectDownload = uri,
+                Language = languageType,
                 TimeStamp = DateTime.Now
             };
             var strMessage = JsonConvert.SerializeObject(message);
@@ -66,7 +68,7 @@ namespace IDE.BLL.Services
             return builds;
         }
 
-        public async Task RunDotNetProject(int projectId, string connectionId)
+        public async Task RunProject(int projectId, string connectionId)
         {
             var archive = await _projectStructureService.CreateProjectZipFile(projectId);
             var uri = await _blobRepo.UploadProjectArchiveAsync(archive, $"project_{projectId}");

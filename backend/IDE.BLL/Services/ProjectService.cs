@@ -13,6 +13,7 @@ using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Shared.ModelsDTO.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +59,11 @@ namespace IDE.BLL.Services
         {
             var project = await GetProjectById(projectId);
             if (project.Language == Language.CSharp)
-                await _buildService.BuildDotNetProject(projectId);
+                await _buildService.BuildProject(projectId, ProjectLanguageType.CSharpConsoleApp);
+            else if (project.Language == Language.Go)
+                await _buildService.BuildProject(projectId, ProjectLanguageType.GoConsoleApp);
+            else if (project.Language == Language.TypeScript)
+                await _buildService.BuildProject(projectId, ProjectLanguageType.TypeScriptConsoleApp);
         }
 
         public async Task RunProject(int projectId, string connectiondId)
@@ -67,7 +72,7 @@ namespace IDE.BLL.Services
             if (project == null)
                 return;
             if (project.Language == Language.CSharp)
-                await _buildService.RunDotNetProject(projectId, connectiondId);
+                await _buildService.RunProject(projectId, connectiondId);
         }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
