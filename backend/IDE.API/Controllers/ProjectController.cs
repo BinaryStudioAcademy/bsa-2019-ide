@@ -120,8 +120,8 @@ namespace IDE.API.Controllers
         {
             var author = this.GetUserIdFromToken();
             IFormFile formfile = null;
-            if (project.GithubUrl != null){
-                System.Diagnostics.Debug.WriteLine(project.GithubUrl);
+            if (!string.IsNullOrEmpty(project.GithubUrl)){
+                
                 Uri url = new Uri(project.GithubUrl);
                 var fileNameFromUri = $"{url.Segments[url.Segments.Length - 1]}-master.zip";
                 UriBuilder uriBuilder = new UriBuilder(url);

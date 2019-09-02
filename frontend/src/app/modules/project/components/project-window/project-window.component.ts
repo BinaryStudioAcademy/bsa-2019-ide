@@ -46,6 +46,7 @@ export class ProjectWindowComponent implements OnInit {
     private projectUpdateStartState: ProjectUpdateDTO;
     private projectType: ProjectType;
     private projectId: number;
+    private githubPattern = /^https:\/\/github.com\/\w[\d,\w,-]+\/\w[\d,\w,-]+$/i;
 
     constructor(private ref: DynamicDialogRef,
                 private config: DynamicDialogConfig,
@@ -99,7 +100,7 @@ export class ProjectWindowComponent implements OnInit {
                 countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
                 access: ['', Validators.required],
                 color: ['', Validators.required],
-                githuburl: ['']
+                githuburl: ['',Validators.pattern(this.githubPattern)]
             });
             this.projectForm.get('access').setValue(0);
         } else {
@@ -276,7 +277,8 @@ export class ProjectWindowComponent implements OnInit {
             errorMessage = `The length should be no more than ${control.errors.maxlength.requiredLength} letters!`;
         }
         else if (control.hasError('pattern')) {
-            errorMessage = `This field can contain only latin letters and numbers!`;
+
+            errorMessage = field === "githuburl" ? "https://github.com/user/repository wrong github pattern ":`This field can contain only latin letters and numbers!`;
         }
         else {
             errorMessage = 'validation error';

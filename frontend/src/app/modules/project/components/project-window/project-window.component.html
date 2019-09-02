@@ -152,7 +152,10 @@
                         <span pInplaceContent>
                             <input type="text" placeholder="Github url" pInputText formControlName="githuburl">
                         </span>
+                        
                     </p-inplace>
+                    <div class="invalid" *ngIf="projectForm.get('githuburl').invalid && projectForm.get('githuburl').dirty">
+                {{getErrorMessage('githuburl')}}</div>
                 </div>
             </div>
 
