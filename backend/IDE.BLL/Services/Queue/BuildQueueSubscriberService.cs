@@ -45,6 +45,9 @@ namespace IDE.BLL.Services.Queue
             var buildResult = JsonConvert.DeserializeObject<BuildResultDTO>(content);
 
             var notification = new NotificationDTO();
+            notification.Type = NotificationType.ProjectBuild;
+            notification.ProjectId = buildResult.ProjectId;
+            notification.DateTime = DateTime.Now;
             if (buildResult.WasBuildSucceeded)
             {
                 notification.Status = NotificationStatus.Message;
