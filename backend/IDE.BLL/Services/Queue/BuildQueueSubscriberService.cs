@@ -1,4 +1,5 @@
 ﻿using IDE.BLL.Interfaces;
+using IDE.Common.DTO.Common;
 using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Common;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,9 +46,6 @@ namespace IDE.BLL.Services.Queue
             var buildResult = JsonConvert.DeserializeObject<BuildResultDTO>(content);
 
             var notification = new NotificationDTO();
-            notification.Type = NotificationType.ProjectBuild;
-            notification.ProjectId = buildResult.ProjectId;
-            notification.DateTime = DateTime.Now;
             if (buildResult.WasBuildSucceeded)
             {
                 notification.Status = NotificationStatus.Message;
@@ -57,7 +55,6 @@ namespace IDE.BLL.Services.Queue
                 notification.Status = NotificationStatus.Error;
 
             }
-
             notification.Message=$"Build project";
             notification.Type = NotificationType.ProjectBuild;
             notification.ProjectId = buildResult.ProjectId;
@@ -65,11 +62,12 @@ namespace IDE.BLL.Services.Queue
             notification.DateTime = DateTime.Now;
 
 
-            //notification.Message = buildResult.;
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var notificationService = scope.ServiceProvider.GetService<INotificationService>();
+                var buildService = scope.ServiceProvider.GetService<IBuildService>();
                 await notificationService.SendNotification(buildResult.ProjectId, notification);
+                await buildService.CreateFinishBuildArtifacts(buildResult);
             }
         }
     }

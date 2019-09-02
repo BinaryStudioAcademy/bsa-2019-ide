@@ -49,16 +49,15 @@ namespace IDE.BLL.Services
             _logger = logger;
             _editorSettingService = editorSettingService;
             _userService = userService;
-            _buildService = buildService;
             _queueService = queueService;
             _buildService = buildService;
         }
 
-        public async Task BuildProject(int projectId)
+        public async Task BuildProject(int projectId, int userId)
         {
             var project = await GetProjectById(projectId);
             if (project.Language == Language.CSharp)
-                await _buildService.BuildDotNetProject(projectId);
+                await _buildService.BuildDotNetProject(projectId, userId);
         }
 
         public async Task RunProject(int projectId, string connectiondId)

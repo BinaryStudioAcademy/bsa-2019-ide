@@ -10,5 +10,6 @@ namespace RabbitMQ.Shared.ModelsDTO
 
         public bool WasBuildSucceeded { get; set; }
         public string Message { get; set; }
+        public int BuildId { get; set; }
     }
 }
