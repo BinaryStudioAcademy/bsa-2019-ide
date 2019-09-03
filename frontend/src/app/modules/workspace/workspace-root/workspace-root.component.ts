@@ -303,6 +303,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
         this.buildService.runProject(this.project.id, connectionId).subscribe(
             (response) => {
+                var result=response.body as string[];
+                if(result)
+                {
+                    this.buildService.showInputWindow(result);
+                }
                 this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {

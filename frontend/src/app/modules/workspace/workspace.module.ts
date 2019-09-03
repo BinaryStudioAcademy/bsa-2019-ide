@@ -21,6 +21,7 @@ import {FileUploadModule} from 'primeng/fileupload';
 import { GlobalSearchOutputComponent } from './global-search-output/global-search-output.component';
 import { HighlightMatchDirective } from 'src/app/directives/highlight-match.directive';
 import { ConsoleComponent } from './console/console.component';
+import { RunInputComponent } from './run-input/run-input.component';
 
 
 @NgModule({
@@ -29,7 +30,7 @@ import { ConsoleComponent } from './console/console.component';
       FileBrowserSectionComponent,
       EditorSectionComponent,
       FileInfoComponent,
-      ImportFileComponent, GlobalSearchOutputComponent,HighlightMatchDirective,ConsoleComponent
+      ImportFileComponent, GlobalSearchOutputComponent,HighlightMatchDirective,ConsoleComponent, RunInputComponent
     ],
   imports: [
     MenuModule,
@@ -56,7 +57,8 @@ import { ConsoleComponent } from './console/console.component';
   ],
   entryComponents: [
       EditorSettingsComponent,
-      ConsoleComponent
+      ConsoleComponent,
+      RunInputComponent
   ]
 })
 export class WorkspaceModule { }

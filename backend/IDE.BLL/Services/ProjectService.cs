@@ -85,12 +85,12 @@ namespace IDE.BLL.Services
                     var indexOfEndReadLine = substring.IndexOf(")");
                     var readLineItems = substring.Substring(0, indexOfEndReadLine);
                     var newContent = content.Remove(indexOdReadLine, indexOfEndReadLine + inputStart.Length + inputEnd.Length);
-                    content = newContent;
                     var inputItems = readLineItems.Split(',');
                     for (int i = 0; i < inputItems.Length; i++)
                     {
                         result.Add(inputItems[i]);
                     }
+                    content = newContent;
                 }
             }
             return result;

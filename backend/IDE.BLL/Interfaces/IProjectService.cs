@@ -28,5 +28,6 @@ namespace IDE.BLL.Interfaces
         Task BuildProject(int projectId, int userId);
         Task RunProject(int projectId, string connectionId);
         Task<IFormFile> ConvertFilestreamToIFormFile(Stream fileStream, string name, string fileName);
+        Task<IEnumerable<string>> GetInputElements(int projectId);
     }
 }

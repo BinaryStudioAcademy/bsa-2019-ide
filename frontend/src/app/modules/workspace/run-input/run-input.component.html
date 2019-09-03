@@ -1,0 +1,17 @@
+<span class="modal-close-btn" (click)="close()">&times;</span>
+<h2 class="title">Enter input data</h2>
+<form #myForm="ngForm">
+    <div ngModelGroup="inputs" #inputs="ngModelGroup">
+        <div *ngFor="let cell of items; let i = index;" class="run-input-item ">
+            <div class="property-name">
+                {{cell.label}}
+            </div>
+            <input name="{{cell.label}}" [ngModel]="cell.value" class="form-control" #name="ngModel" required>
+        </div>
+    </div>
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <button pButton [disabled]="!myForm.form.valid" label="Enter" (click)="OnClick(myForm)"></button>
+        </div>
+    </div>
+</form>
