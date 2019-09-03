@@ -88,6 +88,11 @@ export class AuthDialogComponent implements OnInit {
                     this.toast.success('You have successfully signed in!', `Wellcome, ${result.firstName} ${result.lastName}!`);
                     this.router.navigate(['dashboard']);
                     this.signalRService.addToGroup(this.tokenService.getUserId());
+                    console.log(this.config.data);
+                    if(this.config.data.projectId)
+                    {
+                        this.router.navigate([`project/${this.config.data.projectId}`]);
+                    }
                 },
                 (error) => {
                     this.isSpinner = false;
@@ -114,6 +119,10 @@ export class AuthDialogComponent implements OnInit {
                     this.ref.close();
                     this.router.navigate(['dashboard']);
                     this.signalRService.addToGroup(this.tokenService.getUserId());
+                    if(this.config.data.projectId)
+                    {
+                        this.router.navigate([`project/${this.config.data.projectId}`]);
+                    }
                 },
                 (error) => this.toast.error("Invalid input data", this.errorHandlerService.getExceptionMessage(error)),
                 () => {
