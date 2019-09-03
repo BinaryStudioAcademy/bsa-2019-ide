@@ -5,8 +5,8 @@ const Wait = require('../../helpers/waiters');
 const validate = new Assert();
 const wait = new Wait();
 
-//const DashboardPage = require('../page/Dashboard_po');
-//const dashboardObject = new DashboardPage();
+const ProjectDetailsActions = require('./actions/ProjectDetails_pa');
+const projectDetails = new ProjectDetailsActions();
 
 //const assert = require('chai').assert;
 describe('Online-IDE ProjectDetails Page', () => {
@@ -23,33 +23,37 @@ describe('Online-IDE ProjectDetails Page', () => {
        browser.reloadSession();
    });
 
-
+//passed
     xit('change project settings', () => {
         
        
         Help.clickProjectSettingsOnCard();
+        Help.fillOutChangedDataInForm(credentials.changedProjectName, credentials.changeddescription, credentials.changedBuildsNumber, credentials.changedBuildAttempts);
        
-        Help.inputChangedDataInForm(credentials.changedProjectName, credentials.changeddescription, credentials.changedBuildsNumber, credentials.changedBuildAttempts, 4);
-        
+        $("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only.ng-star-inserted").waitForEnabled(5000);
+        $("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only.ng-star-inserted").click();
+     
         validate.notificationTextIs(credentials.successchangedsettingsnotification);
         wait.forNotificationToDisappear();
 
         Help.clickProjectDetailsOnCard();
-        
+        $("ul.ui-tabview-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all.ng-star-inserted").waitForExist(5000);
+
+        validate.navigationToPage(credentials.projectDetailsUrl);
         validate.checkProjectDetailsData(0, "Name: "+ credentials.changedProjectName);
         validate.checkProjectDetailsData(1, "Description: "+ credentials.changeddescription);
-        validate.checkProjectDetailsData(7, "Amount of saved builds: "+ credentials.changedBuildsNumber);
-        validate.checkProjectDetailsData(8, "Amount of build attempts: "+ credentials.changedBuildAttempts);
+        validate.checkProjectDetailsData(8, "Amount of saved builds: "+ credentials.changedBuildsNumber);
+        validate.checkProjectDetailsData(9, "Amount of build attempts: "+ credentials.changedBuildAttempts);
         Help.logOut();
         
     });
 
 
-
+//failed
     xit('navigate to project details page', () => {
         
         Help.clickProjectDetailsOnCard();
-        
+        $("ul.ui-tabview-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all.ng-star-inserted").waitForExist(5000);
         validate.navigationToPage(credentials.projectDetailsUrl);
         
         Help.logOut();
@@ -60,8 +64,8 @@ describe('Online-IDE ProjectDetails Page', () => {
     xit('add collaborator', () => {
         
         Help.clickProjectDetailsOnCard();
-        
-        Help.addCollaborators("test");
+        $("ul.ui-tabview-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all.ng-star-inserted").waitForExist(5000);
+        Help.addCollaborators("testUser1");
         
         validate.notificationTextIs(credentials.notificationSuccessAddCollaborator);
         Help.checkDetails();
@@ -74,7 +78,7 @@ describe('Online-IDE ProjectDetails Page', () => {
     xit('change collaborators rights', () => {
         
         Help.clickProjectDetailsOnCard();
-        
+        $("ul.ui-tabview-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all.ng-star-inserted").waitForExist(5000);
         Help.changeCollaboratorsRights(4);
        
         validate.notificationTextIs(credentials.notificationSuccessChangeCollaboratorRight);
@@ -88,15 +92,14 @@ describe('Online-IDE ProjectDetails Page', () => {
     xit('delete collaborator', () => {
         
         Help.clickProjectDetailsOnCard();
-        
+        $("ul.ui-tabview-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all.ng-star-inserted").waitForExist(5000);
         Help.deleteCollaborator(0);
         
-        //validate.notificationTextIs(credentials.notificationSuccessDeleteCollaborator);
+        //console.log($("//div[contains(text(), 'This project has no collaborators yet')]").getText());
         Help.checkDetails();
         
         validate.verifyAbsence();
-       // validate.verifyText($$("div.collaborator-item div")[0], "test");
-       // validate.verifyText($("div label"), "Can read");
+  
         Help.logOut();
         
     });
@@ -108,7 +111,7 @@ describe('Online-IDE ProjectDetails Page', () => {
         expectednotification = Help.returnExpectedNotificationDeletionProject();
         
         Help.clickProjectDetailsOnCard();
-        
+        $("ul.ui-tabview-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all.ng-star-inserted").waitForExist(5000);
         validate.navigationToPage(credentials.projectDetailsUrl);
         const projectUrl = Help.returnUrl();
         Help.DeleteProject();

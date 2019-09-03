@@ -23,7 +23,14 @@ class CustomValidates {
         expect(attr, `${attr} doesn't include error class`).to.include("error");
     }
 */  
+    notificationOfSuccessRegistration(expectedText) {
 
+    const notification = $('div.toast-message');
+    notification.waitForDisplayed(2000);
+    const actualText = notification.getText();
+    console.log("2_______________"+ actualText);
+    assert.equal(actualText, expectedText);// || expectedNotification, `Expected ${actualText} to be equal to ${expectedInfo} or ${expectedNotification}`);
+    }
     notificationTextIs(expectedText) {
       
     const notification = $('div.toast-message.ng-star-inserted');
@@ -36,28 +43,6 @@ class CustomValidates {
     const actualText = notification.getText()
     assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
     }
-   /* errorNotificationTextIs(expectedText) {
-        const notification = $('div.toast-message.ng-star-inserted');
-        const actualText = notification.getText()
-        assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
-    }
-    
-
-    successNotificationTextIs(expectedText) {
-        
-        const notification = $("div.toast-success.ngx-toastr.ng-trigger.ng-trigger-flyInOut");
-        const actualText = notification.getText()
-        assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
-        
-    }
-    InfoNotificationTextIs(expectedText) {
-      
-        const notification = $('div.toast-message.ng-star-inserted');
-        const actualText = notification.getText()
-        assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
-        
-    }*/
-
    
     successnavigationToPage(expectedUrl) {
         const url = new URL(browser.getUrl());

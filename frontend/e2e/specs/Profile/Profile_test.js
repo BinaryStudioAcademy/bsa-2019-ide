@@ -19,8 +19,8 @@ describe('Online-IDE User profile', () => {
        browser.maximizeWindow();
        browser.url(credentials.appUrl);
        Help.loginWithDefaultUser();
-       wait.forSpinner();
-      // browser.pause(1000);
+       //wait.forSpinner();
+
     
    });
 
@@ -29,9 +29,13 @@ describe('Online-IDE User profile', () => {
    });
 
 
-    xit('change password', () => {
+    it('change password', () => {
         
-        
+        /*$("button.ui-button.ui-widget.ui-state-default.ui-corner-left.ui-button-text-icon-left").click();
+        $("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left.ng-star-inserted").click();
+        Help.browserClickOnArrayElement("a.ui-menuitem-link.ui-corner-all.ng-star-inserted", 5);
+*/
+       //browser.pause(2000);
         profile.changePassword(credentials.password, credentials.changedPassword);
         Help.logOut();
         Help.loginWithCustomUser(credentials.email, credentials.changedPassword);
@@ -44,8 +48,10 @@ describe('Online-IDE User profile', () => {
     });
     xit('change users info', () => {
         
-       
+        
         profile.clickMyProfileButton();
+        browser.pause(10000);
+        $("div.panel.p-grid.ng-star-inserted").waitForDisplayed(10000);
         profile.clickEditProfileButton();
         
         Help.browserClickOnArrayElement(profileObject.editingOptions, 4);
@@ -55,8 +61,7 @@ describe('Online-IDE User profile', () => {
         profile.enterLastName("test");
         profile.enterNickname("new1");
         profile.enterGitHub("https://github.com/test123")
-       // browser.executeScript("document.getElementsByClassName('ui-datepicker-group').value='02/11/1989'");
-       // profile.clickChangeButton();
+ 
        Help.browserClickOnArrayElement("input.ui-inputtext.ui-widget.ui-state-default.ui-corner-all.ng-star-inserted", 2);
        Help.browserClickOnArrayElement("a.ui-state-default.ng-star-inserted", 14);
        
@@ -73,11 +78,12 @@ describe('Online-IDE User profile', () => {
                
     });
     xit('change users editor settings', () => {
+
         
-        validate.navigationToPage("bsa-ide.azurewebsites.net/dashboar");
+        validate.successnavigationToPage(credentials.dashboardUrl);
         profile.clickMyProfileButton();
-        const panel = $("div.ui-tabview.ui-widget.ui-widget-content.ui-corner-all.ui-tabview-top");
-        panel.waitForDisplayed(5000);
+        browser.pause(10000);
+        profile.waitPanelOfProjectEditorSettings();
         Help.browserClickOnArrayElement("li.ui-state-default.ui-corner-top.ng-star-inserted", 2);
               
         
@@ -94,22 +100,6 @@ describe('Online-IDE User profile', () => {
         Help.clickInDropdownListOptionOf("Cursor style:", "block");
         Help.clickInDropdownListArrowOf("Line numbers:");
         Help.clickInDropdownListOptionOf("Line numbers:", "interval");
-        /*Help.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 1);
-      
-        Help.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", 3);
-        
-        Help.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 2);
-      // Help.clickInDropdownListArrowOf("Scroll beyond last line:"); 
-       Help.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", 1);
-        
-        Help.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 3);
-       // Help.clickInDropdownListArrowOf("Cursor style:");
-        Help.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", 1);
-        
-        Help.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 4);
-      // Help.clickInDropdownListArrowOf("Line numbers:"); 
-       Help.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", 3);
-        */
         profile.clickSaveButton();
         wait.forSpinner();
         validate.notificationTextIs("New details have successfully saved!")
@@ -130,23 +120,25 @@ describe('Online-IDE User profile', () => {
 
     xit('should change avatar', () => {
         
-       
+             
         profile.clickMyProfileButton();
+        browser.pause(10000);
+        $("div.panel.p-grid.ng-star-inserted").waitForDisplayed(10000);
         profile.clickEditProfileButton();
-       
         Help.browserClickOnArrayElement(profileObject.editingOptions, 2);
-        
         profile.UploadControl(path.join(__dirname, credentials.PhotoPath));
-        
-        $$("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only")[1].click();
+        profile.clickUpdateAvatarButton();
         wait.forSpinner();
         validate.notificationTextIs("photo successfully updated");
         browser.pause(5000);
-        profile.clickEditProfileButton();
+        const defaultAvatar = $('img[src="./assets/img/user-default-avatar.png"]');
+//вот тут загрузка нового аватара
+       browser.refresh();
+//пауза или вэйт, чтобы страница прогрузилась
+   assert.equal(defaultAvatar.isDisplayed(), false); 
+     /*   profile.clickEditProfileButton();
         Help.browserClickOnArrayElement(profileObject.editingOptions, 3);
-        validate.notificationTextIs("photo successfully deleted");
-       
-  
+        validate.notificationTextIs("photo successfully deleted");*/
         Help.logOut();
        
                

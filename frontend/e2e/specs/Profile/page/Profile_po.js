@@ -18,6 +18,7 @@ class ProfilePage {
     get birthdayInput () {return $$("input.ui-inputtext.ui-widget.ui-state-default.ui-corner-all.ng-star-inserted")[1]};
 
     get uploadAvatarInput () {return $("input#uploadfile")};
+    get updateAvatarButton(){return $$("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only")[1]};
     get currentPaswordInput () {return $("input[placeholder='password']")};
     get changedPasswordInput () {return $("input[placeholder='new password']")};
    // get currentPaswordInput () {return $$("input.ng-untouched.ng-pristine.ng-invalid.ui-inputtext.ui-corner-all.ui-state-default.ui-widget")[0]};

@@ -73,7 +73,11 @@ class ProfileActions {
         page.Uploadphoto.setValue(path);
      }
     changePassword(currentPassword, newPassword) {
-        this.clickMyProfileButton();
+        
+       // this.clickMyProfileButton();
+       // browser.pause(10000);
+       // $("div.panel.p-grid.ng-star-inserted").waitForDisplayed(10000);
+       browser.url('https://bsa-ide.azurewebsites.net/user/details/10')
         this.clickEditProfileButton();
         //browser.pause(1000);
         Help.browserClickOnArrayElement(profileObject.editingOptions, 5);
@@ -85,7 +89,14 @@ class ProfileActions {
        // profile.clickChangeButton();
        Help.browserClickOnArrayElement("span.ui-button-text.ui-clickable", 6);
     }
-
+    waitPanelOfProjectEditorSettings(){
+        const panel = $("div.ui-tabview.ui-widget.ui-widget-content.ui-corner-all.ui-tabview-top");
+        panel.waitForDisplayed(5000);
+    }
+    clickUpdateAvatarButton(){
+        page.updateAvaterButton.waitForDisplayed(2000);
+        page.updateAvatarButton.click();
+    }
     
     
  
