@@ -11,6 +11,10 @@ using Newtonsoft.Json;
 using RabbitMQ.Shared.ModelsDTO;
 using Storage.Interfaces;
 using System.Threading.Tasks;
+using System;
+using IDE.DAL.Entities;
+using IDE.Common.DTO.User;
+using IDE.Common.Enums;
 
 namespace IDE.BLL.Services
 {
@@ -20,6 +24,7 @@ namespace IDE.BLL.Services
         private readonly IBlobRepository _blobRepo;
         private readonly IQueueService _queueService;
         private readonly IdeContext _context;
+        private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
         private readonly INotificationService notificationService;
 
@@ -27,6 +32,7 @@ namespace IDE.BLL.Services
             IProjectStructureService projectStructureService,
             IBlobRepository blobRepo,
             IQueueService queueService,
+            ITokenService tokenService,
             IdeContext context,
             IMapper mapper,
             INotificationService notificationService)
@@ -37,19 +43,75 @@ namespace IDE.BLL.Services
             _context = context;
             _mapper = mapper;
             this.notificationService = notificationService;
+            _tokenService = tokenService;
         }
 
-        public async Task BuildDotNetProject(int projectId)
+        public async Task BuildDotNetProject(int projectId, int userId)
         {
             var archive = await _projectStructureService.CreateProjectZipFile(projectId);
             var uri = await _blobRepo.UploadProjectArchiveAsync(archive, $"project_{projectId}");
+            var build=await CreateStartBuildArtifacts(projectId,userId);
             var message = new ProjectForBuildDTO()
             {
                 ProjectId = projectId,
-                UriForProjectDownload = uri
+                UriForProjectDownload = uri,
+                TimeStamp = DateTime.Now,
+                BuildId=build.Id
             };
             var strMessage = JsonConvert.SerializeObject(message);
             _queueService.SendBuildMessage(strMessage);
+        }
+
+        public async Task<Build> CreateStartBuildArtifacts(int projectId,int userId)
+        {
+            var buildDTO = new BuildDTO();
+
+            buildDTO.BuildStarted = DateTime.Now;
+            buildDTO.UserId = userId;
+            buildDTO.ProjectId = projectId;
+
+            var build = _mapper.Map<Build>(buildDTO);
+
+            var coutOfExistBuild = _context.Builds
+                .Where(item => item.ProjectId == projectId)
+                .Count();
+
+            var project = await _context.Projects
+                .FirstOrDefaultAsync(item => item.Id == projectId);
+
+            if(coutOfExistBuild == project.CountOfSaveBuilds)
+            {
+                var olderBuild = await _context.Builds
+                .Where(item => item.ProjectId == build.ProjectId)
+                .OrderBy(item=>item.BuildStarted)
+                .FirstOrDefaultAsync();
+
+                _context.Remove(olderBuild);
+            }
+
+            await _context.Builds.AddAsync(build);
+            await _context.SaveChangesAsync();
+            return build;
+        }
+
+        public async Task<BuildDTO> CreateFinishBuildArtifacts(BuildResultDTO result)
+        {
+            var build = await _context.Builds
+                .FirstOrDefaultAsync(item => item.Id == result.BuildId);
+            build.BuildFinished = DateTime.Now;
+            if(result.WasBuildSucceeded)
+            {
+                build.BuildStatus = BuildStatus.Successfull;
+                build.BuildMessage = "Build was successfully finished";
+            }
+            else
+            {
+                build.BuildStatus = BuildStatus.Failed;
+                build.BuildMessage = "Build was successfully failed";
+            }
+            _context.Builds.Update(build);
+            await _context.SaveChangesAsync();
+            return _mapper.Map<BuildDTO>(build);
         }
 
         public async Task<IEnumerable<BuildDescriptionDTO>> GetBuildsByProjectId(int projectId)
@@ -72,7 +134,8 @@ namespace IDE.BLL.Services
             {
                 ProjectId = projectId,
                 UriForProjectDownload = uri,
-                ConnectionId = connectionId
+                ConnectionId = connectionId,
+                TimeStamp = DateTime.Now
             };
 
             var strMessage = JsonConvert.SerializeObject(message);

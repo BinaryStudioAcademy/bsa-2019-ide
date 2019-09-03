@@ -46,6 +46,12 @@ namespace IDE.BLL.HubConfig
                 .SendAsync("sendConnectionId", Context.ConnectionId, userId)
                 .ConfigureAwait(false);
         }
+
+        public string GetConnectionId()
+        {
+            return Context.ConnectionId;
+        }
+
         public async Task MarkAsRead(int notificationId)
         {
             await _notificationService.MarkAsRead(notificationId).ConfigureAwait(false);

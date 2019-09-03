@@ -56,7 +56,8 @@ namespace IDE.API.Controllers
         [HttpGet("build/{projectId}")]
         public async Task<ActionResult> BuildProjectById(int projectId)
         {
-            await _projectService.BuildProject(projectId);
+            var userId = this.GetUserIdFromToken();
+            await _projectService.BuildProject(projectId, userId);
             return Ok();
         }
 
@@ -76,7 +77,8 @@ namespace IDE.API.Controllers
         [HttpGet("name")]
         public async Task<ActionResult<IEnumerable<SearchProjectDTO>>> GetProjectName()
         {
-            return Ok(await _projectService.GetProjectsName());
+            int userId = this.GetUserIdFromToken();
+            return Ok(await _projectService.GetProjectsName(userId));
         }
 
         [HttpGet("my")]

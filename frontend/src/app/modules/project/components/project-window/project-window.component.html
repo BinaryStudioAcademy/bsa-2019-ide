@@ -6,9 +6,10 @@
     </div>
 </div>
 
-<div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded || projectUpdate">
+<div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded">
     <p-progressSpinner></p-progressSpinner>
 </div>
+
 <div *ngIf="!isCreateForm() && !isPageLoaded && !projectUpdate" class="error">
     <p>Can't load project details</p>
 </div>
@@ -162,7 +163,7 @@
             <!-- Submit -->
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
-                    <button *ngIf="isCreateForm()" type="submit" [disabled]="!projectForm.valid" pButton
+                    <button *ngIf="isCreateForm() && hasDetailsSaveResponse" type="submit" [disabled]="!projectForm.valid" pButton
                         label="Create"></button>
                     <button *ngIf="!isCreateForm() && hasDetailsSaveResponse" type="submit"
                         [disabled]="!projectForm.valid || projectItemIsNotChange()" pButton label="Save"></button>

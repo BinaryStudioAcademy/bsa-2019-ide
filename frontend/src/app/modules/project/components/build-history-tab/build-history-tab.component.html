@@ -1,4 +1,4 @@
-<p-card>
+<p-card *ngIf="build.buildMessage">
     <div class="build-card" [ngStyle]="{'border-left-color': getBackgroundColor(build)}">
         <div class="build-message">
             <span class="property-name">Build message:</span>

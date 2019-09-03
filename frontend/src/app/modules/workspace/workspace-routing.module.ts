@@ -1,3 +1,4 @@
+import { GlobalSearchOutputComponent } from './global-search-output/global-search-output.component';
 import { SaveBeforeExitGuard } from './../../guards/save-before-exit.guard';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -9,6 +10,11 @@ const workspaceRoutes: Routes = [
     {
         path: 'workspace/:id',
         component: WorkspaceRootComponent,
+        canActivate: [LoginGuard]
+    },
+    {
+        path: 'searchoutput',
+        component: GlobalSearchOutputComponent,
         canActivate: [LoginGuard]
     }
 ];

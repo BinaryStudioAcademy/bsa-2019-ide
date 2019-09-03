@@ -1,6 +1,6 @@
 import { MenuItem, TreeNode } from 'primeng/primeng';
 import { FileBrowserService } from './../../../services/file-browser.service';
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { TreeNodeType } from "../../../models/Enums/treeNodeType"
 import { ActivatedRoute } from '@angular/router';
 import { FileService } from 'src/app/services/file.service/file.service';
@@ -27,6 +27,7 @@ import { Observable } from 'rxjs';
 export interface SelectedFile {
     fileId: string;
     fileIcon: string;
+    filterString?: string;
 }
 
 @Component({
@@ -35,18 +36,25 @@ export interface SelectedFile {
     styleUrls: ['./file-browser-section.component.sass']
 })
 export class FileBrowserSectionComponent implements OnInit {
+    
     @Input() project: ProjectInfoDTO;
     @Input() showSearchField:boolean;
     @Output() fileSelected = new EventEmitter<SelectedFile>();
     @Output() renameFile = new EventEmitter<FileRenameDTO>();
     @Input() events: Observable<void>;
-    
+    public curSearch;
     items: MenuItem[];
     public files: TreeNode[];
     public selectedItem: TreeNode;
     public projectId: number;
     public expandFolder = true;
     public fileSearchResults: FileSearchResultDTO[]
+
+    public filteredFiles: TreeNode[];
+    public searchField: string = '';
+    public selectedFilteredFile: TreeNode;
+    public isSearchLoading: boolean = false;
+
 
     private lastSelectedElement: any;
     private extensions: Extension[];
@@ -78,6 +86,7 @@ export class FileBrowserSectionComponent implements OnInit {
     contextMenuSaveButton: MenuItem[];
     
     ngOnInit() {
+        
         this.projectStructureService.getProjectStructureById(this.projectId).subscribe(
             (response) => {
                 this.files = [];
@@ -102,7 +111,8 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'import', icon: 'pi pi-upload', command: ()=> this.openImportWindow(this.selectedItem)}
         ];
 
-        this.eventsSubscription = this.events.subscribe(() => this.expand())
+        this.eventsSubscription = this.events.subscribe(() => this.expand());
+        
     }
 
     ngOnDestroy() {
@@ -240,19 +250,19 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     public inputKeyDown(event: any) {
+        
         const pos = event.target.selectionStart;
         switch(event.keyCode) {
             case 37:
                 if (pos > 0) {
                     (this.lastSelectedElement as HTMLInputElement).setSelectionRange(pos, pos);
-                    event.stopPropagation();
                 }
                 break;
             case 39:
                 (this.lastSelectedElement as HTMLInputElement).setSelectionRange(pos, pos);
-                event.stopPropagation();
                 break;
         }
+        event.stopPropagation();
     }
 
     private createFile(node: TreeNode) {
@@ -359,7 +369,7 @@ export class FileBrowserSectionComponent implements OnInit {
             return;
         }
         const newName = this.lastSelectedElement.value.trim();
-        if (!this.fileNameRegex.test(newName)) {
+        if (node.type === TreeNodeType.file.toString() && !this.fileNameRegex.test(newName)) {
             this.toast.error("Name should contain only latin letters, numbers and dots!", "Error Message", { tapToDismiss: true });
             this.lastSelectedElement.focus();
             return;
@@ -382,6 +392,11 @@ export class FileBrowserSectionComponent implements OnInit {
             return;
         }
         node.label = newName;
+
+        if (node.type === TreeNodeType.folder.toString()){
+            this.updateProjectStructure();
+            return;
+        }
         const fileRename: FileRenameDTO = { name: node.label, id: node.key };
         this.fileService.updateFileName(fileRename).subscribe((response) => {
             this.toast.success(`Successfully renamed to "${newName}"`, "Success Message", { tapToDismiss: true })
@@ -464,20 +479,74 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     public searchByFiles(query) {
+        query = query.trim();
+        if (query.length === 0){
+            return;
+        }
+        this.isSearchLoading = true;
         this.searchFileService.find(query, this.projectId).subscribe(
             (response) => {
                 console.log(response.body);
                 this.fileSearchResults = response.body;
+                let id : number = 1;
+                this.filteredFiles = [];
+                if (!this.fileSearchResults){
+                    this.isSearchLoading = false;
+                    return;
+                }
+
+                this.fileSearchResults.forEach(file => {
+                    const newNode : TreeNode = {
+                        type: TreeNodeType.file.toString(),
+                        label: file.fileName,
+                        key: file.fileId
+                    };
+                    newNode.children = [];
+                    newNode.expanded = true;
+                    if (file.hightlights && file.hightlights.content)
+                    {
+
+                        file.hightlights.content.forEach(highlight => { 
+                            const newChildNode : TreeNode = {
+                                type: TreeNodeType.file.toString(),
+                                label: highlight,
+                                key: (id++).toString()
+                            }
+                            newNode.children.push(newChildNode);
+    
+                        });
+                    }
+                    
+                    this.setTreeIcons(newNode);
+                    this.filteredFiles.push(newNode);
+                })
+                console.log(this.filteredFiles);
+                this.isSearchLoading = false;
             },
             (error) => {
                 this.toast.error(error.Message, "Error Message", { tapToDismiss: true })
                 console.log(error);
+                this.isSearchLoading = false;
             }
         );
     }
 
-    onFileResultSelected(evt) {
-        const selectedFile: SelectedFile = {fileId: evt.value[0].fileId, fileIcon: 'fa fa-fw fa-file'};
+    public onSearchFieldClear(){
+        this.searchField = '';
+        this.filteredFiles = null;
+    }
+
+    public onFilteredFileSelected(event){
+        const selectedItem = this.selectedFilteredFile.parent === undefined ? 
+            this.selectedFilteredFile :
+            this.selectedFilteredFile.parent;
+
+        const selectedFile: SelectedFile = {
+            fileId: selectedItem.key,
+            fileIcon: selectedItem.icon,
+            filterString: this.searchField
+        };
+        console.log(selectedFile);
         this.fileSelected.emit(selectedFile);
     }
 

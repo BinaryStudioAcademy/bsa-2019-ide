@@ -52,16 +52,15 @@ namespace IDE.BLL.Services
             _logger = logger;
             _editorSettingService = editorSettingService;
             _userService = userService;
-            _buildService = buildService;
             _queueService = queueService;
             _buildService = buildService;
         }
 
-        public async Task BuildProject(int projectId)
+        public async Task BuildProject(int projectId, int userId)
         {
             var project = await GetProjectById(projectId);
             if (project.Language == Language.CSharp)
-                await _buildService.BuildDotNetProject(projectId);
+                await _buildService.BuildDotNetProject(projectId, userId);
         }
 
         public async Task RunProject(int projectId, string connectiondId)
@@ -83,11 +82,15 @@ namespace IDE.BLL.Services
             return _mapper.Map<ProjectDTO>(project);
         }
 
-        public async Task<ICollection<SearchProjectDTO>> GetProjectsName()
+        public async Task<ICollection<SearchProjectDTO>> GetProjectsName(int userId)
         {
-            var project = await _context.Projects
-                .Select(item => new SearchProjectDTO { Id = item.Id, Name = item.Name }).ToListAsync();
-            return project;
+            var availableProjects = _context.Projects
+            .Where(pr => pr.AccessModifier == AccessModifier.Public
+                    || pr.AuthorId == userId
+                    || pr.ProjectMembers.Any(prM => prM.UserId == userId))
+            .Select(item => new SearchProjectDTO { Id = item.Id, Name = item.Name }).ToListAsync();
+            
+            return await availableProjects;
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId)
@@ -223,13 +226,6 @@ namespace IDE.BLL.Services
                 .Include(x => x.Author)
                 .Include(i => i.EditorProjectSettings)
                 .SingleOrDefaultAsync(p => p.Id == projectId);
-
-            NotificationDTO notification = new NotificationDTO
-            {
-                Message = $"get project {project.Name}"
-            };
-
-            await _notificationService.SendNotification(projectId, notification);
 
             return _mapper.Map<ProjectInfoDTO>(project);
         }

@@ -72,11 +72,19 @@ export class UserDialogWindowComponent implements OnInit {
         if(this.isUpdatePassword()){
             this.userForm = this.fb.group({
                 password: ['', [Validators.required]],
-                newPassword: ['', Validators.required]
-            });
+                newPassword: ['', Validators.required],
+                repeatPassword: ['', Validators.required]
+            }, {validator: this.checkPasswords });
 
             this.isPageLoaded = true;
         }
+    }
+
+    checkPasswords(group: FormGroup) { 
+        let pass = group.get('newPassword').value;
+        let confirmPass = group.get('repeatPassword').value;
+    
+        return pass === confirmPass ? null : { notSame: true }     
     }
 
     public userItemIsNotChange(): boolean {
@@ -100,6 +108,8 @@ export class UserDialogWindowComponent implements OnInit {
     }
 
     public onSubmit() {
+        this.hasDetailsSaveResponse = false;
+
         if(this.isUpdateInfo()) {
             this.getValuesForUpdateInfo();
             this.userService.updateProfile(this.userUpdateInfo)
@@ -121,6 +131,7 @@ export class UserDialogWindowComponent implements OnInit {
             .subscribe(res => {
                 this.toastrService.success("Your password was updated");
                 this.hasDetailsSaveResponse = true;
+                this.close();
             },
             error => {
                 this.toastrService.error('Incorrect password');                        

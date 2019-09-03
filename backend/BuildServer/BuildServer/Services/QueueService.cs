@@ -5,6 +5,7 @@ using RabbitMQ.Client.Events;
 using RabbitMQ.Shared.Interfaces;
 using RabbitMQ.Shared.ModelsDTO;
 using RabbitMQ.Shared.Settings;
+using System;
 using System.Text;
 
 namespace BuildServer.Services
@@ -30,29 +31,29 @@ namespace BuildServer.Services
                 ExchangeType = ExchangeType.Direct,
                 QueueName = "BuildResultQueue",
                 RoutingKey = "buildResponse"
-            }, QueueType.Build);
+            });
             _messageProducerScopeRun = messageProducerScopeFactory.Open(new MessageScopeSettings
             {
                 ExchangeName = "BuildServerExchangeRun",
                 ExchangeType = ExchangeType.Direct,
                 QueueName = "RunResultQueue",
                 RoutingKey = "runResponse"
-            }, QueueType.Run);
+            });
 
             _messageConsumerScopeRun = messageConsumerScopeFactory.Connect(new MessageScopeSettings
-            {
+           {
                 ExchangeName = "IdeExchangeRun",
                 ExchangeType = ExchangeType.Direct,
                 QueueName = "SendRunRequestQueue",
                 RoutingKey = "runRequest"
-            }, QueueType.Run);
+            });
             _messageConsumerScopeBuild = messageConsumerScopeFactory.Connect(new MessageScopeSettings
             {
                 ExchangeName = "IdeExchangeBuild",
                 ExchangeType = ExchangeType.Direct,
                 QueueName = "SendBuildRequestQueue",
                 RoutingKey = "buildRequest"
-            }, QueueType.Build);
+            });
 
             _messageConsumerScopeBuild.MessageConsumer.Received += MessageConsumer_BuildReceived;
             _messageConsumerScopeRun.MessageConsumer.Received += MessageConsumer_RunReceived;
@@ -61,28 +62,39 @@ namespace BuildServer.Services
 
         private void MessageConsumer_BuildReceived(object sender, BasicDeliverEventArgs evn)
         {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Received Build message");
             var message = Encoding.UTF8.GetString(evn.Body);
             var projectForBuild = JsonConvert.DeserializeObject<ProjectForBuildDTO>(message);
             var projectName = $"project_{projectForBuild.ProjectId}";
-            var isBuildSucceeded = _worker.Work(projectForBuild.UriForProjectDownload, projectName,  out var artifactArchiveUri);
+            Console.WriteLine($"{projectName} = =========  {projectForBuild.TimeStamp}");
+            Console.ForegroundColor = ConsoleColor.White;
+            var isBuildSucceeded = _worker.Work(projectForBuild.UriForProjectDownload, projectName,  out var artifactArchiveUri, out string buildResult);
 
-            var buildResult = new BuildResultDTO()
+            var resultDTO = new BuildResultDTO()
             {
                 ProjectId = projectForBuild.ProjectId,
                 WasBuildSucceeded = isBuildSucceeded,
-                UriForArtifactsDownload = artifactArchiveUri
+                UriForArtifactsDownload = artifactArchiveUri,
+                Message=buildResult,
+                BuildId=projectForBuild.BuildId
             };
             
-            var jsonMessage = JsonConvert.SerializeObject(buildResult);
+            var jsonMessage = JsonConvert.SerializeObject(resultDTO);
             _messageConsumerScopeBuild.MessageConsumer.SetAcknowledge(evn.DeliveryTag, true);
             SendBuildMessage(jsonMessage);
         }
 
         private void MessageConsumer_RunReceived(object sender, BasicDeliverEventArgs evn)
         {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.WriteLine("Received Run message");
             var message = Encoding.UTF8.GetString(evn.Body);
             var projectForRun = JsonConvert.DeserializeObject<ProjectForRunDTO>(message);
             var projectName = $"project_{projectForRun.ProjectId}";
+
+            Console.WriteLine($"{projectName} = =========  {projectForRun.TimeStamp}");
+            Console.ForegroundColor = ConsoleColor.White;
 
             var runningResult = _worker.Run(projectForRun.UriForProjectDownload, projectName);
 
@@ -103,6 +115,9 @@ namespace BuildServer.Services
         {
             try
             {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Send build message");
+                Console.ForegroundColor = ConsoleColor.White;
                 _messageProducerScopeBuild.MessageProducer.Send(value);
                 return true;
             }
@@ -115,6 +130,9 @@ namespace BuildServer.Services
         {
             try
             {
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("Send run message");
+                Console.ForegroundColor = ConsoleColor.White;
                 _messageProducerScopeRun.MessageProducer.Send(value);
                 return true;
             }

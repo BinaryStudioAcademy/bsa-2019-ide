@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import * as signalR from "@aspnet/signalr";
 import { NotificationDTO } from 'src/app/models/DTO/Common/notificationDTO';
 import { environment } from 'src/environments/environment';
+import { NotificationService } from '../notification.service/notification.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SignalRService {
 
-    constructor() { }
+    constructor(private notificationService: NotificationService) { }
 
     public notifications: NotificationDTO[] = [];
 
@@ -26,7 +27,7 @@ export class SignalRService {
             .start()
             .then(() => {
                 this.addConnectionIdListener();
-                console.log('Connection started');
+                console.log('SignalR Connection started');
                 if (isAuth)
                 {
                     this.addToGroup(userId);
@@ -63,15 +64,14 @@ export class SignalRService {
     }   
 
     public addProjectRunResultDataListener(): void {
-        this.hubConnection.on('projectRunResult', (project) => {
-            console.log(project);
+        this.hubConnection.on('transferRunResult', (notification) => {
+            this.notifications.push(notification);
         });
     }  
 
     public addConnectionIdListener(): void{
         this.hubConnection.on('sendConnectionId', (connectionId, userId) => {
             if (userId === this.userId) {
-                console.log('id get')
                 this.connectionId = connectionId;
             }
         });

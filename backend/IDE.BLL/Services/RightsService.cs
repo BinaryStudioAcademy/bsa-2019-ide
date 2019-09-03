@@ -7,6 +7,7 @@ using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -20,11 +21,14 @@ namespace IDE.BLL.Services
     {
         private IdeContext _context;
         private readonly ILogger<RightsService> _logger;
+        private IServiceScopeFactory _serviceScopeFactory;
 
-        public RightsService(IdeContext context, ILogger<RightsService> logger)
+
+        public RightsService(IdeContext context, ILogger<RightsService> logger, IServiceScopeFactory serviceScopeFactory)
         {
             _context = context;
             _logger = logger;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
         public async Task<ProjectRightsDTO> GetUserRightsForProject(int projectId, int userId)
@@ -101,6 +105,41 @@ namespace IDE.BLL.Services
                 _context.Update(projectMember);
             }
             await _context.SaveChangesAsync();
+
+            var opportunity = string.Empty;
+            switch (update.Access)
+            {
+                case UserAccess.CanRead:
+                    opportunity = "can read";
+                    break;
+                case UserAccess.CanWrite:
+                    opportunity = "can write";
+                    break;
+                case UserAccess.CanBuild:
+                    opportunity = "can build";
+                    break;
+                case UserAccess.CanRun:
+                    opportunity = "can run";
+                    break;
+                default:
+                    opportunity = string.Empty;
+                    break;
+            }
+
+            var notification = new NotificationDTO()
+            {
+                Type = NotificationType.ProjectRun,
+                ProjectId = update.ProjectId,
+                DateTime = DateTime.Now,
+                Message = $"Now you can {opportunity} {project.Name} project",
+                Status = NotificationStatus.Message
+            };
+
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var notificationService = scope.ServiceProvider.GetService<INotificationService>();
+                await notificationService.SendNotification(update.ProjectId, notification); //change on method "send to user" when realise
+            }
         }
     }
 }

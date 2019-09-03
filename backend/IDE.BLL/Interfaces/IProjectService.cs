@@ -12,7 +12,7 @@ namespace IDE.BLL.Interfaces
     public interface IProjectService
     {
         Task<ProjectInfoDTO> GetProjectById(int projectId);
-        Task<ICollection<SearchProjectDTO>> GetProjectsName();
+        Task<ICollection<SearchProjectDTO>> GetProjectsName(int userId);
         Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId);
         Task<ICollection<ProjectDescriptionDTO>> GetFavouriteUserProjects(int userId);
         Task<ICollection<CollaboratorDTO>> GetProjectCollaborators(int projectId, int authorId);
@@ -25,7 +25,7 @@ namespace IDE.BLL.Interfaces
         Task<ProjectDTO> GetProjectByIdAsync(int projectId);
         Task DeleteProjectAsync(int id, int userId);
         Task<IEnumerable<LikedProjectDTO>> GetLikedProjects();
-        Task BuildProject(int projectId);
+        Task BuildProject(int projectId, int userId);
         Task RunProject(int projectId, string connectionId);
         Task<IFormFile> ConvertFilestreamToIFormFile(Stream fileStream, string name, string fileName);
     }
