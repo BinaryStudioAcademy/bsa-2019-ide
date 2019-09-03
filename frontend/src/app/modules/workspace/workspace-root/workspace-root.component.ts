@@ -357,9 +357,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         }
         if(!this.showFileBrowser) {
             this.workspaceWidth = document.getElementById('workspace').offsetWidth;
-            document.getElementById('workspace').style.width = (this.maxSize() + 18) + 'px';
+            document.getElementById('workspace').style.width = '100%';
         } else {
-            document.getElementById('workspace').style.width = this.workspaceWidth + 'px';
+            document.getElementById('workspace').style.width = (this.workspaceWidth/ this.maxSize() * 100) + '%';
         }
     }
 
@@ -400,32 +400,19 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             this.startHorPos = e.x;
             let browserElement = document.getElementById('browser'); 
             let workspaceElement = document.getElementById('workspace'); 
-
             let width = browserElement.offsetWidth + this.movingRight;
-            browserElement.style.width = (width) + 'px';
-            workspaceElement.style.width = this.calc(width) + 'px';
+            browserElement.style.width = (width / this.maxSize() * 100) + '%';
+            workspaceElement.style.width = (this.calc(width) / this.maxSize() * 100) + '%';
             this.workspaceWidth = workspaceElement.offsetWidth;
         }
     }
     
     private maxSize() {
-        return Math.max(
-            document.body.scrollWidth,
-            document.documentElement.scrollWidth,
-            document.body.offsetWidth,
-            document.documentElement.offsetWidth,
-            document.documentElement.clientWidth
-          ) - 50;
+        return document.getElementById('container').offsetWidth;
     }
 
     private calc(size: number): number {
-        return Math.max(
-            document.body.scrollWidth,
-            document.documentElement.scrollWidth,
-            document.body.offsetWidth,
-            document.documentElement.offsetWidth,
-            document.documentElement.clientWidth
-          ) - size - 50;
+        return document.getElementById('container').offsetWidth - size - 5;
     }
 
     public draggableUp(e: MouseEvent) {
