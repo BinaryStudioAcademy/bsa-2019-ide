@@ -15,4 +15,5 @@ export interface ProjectCreateDTO {
     countOfBuildAttempts: number;
     color: string;
     access: AccessModifier;
+    githubUrl: string;
 }
