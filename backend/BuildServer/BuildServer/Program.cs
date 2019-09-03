@@ -1,5 +1,7 @@
-﻿using BuildServer.Interfaces;
+﻿using BuildServer.Helpers;
+using BuildServer.Interfaces;
 using BuildServer.Services;
+using BuildServer.Services.Builders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RabbitMQ.Shared;
@@ -25,10 +27,21 @@ namespace BuildServer
             //setup our DI
             var services = new ServiceCollection();
             services.AddSingleton<IConfiguration>(configuration);
-            services.AddTransient<IBuilder, DotNetBuilder>();
-            services.Configure<DotNetBuilder>(configuration);
+            services.AddTransient<IProjectBuilder, ProjectBuilder>();
+
+            services.AddTransient<GoConsoleBuilder>();
+            services.AddTransient<TSConsoleBuilder>();
+            services.AddTransient<CSharpConsoleBuilder>();
+            services.Configure<CSharpConsoleBuilder>(configuration);
+            services.Configure<TSConsoleBuilder>(configuration);
+            services.Configure<GoConsoleBuilder>(configuration);
+
             services.AddTransient<IFileArchiver, FileArchiver>();
             services.Configure<FileArchiver>(configuration);
+
+            services.AddTransient<IAzureService, AzureService>();
+            services.Configure<AzureService>(configuration);
+            services.AddTransient(x => new ProcessKiller(configuration));
 
             RabbitMQConfigurations.ConfigureServices(services, configuration);
             services.AddScoped<IQueueService, QueueService>();
@@ -50,10 +63,7 @@ namespace BuildServer
 
             Console.WriteLine("HelloWorld");
 
-            while (true)
-            {
-
-            }
+            while (true) { }
         }
     }
 }

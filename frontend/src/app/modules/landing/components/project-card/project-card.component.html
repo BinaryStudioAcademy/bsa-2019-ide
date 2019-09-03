@@ -1,0 +1,22 @@
+<div class="card" >
+    <div>
+        <div class="header">
+            <div>
+                {{project.projectName}} 
+            </div> 
+            <div>
+                {{project.likesCount}}<span class="heart">&#x2764;</span>
+            </div>
+        </div>
+        <div class="line"></div>
+        <div class="description">{{project.projectDescription}}</div>
+    </div>
+    <div>
+        <div class="date" *ngIf="project.lastChangedDate">
+            Last change: <span class="highlighted">{{ project.lastChangedDate | date: 'dd MMM hh:mm' }}</span>
+        </div>
+        <div class="nickName" *ngIf="project.authorNickName">
+            Author: <span class="highlighted">{{ project.authorNickName }}</span>
+        </div>
+    </div>
+</div>

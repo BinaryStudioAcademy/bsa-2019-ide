@@ -14,6 +14,7 @@
     <h2>Collaborators:</h2>
 </div>
 
+<div *ngIf="newCollaborators && newCollaborators.length < 1">This project has no collaborators yet.</div>
 <app-add-collaborators-list [collaborators]="newCollaborators"></app-add-collaborators-list>
 
 <button *ngIf="isCollaboratorsSaved && isAuthor()" type="submit" icon="pi pi-save" pButton class="save-btn"

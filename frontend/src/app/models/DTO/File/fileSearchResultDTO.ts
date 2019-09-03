@@ -3,5 +3,6 @@
 export interface FileSearchResultDTO {
     fileId: string;
     fileName: string;
-    hightlights: any[];
+    hightlights: any;
+    projectId?: number;
 }

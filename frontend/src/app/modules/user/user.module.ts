@@ -7,7 +7,6 @@ import { UserRoutingModule } from './user-routing.module';
 import { DialogModule } from 'primeng/dialog';
 import { SlideMenuModule } from 'primeng/slidemenu';
 import { ButtonModule } from 'primeng/button';
-import { ProgressSpinnerModule}  from 'primeng/progressspinner';
 import { EmailVerificationComponent } from './components/email-verification/email-verification.component';
 import { UserDialogWindowComponent } from './components/user-dialog-window/user-dialog-window.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -20,7 +19,10 @@ import { CardModule } from 'primeng/card';
 import { UserProjListComponent } from './components/user-proj-list/user-proj-list.component'; 
 import { EditorModule } from '../editor/editor.module';
 import { TabViewModule } from 'primeng/primeng';
-import {CalendarModule} from 'primeng/calendar';
+import { CalendarModule } from 'primeng/calendar';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {ProgressBarModule} from 'primeng/progressbar';
+import { ProgressSpinnerModule}  from 'primeng/progressspinner';
 
 @NgModule({
     declarations: [
@@ -40,7 +42,7 @@ import {CalendarModule} from 'primeng/calendar';
         ButtonModule,
         EditorModule,
         TabViewModule,
-        ProgressSpinnerModule,
+        ProgressBarModule,
         ButtonModule,
         ReactiveFormsModule,
         InputTextModule,
@@ -51,7 +53,9 @@ import {CalendarModule} from 'primeng/calendar';
         CardModule,
         AccordionModule,
         CardModule,
-        CalendarModule
+        CalendarModule,
+        ConfirmDialogModule,
+        ProgressSpinnerModule
     ],
     entryComponents: [
         UserDialogWindowComponent

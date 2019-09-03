@@ -35,7 +35,7 @@ namespace BuildServer.Services
             try
             {
                 Directory.Delete(_buildDirectory + fileName, true);
-                Console.WriteLine("Directory deleted");
+                //Console.WriteLine("Directory deleted");
             }
             catch (IOException ioExp)
             {
@@ -54,7 +54,7 @@ namespace BuildServer.Services
                 {
                     // If file found, delete it    
                     File.Delete(Path.Combine(filePath + ".zip"));
-                    Console.WriteLine("File deleted.");
+                    //Console.WriteLine("File deleted.");
                 }
                 else
                 {

@@ -12,6 +12,7 @@ using IDE.BLL.MappingProfiles;
 using System;
 using IDE.BLL.HubConfig;
 using Microsoft.Extensions.Logging;
+using IDE.BLL.Services.Queue;
 
 namespace IDE.BLL
 {
@@ -32,6 +33,7 @@ namespace IDE.BLL
             services.AddScoped<IRightsService, RightsService>();
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IBuildService, BuildService>();
+            services.AddScoped<IInfoService, InfoService>();
             services.AddScoped<IEditorSettingService, EditorSettingService>();
 
             services.AddScoped<IQueueService, QueueService>();
@@ -42,6 +44,9 @@ namespace IDE.BLL
 
             RegisterHttpClientFactories(services, configuration);
             RegisterAutoMapper(services);
+
+            services.AddHostedService<BuildQueueSubscriberService>();
+            services.AddHostedService<RunQueueSubscriberService>();
         }
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)

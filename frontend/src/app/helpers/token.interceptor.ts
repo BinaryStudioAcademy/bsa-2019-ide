@@ -39,6 +39,8 @@ export class RefreshTokenInterceptor implements HttpInterceptor {
 
     private handle401Error(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const tokenService = this.injector.get(TokenService);
+        if (!tokenService.areTokensExist())
+            return throwError('User not authorized');
         if (!this.isRefreshingToken) {
             this.isRefreshingToken = true;
             this.tokenSubject.next(null);

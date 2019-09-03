@@ -10,22 +10,26 @@ import {TreeModule} from 'primeng/tree';
 import {MonacoEditorModule} from '@materia-ui/ngx-monaco-editor';
 import { FormsModule } from '@angular/forms';
 import {TabMenuModule} from 'primeng/tabmenu';
-import { ContextMenuModule, MenuModule } from 'primeng/primeng';
+import { ContextMenuModule, MenuModule, FieldsetModule, CardModule, ScrollPanelModule, PanelModule, ProgressSpinnerModule } from 'primeng/primeng';
 import { FileInfoComponent } from './file-info/file-info.component';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {OrderListModule} from 'primeng/orderlist';
 import { EditorSettingsComponent } from '../editor/components/editor-settings/editor-settings.component';
 import { ImportFileComponent } from './import-file/import-file.component';
 import {FileUploadModule} from 'primeng/fileupload';
-import { ProgressSpinnerModule} from 'primeng/progressspinner';
+
+import { GlobalSearchOutputComponent } from './global-search-output/global-search-output.component';
+import { HighlightMatchDirective } from 'src/app/directives/highlight-match.directive';
+import { ConsoleComponent } from './console/console.component';
+
 
 @NgModule({
   declarations: [
-      WorkspaceRootComponent, 
-      FileBrowserSectionComponent, 
+      WorkspaceRootComponent,
+      FileBrowserSectionComponent,
       EditorSectionComponent,
       FileInfoComponent,
-      ImportFileComponent
+      ImportFileComponent, GlobalSearchOutputComponent,HighlightMatchDirective,ConsoleComponent
     ],
   imports: [
     MenuModule,
@@ -43,11 +47,16 @@ import { ProgressSpinnerModule} from 'primeng/progressspinner';
     ProgressBarModule,
     OrderListModule,
     ProgressBarModule,
+    FieldsetModule,
+    CardModule,
+    ScrollPanelModule,
+    PanelModule,
     FileUploadModule,
     ProgressSpinnerModule
   ],
   entryComponents: [
-      EditorSettingsComponent
+      EditorSettingsComponent,
+      ConsoleComponent
   ]
 })
 export class WorkspaceModule { }

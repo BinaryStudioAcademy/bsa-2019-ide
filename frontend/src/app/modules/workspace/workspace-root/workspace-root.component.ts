@@ -1,8 +1,9 @@
+import { EventService } from './../../../services/event.service/event.service';
 import { LeavePageDialogService } from './../../../services/leave-page-dialog.service';
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, OnChanges, ChangeDetectorRef, AfterContentInit } from '@angular/core';
 import { ResizeEvent } from 'angular-resizable-element';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -32,14 +33,21 @@ import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { element } from 'protractor';
 import { ConcatSource } from 'webpack-sources';
+import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
+import { filter } from 'rxjs/operators';
+import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
+
 
 @Component({
     selector: 'app-workspace-root',
     templateUrl: './workspace-root.component.html',
     styleUrls: ['./workspace-root.component.sass']
 })
-export class WorkspaceRootComponent implements OnInit, OnDestroy {
-
+export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
+    ngOnChanges(changes: import("@angular/core").SimpleChanges): void {
+        throw new Error("Method not implemented.");
+    }
+    public prepareQuery;
     public projectId: number;
     public userId: number;
     public access: UserAccess;
@@ -62,8 +70,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
-    @ViewChild('fileBrowser', { static: false })
+    @ViewChild(FileBrowserSectionComponent, { static: false })
     private fileBrowser: FileBrowserSectionComponent;
+
+    @ViewChild('monacoEditor', { static: false })
+    private monacoEditor: FileBrowserSectionComponent;
 
     constructor(
         private route: ActivatedRoute,
@@ -76,53 +87,95 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         private projectEditService: ProjectDialogService,
         private tokenService: TokenService,
         private hotkeys: HotkeyService,
-        private buildService: BuildService) {
-        this.hotkeys.addShortcut({ keys: 'shift.h' })
+        private buildService: BuildService,
+        private eventService: EventService,
+        private cdr: ChangeDetectorRef,
+        private signalRService: SignalRService,
+        private errorHandlerService: ErrorHandlerService) {
+
+        this.hotkeys.addShortcut({ keys: 'control.h' })
             .subscribe(() => {
                 this.hideFileBrowser();
             });
+        this.hotkeys.addShortcut({ keys: 'control.b' })
+            .subscribe(() => {
+                this.onBuild();
+            });
+        this.hotkeys.addShortcut({ keys: 'control.r' })
+            .subscribe(() => {
+                this.onRun();
+            });
     }
 
+    ngAfterViewInit() {
+        console.log("afterviewinit");
+        this.route.queryParams.subscribe(params => {
+            if (!!params['query']) {
+                this.fileBrowser.curSearch = params['query'];
+                this.showSearchField = true;
+                this.cdr.detectChanges();
+            }
+            // if (!!params['fileId']) {
+            //     console.log(params['fileId']);
+            //     setTimeout(() => {
+            //         this.onFileSelected(params['fileId']);
+            //     }, 6000)
+            //     this.onFileSelected(params['fileId']);
+            // }
+        });
+    }
+
+
+
     ngOnInit() {
+        this.eventService.initComponentFinished$.
+            pipe(
+                filter(m => m === "EditorSectionComponent"),
+                switchMap(m => {
+                    return this.route.queryParams;
+                }),
+                filter(params => !!params['fileId']),
+                map(params => params['fileId']))
+            .subscribe(fileId => this.onFileSelected(fileId));
+
         this.userId = this.tokenService.getUserId();
+
         this.routeSub = this.route.params.subscribe(params => {
             this.projectId = params['id'];
         });
-        this.projectService.getAuthorId(this.projectId)
+
+        this.projectService.getProjectById(this.projectId)
             .subscribe(
                 (resp) => {
-                    this.authorId = resp.body;
-
-                    if (this.userId != this.authorId) {
+                    this.project = resp.body;
+                    this.eventService.currProjectSwitch({ id: this.project.id, name: this.project.name });
+                    this.authorId = resp.body.authorId;
+                    this.options = this.project.editorProjectSettings;
+                    if (this.canNotEdit) {
+                        this.options.readOnly = true;
+                    }
+                    if (this.project.authorId != this.userId) {
                         this.rightService.getUserRightById(this.userId, this.projectId)
                             .subscribe(
                                 (resp) => {
                                     this.access = resp.body;
                                     this.setUserAccess();
-                                    this.getProjectById();
                                 }
                             )
-                    }
-                    else {
-                        this.getProjectById();
-                    }
-                });
-    }
-
-    public getProjectById() {
-        this.projectService.getProjectById(this.projectId)
-            .subscribe(
-                (resp) => {
-                    this.project = resp.body;
-                    this.options = this.project.editorProjectSettings;
-                    if (this.canNotEdit) {
-                        this.options.readOnly = true;
                     }
                 },
                 (error) => {
                     this.toast.error("Can't load selected project.", 'Error Message');
                 }
             );
+    }
+
+    private findAllOccurence(substring?: string) {
+        if (substring == null)
+            return;
+        setTimeout(() => {
+            this.editor.hightlineMatches(substring);
+        }, 500)
     }
 
     public getProjectColor(): string {
@@ -133,11 +186,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         const a = this.workSpaceService.show(this.project);
         a.subscribe(
             (resp) => {
-                if(resp) {
+                if (resp) {
                     this.options = resp as EditorSettingDTO;
                 }
             }
-        );  
+        );
     }
 
     public setUserAccess() {
@@ -177,6 +230,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         if (this.editor && this.editor.openedFiles.some(f => f.innerFile.id === selectedFile.fileId)) {
             this.editor.activeItem = this.editor.tabs.find(i => i.id === selectedFile.fileId);
             this.editor.code = this.editor.openedFiles.find(f => f.innerFile.id === selectedFile.fileId).innerFile.content;
+            this.editor.monacoOptions.language = this.editor.openedFiles.find(f => f.innerFile.id === selectedFile.fileId).innerFile.language;
+            this.findAllOccurence(selectedFile.filterString);
             return;
         }
 
@@ -186,28 +241,30 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                     if (resp.ok) {
                         const { id, name, content, folder, updaterId, isOpen, updater, language } = resp.body as FileDTO;
                         const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, isOpen, updaterId, updater, language };
-                        var tabName=name;
+                        var tabName = name;
                         this.editor.AddFileToOpened(fileUpdateDTO);
                         if (!fileUpdateDTO.isOpen) {
                             fileUpdateDTO.isOpen = true;
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
                             this.editor.monacoOptions.readOnly = false;
-                            this.fileBrowser.selectedItem.label=tabName;
+                            this.fileBrowser.selectedItem.label = tabName;
                         }
                         else if (this.project.accessModifier == 1) {
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
                             this.editor.monacoOptions.readOnly = false;
-                            tabName+=" (editing...)";
-                            this.fileBrowser.selectedItem.label+=" (editing...)";
+                            tabName += " (editing...)";
+                            if (this.fileBrowser.selectedItem)
+                                this.fileBrowser.selectedItem.label += " (editing...)";
                         }
                         else {
-                            
+
                             this.editor.monacoOptions.readOnly = true;
                         }
-                        this.editor.tabs.push({ label: tabName, icon: selectedFile.fileIcon,  id: id });
+                        this.editor.tabs.push({ label: tabName, icon: selectedFile.fileIcon, id: id });
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
+                        this.findAllOccurence(selectedFile.filterString);
                         this.editor.code = content;
                     } else {
                         this.toast.error("Can't load selected file.", 'Error Message');
@@ -221,15 +278,32 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
     }
 
     public onBuild() {
+        this.buildService.buildProject(this.project.id).subscribe(
+            (response) => {
+                this.toast.info('Build was started', 'Info Message', { tapToDismiss: true });
+            },
+            (error) => {
+                console.log(error);
+                this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error Message', { tapToDismiss: true });
+            }
+        );
+    }
+
+    public onRun() {
         if (this.project.language !== Language.cSharp) {
-            this.toast.info('Only C# project available for build', 'Info Message', { tapToDismiss: true });
+            this.toast.info('Only C# project available for run', 'Info Message', { tapToDismiss: true });
             return;
         }
 
-        this.buildService.buildProject(this.project.id).subscribe(
+        const connectionId = this.signalRService.getConnectionId();
+        if (connectionId == null) {
+            this.toast.error('Please check your internet connection and refresh page before run', 'Info Message', { tapToDismiss: true });
+            return;
+        }
+
+        this.buildService.runProject(this.project.id, connectionId).subscribe(
             (response) => {
-                debugger;
-                this.toast.info('Build was started', 'Info Message', { tapToDismiss: true });
+                this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {
                 console.log(error);
@@ -244,7 +318,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
                 element.isOpen = false;
             })
             this.saveFilesRequest(this.iOpenFile).subscribe();
-            
+
             this.iOpenFile = [];
         }
         if (!this.editor.anyFileChanged()) {
@@ -272,6 +346,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     public hideFileBrowser() {
         this.showFileBrowser = !this.showFileBrowser;
+        if (!this.showFileBrowser && this.showSearchField) {
+            this.showFileBrowser = true;
+        }
+        if (this.showFileBrowser) {
+            this.showSearchField = false;
+        }
     }
 
     public editProjectSettings() {
@@ -282,10 +362,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
         this.eventsSubject.next();
     }
 
-    public refresh(){
+    public refresh() {
         this.fileBrowser.ngOnInit();
     }
-    
+
     private saveFilesRequest(files?: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
         if (!files) {
             files = this.editor.openedFiles.map(x => x.innerFile);
@@ -302,5 +382,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.routeSub.unsubscribe();
+        this.signalRService.deleteConnectionIdListener();
     }
 }

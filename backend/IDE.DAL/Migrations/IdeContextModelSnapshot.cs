@@ -130,9 +130,19 @@ namespace IDE.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("DateTime");
+
                     b.Property<bool>("IsRead");
 
                     b.Property<string>("Message");
+
+                    b.Property<string>("Metadata");
+
+                    b.Property<int?>("ProjectId");
+
+                    b.Property<int>("Status");
+
+                    b.Property<int>("Type");
 
                     b.Property<int>("UserId");
 

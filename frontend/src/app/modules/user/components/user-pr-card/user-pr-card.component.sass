@@ -1,6 +1,6 @@
 .header
     border-radius: 5px 5px 0 0
-    height:70px
+    height: 70px
     display: flex
     color: #fff
     align-items: center
@@ -18,14 +18,14 @@
     text-overflow: ellipsis
     white-space: nowrap
     overflow: hidden
-    width:60%
+    width: 60%
     text-align: left
 
 .highlighted
     font-weight: bold
 
 p
-    color:#888
+    color: #888
 
 .title-body
     display: inline-block
@@ -33,4 +33,25 @@ p
 
 .card-body    
     height: -webkit-fill-available
-    max-height: 60px
+    max-height: 90px
+
+.desc
+    display: block
+    height: 80px
+    overflow-x: auto
+    padding-right: 7px
+
+/* custom scrollbar css */
+::-webkit-scrollbar
+    width: 5px
+
+::-webkit-scrollbar-track
+    background-color: #ebebeb
+    -webkit-border-radius: 10px
+    border-radius: 10px
+
+
+::-webkit-scrollbar-thumb
+    -webkit-border-radius: 10px
+    border-radius: 10px
+    background: #6d6d6d 

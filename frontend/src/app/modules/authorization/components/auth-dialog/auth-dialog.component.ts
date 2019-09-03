@@ -3,13 +3,13 @@ import { takeUntil } from 'rxjs/operators';
 import { DialogType } from 'src/app/modules/authorization/models/auth-dialog-type';
 import { Subject } from 'rxjs';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
-import { NavMenuComponent } from 'src/app/nav-menu/nav-menu.component';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { UserService } from 'src/app/services/user.service/user.service';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
+import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
 
 @Component({
     selector: 'app-auth-dialog',
@@ -39,8 +39,10 @@ export class AuthDialogComponent implements OnInit {
     public email: string;
     public nickName: string;
     public isRecoverPassword: boolean = false;
-    private nav: NavMenuComponent;
-    public emailRegexp = new RegExp('^[^.]{0}[a-zA-Z0-9._]{1,35}[^.]{0}@[^-]{0}[a-zA-Z0-9]{1,17}[^-]{0}[.]{1}[a-zA-Z]{1,17}$')
+    public emailRegexp = new RegExp('^[a-zA-Z0-9]{1}[-a-zA-Z0-9._]{1,33}[a-zA-Z0-9]{1}@[a-zA-Z0-9]{1,17}[.][a-zA-Z]{1,17}$');
+    public namesRegexp = new RegExp("[а-яА-Яa-zA-ZіІїЇ]{2,32}");
+    public nickNameRegexp = new RegExp("[a-zA-Z0-9]{2,32}");
+    public passwordRegexp = new RegExp("[а-яА-Яa-zA-Z0-9]{8,16}");
 
     public display: boolean = false;
     public hidePass = true;
@@ -55,7 +57,8 @@ export class AuthDialogComponent implements OnInit {
         private tokenService: TokenService,
         private toast: ToastrService,
         private userService: UserService,
-        private signalRService: SignalRService
+        private signalRService: SignalRService,
+        private errorHandlerService: ErrorHandlerService
     ) { }
 
     public ngOnInit() {
@@ -85,11 +88,15 @@ export class AuthDialogComponent implements OnInit {
                     this.toast.success('You have successfully signed in!', `Wellcome, ${result.firstName} ${result.lastName}!`);
                     this.router.navigate(['dashboard']);
                     this.signalRService.addToGroup(this.tokenService.getUserId());
+                    console.log(this.config.data);
+                    if(this.config.data.projectId)
+                    {
+                        this.router.navigate([`project/${this.config.data.projectId}`]);
+                    }
                 },
                 (error) => {
                     this.isSpinner = false;
-                    const message = !!error.message ? error.message : error.statusText;
-                    this.toast.error(message, 'Error Message');
+                    this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error Message');
                 }
             );        
     }
@@ -112,13 +119,26 @@ export class AuthDialogComponent implements OnInit {
                     this.ref.close();
                     this.router.navigate(['dashboard']);
                     this.signalRService.addToGroup(this.tokenService.getUserId());
+                    if(this.config.data.projectId)
+                    {
+                        this.router.navigate([`project/${this.config.data.projectId}`]);
+                    }
                 },
-                (error) => this.toast.error("Invalid input data", 'Error Message'),
+                (error) => this.toast.error("Invalid input data", this.errorHandlerService.getExceptionMessage(error)),
                 () => {
                     this.toast.success('You have successfully registered!');
                     this.toast.info('Please, confirm your email');
                 });
                 
+    }
+
+    public isDataFull() {
+        return this.email !== undefined && this.emailRegexp.test(this.email) 
+            && this.password !== undefined && this.passwordRegexp.test(this.password)
+            && (this.config.data.dialogType === DialogType.SignIn
+            || (this.lastName !== undefined && this.namesRegexp.test(this.lastName)
+            && this.nickName !== undefined && this.nickNameRegexp.test(this.nickName)
+            && this.firstName !== undefined && this.namesRegexp.test(this.firstName)));
     }
 
     public recoverPassword() {
@@ -139,7 +159,7 @@ export class AuthDialogComponent implements OnInit {
                 }, 
                 (error) => {
                     console.log(error);
-                    this.toast.error('User with such email doesn\'t exist');
+                    this.toast.error(this.errorHandlerService.getExceptionMessage(error));
                     this.isSpinner = false;
                 })
         }

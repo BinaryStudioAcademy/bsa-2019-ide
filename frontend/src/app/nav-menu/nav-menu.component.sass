@@ -7,7 +7,8 @@
     margin-right: 10px
 ::ng-deep .ui-menu
     width: 100%
-
+::ng-deep .menu-wrapper .ui-autocomplete .ui-autocomplete-panel
+    min-width: 97%
 .right-part
     margin-right: 10px
 
@@ -23,14 +24,37 @@
     background-color: white !important
     border: none !important
 
+::ng-deep .pi.pi-bell
+    font-size: 1.5rem        
+
 .overlayPanel
     display: none
-
-.notification-item
-    border-bottom: 1px solid lightgrey
-    margin-bottom: 10%
 
 .count-of-notification
     position: absolute
     margin-left: 25px
     margin-bottom: 25px
+    background: blue
+    border-radius: 10px
+    min-width: 19px
+    display: block
+    color: #fff
+    font-size: 0.7rem
+    padding: 2px
+
+.avatar
+    height: 16px
+    width: 16px
+    position: relative
+    top: 3px
+    left: 23px
+    z-index: 2
+    border-radius: 50%
+
+@media screen and (max-width: 460px)
+    .avatar
+        display: none
+
+::ng-deep body .ui-overlaypanel .ui-overlaypanel-content,
+::ng-deep .ui-overlaypanel-content
+    padding: 5px

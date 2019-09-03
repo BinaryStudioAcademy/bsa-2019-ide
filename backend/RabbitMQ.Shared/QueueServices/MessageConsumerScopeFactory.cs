@@ -7,7 +7,6 @@ namespace RabbitMQ.Shared.QueueServices
     public class MessageConsumerScopeFactory : IMessageConsumerScopeFactory
     {
         private readonly IConnectionFactory _connectionFactory;
-        private IMessageConsumerScope _mqConsumerScope;
 
         public MessageConsumerScopeFactory(IConnectionFactory connectionFactory)
         {
@@ -16,18 +15,17 @@ namespace RabbitMQ.Shared.QueueServices
 
         public IMessageConsumerScope Open(MessageScopeSettings messageScopeSettings)
         {
-            if (_mqConsumerScope == null)
-                _mqConsumerScope = new MessageConsumerScope(_connectionFactory, messageScopeSettings);
 
-            return _mqConsumerScope;
+            var _mqConsumerScopeRun = new MessageConsumerScope(_connectionFactory, messageScopeSettings);
+            _mqConsumerScopeRun.MessageConsumer.Connect();
+            return _mqConsumerScopeRun;
         }
-
         public IMessageConsumerScope Connect(MessageScopeSettings messageScopeSettings)
         {
             var mqConsumerScope = Open(messageScopeSettings);
-            mqConsumerScope.MessageConsumer.Connect();
+            //mqConsumerScope.MessageConsumer.Connect();
 
             return mqConsumerScope;
-        }        
+        }
     }
 }

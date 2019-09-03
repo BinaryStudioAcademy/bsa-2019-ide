@@ -1,12 +1,12 @@
 <div class="top-panel p-grid p-nogutter">
     <div class="hor-navbar p-col-12">
         <button pButton *ngIf="canRun || isAuthor()" type="button" icon="pi pi-play" iconPos="left"
-            class="ui-button-secondary" label="Run"></button>
-        <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-arrow-down" iconPos="left"
+            class="ui-button-secondary" label="Run" (click)="onRun()"></button>
+        <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-inbox" iconPos="left"
             class="ui-button-secondary" label="Build" (click)="onBuild()"></button>
         <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onFilesSave()" icon="pi pi-save" iconPos="left"
             class="ui-button-secondary" label="Save"></button>
-        <button pButton type="button" *ngIf="isAuthor()" (click)="Settings()" icon="pi pi-save" iconPos="left"
+        <button pButton type="button" *ngIf="isAuthor()" (click)="Settings()" icon="pi pi-cog" iconPos="left"
             class="ui-button-secondary" label="Settings"></button>
     </div>
 
@@ -15,10 +15,9 @@
     <div class="left-panel p-col-fixed">
         <button pButton type="button" icon="pi pi-clone" title="Hide or show project structure" iconPos="left"
             class="ui-button-secondary" (click)="hideFileBrowser()"></button>
-        <button pButton type="button" icon="pi pi-file" iconPos="left" class="ui-button-secondary" disabled></button>
         <button pButton routerLink="/project/{{projectId}}" title="Project details" type="button" icon="pi pi-info"
             iconPos="left" class="ui-button-secondary"></button>
-        <button *ngIf="isAuthor()" pButton type="button" icon="pi pi-cog" title="Edit project" iconPos="left" class="ui-button-secondary"
+        <button *ngIf="isAuthor()" pButton type="button" icon="pi pi-pencil" title="Edit project" iconPos="left" class="ui-button-secondary"
             (click)="editProjectSettings()"></button>
         <button pButton type="button" icon="pi pi-search" iconPos="left" class="ui-button-secondary"
             (click)="hideSearchField()"></button>
@@ -29,12 +28,12 @@
     </div>
     <div class="p-col">
         <div class="inner-wrapper p-grid p-nogutter ">
-            <div *ngIf="showFileBrowser" class="file-browser-content p-col-12 p-md-4 p-xl-2 p-align-stretch">
-                <app-file-browser-section #fileBrowser (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
+            <div *ngIf="showFileBrowser" class="file-browser-content p-col-12 p-md-4 p-xl-3 p-align-stretch">
+                <app-file-browser-section  (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
                     [showSearchField]="showSearchField" [events]="eventsSubject.asObservable()" [project]="project">
                 </app-file-browser-section>
             </div>
-            <div *ngIf="project" class="p-col-12 p-md-8 p-xl-10 p-align-stretch " [ngStyle]="{'background-color':getProjectColor()}" [ngClass]="{large:!showFileBrowser}">
+            <div *ngIf="project" class="p-col-12 p-md-8 p-xl-9 p-align-stretch " [ngStyle]="{'background-color':getProjectColor()}" [ngClass]="{large:!showFileBrowser}">
                 <app-editor-section  [canEdit]="canNotEdit" [monacoOptions]='options' (filesSaveEvent)="onFilesSave($event)"></app-editor-section>
             </div>
         </div>
