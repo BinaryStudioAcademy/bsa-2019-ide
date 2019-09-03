@@ -29,6 +29,7 @@ import {AccordionModule} from 'primeng/accordion';
 import { HistorySearchPipe } from './pipes/history-search.pipe';
 import { UserBuildHistoryComponent } from './components/user-build-history/user-build-history.component';
 import { BuildHistoryTabComponent } from './components/build-history-tab/build-history-tab.component';
+import { InplaceModule } from 'primeng/primeng';
 
 
 @NgModule({
@@ -61,7 +62,8 @@ import { BuildHistoryTabComponent } from './components/build-history-tab/build-h
     DynamicDialogModule,
     CollaboratorModule,
     FileUploadModule,
-    AccordionModule
+    AccordionModule,
+    InplaceModule
   ],
   entryComponents: [
     ProjectWindowComponent

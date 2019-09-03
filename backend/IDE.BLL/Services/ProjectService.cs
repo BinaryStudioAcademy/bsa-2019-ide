@@ -11,11 +11,14 @@ using IDE.Common.ModelsDTO.DTO.User;
 using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Shared.ModelsDTO.Enums;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -314,6 +317,22 @@ namespace IDE.BLL.Services
                 project.LastChangedDate = projects.OrderByDescending(x => x.UpdatedAt).First()?.UpdatedAt;
             }
             return likedProjects;
+        }
+
+        public async Task<IFormFile> ConvertFilestreamToIFormFile(Stream contentStream, string name, string fileName)
+        {
+            var ms = new MemoryStream();
+            try
+            {
+               await contentStream.CopyToAsync(ms);
+                ms.Seek(0, SeekOrigin.Begin);
+                return new FormFile(ms, 0, ms.Length,  name, fileName);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"convert stream exception");
+                return null;
+            }
         }
     }
 }

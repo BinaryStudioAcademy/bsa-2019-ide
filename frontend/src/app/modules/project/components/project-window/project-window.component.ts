@@ -46,6 +46,7 @@ export class ProjectWindowComponent implements OnInit {
     private projectUpdateStartState: ProjectUpdateDTO;
     private projectType: ProjectType;
     private projectId: number;
+    private githubPattern = /^https:\/\/github.com\/\w[\d,\w,-]+\/\w[\d,\w,-]+$/i;
 
     constructor(private ref: DynamicDialogRef,
                 private config: DynamicDialogConfig,
@@ -98,7 +99,8 @@ export class ProjectWindowComponent implements OnInit {
                 countOfSavedBuilds: ['', [Validators.required, Validators.max(10)]],
                 countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
                 access: ['', Validators.required],
-                color: ['', Validators.required]
+                color: ['', Validators.required],
+                githuburl: ['',Validators.pattern(this.githubPattern)]
             });
             this.projectForm.get('access').setValue(0);
         } else {
@@ -276,7 +278,8 @@ export class ProjectWindowComponent implements OnInit {
             errorMessage = `The length should be no more than ${control.errors.maxlength.requiredLength} letters!`;
         }
         else if (control.hasError('pattern')) {
-            errorMessage = `This field can contain only latin letters and numbers!`;
+
+            errorMessage = field === "githuburl" ? "https://github.com/user/repository wrong github pattern ":`This field can contain only latin letters and numbers!`;
         }
         else {
             errorMessage = 'validation error';
@@ -322,7 +325,8 @@ export class ProjectWindowComponent implements OnInit {
             countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value,
             countOfSaveBuilds: this.projectForm.get('countOfSavedBuilds').value,
             language: this.projectForm.get('language').value,
-            projectType: this.projectForm.get('projectType').value
+            projectType: this.projectForm.get('projectType').value,
+            githubUrl: !!this.projectForm.get('githuburl') ? this.projectForm.get('githuburl').value : null
         }
     }
 }

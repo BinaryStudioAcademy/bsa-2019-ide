@@ -151,7 +151,8 @@ namespace IDE.BLL.Services
         {
             string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\Temp", Guid.NewGuid().ToString());
             var filesFolder = Path.Combine(tempFolder, file.FileName.Substring(0, file.FileName.LastIndexOf('.')));
-            var ids = JsonConvert.DeserializeObject<List<string>>(nodeids);
+            var ids = new List<string>();// JsonConvert.DeserializeObject<List<string>>(nodeids);
+            partial = false;
             var projectStructure = _mapper.Map<ProjectStructureDTO>(await _projectStructureRepository.GetByIdAsync(projectStructureId));
 
             var rootFileStructure = projectStructure.NestedFiles.SingleOrDefault();
