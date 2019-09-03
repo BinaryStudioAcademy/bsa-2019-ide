@@ -35,6 +35,7 @@ import { element } from 'protractor';
 import { ConcatSource } from 'webpack-sources';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 import { filter } from 'rxjs/operators';
+import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
 
 
 @Component({
@@ -89,7 +90,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         private buildService: BuildService,
         private eventService: EventService,
         private cdr: ChangeDetectorRef,
-        private signalRService: SignalRService) {
+        private signalRService: SignalRService,
+        private errorHandlerService: ErrorHandlerService) {
 
         this.hotkeys.addShortcut({ keys: 'shift.h' })
             .subscribe(() => {
@@ -130,12 +132,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             .subscribe(fileId => this.onFileSelected(fileId));
 
         this.userId = this.tokenService.getUserId();
-        // this.signalRService.startConnection(true, this.userId);
 
         this.routeSub = this.route.params.subscribe(params => {
             this.projectId = params['id'];
-
-
         });
 
         this.projectService.getProjectById(this.projectId)
@@ -272,20 +271,15 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     }
 
     public onBuild() {
-        if (this.project.language !== Language.cSharp) {
-            this.toast.info('Only C# project available for build', 'Info Message', { tapToDismiss: true });
-            return;
-        }
-
         this.buildService.buildProject(this.project.id).subscribe(
             (response) => {
                 this.toast.info('Build was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {
                 console.log(error);
-                this.toast.error('Something bad happened(', 'Error Message', { tapToDismiss: true });
+                this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error Message', { tapToDismiss: true });
             }
-        )
+        );
     }
 
     public onRun() {

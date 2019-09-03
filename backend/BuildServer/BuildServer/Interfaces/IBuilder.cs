@@ -1,9 +1,13 @@
-﻿namespace BuildServer.Interfaces
+﻿using BuildServer.OperationsResults;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace BuildServer.Interfaces
 {
     public interface IBuilder
     {
-        string Build(string projectName);
-        string Execute(string projectName);
+        BuildResult Build(string projectName);
         string Run(string projectName);
     }
 }
