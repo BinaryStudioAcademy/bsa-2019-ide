@@ -1,3 +1,5 @@
+<p-progressBar *ngIf="!user" mode="indeterminate" [style]="{'height': '4px'}"></p-progressBar>
+
 <div class="p-grid p-justify-around p-align-start">
     <div *ngIf="user" class="panel p-col-10 p-md-8 p-lg-4 p-grid p-dir-col">
         
@@ -31,9 +33,6 @@
             (click)="menu.toggle($event)"></button>
     </div>
 
-    <div *ngIf="!user" class="panel p-col-10 p-md-4 p-lg-3 p-grid  p-justify-center">
-        <p-progressSpinner></p-progressSpinner>
-    </div>
     <div *ngIf="user" class="panel p-col-10 p-md-8 p-lg-7  p-dir-col">
         <p-tabView>
             <p-tabPanel header="Projects">
