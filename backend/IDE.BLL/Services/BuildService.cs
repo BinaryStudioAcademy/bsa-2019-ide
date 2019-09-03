@@ -12,6 +12,7 @@ using RabbitMQ.Shared.ModelsDTO;
 using Storage.Interfaces;
 using System.Threading.Tasks;
 using System;
+using RabbitMQ.Shared.ModelsDTO.Enums;
 using IDE.DAL.Entities;
 using IDE.Common.DTO.User;
 using IDE.Common.Enums;
@@ -45,18 +46,19 @@ namespace IDE.BLL.Services
             this.notificationService = notificationService;
             _tokenService = tokenService;
         }
-
-        public async Task BuildDotNetProject(int projectId, int userId)
+        
+        public async Task BuildProject(int projectId, int userId, ProjectLanguageType languageType)
         {
             var archive = await _projectStructureService.CreateProjectZipFile(projectId);
             var uri = await _blobRepo.UploadProjectArchiveAsync(archive, $"project_{projectId}");
-            var build=await CreateStartBuildArtifacts(projectId,userId);
+            var build = await CreateStartBuildArtifacts(projectId, userId);
             var message = new ProjectForBuildDTO()
             {
                 ProjectId = projectId,
                 UriForProjectDownload = uri,
+                Language = languageType,
                 TimeStamp = DateTime.Now,
-                BuildId=build.Id
+                BuildId = build.Id
             };
             var strMessage = JsonConvert.SerializeObject(message);
             _queueService.SendBuildMessage(strMessage);
@@ -102,12 +104,12 @@ namespace IDE.BLL.Services
             if(result.WasBuildSucceeded)
             {
                 build.BuildStatus = BuildStatus.Successfull;
-                build.BuildMessage = "Build was successfully finished";
+                build.BuildMessage = string.IsNullOrWhiteSpace(result.Message) ? "Build finished successfully" : result.Message;
             }
             else
             {
                 build.BuildStatus = BuildStatus.Failed;
-                build.BuildMessage = "Build was successfully failed";
+                build.BuildMessage = "Build failed with message: "+ result.Message;
             }
             _context.Builds.Update(build);
             await _context.SaveChangesAsync();
@@ -126,7 +128,7 @@ namespace IDE.BLL.Services
             return builds;
         }
 
-        public async Task RunDotNetProject(int projectId, string connectionId)
+        public async Task RunProject(int projectId, string connectionId)
         {
             var archive = await _projectStructureService.CreateProjectZipFile(projectId);
             var uri = await _blobRepo.UploadProjectArchiveAsync(archive, $"project_{projectId}");
