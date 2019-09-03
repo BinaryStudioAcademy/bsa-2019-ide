@@ -93,9 +93,17 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         private signalRService: SignalRService,
         private errorHandlerService: ErrorHandlerService) {
 
-        this.hotkeys.addShortcut({ keys: 'shift.h' })
+        this.hotkeys.addShortcut({ keys: 'control.h' })
             .subscribe(() => {
                 this.hideFileBrowser();
+            });
+        this.hotkeys.addShortcut({ keys: 'control.b' })
+            .subscribe(() => {
+                this.onBuild();
+            });
+        this.hotkeys.addShortcut({ keys: 'control.r' })
+            .subscribe(() => {
+                this.onRun();
             });
     }
 
@@ -107,7 +115,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.showSearchField = true;
                 this.cdr.detectChanges();
             }
-            this.signalRService.addProjectRunResultDataListener();
             // if (!!params['fileId']) {
             //     console.log(params['fileId']);
             //     setTimeout(() => {
@@ -375,7 +382,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     ngOnDestroy() {
         this.routeSub.unsubscribe();
-        this.signalRService.deleteProjectRunDataListener();
         this.signalRService.deleteConnectionIdListener();
     }
 }
