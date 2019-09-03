@@ -25,7 +25,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     authUserItems: MenuItem[];
     unAuthUserItems: MenuItem[];
 
-    public userName: string;
+    public userNickName: string;
     public userAvatar: string;
     public project: SearchProjectDTO;
     public currProject: SearchProjectDTO;
@@ -228,7 +228,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                     this.userAvatar = resp.body.url;
 
                 this.userId = resp.body.id;
-                this.userName = resp.body.firstName;
+                this.userNickName = resp.body.nickName;
             },
                 error => {
                     console.log(error);
