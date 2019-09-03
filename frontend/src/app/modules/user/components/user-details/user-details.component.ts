@@ -77,7 +77,7 @@ export class UserDetailsComponent implements OnInit {
     ];
   }
 
-  confirm() {
+  public confirm() {
     this.confirmationService.confirm({
         message: 'Do you want to remove your avatar?',
         header: 'Delete Confirmation',

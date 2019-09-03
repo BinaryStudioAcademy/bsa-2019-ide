@@ -28,9 +28,12 @@
             <span class="property-name">Registred At: </span>
             <span class="property-value">{{user.registeredAt | date:'MMM d, y'}}</span>
         </p>
-        <p-slideMenu #menu [model]="actions" [popup]="true" [viewportHeight]="200"></p-slideMenu>
-        <button *ngIf="isAuthor" #btn type="button" pButton icon="pi pi-pencil" label="Edit Profile"
-            (click)="menu.toggle($event)"></button>
+        <div *ngIf='isAuthor' class="p-grid p-justify-around">
+            <button  class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-cloud-upload' label="Change Image" (click)="userPhotoUpdate()"></button>
+            <button  class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-trash' label="Delete Image" (click)="confirm()"></button>            
+            <button  class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-refresh' label="Update Info" (click)="userInfoUpdate()"></button>
+            <button  class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-key' label='Change password' (click)="userPasswordUpdate()"></button>
+        </div>
     </div>
 
     <div *ngIf="user" class="panel p-col-10 p-md-8 p-lg-7  p-dir-col">
@@ -40,7 +43,7 @@
                     <app-user-proj-list [userId]="user.id"></app-user-proj-list>
                 </div>
             </p-tabPanel>
-            <p-tabPanel *ngIf="isAuthor" header="Editor settings">
+            <p-tabPanel *ngIf='isAuthor' header="Editor settings">
                 <app-editor-settings [user]="user"></app-editor-settings>
             </p-tabPanel>
         </p-tabView>
