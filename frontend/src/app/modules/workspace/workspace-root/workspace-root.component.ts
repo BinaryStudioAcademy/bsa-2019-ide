@@ -336,7 +336,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                         this.toast.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
                 },
-                error => { console.log(error); this.toast.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
+                error => { this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error', { tapToDismiss: true }) });
     }
 
     public fileIsOpen(files: FileUpdateDTO) {
