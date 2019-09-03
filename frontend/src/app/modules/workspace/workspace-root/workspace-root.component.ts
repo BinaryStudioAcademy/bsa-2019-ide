@@ -262,6 +262,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
                             this.editor.monacoOptions.readOnly = true;
                         }
+                        if(this.showFileBrowser) {
+                            document.getElementById('workspace').style.width = (this.workspaceWidth - 2)+ 'px';
+                        }
                         this.editor.tabs.push({ label: tabName, icon: selectedFile.fileIcon, id: id });
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
                         this.findAllOccurence(selectedFile.filterString);
