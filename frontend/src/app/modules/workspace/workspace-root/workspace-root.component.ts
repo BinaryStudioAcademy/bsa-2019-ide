@@ -34,7 +34,7 @@ import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { element } from 'protractor';
 import { ConcatSource } from 'webpack-sources';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
-import { filter } from 'rxjs/operators';
+import { filter, throwIfEmpty } from 'rxjs/operators';
 import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
 
 
@@ -352,6 +352,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         if (this.showFileBrowser) {
             this.showSearchField = false;
         }
+        if(!this.showFileBrowser) {
+            this.workspaceWidth = document.getElementById('workspace').offsetWidth;
+            document.getElementById('workspace').style.width = (this.maxSize() + 18) + 'px';
+        } else {
+            document.getElementById('workspace').style.width = this.workspaceWidth + 'px';
+        }
     }
 
     public editProjectSettings() {
@@ -371,6 +377,61 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             files = this.editor.openedFiles.map(x => x.innerFile);
         }
         return this.workSpaceService.saveFilesRequest(files);
+    }
+
+    private isDown: boolean;
+    private workspaceWidth: number;
+    private startHorPos: number;
+    private movingRight: number; 
+
+    public draggableDown(e: MouseEvent) {
+        e.preventDefault();
+        this.isDown = true;
+        this.startHorPos = e.x;
+    }
+
+    public draggableMove(e: MouseEvent) {
+        if (this.isDown) {
+            e.preventDefault();
+            this.movingRight = e.x - this.startHorPos;
+            this.startHorPos = e.x;
+            let browserElement = document.getElementById('browser'); 
+            let workspaceElement = document.getElementById('workspace'); 
+
+            let width = browserElement.offsetWidth + this.movingRight;
+            browserElement.style.width = (width) + 'px';
+            workspaceElement.style.width = this.calc(width) + 'px';
+            this.workspaceWidth = workspaceElement.offsetWidth;
+        }
+    }
+    
+    private maxSize() {
+        return Math.max(
+            document.body.scrollWidth,
+            document.documentElement.scrollWidth,
+            document.body.offsetWidth,
+            document.documentElement.offsetWidth,
+            document.documentElement.clientWidth
+          ) - 50;
+    }
+
+    private calc(size: number): number {
+        return Math.max(
+            document.body.scrollWidth,
+            document.documentElement.scrollWidth,
+            document.body.offsetWidth,
+            document.documentElement.offsetWidth,
+            document.documentElement.clientWidth
+          ) - size - 50;
+    }
+
+    public draggableUp(e: MouseEvent) {
+        if(e.type === 'mouseup') {
+            this.isDown = false;
+        }
+        else if (e.y < 100 || e.x < 50) {
+            this.isDown = false;
+        }
     }
 
     canDeactivate(): Observable<boolean> {

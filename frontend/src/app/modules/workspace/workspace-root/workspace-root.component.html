@@ -26,14 +26,15 @@
         <button pButton type="button" icon="pi pi-refresh" title="Refresh file section" iconPos="left" class="ui-button-secondary"
             (click)="refresh()"></button>
     </div>
-    <div class="p-col">
-        <div class="inner-wrapper p-grid p-nogutter ">
-            <div *ngIf="showFileBrowser" class="file-browser-content p-col-12 p-md-4 p-xl-3 p-align-stretch">
+    <div class="p-col" (mouseover)="draggableUp($event)">
+        <div class="inner-wrapper p-grid p-nogutter" (mousemove)="draggableMove($event)" (mouseUp)="draggableUp($event)">
+            <div [hidden]="!showFileBrowser" id="browser" class="file-browser-content p-align-stretch">
                 <app-file-browser-section  (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
                     [showSearchField]="showSearchField" [events]="eventsSubject.asObservable()" [project]="project">
                 </app-file-browser-section>
             </div>
-            <div *ngIf="project" class="p-col-12 p-md-8 p-xl-9 p-align-stretch " [ngStyle]="{'background-color':getProjectColor()}" [ngClass]="{large:!showFileBrowser}">
+            <div *ngIf="showFileBrowser" class="draggableLine" (mousedown)="draggableDown($event)" (mousemove)="draggableMove($event)" (mouseup)="draggableUp($event)"></div>
+            <div *ngIf="project" id="workspace" class="p-align-stretch" [ngStyle]="{'background-color': getProjectColor()}" [ngClass]="{large: !showFileBrowser}">
                 <app-editor-section  [canEdit]="canNotEdit" [monacoOptions]='options' (filesSaveEvent)="onFilesSave($event)"></app-editor-section>
             </div>
         </div>
