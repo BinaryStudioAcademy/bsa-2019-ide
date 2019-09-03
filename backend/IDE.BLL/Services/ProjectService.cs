@@ -59,6 +59,7 @@ namespace IDE.BLL.Services
 
         public async Task BuildProject(int projectId, int userId)
         {
+            await GetInputElements(projectId);
             var project = await GetProjectById(projectId);
             if (project.Language == Language.CSharp && project.ProjectType == ProjectType.Console)
                 await _buildService.BuildProject(projectId, userId, ProjectLanguageType.CSharpConsoleApp);
@@ -66,6 +67,33 @@ namespace IDE.BLL.Services
                 await _buildService.BuildProject(projectId, userId, ProjectLanguageType.GoConsoleApp);
             else if (project.Language == Language.TypeScript)
                 await _buildService.BuildProject(projectId, userId, ProjectLanguageType.TypeScriptConsoleApp);
+        }
+
+        public async Task<IEnumerable<string>> GetInputElements(int projectId)
+        {
+            var result = new List<string>();
+            var projectFiles = await _fileService.GetAllForProjectAsync(projectId);
+            string inputStart = "Console.ReadLine(";
+            string inputEnd = ");";
+            foreach (var file in projectFiles)
+            {
+                var content = file.Content;
+                while (content.Contains(inputStart))
+                {
+                    var indexOdReadLine = content.IndexOf("Console.ReadLine(");
+                    var substring = content.Substring(indexOdReadLine + inputStart.Length);
+                    var indexOfEndReadLine = substring.IndexOf(")");
+                    var readLineItems = substring.Substring(0, indexOfEndReadLine);
+                    var newContent = content.Remove(indexOdReadLine, indexOfEndReadLine + inputStart.Length + inputEnd.Length);
+                    content = newContent;
+                    var inputItems = readLineItems.Split(',');
+                    for (int i = 0; i < inputItems.Length; i++)
+                    {
+                        result.Add(inputItems[i]);
+                    }
+                }
+            }
+            return result;
         }
 
         public async Task RunProject(int projectId, string connectiondId)
