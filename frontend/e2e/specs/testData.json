@@ -39,7 +39,10 @@
     "projectNameDelete": "testproject",
     "errormessage": "can`t retrieve data from the server",
     "successchangedsettingsnotification": "New details have successfully saved!",
-    "expectedmessageonFavourite": "You don't have any favourite projects... Yet!)"
+    "expectedmessageonFavourite": "You don't have any favourite projects... Yet!)",
+    "changedCode": "aaa",
+    "expectedCodeChanges": "usaaaing System;",
+    "expectedHistory": "usaaaing"
     
     
 }
