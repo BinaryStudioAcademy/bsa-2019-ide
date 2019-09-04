@@ -6,11 +6,15 @@ using IDE.Common.ModelsDTO.DTO.Project;
 using IDE.Common.ModelsDTO.DTO.User;
 using IDE.Common.ModelsDTO.Enums;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Storage.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
@@ -117,6 +121,32 @@ namespace IDE.API.Controllers
         public async Task<ActionResult> CreateProject([FromForm] ProjectCreateDTO project)
         {
             var author = this.GetUserIdFromToken();
+            IFormFile formfile = null;
+            if (!string.IsNullOrEmpty(project.GithubUrl)){
+                
+                Uri url = new Uri(project.GithubUrl);
+                var fileNameFromUri = $"{url.Segments[url.Segments.Length - 1]}-master.zip";
+                UriBuilder uriBuilder = new UriBuilder(url);
+                uriBuilder.Path = Path.Combine(url.AbsolutePath, "archive/master.zip");
+                
+                using (HttpClient client = new HttpClient())
+                {    
+                    HttpResponseMessage response = await client.GetAsync(uriBuilder.ToString());
+                    if (response.IsSuccessStatusCode)
+                    {
+                        
+                        var streamResult = await response.Content.ReadAsStreamAsync();
+                        streamResult.Seek(0, SeekOrigin.Begin);
+                        if (streamResult != null)
+                        {
+                            formfile = await _projectService.ConvertFilestreamToIFormFile(streamResult, fileNameFromUri, fileNameFromUri);
+                           
+                            
+                        }
+
+                    }
+                }
+            }
             var projectId = await _projectService.CreateProject(project, author);
             _logger.LogInformation(LoggingEvents.InsertItem, $"Created project {projectId}");
 
@@ -127,7 +157,11 @@ namespace IDE.API.Controllers
                 //await _projectStructureService.UnzipProject(projectStructure, zipFile, author, projectId);
                 await _projectStructureService.ImportProject(projectStructure.Id, zipFile, projectId.ToString(), author, false, null);
             }
-            else
+            else if (formfile != null)
+            {
+                var projectStructure = await _projectStructureService.CreateEmptyAsync(projectId, project.Name);
+                await _projectStructureService.ImportProject(projectStructure.Id, formfile, projectId.ToString(), author, false, null);
+            }else
             {
                 var projectStructureDTO = await _projectTemplateService.GenerateProjectTemplate(project.Name, projectId, author, project.Language);
                 await _projectStructureService.CreateAsync(projectStructureDTO);

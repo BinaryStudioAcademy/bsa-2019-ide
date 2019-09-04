@@ -1,15 +1,15 @@
 .scrolling-wrapper
-  overflow-x: scroll
-  overflow-y: hidden
-  white-space: nowrap
+  overflow-x: auto
+  overflow-y: auto
   position: relative
   margin-bottom: 15px
+  white-space: nowrap
 
 .card-wrapper
     display: inline-block
     width: 300px
     margin-right: 10px
-    top:0px
+    top: 0px
     padding-bottom: 15px
     vertical-align: top
 
@@ -20,6 +20,21 @@
   text-align: center
   color: #116fbf
   margin-bottom: 10px
+  margin-top: 10px
 
 h2
     text-align: center
+
+/* custom scrollbar css */
+::-webkit-scrollbar
+    height: 10px
+
+::-webkit-scrollbar-track
+    background-color: #ebebeb
+    -webkit-border-radius: 10px
+    border-radius: 10px
+
+::-webkit-scrollbar-thumb
+    -webkit-border-radius: 10px
+    border-radius: 10px
+    background: #6d6d6d 

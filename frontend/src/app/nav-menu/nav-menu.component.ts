@@ -25,7 +25,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     authUserItems: MenuItem[];
     unAuthUserItems: MenuItem[];
 
-    public userName: string;
+    public userNickName: string;
     public userAvatar: string;
     public project: SearchProjectDTO;
     public currProject: SearchProjectDTO;
@@ -122,13 +122,12 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             this.signalRService.deleteTransferChartDataListener();
             this.data = this.signalRService.addTransferChartDataListener();
             dataForDelete.forEach(element => {
-                if (element.type != 1) {
+                if (element.type == NotificationType.projectBuild) {
                     this.signalRService.markNotificationAsRead(element.id);
                 }
             });
             this.notReadNotification.forEach(element => {
-                console.log(element);
-                if (element.type != 1) {
+                if (element.type == NotificationType.projectBuild) {
                     this.signalRService.markNotificationAsRead(element.id);
                 }
             })
@@ -228,7 +227,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                     this.userAvatar = resp.body.url;
 
                 this.userId = resp.body.id;
-                this.userName = resp.body.firstName;
+                this.userNickName = resp.body.nickName;
             },
                 error => {
                     console.log(error);

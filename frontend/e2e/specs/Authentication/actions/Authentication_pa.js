@@ -48,6 +48,51 @@ class LoginActions {
        // page.logOutLink.click();
     }
 
+    registerNewAccount(name, surname, nickname, email, password) {
+
+        this.clickSignupbtn();
+        const form = $("div.ui-dialog-content.ui-widget-content").waitForDisplayed(5000);
+       // browser.pause(3000);
+        this.enterFirstName(name);
+        this.enterLastName(surname);
+        this.enterNickname(nickname);
+        this.enterEmail(email);
+        this.enterPassword(password);
+        this.clickCreateButton();
+    }
+    enterDataForRegistration(name, surname, nickname, email, password) {
+
+        this.clickSignupbtn();
+        const form = $("div.ui-dialog-content.ui-widget-content").waitForDisplayed(10000);
+       // browser.pause(3000);
+        this.enterFirstName(name);
+        this.enterLastName(surname);
+        this.enterNickname(nickname);
+        this.enterEmail(email);
+        this.enterPassword(password);
+        
+    }
+    recoveryPassword(email) {
+
+        this.clickloginbtn();       
+        this.clickRecoveryPassword();
+        this.enterEmail(email);
+        this.clickCreateButton();
+    }
+    enterDataForLogin(email, password){
+
+        this.clickloginbtn();
+        
+        $("div.ng-trigger.ng-trigger-animation").waitForDisplayed(10000);
+        
+        this.enterEmail(email);
+        this.enterPassword(password);
+    }
+    waitEnabledCreateButton(){
+
+        page.createButton.waitForEnabled(5000, true);
+    }
+
 }
 
 module.exports = LoginActions;
