@@ -263,7 +263,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                             this.editor.monacoOptions.readOnly = true;
                         }
                         if(this.showFileBrowser) {
-                            document.getElementById('workspace').style.width = (this.workspaceWidth - 2)+ 'px';
+                            document.getElementById('workspace').style.width = ((this.workspaceWidth) / this.maxSize()) + '%';
                         }
                         this.editor.tabs.push({ label: tabName, icon: selectedFile.fileIcon, id: id });
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
@@ -359,7 +359,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             this.workspaceWidth = document.getElementById('workspace').offsetWidth;
             document.getElementById('workspace').style.width = '100%';
         } else {
-            document.getElementById('workspace').style.width = (this.workspaceWidth/ this.maxSize() * 100) + '%';
+            document.getElementById('workspace').style.width = ((this.workspaceWidth - 1)/ this.maxSize() * 100) + '%';
         }
     }
 

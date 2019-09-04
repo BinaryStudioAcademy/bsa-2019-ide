@@ -1,5 +1,5 @@
-<div class="top-panel p-grid p-nogutter">
-    <div class="hor-navbar p-col-12">
+<div class="top-panel p-grid p-nogutter" *ngIf="project">
+    <div class="hor-navbar p-col-12" [ngStyle]="{'background-color': getProjectColor()}">
         <button pButton *ngIf="canRun || isAuthor()" type="button" icon="pi pi-play" iconPos="left"
             class="ui-button-secondary" label="Run" (click)="onRun()"></button>
         <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-inbox" iconPos="left"
@@ -9,7 +9,6 @@
         <button pButton type="button" *ngIf="isAuthor()" (click)="Settings()" icon="pi pi-cog" iconPos="left"
             class="ui-button-secondary" label="Settings"></button>
     </div>
-
 </div>
 <div class="wks-wrapper p-grid p-nogutter">
     <div class="left-panel p-col-fixed">
@@ -35,7 +34,7 @@
             </div>
             <div *ngIf="showFileBrowser" class="draggableLine" (mousedown)="draggableDown($event)" (mousemove)="draggableMove($event)" (mouseup)="draggableUp($event)"></div>
             <div *ngIf="project" id="workspace" class="p-align-stretch workspace" [ngStyle]="{'background-color': getProjectColor()}" [ngClass]="{large: !showFileBrowser}">
-                <app-editor-section  [canEdit]="canNotEdit" [monacoOptions]='options' (filesSaveEvent)="onFilesSave($event)"></app-editor-section>
+                <app-editor-section [canEdit]="canNotEdit" [monacoOptions]='options' (filesSaveEvent)="onFilesSave($event)"></app-editor-section>
             </div>
         </div>
     </div>
