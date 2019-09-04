@@ -25,12 +25,11 @@ namespace BuildServer.Services
         public QueueService(IMessageProducerScopeFactory messageProducerScopeFactory,
                             IMessageConsumerScopeFactory messageConsumerScopeFactory,
                             IAzureService azureService,
-                            IBuilder builder,
+                            IProjectBuilder builder,
                             IFileArchiver fileArchiver,
-                            ILogger<QueueService> logger
-                            )
+                            ILogger<QueueService> logger)
         {
-            
+
             _logger = logger;
             _logger.LogInformation("queue service start");
             _messageProducerScopeBuild = messageProducerScopeFactory.Open(new MessageScopeSettings
@@ -77,18 +76,20 @@ namespace BuildServer.Services
             var projectForBuild = JsonConvert.DeserializeObject<ProjectForBuildDTO>(message);
             var projectName = $"project_{projectForBuild.ProjectId}";
             Console.WriteLine($"{projectName} = =========  {projectForBuild.TimeStamp}");
+            Console.WriteLine($"language ==> {projectForBuild.Language.ToString()}");
             Console.ForegroundColor = ConsoleColor.White;
-            var isBuildSucceeded = _worker.Work(projectForBuild.UriForProjectDownload, projectName,  out var artifactArchiveUri, out string buildResult);
+
+            var buildResult = _worker.Build(projectForBuild.UriForProjectDownload, projectName, projectForBuild.Language, out var artifactArchiveUri);
 
             var resultDTO = new BuildResultDTO()
             {
                 ProjectId = projectForBuild.ProjectId,
-                WasBuildSucceeded = isBuildSucceeded,
+                WasBuildSucceeded = buildResult.IsSuccess,
                 UriForArtifactsDownload = artifactArchiveUri,
-                Message=buildResult,
-                BuildId=projectForBuild.BuildId
+                Message = buildResult.Message,
+                BuildId = projectForBuild.BuildId
             };
-            
+
             var jsonMessage = JsonConvert.SerializeObject(resultDTO);
             _messageConsumerScopeBuild.MessageConsumer.SetAcknowledge(evn.DeliveryTag, true);
             SendBuildMessage(jsonMessage);
@@ -107,7 +108,6 @@ namespace BuildServer.Services
             Console.ForegroundColor = ConsoleColor.White;
 
             var runningResult = _worker.Run(projectForRun.UriForProjectDownload, projectName);
-
 
             var runResult = new RunResultDTO()
             {

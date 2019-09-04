@@ -60,14 +60,11 @@ export class SignalRService {
         this.hubConnection.on('transferchartdata', (notification) => {
             this.notifications.push(notification);
         });
-        return this.notifications;
-    }   
-
-    public addProjectRunResultDataListener(): void {
         this.hubConnection.on('transferRunResult', (notification) => {
             this.notifications.push(notification);
         });
-    }  
+        return this.notifications;
+    }   
 
     public addConnectionIdListener(): void{
         this.hubConnection.on('sendConnectionId', (connectionId, userId) => {
@@ -90,15 +87,12 @@ export class SignalRService {
     public deleteTransferChartDataListener()
     {
         this.hubConnection.off('transferchartdata');
+        this.hubConnection.off('transferRunResult');
         this.hubConnection.off('sendConnectionId');
     }
 
     public deleteConnectionIdListener()
     {
         this.hubConnection.off('sendConnectionId');
-    }
-
-    public deleteProjectRunDataListener(): void {
-        this.hubConnection.off('projectRunResult');
-    }  
+    } 
 }

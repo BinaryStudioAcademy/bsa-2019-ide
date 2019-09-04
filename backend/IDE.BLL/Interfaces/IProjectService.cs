@@ -2,7 +2,9 @@ using IDE.Common.DTO.Common;
 using IDE.Common.DTO.Project;
 using IDE.Common.ModelsDTO.DTO.Project;
 using IDE.Common.ModelsDTO.DTO.User;
+using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace IDE.BLL.Interfaces
@@ -25,5 +27,6 @@ namespace IDE.BLL.Interfaces
         Task<IEnumerable<LikedProjectDTO>> GetLikedProjects();
         Task BuildProject(int projectId, int userId);
         Task RunProject(int projectId, string connectionId);
+        Task<IFormFile> ConvertFilestreamToIFormFile(Stream fileStream, string name, string fileName);
     }
 }

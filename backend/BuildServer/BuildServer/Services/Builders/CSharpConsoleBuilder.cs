@@ -1,28 +1,28 @@
 ﻿using BuildServer.Helpers;
 using BuildServer.Interfaces;
+using BuildServer.OperationsResults;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 
-namespace BuildServer.Services
+namespace BuildServer.Services.Builders
 {
-    public class DotNetBuilder : IBuilder
+    public class CSharpConsoleBuilder : IBuilder
     {
-        private readonly ILogger<DotNetBuilder> _logger;
+        private readonly ILogger<CSharpConsoleBuilder> _logger;
         private string _buildDirectory;
         ProcessKiller _processKiller;
 
-        public DotNetBuilder(IConfiguration configuration, ProcessKiller processKiller, ILogger<DotNetBuilder> logger)
+        public CSharpConsoleBuilder(IConfiguration configuration, ProcessKiller processKiller,  ILogger<CSharpConsoleBuilder> logger)
         {
             _buildDirectory = configuration.GetSection("BuildDirectory").Value;
             _processKiller = processKiller;
             _logger = logger;
         }
 
-        public string Build(string projectName)
+        public BuildResult Build(string projectName)
         {
             _logger.LogInformation("Start dot net build");
             var commandToBuild = $"/c dotnet build {_buildDirectory}\\{projectName}";
@@ -58,47 +58,13 @@ namespace BuildServer.Services
                 Console.WriteLine(e.Message);
             }
 
-            return outputMessage;
-        }
-
-        public string Execute(string projectName)
-        {
-            _logger.LogInformation("Start dot net execute");
-            //count of nested "projectName" will be depend on the template
-            var commandToExecute = $"/c dotnet {_buildDirectory}{projectName}\\{projectName}\\{projectName}\\bin\\Debug\\netcoreapp2.2\\{projectName}.dll run";
-            var outputMessage = "";
-
-            try
+            var buildResult = new BuildResult()
             {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = @"cmd",
-                        Arguments = commandToExecute,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        CreateNoWindow = true
-                    }
-                };
+                IsSuccess = outputMessage.ToLower().Contains("Build succeeded".ToLower()),
+                Message = outputMessage
+            };
 
-                process.Start();
-
-                while (!process.StandardOutput.EndOfStream)
-                {
-                    var line = process.StandardOutput.ReadLineAsync();
-                    outputMessage += line + "\n";
-                }
-
-                process.WaitForExit();
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Start dot net execute error");
-                Console.WriteLine(e.Message);
-            }
-
-            return outputMessage;
+            return buildResult;
         }
 
         public string Run(string projectName)
@@ -141,7 +107,7 @@ namespace BuildServer.Services
                 //    }
                 //} while (inputText.Length > 0);
                 //writer.Dispose();
-                
+
                 string output = "";
                 string line = "";
                 while (!p.StandardOutput.EndOfStream)
@@ -157,7 +123,7 @@ namespace BuildServer.Services
 
                 return output;
             }
-        } 
+        }
         private string[] GetCsProjProjectName(string projectName)
         {
             return Directory.GetFiles($"{_buildDirectory}{projectName}", "*.csproj", SearchOption.TopDirectoryOnly);

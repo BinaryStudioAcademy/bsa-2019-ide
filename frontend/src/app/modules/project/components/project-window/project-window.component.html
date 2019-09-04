@@ -145,6 +145,19 @@
                 <div class="ui-g-5">
                     <button class="ui-g-5 reset-btn" pButton label="Reset" [disabled]="!isFileSelected" (click)="resetSelection()"></button>
                 </div>
+                <div class="ui-g-10 ui-g-offset-1">
+                    <p-inplace >
+                        <span pInplaceDisplay>
+                           <span style="width:100%;"> Add github url</span>
+                        </span>
+                        <span pInplaceContent>
+                            <input type="text" placeholder="Github url" pInputText formControlName="githuburl">
+                        </span>
+                        
+                    </p-inplace>
+                    <div class="invalid" *ngIf="projectForm.get('githuburl').invalid && projectForm.get('githuburl').dirty">
+                {{getErrorMessage('githuburl')}}</div>
+                </div>
             </div>
 
             <!-- Submit -->

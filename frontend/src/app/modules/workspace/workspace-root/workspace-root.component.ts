@@ -4,7 +4,6 @@ import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
 import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, OnChanges, ChangeDetectorRef, AfterContentInit } from '@angular/core';
-import { ResizeEvent } from 'angular-resizable-element';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
@@ -14,8 +13,6 @@ import { map } from 'rxjs/internal/operators/map';
 
 import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
-import { MenuItem } from 'primeng/api';
-import { catchError } from 'rxjs/internal/operators/catchError';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { TokenService } from 'src/app/services/token.service/token.service';
@@ -23,7 +20,6 @@ import { ProjectDialogService } from 'src/app/services/proj-dialog.service/proje
 import { ProjectType } from '../../project/models/project-type';
 import { RightsService } from 'src/app/services/rights.service/rights.service';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
-import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { FileBrowserSectionComponent, SelectedFile } from '../file-browser-section/file-browser-section.component';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
@@ -31,10 +27,9 @@ import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 import { BuildService } from 'src/app/services/build.service';
 import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
-import { element } from 'protractor';
-import { ConcatSource } from 'webpack-sources';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 import { filter } from 'rxjs/operators';
+import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
 
 
 @Component({
@@ -89,11 +84,20 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         private buildService: BuildService,
         private eventService: EventService,
         private cdr: ChangeDetectorRef,
-        private signalRService: SignalRService) {
+        private signalRService: SignalRService,
+        private errorHandlerService: ErrorHandlerService) {
 
-        this.hotkeys.addShortcut({ keys: 'shift.h' })
+        this.hotkeys.addShortcut({ keys: 'control.h' })
             .subscribe(() => {
                 this.hideFileBrowser();
+            });
+        this.hotkeys.addShortcut({ keys: 'control.b' })
+            .subscribe(() => {
+                this.onBuild();
+            });
+        this.hotkeys.addShortcut({ keys: 'control.r' })
+            .subscribe(() => {
+                this.onRun();
             });
     }
 
@@ -105,7 +109,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.showSearchField = true;
                 this.cdr.detectChanges();
             }
-            this.signalRService.addProjectRunResultDataListener();
             // if (!!params['fileId']) {
             //     console.log(params['fileId']);
             //     setTimeout(() => {
@@ -130,12 +133,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             .subscribe(fileId => this.onFileSelected(fileId));
 
         this.userId = this.tokenService.getUserId();
-        // this.signalRService.startConnection(true, this.userId);
 
         this.routeSub = this.route.params.subscribe(params => {
             this.projectId = params['id'];
-
-
         });
 
         this.projectService.getProjectById(this.projectId)
@@ -272,20 +272,15 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     }
 
     public onBuild() {
-        if (this.project.language !== Language.cSharp) {
-            this.toast.info('Only C# project available for build', 'Info Message', { tapToDismiss: true });
-            return;
-        }
-
         this.buildService.buildProject(this.project.id).subscribe(
             (response) => {
                 this.toast.info('Build was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {
                 console.log(error);
-                this.toast.error('Something bad happened(', 'Error Message', { tapToDismiss: true });
+                this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error Message', { tapToDismiss: true });
             }
-        )
+        );
     }
 
     public onRun() {
@@ -381,7 +376,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     ngOnDestroy() {
         this.routeSub.unsubscribe();
-        this.signalRService.deleteProjectRunDataListener();
         this.signalRService.deleteConnectionIdListener();
     }
 }

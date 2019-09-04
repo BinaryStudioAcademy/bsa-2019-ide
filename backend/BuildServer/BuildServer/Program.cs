@@ -1,6 +1,7 @@
 ﻿using BuildServer.Helpers;
 using BuildServer.Interfaces;
 using BuildServer.Services;
+using BuildServer.Services.Builders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -30,7 +31,7 @@ namespace BuildServer
                 .Build();
                LogManager.Configuration = new NLogLoggingConfiguration(configuration.GetSection("NLog"));
             //setup our DI
-           
+
             var serviceProvider = BuildDi(configuration);
 
             // This line need for creating instance of QueueService
@@ -71,8 +72,7 @@ namespace BuildServer
             StorageConfigurations.ConfigureServices(services, config);
             return services
                         .AddSingleton<IConfiguration>(config)
-                        .AddTransient<IBuilder, DotNetBuilder>()
-                        .Configure<DotNetBuilder>(config)
+
                         .AddTransient<IFileArchiver, FileArchiver>()
                         .Configure<FileArchiver>(config)
                         .AddTransient<IAzureService, AzureService>()
@@ -87,7 +87,15 @@ namespace BuildServer
                                 loggingBuilder.AddNLog();
                             })
                         .AddTransient<IAzureService, AzureService>()
-                        .Configure<AzureService>(config);
+                        .Configure<AzureService>(config)
+                        .AddTransient<IProjectBuilder, ProjectBuilder>()
+
+                        .AddTransient<GoConsoleBuilder>()
+                        .AddTransient<TSConsoleBuilder>()
+                        .AddTransient<CSharpConsoleBuilder>()
+                        .Configure<CSharpConsoleBuilder>(configuration)
+                        .Configure<TSConsoleBuilder>(configuration)
+                        .Configure<GoConsoleBuilder>(configuration)
         }
     }
 }

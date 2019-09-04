@@ -9,6 +9,7 @@ import { TokenService } from 'src/app/services/token.service/token.service';
 import { UserService } from 'src/app/services/user.service/user.service';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
+import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
 
 @Component({
     selector: 'app-auth-dialog',
@@ -56,7 +57,8 @@ export class AuthDialogComponent implements OnInit {
         private tokenService: TokenService,
         private toast: ToastrService,
         private userService: UserService,
-        private signalRService: SignalRService
+        private signalRService: SignalRService,
+        private errorHandlerService: ErrorHandlerService
     ) { }
 
     public ngOnInit() {
@@ -86,11 +88,15 @@ export class AuthDialogComponent implements OnInit {
                     this.toast.success('You have successfully signed in!', `Wellcome, ${result.firstName} ${result.lastName}!`);
                     this.router.navigate(['dashboard']);
                     this.signalRService.addToGroup(this.tokenService.getUserId());
+                    console.log(this.config.data);
+                    if(this.config.data.projectId)
+                    {
+                        this.router.navigate([`project/${this.config.data.projectId}`]);
+                    }
                 },
                 (error) => {
                     this.isSpinner = false;
-                    const message = !!error.message ? error.message : error.statusText;
-                    this.toast.error(message, 'Error Message');
+                    this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error Message');
                 }
             );        
     }
@@ -113,8 +119,12 @@ export class AuthDialogComponent implements OnInit {
                     this.ref.close();
                     this.router.navigate(['dashboard']);
                     this.signalRService.addToGroup(this.tokenService.getUserId());
+                    if(this.config.data.projectId)
+                    {
+                        this.router.navigate([`project/${this.config.data.projectId}`]);
+                    }
                 },
-                (error) => this.toast.error("Invalid input data", 'Error Message'),
+                (error) => this.toast.error("Invalid input data", this.errorHandlerService.getExceptionMessage(error)),
                 () => {
                     this.toast.success('You have successfully registered!');
                     this.toast.info('Please, confirm your email');
@@ -149,7 +159,7 @@ export class AuthDialogComponent implements OnInit {
                 }, 
                 (error) => {
                     console.log(error);
-                    this.toast.error('User with such email doesn\'t exist');
+                    this.toast.error(this.errorHandlerService.getExceptionMessage(error));
                     this.isSpinner = false;
                 })
         }

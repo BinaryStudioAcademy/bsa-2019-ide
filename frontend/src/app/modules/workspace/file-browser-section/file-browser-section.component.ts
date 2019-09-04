@@ -76,7 +76,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 private hotkeys: HotkeyService,
                 private fileBrowserService: FileBrowserService,
                 private projectService: ProjectService) {
-        this.hotkeys.addShortcut({keys: 'shift.e'})
+        this.hotkeys.addShortcut({keys: 'control.e'})
         .subscribe(()=>{
           this.expand();
         });

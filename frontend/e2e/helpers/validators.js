@@ -1,6 +1,12 @@
 const assert = require('chai').assert;
 const expect = require('chai').expect;
 
+const workspaceActions = require('./../specs/Workspace/actions/workspace_pa');
+const workspace = new workspaceActions();
+const WorkspacePage = require('./../specs/Workspace/page/workspace_po');
+const workPage = new WorkspacePage();
+
+
 class CustomValidates {
 
     
@@ -23,7 +29,14 @@ class CustomValidates {
         expect(attr, `${attr} doesn't include error class`).to.include("error");
     }
 */  
+    notificationOfSuccessRegistration(expectedText) {
 
+    const notification = $('div.toast-message');
+    notification.waitForDisplayed(2000);
+    const actualText = notification.getText();
+    console.log("2_______________"+ actualText);
+    assert.equal(actualText, expectedText);// || expectedNotification, `Expected ${actualText} to be equal to ${expectedInfo} or ${expectedNotification}`);
+    }
     notificationTextIs(expectedText) {
       
     const notification = $('div.toast-message.ng-star-inserted');
@@ -36,32 +49,10 @@ class CustomValidates {
     const actualText = notification.getText()
     assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
     }
-   /* errorNotificationTextIs(expectedText) {
-        const notification = $('div.toast-message.ng-star-inserted');
-        const actualText = notification.getText()
-        assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
-    }
-    
-
-    successNotificationTextIs(expectedText) {
-        
-        const notification = $("div.toast-success.ngx-toastr.ng-trigger.ng-trigger-flyInOut");
-        const actualText = notification.getText()
-        assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
-        
-    }
-    InfoNotificationTextIs(expectedText) {
-      
-        const notification = $('div.toast-message.ng-star-inserted');
-        const actualText = notification.getText()
-        assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
-        
-    }*/
-
    
     successnavigationToPage(expectedUrl) {
         const url = new URL(browser.getUrl());
-        const actualUrl = url.hostname.toString() + url.pathname.toString();
+        const actualUrl = 'http://' + url.hostname.toString() + url.pathname.toString();
         assert.equal(actualUrl, expectedUrl);
     }
     navigationToPage(expectedUrl) {
@@ -96,7 +87,19 @@ class CustomValidates {
     verifyAbsence() {
         const element = $("div.collaborator-item");
         element.waitForExist(undefined, true);;
-    }
+    };
+
+    verifyEditedFile(expectedChanges) {
+        workspace.openFirstfile();
+        workPage.editorField.waitForDisplayed(10000);
+        assert.equal(workPage.editorField.getText(), expectedChanges);
+    };
+
+    verifyProjectHistory(expectedChanges) {
+        const historyText = $('//*[@id="ui-accordiontab-0-content"]/div').getText();
+        const firstWord = historyText.split(' ', 1);
+        assert.equal(firstWord, expectedChanges);
+    };
 }
 
 module.exports = CustomValidates;

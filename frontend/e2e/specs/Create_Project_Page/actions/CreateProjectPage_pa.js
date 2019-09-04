@@ -32,12 +32,20 @@ class ProjectPageActions {
     }
  
     clickCreateButton() {
-        page.createButton.waitForDisplayed(2000);
+        page.createButton.waitForDisplayed(5000);
         page.createButton.click();
     }
     getTextProjectDetails(index) {
         page.projectDetailData(index).waitForDisplayed(2000);
         page.projectDetailData.getText();
+    }
+    waitFormOfProjectCreation(){
+        
+        page.formOfProjectCreation.waitForDisplayed(5000);
+    }
+    waitEnableSaveButton(){
+      //  $("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only")
+        page.createButton.waitForEnabled(5000, true);
     }
   
 }
