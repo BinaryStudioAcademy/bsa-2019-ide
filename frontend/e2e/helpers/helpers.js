@@ -277,6 +277,14 @@ class HelpClass
         browser.pause(2000);
        // profile.clickChangeButton();
        this.browserClickOnArrayElement("span.ui-button-text.ui-clickable", 6);
+    };
+
+    //delete or rewrite this asap
+    openFirstProject() {
+        $('/html/body/app-root/div/app-dashboard-root/div/div[1]/ul/li[2]').waitForDisplayed(2000);
+        $('/html/body/app-root/div/app-dashboard-root/div/div[1]/ul/li[2]').click()
+        $('/html/body/app-root/div/app-dashboard-root/div/app-my-projects/div/app-projects-list/div/div/div[1]/app-project-card/p-card/div').waitForDisplayed(2000);
+        $('/html/body/app-root/div/app-dashboard-root/div/app-my-projects/div/app-projects-list/div/div/div[1]/app-project-card/p-card/div').click();
     }
 }
 
