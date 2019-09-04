@@ -1,32 +1,44 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { DynamicDialogRef, DynamicDialogConfig, MenuItem } from 'primeng/api';
+import { TerminalService } from 'primeng/components/terminal/terminalservice';
+import { Subscribable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-run-input',
   templateUrl: './run-input.component.html',
   styleUrls: ['./run-input.component.sass']
 })
-export class RunInputComponent implements OnInit {
+export class RunInputComponent implements OnDestroy, OnInit {
 
-    public items: any[]=[];
-    constructor(private config: DynamicDialogConfig,
-        private ref: DynamicDialogRef) {
+    @Input() 
+    public inputItems: string[];
+    public request: string;
+    public firstInputMessage: string;
+    public subscription: Subscription;
+    public inputResult:string[]=[];
+    public count=0;
+
+
+    constructor(private terminalService: TerminalService) {
+        this.terminalService.commandHandler.subscribe(command => {
+            this.inputResult.push(command);
+            this.count++;
+            console.log(this.inputResult);
+            if(this.inputItems[this.count])
+            {
+                this.terminalService.sendResponse(`Enter ${this.inputItems[this.count]}:`);
+            }
+        });
         }
 
-  ngOnInit() {
-      this.config.data.input.forEach(element=>{
-      this.items.push(
-              {'label':element, 'value': ""}
-          )
-      })
-  }
+        ngOnInit()
+        {
+            this.firstInputMessage=`Enter ${this.inputItems[0]}: `;
+        }
 
-  public OnClick(myForm) {
-    console.log(myForm.form.value.inputs);
-    this.ref.close();
-  }
-
-  public close(){
-      this.ref.close();
-  }
+        ngOnDestroy(){
+            if (this.subscription) {
+                this.subscription.unsubscribe();
+            }
+        }
 }

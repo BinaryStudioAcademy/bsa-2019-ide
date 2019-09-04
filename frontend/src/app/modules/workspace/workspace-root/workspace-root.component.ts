@@ -36,6 +36,7 @@ import { ConcatSource } from 'webpack-sources';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 import { filter } from 'rxjs/operators';
 import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
+import { TerminalService } from 'primeng/components/terminal/terminalservice';
 
 
 @Component({
@@ -61,6 +62,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     public project: ProjectInfoDTO;
     public options: EditorSettingDTO;
     public iOpenFile: FileUpdateDTO[] = [];
+    public inputItems: string[];
 
     private routeSub: Subscription;
     private authorId: number;
@@ -91,8 +93,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         private eventService: EventService,
         private cdr: ChangeDetectorRef,
         private signalRService: SignalRService,
-        private errorHandlerService: ErrorHandlerService) {
-
+        private errorHandlerService: ErrorHandlerService
+    ) {
         this.hotkeys.addShortcut({ keys: 'control.h' })
             .subscribe(() => {
                 this.hideFileBrowser();
@@ -302,12 +304,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         }
 
         this.buildService.runProject(this.project.id, connectionId).subscribe(
-            (response) => {
-                var result=response.body as string[];
-                if(result)
-                {
-                    this.buildService.showInputWindow(result);
-                }
+            (resp) => {
+                this.inputItems = resp.body;
                 this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {

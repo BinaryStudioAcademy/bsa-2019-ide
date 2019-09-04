@@ -64,8 +64,8 @@ namespace IDE.API.Controllers
         [HttpGet("tryrun/{projectId}/{connectionId}")]
         public async Task<ActionResult<IEnumerable<string>>> TryRunProjectById(int projectId)
         {
-            var inputItems = await _projectService.GetInputElements(projectId) as List<string>;
-            if(inputItems.Count==0)
+            var inputItem = await _projectService.GetInputElements(projectId) as List<string>;
+            if(inputItem.Count==0)
             {
                 var userId = this.GetUserIdFromToken();
                 await _projectService.BuildProject(projectId, userId);
@@ -73,7 +73,7 @@ namespace IDE.API.Controllers
             }
             else
             {
-                return Ok(inputItems);
+                return Ok(inputItem);
             }
         }
 

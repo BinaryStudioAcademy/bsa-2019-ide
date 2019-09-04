@@ -37,6 +37,7 @@
                 <app-editor-section  [canEdit]="canNotEdit" [monacoOptions]='options' (filesSaveEvent)="onFilesSave($event)"></app-editor-section>
             </div>
         </div>
+        <app-run-input *ngIf="inputItems" [inputItems]="inputItems"></app-run-input>
     </div>
 </div>
 
