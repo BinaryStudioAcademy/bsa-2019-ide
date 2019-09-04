@@ -37,137 +37,104 @@ class HelpClass
     generateEmail(){
         const localPart = generateRandomString(12);
         const domainPart = generateRandomString(3);
-        return email = localPart+"@"+domainPart+".com"
-
+        console.log(`${localPart}@${domainPart}.com`);
+        return `${localPart}@${domainPart}.com`;
+        
     }
-    /*clickItemInList(name) {
-        const place = $$(`//div[contains(@class, "place-item")]//h3/a[contains(., "${name}")]`);
-        if (place.length === 0) {
-            throw new Error("Element not found");
-        }
-        //place[0].scrollIntoView();
-        place[0].click();
-    }*/
-
     browserClick(elm){ return browser.execute((e) => {document.querySelector(e).click(); }, elm); }
+
+    browserClickXPath(elm){ return browser.execute((e) => {document.evaluate(e, document).iterateNext().click(); }, elm); }
 
     browserClickOnArrayElement(elm, index){return browser.execute((e, i) => {document.querySelectorAll(e)[i - 1].click();}, elm, index);}
        
     loginWithDefaultUser() {
-        browser.maximizeWindow();
-        browser.url(credentials.appUrl);
+                
         page.clickloginbtn();
+        $("div.ng-trigger.ng-trigger-animation").waitForDisplayed(10000);
+       // const form = $("div.ui-dialog-content.ui-widget-content").waitForDisplayed(10000);
         page.enterEmail(credentials.email);
         page.enterPassword(credentials.password);
         page.clickCreateButton();
     }
     
     loginWithCustomUser(email, password) {
-        browser.maximizeWindow();
-        browser.url(credentials.appUrl);
+             
         page.clickloginbtn();
         page.enterEmail(email);
         page.enterPassword(password);
         page.clickCreateButton();
     }
-
-    registerNewAccount(name, surname, nickname, email, password) {
-
-        page.clickSignupbtn();
-     
-        browser.pause(3000);
-        page.enterFirstName(name);
-        page.enterLastName(surname);
-        page.enterNickname(nickname);
-        page.enterEmail(email);
-        page.enterPassword(password);
-        page.clickCreateButton();
+    clickInDropdownListArrowOf(ListName){
+        const el = $(`//p[contains(text(), "${ListName}")]/../p-dropdown//div[contains(@class, "ui-dropdown-trigger")]`);
+        el.click();
     }
-    recoveryPassword(email) {
-
-        page.clickloginbtn();
-     
-        browser.pause(3000);
-        page.clickRecoveryPassword();
-        page.enterEmail(email);
-        
-        page.clickCreateButton();
+    clickInDropdownListOptionOf(ListName, ListOption){
+       
+        const el = `//p[contains(text(), "${ListName}")]/../p-dropdown//span[contains(text(),"${ListOption}")]/..`;
+        const bel = $(el);
+        this.browserClickXPath(el);
+        bel.waitForExist(3000, true);
     }
+    clickProjectFormDropdownArrowOf(ListName){
+    
+        const el = $(`//div[contains(text(), "${ListName}")]/following-sibling::div[1]//p-dropdown//div[contains(@class, "ui-dropdown-trigger")]`);
+        el.click();
+    }
+    clickProjectFormOptionOf(ListName, ListOption){
+    
+        const el = `//div[contains(text(), "${ListName}")]/following-sibling::div[1]//p-dropdown//span[contains(text(),"${ListOption}")]/..`;
+        const bel = $(el);
+        this.browserClickXPath(el);
+        bel.waitForExist(3000, true);
+    }
+    chooseColorInDropdownList(Color){
+
+        const color = `//div[contains(text(), "Project color")]/following-sibling::div[1]//p-dropdownitem//li[@aria-label="${Color}"]`;
+        const element = $(color);
+        this.browserClickXPath(color);
+        element.waitForExist(3000, true);
+    }
+    
     logOut() {
 
         browser.url(credentials.appUrl);
-        browser.pause(5000);
         page.clickLogOutButton();
         this.browserClickOnArrayElement("a.ui-menuitem-link.ui-corner-all.ng-star-inserted", 2);
     }
 
-    createNewProject(ind1, ind2, ind3, ind4, ind5) {
+    fillOutDataInForm(projectName, description, buildsNumber, buildsAttempts) {
 
-        project.addButtonClick();
-        browser.pause(2000);
-        project.enterProjectName(credentials.projectName);
-        project.enterDescription(credentials.description);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 1);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", ind1);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 2);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", ind2);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 3);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", ind3);
-        project.enterBuildsNumbers(credentials.buildsNumber);
-        project.enterBuildsAttempts(credentials.buildAttempts);
-        browser.pause(2000);
-      //  this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 4);
-      // this.browserClickOnArrayElement("div.ui-helper-clearfix.ng-star-inserted", ind4);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 5);
-        this.browserClickOnArrayElement("div.ui-helper-clearfix.ng-star-inserted", ind5);
-        browser.pause(2000);
-        project.clickCreateButton();
-
-    }
-    inputDataInFormCreateProject(name, description, buildsNumber, buildAttempts, ind1, ind2, ind3, ind5) {
-
-        project.addButtonClick();
-        browser.pause(2000);
-        project.enterProjectName(name);
+        project.enterProjectName(projectName);
         project.enterDescription(description);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 1);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", ind1);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 2);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", ind2);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 3);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", ind3);
+        this.clickProjectFormDropdownArrowOf("Language");
+        this.clickProjectFormOptionOf("Language", "C#");
+        this.clickProjectFormDropdownArrowOf("Project type");
+        this.clickProjectFormOptionOf("Project type", "Console App");
+        this.clickProjectFormDropdownArrowOf("Compiler Type");
+        this.clickProjectFormOptionOf("Compiler Type", "Roslyn");
         project.enterBuildsNumbers(buildsNumber);
-        
-        project.enterBuildsAttempts(buildAttempts);
-        browser.pause(2000);
-      //  this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 4);
-      // this.browserClickOnArrayElement("div.ui-helper-clearfix.ng-star-inserted", ind4);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 5);
-        this.browserClickOnArrayElement("div.ui-helper-clearfix.ng-star-inserted", ind5);
-        $("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only").waitForEnabled(5000, true);
+        project.enterBuildsAttempts(buildsAttempts);
+        this.clickProjectFormDropdownArrowOf("Access");
+        this.clickProjectFormOptionOf("Access", "Public");
+        this.clickProjectFormDropdownArrowOf("Project color");
+        this.chooseColorInDropdownList("Red");
+      
     }
-    inputChangedDataInForm(name, description, buildsNumber, buildAttempts, ind5) {
+
+    fillOutChangedDataInForm(projectName, description, buildsNumber, buildsAttempts) {
 
 
-        project.enterProjectName(name);
+        project.enterProjectName(projectName);
         project.enterDescription(description);
         project.enterBuildsNumbers(buildsNumber);
-     
-        project.enterBuildsAttempts(buildAttempts);
-        browser.pause(2000);
-      //  this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 4);
-      // this.browserClickOnArrayElement("div.ui-helper-clearfix.ng-star-inserted", ind4);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 2);
-        this.browserClickOnArrayElement("div.ui-helper-clearfix.ng-star-inserted", ind5);
-        project.clickCreateButton();
+        project.enterBuildsAttempts(buildsAttempts);
+        this.clickProjectFormDropdownArrowOf("Access");
+        this.clickProjectFormOptionOf("Access", "Public");
+        this.clickProjectFormDropdownArrowOf("Project color");
+        this.chooseColorInDropdownList("Red");
+      
     }
+
     returnExpectedNotificationDeletionProject(){
         
         projectDetails.clickMyProjectTab();
@@ -203,11 +170,11 @@ class HelpClass
         return urlPage;
     }
     addToFavourite(index){
-        browser.pause(3000);
+       
         this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 2);
-        browser.pause(3000);
+        const cards =  $("div.cards-area");
+        cards.waitForDisplayed(10000);
         dashboard.starProject(index);
-        browser.pause(3000);
         const projectNameToFavourite = dashboardObject.projectCardTitle[index].getText();
         return projectNameToFavourite
     }
@@ -217,52 +184,61 @@ class HelpClass
     navigateToMyProjects() {
         this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 2);
     }
-   /* openProjectWorkspace(index) {
-        browser.pause(1000);
-        this.browserClickOnArrayElement(dashboardObject.projectCardTitle, index);
-    }*/
+
     addCollaborators(nickname) {
         
-        this.browserClickOnArrayElement(detailsObject.navbarDetailsPage, 2);
-        browser.pause(2000);
+       
+        $('//span[contains(text(),"Collaborators")]/..').click();
+
+        $('//h2[contains(text(),"Search and add new collaborators:")]').waitForDisplayed(10000);
         projectDetails.enterCollaboratorName(nickname);
-        browser.pause(2000);
-        
-        this.browserClickOnArrayElement(detailsObject.listboxCollaborators, 1);
-        browser.pause(2000);
+
+       $("//span[contains(text(),'testUser1')]/..").click();
+       
         this.browserClick("div.ui-dropdown-trigger.ui-state-default.ui-corner-right");
-        browser.pause(2000);
+       
+       $("div.ng-trigger.ng-trigger-overlayAnimation").waitForDisplayed(10000);
         this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", 3);
         projectDetails.clickSaveButton();
 
     }
     changeCollaboratorsRights(index) {
         
-        this.browserClickOnArrayElement(detailsObject.navbarDetailsPage, 2);
+        $('//span[contains(text(),"Collaborators")]/..').click();
+        $('//h2[contains(text(),"Search and add new collaborators:")]').waitForDisplayed(10000);
         this.browserClick("div.ui-dropdown-trigger.ui-state-default.ui-corner-right");
-        browser.pause(2000);
+      
+      $("div.ng-trigger.ng-trigger-overlayAnimation").waitForDisplayed(10000);
         this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", index);
         projectDetails.clickSaveButton();
 
     }
     deleteCollaborator(index) {
         
-        this.browserClickOnArrayElement(detailsObject.navbarDetailsPage, 2);
-        browser.pause(3000);
+        $('//span[contains(text(),"Collaborators")]/..').click();
+        $('//h2[contains(text(),"Search and add new collaborators:")]').waitForDisplayed(10000);
         projectDetails.clickDeleteButton(index);
         projectDetails.clickSaveButton();
        
 
     }
     checkDetails() {
-        this.browserClickOnArrayElement(detailsObject.navbarDetailsPage, 1);
+        $('//span[contains(text(),"Details")]/..').click();
         browser.pause(1000);
-        this.browserClickOnArrayElement(detailsObject.navbarDetailsPage, 2);
+        $('//span[contains(text(),"Collaborators")]/..').click();
     }
-    searchProjectByTitle(text, index) {
+    searchProjectByTitleOf(text) {
+
         dashboard.enterPtojectTitleforSearch(text);
-        browser.pause(2000);
-        this.browserClickOnArrayElement(dashboardObject.listboxProjects, index);
+
+        const dropdownlist = $("div.ng-trigger.ng-trigger-overlayAnimation");
+        dropdownlist.waitForDisplayed(5000);
+        const button = $("span.ui-button-secondary.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only.ng-star-inserted");
+        button.click();
+
+        console.log("111______________");
+        //this.browserClickOnArrayElement(dashboardObject.listboxProjects, index);
+       // console.log("123______________________");
 
     }
     changePassword(currentPassword, newPassword) {

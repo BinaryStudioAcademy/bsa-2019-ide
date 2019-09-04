@@ -9,7 +9,7 @@ class ProjectDetailsPage {
    // get titleProjectCard () {return $$("h2.title-ellipsis")};
    // get authorProject () {return $$("div.ui-card-subtitle.ng-star-inserted")};
    // get createddateProjectCard () {return $$("div.ui-card-content p")};
-
+    get saveProjectButton () {return $("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only.ng-star-inserted")};
     get navbarDetailsPage () {return "ul.ui-tabview-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all.ng-star-inserted li"};
     //get projectTabsDashbpord () {return "div.menu li"};
   //  get projectCardTitle () {return $$("h2.title-ellipsis")};
