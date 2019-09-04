@@ -31,7 +31,7 @@ class DashboardActions {
         page.titleProjectCard[0].getText();
     }*/
     starProject(index) {
-        page.starProjectCard[index].waitForDisplayed(2000);
+        page.starProjectCard[index].waitForDisplayed(6000);
         page.starProjectCard[index].click();
     }
    /* enterCollaboratorName(value) {
@@ -43,11 +43,16 @@ class DashboardActions {
         page.saveCollaboratorButton.waitForDisplayed(2000);
         page.saveCollaboratorButton.click();
   }*/
-  enterPtojectTitleforSearch(text){
+    enterPtojectTitleforSearch(text){
       page.searchInput.waitForDisplayed(2000);
       page.searchInput.clearValue();
       page.searchInput.setValue(text);
-  }
+    }
+    waitDashboardMenu(){
+        const menu = $("div.menu");
+        menu.waitForDisplayed(10000);
+    }
+
 }
 
 module.exports = DashboardActions;

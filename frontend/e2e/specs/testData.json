@@ -12,17 +12,18 @@
     "nickname": "testUser",
     "changedName":"Martin",
     "changedSurname":"Luthor",
+    "PhotoPath": "./../image.jpg",
     "notificationRegistrationSuccess": "You have successfully signed in!",
     "notificationLoginError": "Http failure response for http://bsa-ide.azurewebsites.net/api/auth/login: 500 Internal Server Error",
-    "notificationLoginSuccess": "You have successfully signed in!",
+    "notificationLoginSuccess": "Wellcome, test test!\nYou have successfully signed in!",
     "notificationError": "Invalid input data",
     "notificationInfo": "Please, confirm your email",
     "notificationErrorRecovery": "User with such email doesn't exist",
     "notificationSuccessRecovery": "Letter with new password was sent to your mail!",
     "notificationInvalidDataRecovery": "Please, enter correct email",
-    "notificationSuccessAddCollaborator": "New collacortors access have successfully saved!",
-    "notificationSuccessChangeCollaboratorRight": "New collacortors access have successfully saved!",
-    "notificationSuccessDeleteCollaborator": "New collacortors access have successfully saved!",
+    "notificationSuccessAddCollaborator": "New collaborators access have successfully saved!",
+    "notificationSuccessChangeCollaboratorRight": "New collaborators access have successfully saved!",
+    "notificationSuccessDeleteCollaborator": "New collaborators access have successfully saved!",
     "projectName": "testproject",
     "description": "test test test",
     "buildsNumber": "5",
@@ -38,7 +39,10 @@
     "projectNameDelete": "testproject",
     "errormessage": "can`t retrieve data from the server",
     "successchangedsettingsnotification": "New details have successfully saved!",
-    "expectedmessageonFavourite": "You don't have any favourite projects... Yet!)"
+    "expectedmessageonFavourite": "You don't have any favourite projects... Yet!)",
+    "changedCode": "aaa",
+    "expectedCodeChanges": "usaaaing System;",
+    "expectedHistory": "usaaaing"
     
     
 }

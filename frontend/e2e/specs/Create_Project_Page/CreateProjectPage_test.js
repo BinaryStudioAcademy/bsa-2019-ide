@@ -4,7 +4,11 @@ const Assert = require('../../helpers/validators');
 const Wait = require('../../helpers/waiters');
 const validate = new Assert();
 const wait = new Wait();
-//const assert = require('chai').assert;
+
+const CreateProjectActions = require('./actions/CreateProjectPage_pa');
+const project = new CreateProjectActions();
+
+
 describe('Online-IDE creation project', () => {
     
     beforeEach(() => {
@@ -20,48 +24,63 @@ describe('Online-IDE creation project', () => {
        browser.reloadSession();
    });
 
-   xit('create a new project with valid data', () => {
+    xit('should create a new project with valid data', () => {
        
-       browser.pause(5000);
-       Help.createNewProject(1, 1, 1, 1, 9);
-       validate.notificationTextIs(credentials.notificationProjectCreateSuccess);
-       wait.forNotificationToDisappear(); 
-       browser.pause(3000);
-       validate.navigationToPage(credentials.projectDetailsUrl);
-       browser.pause(1000);
-       validate.checkProjectDetailsData(0, `Name: ${credentials.projectName}`); 
+        project.addButtonClick();
+        project.waitFormOfProjectCreation();
+        Help.fillOutDataInForm(credentials.projectName, credentials.description, credentials.buildsNumber, credentials.buildAttempts);
+        project.clickCreateButton();
+     
+        validate.notificationTextIs(credentials.notificationProjectCreateSuccess);
+        wait.forNotificationToDisappear(); 
+        
+        $("div.ui-tabview.ui-widget.ui-widget-content.ui-corner-all.ui-tabview-left").waitForDisplayed(10000);
        
-       Help.logOut();
+        validate.navigationToPage(credentials.projectDetailsUrl);
+        
+        validate.checkProjectDetailsData(0, `Name: ${credentials.projectName}`); 
+        
+        Help.logOut();
        
-   });
-   xit('create a new project with too short name', () => {
+    });
+    xit('create a new project with too short name', () => {
        
-    //browser.pause(5000);
-    Help.inputDataInFormCreateProject("1", "test", "1", "0", 1, 1, 1, 8);
-    Help.logOut();
+        project.addButtonClick();
+        project.waitFormOfProjectCreation();
+        Help.fillOutDataInForm("1", credentials.description, credentials.buildsNumber, credentials.buildAttempts);
+        project.waitEnableSaveButton();
+        Help.logOut();
      
     });
     xit('create a new project with too long name', () => {
        
-  //  browser.pause(5000);
-     Help.inputDataInFormCreateProject("this name is too long to be use for our purpose", "test", "1", "0", 1, 1, 1, 8);
-     Help.logOut();
+  
+        project.addButtonClick();
+        project.waitFormOfProjectCreation();
+        Help.fillOutDataInForm("this name is too long to be use for our purpose", credentials.description, credentials.buildsNumber, credentials.buildAttempts);
+        project.waitEnableSaveButton();
+        Help.logOut();
      
- });
+    });
     xit('create a new project with invalid saved builds number', () => {
        
-   // browser.pause(5000);
-     Help.inputDataInFormCreateProject("test", "test", "12", "0", 1, 1, 1, 8);
-     Help.logOut();
+        project.addButtonClick();
+        project.waitFormOfProjectCreation();
+        Help.fillOutDataInForm(credentials.projectName, credentials.description, "12", credentials.buildAttempts);
+        project.waitEnableSaveButton();
+        Help.logOut();
      
- });
+    });
     xit('create a new project with invalid builds attempts number', () => {
        
-   // browser.pause(5000);
-     Help.inputDataInFormCreateProject("test", "test", "2", "77", 1, 1, 1, 8);
-     Help.logOut();
+   
+        project.addButtonClick();
+        project.waitFormOfProjectCreation();
+        Help.fillOutDataInForm(credentials.projectName, credentials.description, credentials.buildsNumber, "77");
+        project.waitEnableSaveButton();
+        Help.logOut();
      
- });
+    });
           
    
 });
