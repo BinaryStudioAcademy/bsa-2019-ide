@@ -44,15 +44,15 @@ class LoginActions {
     clickLogOutButton() {
         page.logOutButton.waitForDisplayed(3000);
         page.logOutButton.click();
-       // page.logOutLink.waitForDisplayed(5000);
-       // page.logOutLink.click();
-    }
 
+    }
+    waitFormContainer(){
+        page.formContainer.waitForDisplayed(10000);
+    }
     registerNewAccount(name, surname, nickname, email, password) {
 
         this.clickSignupbtn();
-        const form = $("div.ui-dialog-content.ui-widget-content").waitForDisplayed(5000);
-       // browser.pause(3000);
+        this.waitFormContainer();
         this.enterFirstName(name);
         this.enterLastName(surname);
         this.enterNickname(nickname);
@@ -63,8 +63,7 @@ class LoginActions {
     enterDataForRegistration(name, surname, nickname, email, password) {
 
         this.clickSignupbtn();
-        const form = $("div.ui-dialog-content.ui-widget-content").waitForDisplayed(10000);
-       // browser.pause(3000);
+        this.waitFormContainer();
         this.enterFirstName(name);
         this.enterLastName(surname);
         this.enterNickname(nickname);
@@ -82,9 +81,7 @@ class LoginActions {
     enterDataForLogin(email, password){
 
         this.clickloginbtn();
-        
-        $("div.ng-trigger.ng-trigger-animation").waitForDisplayed(10000);
-        
+        this.waitFormContainer();
         this.enterEmail(email);
         this.enterPassword(password);
     }

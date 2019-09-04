@@ -4,44 +4,23 @@ const page = new ProjectDetailsPage();
 class ProjectDetailsActions {
 
 
-   /* addButtonClick() {
-        
-        page.addButton.waitForDisplayed(2000);
-        page.addButton.click();
-    }
-*/
     clickMyProjectTab(){
         page.menuTabs[1].waitForDisplayed(2000);
         page.menuTabs[1].click();
     }
     clickCardMenuButton() {
-        page.menuProjectCard[0].waitForDisplayed(2000);
-        page.menuProjectCard[0].click();
+        page.menuProjectCard.waitForDisplayed(2000);
+        page.menuProjectCard.click();
     }
     clickDeleteButton(index) {
         page.deleteCollaboratorButton[index].waitForDisplayed(2000);
         page.deleteCollaboratorButton[index].click();
     }
     clickSaveProjectButton() {
-        page.saveProjectButton.waitForDisplayed(2000);
+        page.saveProjectButton.waitForEnabled(5000);
         page.saveProejctButton.click();
     }
-   /* clickProjectDetailsButton() {
-        page.detailsProject.waitForDisplayed(2000);
-        page.detailsProject.click(); 
-    }
-    clickProjectSettingsButton() {
-        page.settingsProject.waitForDisplayed(2000);
-        page.settingsProject.click(); 
-    }
-    getProjectTitle() {
-        page.titleProjectCard[0].waitForDisplayed(2000);
-        page.titleProjectCard[0].getText();
-    }
-    starProject(index) {
-        page.starProjectCard[index].waitForDisplayed(2000);
-        page.starProjectCard[index].click();
-    }*/
+  
     enterCollaboratorName(value) {
         page.inputCollaboratorNickname.waitForDisplayed(2000);
         page.inputCollaboratorNickname.clearValue();
@@ -53,6 +32,25 @@ class ProjectDetailsActions {
     }
     waitEnabledSaveButton(){
         page.saveCollaboratorButton.waitForEnabled(10000);
+    }
+    waitContentOfDetailsPage(){
+        page.contentOfDetailsPage.waitForExist(5000);
+    }
+    deleteProject() {
+     //   page.deletebtn.waitForDisplayed(5000);
+     //   page.deletebtn.click();
+     $("//app-confirmation-dialog/button").click();
+        page.deletebtnconfirm.waitForDisplayed(5000);
+        page.deletebtnconfirm.click();
+    }
+    deleteCollaborator(index) {
+        
+        $('//span[contains(text(),"Collaborators")]/..').click();
+        $('//h2[contains(text(),"Search and add new collaborators:")]').waitForDisplayed(10000);
+        this.clickDeleteButton(index);
+        this.clickSaveButton();
+      
+
     }
  
 }
