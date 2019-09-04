@@ -31,6 +31,14 @@ namespace IDE.BLL.Services
             _mapper = mapper;
             //_serviceScopeFactory = serviceScopeFactory;
         }
+
+        public async Task SendNotificationToUser(int userId, NotificationDTO notificationDTO)
+        {
+            var notification = _mapper.Map<Notification>(notificationDTO);
+            await _hubContext.Clients.User(userId.ToString())
+                    .SendAsync("transferchartdata", notificationDTO)
+                    .ConfigureAwait(false);
+        }
         public async Task SendNotification(int projectId, NotificationDTO notificationDTO)
         {
             //using (var scope = _serviceScopeFactory.CreateScope())
@@ -44,8 +52,8 @@ namespace IDE.BLL.Services
 
                 var author = await _context.Projects
                     .Where(item => item.Id == projectId)
-                   .Select(item => item.Author)
-                  .FirstOrDefaultAsync();
+                    .Select(item => item.Author)
+                    .FirstOrDefaultAsync();
 
                 if (author != null)
                     users.Add(author);
