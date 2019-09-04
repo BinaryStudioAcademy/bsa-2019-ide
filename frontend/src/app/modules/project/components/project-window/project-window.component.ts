@@ -18,6 +18,7 @@ import { ProjectDescriptionDTO } from 'src/app/models/DTO/Project/projectDescrip
 import { ProjDialogDataService } from 'src/app/services/proj-dialog-data.service/proj-dialog-data.service';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 import { TokenService } from 'src/app/services/token.service/token.service';
+import { AccessModifier } from 'src/app/models/Enums/accessModifier';
 
 @Component({
   selector: 'app-project-window',
@@ -213,7 +214,8 @@ export class ProjectWindowComponent implements OnInit {
             created: project.createdAt,
             creator: project.authorName,
             favourite: true,
-            title: project.name
+            title: project.name,
+            isPublic: project.accessModifier == AccessModifier.public
         }
     }    
 
