@@ -1,22 +1,28 @@
-﻿using BuildServer.Interfaces;
+﻿using BuildServer.Helpers;
+using BuildServer.Interfaces;
+using BuildServer.OperationsResults;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
-namespace BuildServer.Services
+namespace BuildServer.Services.Builders
 {
-    public class DotNetBuilder : IBuilder
+    public class TSConsoleBuilder : IBuilder
     {
         private string _buildDirectory;
+        ProcessKiller _processKiller;
 
-        public DotNetBuilder(IConfiguration configuration)
+        public TSConsoleBuilder(IConfiguration configuration, ProcessKiller processKiller)
         {
             _buildDirectory = configuration.GetSection("BuildDirectory").Value;
+            _processKiller = processKiller;
         }
 
-        public string Build(string projectName)
+        public BuildResult Build(string projectName)
         {
-            var commandToBuild = $"/c dotnet build {_buildDirectory}\\{projectName}";
+            var commandToBuild = $"/c (cd {_buildDirectory}\\{projectName} && tsc main.ts)";
             var outputMessage = "";
 
             try
@@ -48,13 +54,20 @@ namespace BuildServer.Services
                 Console.WriteLine(e.Message);
             }
 
-            return outputMessage;
+            BuildResult buildResult = new BuildResult()
+            {
+                IsSuccess = outputMessage.Length == 0,
+                Message = outputMessage
+            };
+
+            return buildResult;
         }
 
-        public string Execute(string projectName)
+        public string Run(string projectName)
         {
-            //count of nested "projectName" will be depend on the template
-            var commandToExecute = $"/c dotnet {_buildDirectory}{projectName}\\{projectName}\\{projectName}\\bin\\Debug\\netcoreapp2.2\\{projectName}.dll run";
+            //Run ts projects implementation
+            throw new NotImplementedException();
+            var commandToBuild = $"/c (cd {_buildDirectory}\\{projectName} && node {projectName}.js)";
             var outputMessage = "";
 
             try
@@ -64,7 +77,7 @@ namespace BuildServer.Services
                     StartInfo = new ProcessStartInfo
                     {
                         FileName = @"cmd",
-                        Arguments = commandToExecute,
+                        Arguments = commandToBuild,
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
                         CreateNoWindow = true
@@ -75,7 +88,7 @@ namespace BuildServer.Services
 
                 while (!process.StandardOutput.EndOfStream)
                 {
-                    var line = process.StandardOutput.ReadLineAsync();
+                    var line = process.StandardOutput.ReadLine();
                     outputMessage += line + "\n";
                 }
 
@@ -85,8 +98,6 @@ namespace BuildServer.Services
             {
                 Console.WriteLine(e.Message);
             }
-
-            return outputMessage;
         }
     }
 }

@@ -22,6 +22,10 @@ class ProjectDetailsActions {
         page.deleteCollaboratorButton[index].waitForDisplayed(2000);
         page.deleteCollaboratorButton[index].click();
     }
+    clickSaveProjectButton() {
+        page.saveProjectButton.waitForDisplayed(2000);
+        page.saveProejctButton.click();
+    }
    /* clickProjectDetailsButton() {
         page.detailsProject.waitForDisplayed(2000);
         page.detailsProject.click(); 
@@ -43,10 +47,13 @@ class ProjectDetailsActions {
         page.inputCollaboratorNickname.clearValue();
         page.inputCollaboratorNickname.setValue(value);
     }
-  clickSaveButton() {
+    clickSaveButton() {
         page.saveCollaboratorButton.waitForDisplayed(2000);
         page.saveCollaboratorButton.click();
-  }
+    }
+    waitEnabledSaveButton(){
+        page.saveCollaboratorButton.waitForEnabled(10000);
+    }
  
 }
 

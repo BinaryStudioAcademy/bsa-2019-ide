@@ -11,10 +11,14 @@ using IDE.Common.ModelsDTO.DTO.User;
 using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using RabbitMQ.Shared.ModelsDTO.Enums;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -49,18 +53,29 @@ namespace IDE.BLL.Services
             _logger = logger;
             _editorSettingService = editorSettingService;
             _userService = userService;
-            _buildService = buildService;
             _queueService = queueService;
             _buildService = buildService;
         }
 
-        public async Task BuildProject(int projectId)
+        public async Task BuildProject(int projectId, int userId)
         {
             var project = await GetProjectById(projectId);
-            if (project.Language == Language.CSharp)
-                await _buildService.BuildDotNetProject(projectId);
+            if (project.Language == Language.CSharp && project.ProjectType == ProjectType.Console)
+                await _buildService.BuildProject(projectId, userId, ProjectLanguageType.CSharpConsoleApp);
+            else if (project.Language == Language.Go)
+                await _buildService.BuildProject(projectId, userId, ProjectLanguageType.GoConsoleApp);
+            else if (project.Language == Language.TypeScript)
+                await _buildService.BuildProject(projectId, userId, ProjectLanguageType.TypeScriptConsoleApp);
         }
 
+        public async Task RunProject(int projectId, string connectiondId)
+        {
+            var project = _context.Projects.FirstOrDefault(p => p.Id == projectId);
+            if (project == null)
+                return;
+            if (project.Language == Language.CSharp)
+                await _buildService.RunProject(projectId, connectiondId);
+        }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
         public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)
@@ -72,11 +87,15 @@ namespace IDE.BLL.Services
             return _mapper.Map<ProjectDTO>(project);
         }
 
-        public async Task<ICollection<SearchProjectDTO>> GetProjectsName()
+        public async Task<ICollection<SearchProjectDTO>> GetProjectsName(int userId)
         {
-            var project = await _context.Projects
-                .Select(item => new SearchProjectDTO { Id = item.Id, Name = item.Name }).ToListAsync();
-            return project;
+            var availableProjects = _context.Projects
+            .Where(pr => pr.AccessModifier == AccessModifier.Public
+                    || pr.AuthorId == userId
+                    || pr.ProjectMembers.Any(prM => prM.UserId == userId))
+            .Select(item => new SearchProjectDTO { Id = item.Id, Name = item.Name }).ToListAsync();
+            
+            return await availableProjects;
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId)
@@ -213,17 +232,10 @@ namespace IDE.BLL.Services
                 .Include(i => i.EditorProjectSettings)
                 .SingleOrDefaultAsync(p => p.Id == projectId);
 
-            NotificationDTO notification = new NotificationDTO
-            {
-                Message = $"get project {project.Name}"
-            };
-
-            await _notificationService.SendNotification(projectId, notification);
-
             return _mapper.Map<ProjectInfoDTO>(project);
         }
 
-        public async Task<ProjectInfoDTO> UpdateProject(ProjectInfoDTO projectUpdateDTO)
+        public async Task<ProjectInfoDTO> UpdateProject(ProjectUpdateDTO projectUpdateDTO)
         {
             var targetProject = await _context.Projects.SingleOrDefaultAsync(p => p.Id == projectUpdateDTO.Id);
 
@@ -239,8 +251,6 @@ namespace IDE.BLL.Services
             targetProject.CountOfSaveBuilds = projectUpdateDTO.CountOfSaveBuilds;
             targetProject.AccessModifier = projectUpdateDTO.AccessModifier;
             targetProject.Color = projectUpdateDTO.Color;
-            var updateDTO = await _editorSettingService.UpdateEditorSetting(projectUpdateDTO.EditorProjectSettings);
-            targetProject.EditorProjectSettings = _mapper.Map<EditorSetting>(updateDTO);
 
             _context.Projects.Update(targetProject);
             await _context.SaveChangesAsync();
@@ -281,29 +291,48 @@ namespace IDE.BLL.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<LikedProjectInLanguageDTO>> GetLikedProjects()
+        public async Task<IEnumerable<LikedProjectDTO>> GetLikedProjects()
         {
-            return await _context.FavouriteProjects
+            var likedProjects = await _context.FavouriteProjects
                 .Include(x => x.Project)
                 .Include(x => x.Project.Author)
                 .Where(x => x.Project.AccessModifier != AccessModifier.Private)
-                .GroupBy(x => x.Project.Language)
-                .Select(x =>
-                    new LikedProjectInLanguageDTO()
+                .GroupBy(x => x.ProjectId)
+                    .Select(z => new LikedProjectDTO()
                     {
-                        ProjectType = x.Key,
-                        LikedProjects =
-                                x.GroupBy(y => y.ProjectId)
-                                .Select(z => new LikedProjectDTO()
-                                {
-                                    ProjectId = z.FirstOrDefault().ProjectId,
-                                    ProjectDescription = z.FirstOrDefault().Project.Description,
-                                    ProjectName = z.FirstOrDefault().Project.Name,
-                                    AuthorNickName = z.FirstOrDefault().Project.Author.NickName,
-                                    LikesCount = z.Count()
-                                }).OrderByDescending(i => i.LikesCount).Take(5).ToArray()
-                    })
-                    .OrderBy(x => x.ProjectType).ToListAsync();
+                        ProjectId = z.FirstOrDefault().ProjectId,
+                        ProjectDescription = z.FirstOrDefault().Project.Description,
+                        ProjectName = z.FirstOrDefault().Project.Name,
+                        AuthorNickName = z.FirstOrDefault().Project.Author.NickName,
+                        LikesCount = z.Count(),
+                    }).OrderByDescending(i => i.LikesCount).Take(6).ToListAsync();
+            return await SetLastFileChangedDate(likedProjects);
+        }
+
+        private async Task<IEnumerable<LikedProjectDTO>> SetLastFileChangedDate(IEnumerable<LikedProjectDTO> likedProjects)
+        {
+            foreach (var project in likedProjects)
+            {
+                var projects = (await _fileService.GetAllForProjectAsync(project.ProjectId)).ToList();
+                project.LastChangedDate = projects.OrderByDescending(x => x.UpdatedAt).First()?.UpdatedAt;
+            }
+            return likedProjects;
+        }
+
+        public async Task<IFormFile> ConvertFilestreamToIFormFile(Stream contentStream, string name, string fileName)
+        {
+            var ms = new MemoryStream();
+            try
+            {
+               await contentStream.CopyToAsync(ms);
+                ms.Seek(0, SeekOrigin.Begin);
+                return new FormFile(ms, 0, ms.Length,  name, fileName);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"convert stream exception");
+                return null;
+            }
         }
     }
 }

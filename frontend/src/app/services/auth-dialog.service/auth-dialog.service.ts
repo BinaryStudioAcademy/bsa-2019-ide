@@ -16,9 +16,12 @@ export class AuthDialogService implements OnDestroy {
 
   public constructor(   private dialogService: DialogService) { }
 
-    public openAuthDialog(type: DialogType) {
+    public openAuthDialog(type: DialogType, id?: number) {
         const dialog = this.dialogService.open(AuthDialogComponent, {
-            data: { dialogType: type },
+            data: { 
+                dialogType: type,
+                projectId: id
+             },
             width: '40%',
             contentStyle: {
               'border-radius' : '5px',

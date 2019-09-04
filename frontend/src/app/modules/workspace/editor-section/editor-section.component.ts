@@ -1,8 +1,10 @@
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
-import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy, SimpleChanges, SimpleChange } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy, SimpleChanges, SimpleChange,AfterViewInit, ViewChild  } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { EditorSettingDTO } from '../../../models/DTO/Common/editorSettingDTO'
 import editorTabsThemes from '../../../assets/editor-tabs-themes.json';
+import { EventService } from 'src/app/services/event.service/event.service';
+import { MonacoEditorComponent } from '@materia-ui/ngx-monaco-editor';
 
 export interface TabFileWrapper {
     isChanged: boolean;
@@ -17,16 +19,16 @@ export interface TabFileWrapper {
 export class EditorSectionComponent implements OnInit {
     @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
 
-    private _monacoOptions: EditorSettingDTO; 
+    private _monacoOptions: EditorSettingDTO;
     get monacoOptions(): EditorSettingDTO {
         return this._monacoOptions;
-    }  
+    }
     @Input()
     set monacoOptions(monacoOptions: EditorSettingDTO) {
         this._monacoOptions = monacoOptions;
-        this.setEditorTabTheme();  
+        this.setEditorTabTheme();
     }
-    
+
     // FOR REFACTOR
     // think about agregaiting of TabFileWrapper(openedFiles) with MenuItem(tabs)
     public tabs = [] as MenuItem[]; // maybe reneme on "tab"
@@ -34,13 +36,18 @@ export class EditorSectionComponent implements OnInit {
     public openedFiles = [] as TabFileWrapper[];
     public language:string;
     @Input() canEdit: boolean;
-
+    @ViewChild('monacoEditor', { static: false })
+    private monacoEditor: MonacoEditorComponent;
+    
     code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
 
-    constructor() { }
+    constructor(private eventService: EventService) { }
 
+    ngAfterViewInit() {
+        this.eventService.componentAfterInit("EditorSectionComponent");
+    }
     ngOnInit() {
-              
+
     }
 
     onChange(ev) {
@@ -52,6 +59,20 @@ export class EditorSectionComponent implements OnInit {
             }
             this.monacoOptions.language = this.language;
         }
+    }
+
+    public hightlineMatches(substring: string){
+        console.log(substring);
+
+        var matches = this.monacoEditor.editor.getModel().findMatches(substring, false, false, false, "", true);
+        const linesToDecorate = matches.map(match => {
+            return {
+                range: match.range,
+                options: { inlineClassName: 'hightliter', stickiness: 2 }
+            }
+        })
+        console.log(linesToDecorate);
+        var decorations = this.monacoEditor.editor.deltaDecorations([], linesToDecorate);
     }
 
     public closeItem(event, index) {
@@ -76,7 +97,7 @@ export class EditorSectionComponent implements OnInit {
         this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
         this.language = this.openedFiles[index].innerFile.language;
-        
+
     }
 
     public saveFiles(files: FileUpdateDTO[]) {
@@ -105,26 +126,26 @@ export class EditorSectionComponent implements OnInit {
         const element = document.querySelector('body');
         let tabsThemeName: string;
 
-        switch(this.monacoOptions.theme) { 
-            case 'vs': { 
+        switch(this.monacoOptions.theme) {
+            case 'vs': {
                 tabsThemeName = 'light';
-                break; 
-            } 
+                break;
+            }
             case 'vs-dark':
-            case 'hc-black': { 
+            case 'hc-black': {
                 tabsThemeName = 'dark';
-                break; 
-            } 
-            default: { 
+                break;
+            }
+            default: {
                 tabsThemeName = 'light';
-                break; 
-            }    
-        } 
-        
+                break;
+            }
+        }
+
         const tabTheme = editorTabsThemes.find(tt => tt.name === tabsThemeName);
 
         for (const key in tabTheme.colors) {
             element.style.setProperty(key, tabTheme.colors[key]);
-        }   
+        }
     }
 }

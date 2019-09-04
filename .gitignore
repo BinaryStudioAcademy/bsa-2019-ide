@@ -408,3 +408,4 @@ backend/BuildServer/Build/
 backend/BuildServer/Input/
 backend/BuildServer/Output/
 backend/BuildServer/BuildServer/appsettings.Development.json
+docker/*
