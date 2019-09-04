@@ -1,22 +1,22 @@
 ﻿using FluentValidation;
 using IDE.API.Validators;
+using IDE.BLL;
+using IDE.Common.Authentication;
 using IDE.Common.DTO.Common;
 using IDE.Common.DTO.File;
 using IDE.Common.DTO.User;
+using IDE.Common.ModelsDTO.DTO.Authentification;
+using IDE.DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using RabbitMQ.Shared;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using IDE.Common.Authentication;
-using IDE.Common.ModelsDTO.DTO.Authentification;
-using Microsoft.AspNetCore.Builder;
-using IDE.DAL.Context;
-using IDE.BLL;
-using IDE.DAL;
-using RabbitMQ.Shared;
+using IDE.Common.ModelsDTO.DTO.File;
+using IDE.Common.DTO.Project;
 
 namespace IDE.API.Extensions
 {
@@ -42,6 +42,9 @@ namespace IDE.API.Extensions
             services.AddSingleton<IValidator<UserLoginDTO>, UserLogInDTOValidator>();
             services.AddSingleton<IValidator<FileCreateDTO>, FileCreateDTOValidator>();
             services.AddSingleton<IValidator<FileUpdateDTO>, FileUpdateDTOValidator>();
+            services.AddSingleton<IValidator<FileRenameDTO>, FileRenameDTOValidator>();
+            services.AddSingleton<IValidator<ProjectCreateDTO>, ProjectCreateDTOValidator>();
+            services.AddSingleton<IValidator<ProjectUpdateDTO>, ProjectUpdateDTOValidator>();
         }
 
         public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)

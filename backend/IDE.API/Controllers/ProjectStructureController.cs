@@ -1,8 +1,10 @@
-﻿using IDE.BLL.Services;
+﻿using IDE.API.Extensions;
+using IDE.BLL.Services;
 using IDE.Common.ModelsDTO.DTO.Workspace;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
@@ -12,10 +14,11 @@ namespace IDE.API.Controllers
     public class ProjectStructureController : ControllerBase
     {
         private readonly ProjectStructureService _projectStructureService;
-
-        public ProjectStructureController(ProjectStructureService projectStructureService)
+        private readonly ILogger<ProjectStructureController> _logger;
+        public ProjectStructureController(ProjectStructureService projectStructureService, ILogger<ProjectStructureController> logger)
         {
             _projectStructureService = projectStructureService;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -51,13 +54,25 @@ namespace IDE.API.Controllers
             await _projectStructureService.CalculateProjectStructureSize(projectStructure);
             foreach (var item in projectStructure.NestedFiles)
             {
-                if (item.Id==fileStructureId)
+                if (fileStructureId==item.Id)
                 {
                     return item.Size;
                 }
                     return await _projectStructureService.GetFileStructureSize(item, fileStructureId);
             }
             return 0;
+        }
+
+        [HttpPost("import")]
+        public async Task ImportFile([FromForm] ImportProjectDTO importProjectDTO)
+        {
+            var author = this.GetUserIdFromToken();
+            await _projectStructureService.ImportProject(
+                importProjectDTO.projectStructureId,
+                Request.Form.Files[0],
+                importProjectDTO.fileStructureId,
+                author, true,
+               importProjectDTO.ParentNodeIds);
         }
     }
 }

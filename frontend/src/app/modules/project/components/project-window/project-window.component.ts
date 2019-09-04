@@ -16,6 +16,9 @@ import { DeleteCollaboratorRightDTO } from 'src/app/models/DTO/Common/deleteColl
 import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
 import { ProjectDescriptionDTO } from 'src/app/models/DTO/Project/projectDescriptionDTO';
 import { ProjDialogDataService } from 'src/app/services/proj-dialog-data.service/proj-dialog-data.service';
+import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
+import { TokenService } from 'src/app/services/token.service/token.service';
+import { AccessModifier } from 'src/app/models/Enums/accessModifier';
 
 @Component({
   selector: 'app-project-window',
@@ -30,10 +33,9 @@ export class ProjectWindowComponent implements OnInit {
     public languages: any;
     public projectTypes: any;
     public compilerTypes: any;
-    public colors: any;
+    public colors: { label:string, value:string }[];
     public access: any;
     public projectForm: FormGroup;
-    public area: string;
     public isFileSelected: boolean = false; 
 
     public isPageLoaded: boolean = false;
@@ -41,14 +43,11 @@ export class ProjectWindowComponent implements OnInit {
 
     public projectCreate: ProjectCreateDTO;
     public projectUpdate: ProjectUpdateDTO;
-
-    public collaborators: CollaboratorDTO[];
-    public deleteCollaborators: CollaboratorDTO[] = [];
     
-    private startCollaborators = [] as CollaboratorDTO[];
     private projectUpdateStartState: ProjectUpdateDTO;
     private projectType: ProjectType;
     private projectId: number;
+    private githubPattern = /^https:\/\/github.com\/\w[\d,\w,-]+\/\w[\d,\w,-]+$/i;
 
     constructor(private ref: DynamicDialogRef,
                 private config: DynamicDialogConfig,
@@ -57,7 +56,9 @@ export class ProjectWindowComponent implements OnInit {
                 private toastrService: ToastrService,
                 private rightService: RightsService,
                 private router: Router,
-                private dialogService: ProjDialogDataService) { }
+                private dialogService: ProjDialogDataService,
+                private signalRservice: SignalRService,
+                private tokenService: TokenService) { }
 
     ngOnInit(): void { 
         this.projectType = this.config.data.projectType;
@@ -91,7 +92,7 @@ export class ProjectWindowComponent implements OnInit {
         if (this.isCreateForm()) {
             this.isPageLoaded = true;
             this.projectForm = this.fb.group({
-                name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32)]],
+                name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32), Validators.pattern(/^[A-Z0-9]+$/i)]],
                 description: ['', Validators.required],
                 language: ['', Validators.required],
                 projectType: ['', Validators.required],
@@ -99,12 +100,13 @@ export class ProjectWindowComponent implements OnInit {
                 countOfSavedBuilds: ['', [Validators.required, Validators.max(10)]],
                 countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
                 access: ['', Validators.required],
-                color: ['', Validators.required]
+                color: ['', Validators.required],
+                githuburl: ['',Validators.pattern(this.githubPattern)]
             });
             this.projectForm.get('access').setValue(0);
         } else {
             this.projectForm = this.fb.group({
-                name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32)]],
+                name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32), Validators.pattern(/^[A-Z0-9]+$/i)]],
                 description: ['', Validators.required],
                 countOfSavedBuilds: ['', [Validators.required, Validators.max(10)]],
                 countOfBuildAttempts: ['', [Validators.required, Validators.max(10)]],
@@ -114,7 +116,6 @@ export class ProjectWindowComponent implements OnInit {
         }
 
         if (!this.isCreateForm()) {
-            this.area = "projectSettings";
             this.projectId = this.config.data.projectId;
             this.projectService.getProjectById(this.projectId)
                 .subscribe(
@@ -125,17 +126,6 @@ export class ProjectWindowComponent implements OnInit {
                     },
                     (error) => {
                         this.toastrService.error('Can\'t load project details.', 'Error Message:');
-                        console.error(error.message);
-                    }
-                );
-            this.projectService.getProjectCollaborators(this.projectId)
-                .subscribe(
-                    (resp) => {
-                        this.SetCollaboratorsFromResponse(resp);
-                        this.isPageLoaded = true;
-                    },
-                    (error) => {
-                        this.toastrService.error("'Can\'t load project collaborators.', 'Error Message:'");
                         console.error(error.message);
                     }
                 );
@@ -150,8 +140,7 @@ export class ProjectWindowComponent implements OnInit {
     }
     
     public projectItemIsNotChange(): boolean {
-        return this.IsProjectNotChange()
-            && this.IsCollaboratorChange();
+        return this.IsProjectNotChange();
     }
 
     public IsProjectNotChange(): boolean {
@@ -159,36 +148,17 @@ export class ProjectWindowComponent implements OnInit {
         && this.projectForm.get('description').value === this.projectUpdateStartState.description
         && this.projectForm.get('countOfSavedBuilds').value === this.projectUpdateStartState.countOfSaveBuilds
         && this.projectForm.get('countOfBuildAttempts').value === this.projectUpdateStartState.countOfBuildAttempts
-        && this.projectForm.get('color').value === this.projectUpdateStartState.color;
-    }
-
-    public IsCollaboratorChange(): boolean {
-        if(this.deleteCollaborators.length!=0)
-        {
-            return false;
-        }
-        for (let i in this.collaborators) {
-            if (this.collaborators[i].access !== this.startCollaborators[i].access) {
-                return false;
-            }
-        }
-        return true;
+        && this.projectForm.get('color').value === this.projectUpdateStartState.color
+        && this.projectForm.get('access').value === this.projectUpdateStartState.accessModifier;
     }
 
     public isCreateForm() {
         return this.projectType === ProjectType.Create;
     }
 
-    public delete(collaboratorId: number): void {
-        const deleteCollaborator = this.collaborators.find(item => item.id == collaboratorId);
-        this.deleteCollaborators.push(deleteCollaborator);
-        const index: number = this.collaborators.indexOf(deleteCollaborator);
-        if (index !== -1) {
-            this.collaborators.splice(index, 1);
-        }
-    }
-
     public onSubmit() {
+        this.hasDetailsSaveResponse = false;
+        
         if(this.isCreateForm()) {
             this.getValuesForProjectCreate();
             const formData = new FormData();
@@ -207,6 +177,8 @@ export class ProjectWindowComponent implements OnInit {
                         let projectId = res.body;
                         this.hasDetailsSaveResponse = true;
                         this.close();
+                        const userId=this.tokenService.getUserId();
+                        this.signalRservice.addToGroup(userId);
                         this.router.navigate([`/project/${projectId}`]);   
                     },
                     error => {
@@ -214,7 +186,6 @@ export class ProjectWindowComponent implements OnInit {
                         this.hasDetailsSaveResponse = true;
                     })
         } else {
-            this.hasDetailsSaveResponse = false;
             if (!this.IsProjectNotChange()) {
                 this.getValuesForProjectUpdate();
                 this.projectService.updateProject(this.projectUpdate)
@@ -231,51 +202,7 @@ export class ProjectWindowComponent implements OnInit {
                         console.error(error.message);
                     }
                 );
-            }
-            if (!this.IsCollaboratorChange()) {
-                this.deleteCollaborators.forEach(item => {
-                    const deleteItem: DeleteCollaboratorRightDTO =
-                    {
-                        id: item.id,
-                        access: item.access,
-                        nickName: item.nickName,
-                        projectId: this.projectId
-                    }
-                    if (!this.IsSelected(deleteItem)) {
-                        this.rightService.deleteCollaborator(deleteItem)
-                            .subscribe(
-                                (resp)=>
-                                {
-                                },
-                                (error) => {
-                                    this.toastrService.error('Can\'t delete collacortors access', 'Error Message');
-                                }
-                            );
-                    }
-                });
-                for (let i in this.collaborators) {
-                    if (this.collaborators[i].access !== this.startCollaborators[i].access) {
-                        const update: UpdateUserRightDTO =
-                        {
-                            projectId:this.projectId,
-                            access: this.collaborators[i].access,
-                            userId: this.collaborators[i].id
-                        }
-                        this.rightService.setUsersRigths(update)
-                        .subscribe(
-                            (resp) => {
-                                this.router.navigate([`project/${this.projectId}`]);
-                                this.hasDetailsSaveResponse = true;
-                                this.toastrService.success('New collacortors access have successfully saved!');
-                            },
-                            (error) => {
-                                this.hasDetailsSaveResponse = true;
-                                this.toastrService.error('Can\'t save new collacortors access', 'Error Message');
-                            }
-                        );
-                    }
-                }
-            }
+            }      
         }
     }
 
@@ -287,7 +214,8 @@ export class ProjectWindowComponent implements OnInit {
             created: project.createdAt,
             creator: project.authorName,
             favourite: true,
-            title: project.name
+            title: project.name,
+            isPublic: project.accessModifier == AccessModifier.public
         }
     }    
 
@@ -351,6 +279,10 @@ export class ProjectWindowComponent implements OnInit {
         else if (control.hasError('maxlength')) {
             errorMessage = `The length should be no more than ${control.errors.maxlength.requiredLength} letters!`;
         }
+        else if (control.hasError('pattern')) {
+
+            errorMessage = field === "githuburl" ? "https://github.com/user/repository wrong github pattern ":`This field can contain only latin letters and numbers!`;
+        }
         else {
             errorMessage = 'validation error';
         }
@@ -360,17 +292,7 @@ export class ProjectWindowComponent implements OnInit {
     public close() {
         this.ref.close();
     }
-        
-    private IsSelected(collaborator: UserNicknameDTO): boolean {
-        let result: boolean = false;
-        this.collaborators.forEach(element => {
-            if (element.id === collaborator.id) {
-                result = true;
-            }
-        });
-        return result;
-    }
-
+    
     private InitializeProject(resp: HttpResponse<ProjectInfoDTO>) {
         this.projectUpdateStartState = resp.body;
         this.projectForm.setValue({ 
@@ -378,7 +300,7 @@ export class ProjectWindowComponent implements OnInit {
             description: this.projectUpdateStartState.description,
             countOfSavedBuilds: this.projectUpdateStartState.countOfSaveBuilds,
             countOfBuildAttempts: this.projectUpdateStartState.countOfBuildAttempts,
-            color: this.projectUpdateStartState.color,
+            color: this.colors.find(c => c.value === this.projectUpdateStartState.color).value,
             access: this.projectUpdateStartState.accessModifier
         });
     }
@@ -405,19 +327,8 @@ export class ProjectWindowComponent implements OnInit {
             countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value,
             countOfSaveBuilds: this.projectForm.get('countOfSavedBuilds').value,
             language: this.projectForm.get('language').value,
-            projectType: this.projectForm.get('projectType').value
+            projectType: this.projectForm.get('projectType').value,
+            githubUrl: !!this.projectForm.get('githuburl') ? this.projectForm.get('githuburl').value : null
         }
-    }
-    private SetCollaboratorsFromResponse(resp: HttpResponse<CollaboratorDTO[]>): void {
-        this.collaborators = resp.body;
-        this.collaborators.forEach(element => {
-            let newElement: CollaboratorDTO =
-            {
-                id: element.id,
-                access: element.access,
-                nickName: element.nickName
-            }
-            this.startCollaborators.push(newElement);
-        });
     }
 }

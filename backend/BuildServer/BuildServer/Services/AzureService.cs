@@ -1,58 +1,33 @@
 ﻿using BuildServer.Interfaces;
 using Microsoft.Extensions.Configuration;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Auth;
+using Storage.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace BuildServer.Services
 {
     public class AzureService : IAzureService
     {
-        private readonly string _storageAccountName;
-        private readonly string _storageAccountKey;
-        private readonly string _container;
         private readonly string _outputDirectory;
         private readonly string _inputDirectory;
+        private readonly IBlobRepository _blobRepository;
 
-        public AzureService(IConfiguration configuration)
+        public AzureService(IConfiguration configuration,
+                            IBlobRepository blobRepository)
         {
-            _storageAccountName = configuration.GetSection("StorageAccountName").Value;
-            _storageAccountKey = configuration.GetSection("StorageAccountKey").Value;
-            _container = configuration.GetSection("Container").Value;
+            _blobRepository = blobRepository;
             _outputDirectory = configuration.GetSection("OutputDirectory").Value;
             _inputDirectory = configuration.GetSection("InputDirectory").Value;
         }
 
-        public void Upload(string fileName)
+        public async Task<Uri> Upload(string fileName)
         {
-            var storageAccount = new CloudStorageAccount(
-                            new StorageCredentials(_storageAccountName, _storageAccountKey), true);
-
-            var myClient = storageAccount.CreateCloudBlobClient();
-            var container = myClient.GetContainerReference(_container);
-            //container.CreateIfNotExistsAsync(BlobContainerPublicAccessType.Blob).GetAwaiter().GetResult();
-
-            var blockBlob = container.GetBlockBlobReference($"{fileName}.zip");
-            using (var fileStream = System.IO.File.OpenRead($"{_outputDirectory}{fileName}.zip"))
-            {
-                blockBlob.UploadFromStreamAsync(fileStream).GetAwaiter().GetResult();
-            }
+            return await _blobRepository.UploadArtifactFromPathOnServer($"{_outputDirectory}{fileName}.zip");
         }
 
-        public void Download(string fileName)
+        public async Task Download(Uri downloadUri, string fileName)
         {
-            var storageAccount = new CloudStorageAccount(
-                            new StorageCredentials(_storageAccountName, _storageAccountKey), true);
-
-            var myClient = storageAccount.CreateCloudBlobClient();
-            var container = myClient.GetContainerReference(_container);
-            //container.CreateIfNotExists(BlobContainerPublicAccessType.Blob);
-
-            var blockBlob = container.GetBlockBlobReference($"{fileName}.zip");
-            using (var fileStream = System.IO.File.OpenWrite($"{_inputDirectory}{fileName}.zip"))
-            {
-                blockBlob.DownloadToStreamAsync(fileStream).GetAwaiter().GetResult();
-            }
+            await _blobRepository.DownloadFileByUrlAsync(downloadUri, $"{_inputDirectory}{fileName}.zip");
         }
-        
     }
 }

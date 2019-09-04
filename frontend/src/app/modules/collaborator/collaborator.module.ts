@@ -2,17 +2,19 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AddCollaboratorsComponent } from './components/add-collaborators/add-collaborators.component';
 import { FormsModule } from '@angular/forms';
-import { AutoCompleteModule } from "primeng/primeng"
+import { AutoCompleteModule, SharedModule } from "primeng/primeng"
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ButtonModule } from 'primeng/button';
 import { AddCollaboratorsListComponent } from './components/add-collaborators-list/add-collaborators-list.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { ProjectWindowComponent } from '../project/components/project-window/project-window.component';
+import { UserAccessDirective } from 'src/app/directives/userAccess/user-access.directive';
 
 @NgModule({
     declarations: [
         AddCollaboratorsComponent,
-        AddCollaboratorsListComponent
+        AddCollaboratorsListComponent,
+        UserAccessDirective
     ],
     imports: [
         CommonModule,
@@ -20,10 +22,12 @@ import { ProjectWindowComponent } from '../project/components/project-window/pro
         DropdownModule,
         AutoCompleteModule,
         ProgressSpinnerModule,
-        ButtonModule
+        ButtonModule,
+        SharedModule
     ],
     exports:[
-        AddCollaboratorsListComponent
+        AddCollaboratorsListComponent,
+        AddCollaboratorsComponent
     ],
     providers:[
         ProjectWindowComponent

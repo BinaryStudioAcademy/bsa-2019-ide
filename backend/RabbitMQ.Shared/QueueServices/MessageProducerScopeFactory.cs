@@ -1,5 +1,6 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Shared.Interfaces;
+using RabbitMQ.Shared.ModelsDTO;
 using RabbitMQ.Shared.Settings;
 
 namespace RabbitMQ.Shared.QueueServices
@@ -15,7 +16,9 @@ namespace RabbitMQ.Shared.QueueServices
 
         public IMessageProducerScope Open(MessageScopeSettings messageScopeSettings)
         {
-            return new MessageProducerScope(_connectionFactory, messageScopeSettings);
+
+            var  _mqProducerScopeRun = new MessageProducerScope(_connectionFactory, messageScopeSettings);
+            return _mqProducerScopeRun;
         }
     }
 }

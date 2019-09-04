@@ -1,17 +1,49 @@
-.my-code-editor 
+.my-code-editor
     height: calc(100vh - 100px)
     width: 100%
 
-::ng-deep body .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem .ui-menuitem-link
+::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem .ui-menuitem-link,
+::ng-deep .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem a,
+::ng-deep .ui-tabmenu .ui-tabmenu-nav a
     padding: 0
-::ng-deep .tab-menu-wrapper .ui-menuitem-icon.fa.fa-fw.fa-file
-    display: block
-::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem
-    width: 15%
-::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem a
-    float: none
-::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem .ui-menuitem-link .ui-menuitem-text
-    margin-left: 30%
+
+::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem,
+::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem:not(.ui-state-active):not(.ui-state-disabled):hover
+    border: none
+    background-color: var(--inactive-tab-color)
+
+::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem.ui-state-active
+    border: none
+    background-color: var(--active-tab-color)
+
+
+.tab-item
+    display: flex
+    align-items: center
+    padding: 2px 4px
+
+.tab-icon
+    font-size: 0.8rem
+    color: var(--icon-tab-color)
+    display: flex
+    justify-content: center 
+
+.tab-text
+    font-size: 0.8rem
+    padding: 0 4px 0 4px
+    color: var(--text-tab-color)
+
+.tab-close
+    padding: 0
+    color: var(--close-cross-tab-color)
+    display: flex
+    justify-content: center
+
+.tab-close:hover
+    color: var(--close-cross-hover-tab-color)
+
+.tab-close .pi
+    font-size: 1rem
 
 .editor-icon
     margin: auto
@@ -23,3 +55,6 @@
     display: flex
     justify-content: center
     margin-top: 25%
+
+::ng-deep .hightliter
+    background-color: #ffff9f !important 

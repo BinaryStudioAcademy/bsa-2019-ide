@@ -1,5 +1,4 @@
-﻿using IDE.Common.DTO.User;
-using System;
+﻿using System;
 
 namespace IDE.Common.DTO.File
 {

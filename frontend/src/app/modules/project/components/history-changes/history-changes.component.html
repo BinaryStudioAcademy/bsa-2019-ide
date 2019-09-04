@@ -1,0 +1,29 @@
+<h2>History of changes</h2>
+<div class="ui-g-12">
+    <input type="text" [(ngModel)]="personNickname" autocomplete="off" placeholder="Enter user nickName or file name" name="searchHistory">
+</div>
+<div class="ui-g-12">
+    <div class="card">     
+        <p-accordion [multiple]="true">
+            <p-accordionTab *ngFor="let history of fileChangesList | historySearch : personNickname">
+                <p-header>
+                    <div class="pheader-container">
+                        <div class="headerContainer">
+                            <div>{{history.fileName}}</div>
+                            <div>{{history.updatedAt | date: 'dd LLL HH:mm '}}</div>
+                        </div>
+                    </div>
+                </p-header>
+                <div *ngIf="!isEmpty(history.content)">
+                    <pre>{{history.content}}</pre>
+                </div>
+                <div *ngIf="isEmpty(history.content)">
+                    This file was just created :)
+                </div>
+                <div class="nickName">
+                    Made by: <span class="highlighted">{{history.creatorNickname}}</span>
+                </div>
+            </p-accordionTab>
+        </p-accordion>
+    </div>
+</div>

@@ -1,33 +1,87 @@
+<p-progressBar *ngIf="!user" mode="indeterminate" [style]="{'height': '4px'}"></p-progressBar>
+
 <div class="p-grid p-justify-around p-align-start">
-    <div *ngIf="user" class="panel p-col p-md-6 p-lg-4 p-grid p-dir-col">
+    <div *ngIf="user" class="panel p-col-10 p-md-8 p-lg-4 p-grid p-dir-col">
+
         <img class="p-col-align-center" alt="avatar" (click)="expandImage(user.url)" src="{{user.url}}">
-        <h1 class="p-col-align-center">{{user.firstName}} {{user.lastName}}</h1>
-        <p class="property-name">Nickname:</p>
-        <p class="property-value p-col-align-center">{{user.nickName}}</p>
-        <p class="property-name">Email</p>
-        <p class="property-value p-col-align-center">{{user.email}}</p>
-        <p class="property-name">Github URL:</p>
-        <a *ngIf="user.gitHubUrl" class="property-value p-col-align-center" href="{{user.gitHubUrl}}">github</a>
-        <p *ngIf="!user.gitHubUrl" class="property-value p-col-align-center">GitHub not specified</p>
-        <p class="property-name">Birthday:</p>
-        <p *ngIf="user.birthday" class="property-value p-col-align-center">{{user.birthday | date:'mediumDate'}}</p>
-        <p *ngIf="!user.birthday" class="property-value p-col-align-center">Birthday not specified</p>
-        <p class="property-name ">Last Active:</p>
-        <p class="property-value p-col-align-center">{{user.lastActive | date:'medium'}}</p>
-        <p class="property-name">Registred At:</p>
-        <p class="property-value p-col-align-center">{{user.registeredAt | date:'MMM d, y'}}</p>
-        <p-slideMenu #menu [model]="actions" [popup]="true" [viewportHeight]="200"></p-slideMenu>
-        <button #btn type="button" pButton icon="pi pi-pencil" label="Edit Profile" (click)="menu.toggle($event)"></button>
+        <p class="tname p-col-align-center">{{user.firstName}} {{user.lastName}}</p>
+        <p>
+            <span class="property-name">Nickname: </span>
+            <span class="property-value">{{user.nickName}}</span>
+        </p>
+        <p>
+            <span class="property-name">Email: </span>
+            <span class="property-value">{{user.email}}</span>
+        </p>
+        <p>
+            <span class="property-name">Github URL: </span>
+            <span *ngIf="user.gitHubUrl" class="property-value"><a href="{{user.gitHubUrl}}" target="_blank">
+                    github</a></span>
+            <span *ngIf="!user.gitHubUrl" class="property-value">GitHub not specified</span>
+        </p>
+        <p>
+            <span class="property-name">Birthday: </span>
+            <span *ngIf="user.birthday" class="property-value">{{user.birthday | date:'mediumDate'}}</span>
+            <span *ngIf="!user.birthday" class="property-value">Birthday not specified</span>
+        </p>
+        <p>
+            <span class="property-name">Registred At: </span>
+            <span class="property-value">{{user.registeredAt | date:'MMM d, y'}}</span>
+        </p>
+        <div *ngIf='isAuthor' class="p-grid p-justify-around">
+            <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-cloud-upload' label="Change Image"
+                (click)="userPhotoUpdate()"></button>
+            <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-trash' label="Delete Image"
+                (click)="confirm()"></button>
+            <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-refresh' label="Update Info"
+                (click)="userInfoUpdate()"></button>
+            <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-key' label='Change password'
+                (click)="userPasswordUpdate()"></button>
+        </div>
     </div>
-    <div *ngIf="!user" class="panel p-col-10 p-md-4 p-lg-3 p-grid  p-justify-center">
-        <p-progressSpinner></p-progressSpinner>
-    </div>
-    <div class="panel p-col-10 p-md-8 p-lg-7  p-dir-col">
-        More information about user: projects, builds, ets..
+
+    <div *ngIf="user" class="panel p-col-10 p-md-8 p-lg-7  p-dir-col">
+        <p-tabView>
+            <p-tabPanel header="Projects">
+                <app-user-proj-list [userId]="user.id"></app-user-proj-list>
+            </p-tabPanel>
+            <p-tabPanel *ngIf='isAuthor' header="Editor settings">
+                <app-editor-settings [user]="user"></app-editor-settings>
+            </p-tabPanel>
+        </p-tabView>
     </div>
 </div>
-<p-dialog  *ngIf="user" [(visible)]="isImageExpended" [style]="{'box-shadow': 'none'}" [showHeader]="false" [draggable]="false" [modal]="true"
-            [dismissableMask]="true"
-            [contentStyle]="{'overflow':'visible', 'padding': '0', 'border': 'none', 'background': 'none', 'align-content': 'center', 'display': 'flex'}">
+<p-dialog *ngIf="user" [(visible)]="isImageExpended" [style]="{'box-shadow': 'none'}" [showHeader]="false"
+    [draggable]="false" [modal]="true" [dismissableMask]="true"
+    [contentStyle]="{'overflow':'visible', 'padding': '0', 'border': 'none', 'background': 'none', 'align-content': 'center', 'display': 'flex'}">
     <img class="big-avatar" src="{{user.url}}" alt="avatar">
 </p-dialog>
+
+<p-dialog [(visible)]="isChangeAvatar" [showHeader]="false" appendTo="body" [closable]=false [modal]="true"
+    [responsive]="true" [contentStyle]="{'max-height':'600px', 'width':'500px', 'overflow-y':'visible'}"
+    [positionTop]="10">
+
+    <span class="modal-close-btn" (click)="close()">&times;</span>
+
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <div class="title">Upload new avatar</div>
+        </div>
+    </div>
+
+    <div>
+        <input id="uploadfile" type="file" (change)="fileChangeEvent($event)" />
+        <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="1 / 1"
+            [resizeToWidth]="512" [cropperMinWidth]="128" [onlyScaleDown]="true" [roundCropper]="false" format="png"
+            outputType="base64" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+            (loadImageFailed)="loadImageFailed()" [style.display]="showCropper ? null : 'none'" [alignImage]="'center'">
+        </image-cropper>
+    </div>
+    <p-button [style]="{'padding-top':'20px'}" label="Update" (onClick)="UpdateProfilePhoto($event)"
+        *ngIf="!hasDetailsSaveResponse && selected"></p-button>
+    <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="hasDetailsSaveResponse && selected">
+        <p-progressSpinner [style]="{width: '40px', height: '40px'}" strokeWidth="5"></p-progressSpinner>
+    </div>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '50vw'}"></p-confirmDialog>

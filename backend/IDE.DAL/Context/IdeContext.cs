@@ -23,6 +23,8 @@ namespace IDE.DAL.Context
         public DbSet<FavouriteProjects> FavouriteProjects { get; private set; }
         public DbSet<VerificationToken> VerificationTokens { get; private set; }
         public DbSet<SocialAuthAccount> SocialAuthAccounts { get; private set; }
+        public DbSet<Notification> Notifications { get; private set; }
+        public DbSet<EditorSetting> EditorSettings { get; private set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,16 +36,6 @@ namespace IDE.DAL.Context
             if (_isDatabaseUpdatedChecked)
             {
                 return;
-            }
-
-            try //If we need we can check if database with such connection string exists, not to create smth new by mistake
-            {
-                Database.OpenConnection();
-                Database.CloseConnection();
-            }
-            catch (SqlException)
-            {
-                throw new System.Exception("Database with such connection string doesn't exist");
             }
 
             if (Database.GetPendingMigrations().Count() != 0)

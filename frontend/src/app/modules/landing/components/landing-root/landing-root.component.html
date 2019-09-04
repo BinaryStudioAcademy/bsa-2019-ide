@@ -1,5 +1,12 @@
 <div class="container">
     <div class="ui-g">
+        <div class="ui-g-12 header">
+            <div class="header-container">
+                <img src="../../../../../assets/img/logo.svg" height="70%">
+                <h1 class="name">Online IDE</h1>
+                <h2 class="name">It was designed to collaborate developers and make writing code for then easier and more available everywhere</h2>
+            </div>
+        </div>
         <div class="ui-g-12 first-block">
             <div class="ui-g-5 center">
                 <img src="https://patimes.org/wp-content/uploads/2015/04/Vaz-collaboration1.jpg" width="80%">
@@ -7,7 +14,7 @@
             <div class="ui-g-7 text-block">
                 <!--Change text))-->
                 <h2>Collaborate with other people</h2>
-                <p>Using this platform, you can collaborate with other people and write projects together, here we need to add more text, because people would read it and they would be really interested for their work</p>
+                <p>Using our platform you can independently or together with your friends develop your product. Our ide gives you a great deal of functionality to manage your product, allowing you to change the level of access of your collaborator to your project and add or delete collaborators when you want it.</p>
             </div>
         </div>
         <div class="ui-g-12 second-block">
@@ -25,19 +32,59 @@
                 <img src="http://www.illuminationworksllc.com/wp-content/uploads/2017/04/ProjectManagement-1.jpg" width="80%">
             </div>
         </div>
-        <div class="languageContainer" *ngIf="!smthWrong">
-            <div class="ui-g-12 line">
+        <div class="ui-g-12 statistics" *ngIf="!noInfo">
+            <div class="ui-g-6 text-block-center">
+                <img src="https://cdn3.iconfinder.com/data/icons/engineering-vector-line-2/128/53-512.png" width="30%" class="img-center">
+                <p>Right now we have more than <span class="highlighted">{{websiteInfo.projectsCount}}</span> projects, which amount increases every day</p>
             </div>
-            <div class="p-grid ui-g-12">
-                <div class="p-col language" *ngFor="let item of menuItems; index as i">
-                    <div class="block">
-                        <div class="image" [ngClass]="{'active': active === i}"
-                         (click)="showProjects(i)" [style.background-image]="'url(' + item.url + ')'"></div>
-                        <p>{{item.name}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="projects ui-g-12">
-                <app-projects-list [projects]="shownProjects === undefined ? null : shownProjects.likedProjects"></app-projects-list>
+            <div class="ui-g-6 text-block-center">        
+                <img src="https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1374533/910/607/m1/fpnw/wm0/03-1user-.jpg?1466145560&s=a087bdf4e16ce4c463929bb636d9af6a" width="45%" class="img-center">
+                <p>Our community join about <span class="highlighted">{{websiteInfo.usersCount}}</span> different users, and, maybe, your friends also join us. They invite up to <span class="highlighted">{{websiteInfo.collaboratorsCount}}</span> collaborators to work with</p>
             </div>
         </div>
+        <div class="ui-g-12 statistics" *ngIf="!noInfo">
+            <div class="ui-g-6 text-block-center">
+                <img src="https://cdn3.iconfinder.com/data/icons/construction-105/34/16-512.png" width="25%" class="img-center">
+                <p>Our projects was build <span class="highlighted">{{websiteInfo.buildCount}}</span> times</p>
+            </div>
+            <div class="ui-g-6 text-block-center">
+                <img src="https://icon-library.net/images/text-file-icon/text-file-icon-18.jpg" width="25%" class="img-center">
+                <p>This projects has more than <span class="highlighted">{{websiteInfo.filesCount}}</span> files on different languages, such as C#, JS, TS, GO, HTML, XML and other</p>
+            </div>
+        </div>
+
+        <div class="ui-g-12 projects" *ngIf="!smthWrong">
+            <div class="ui-g-12">
+                <h3>Our most popular projects</h3>
+            </div>
+            <div class="ui-g-4" *ngFor="let project of likedProjects">
+                <app-project-card class="liked-project" [project]="project" (click)="OnProjectCardClick(project)"></app-project-card>
+            </div>
+        </div>
+        
+        <div class="comments ui-g-12">
+            <div class="ui-g-12">
+                <h3>What other people tell about us</h3>
+            </div>
+            <div class="ui-g-4" *ngFor="let comment of comments">
+                <app-comment-card [comment]="comment"></app-comment-card>
+            </div>
+        </div>
+
+        <div class="ui-g-12 join-us text-block-center">
+            <p>Do you like our idea?:)</p>
+            <button (click)="Authorize()">Join us and try</button>
+            <p>We promise, you would like it</p>
+        </div>
+
+        <div class="ui-g-12 footer">
+            <div>
+                <span>&copy; 2019 Online IDE</span>
+            </div>
+            <div class="links">
+                <a href="https://facebook.com"><i class="fa fa-facebook-square fa-2x" aria-hidden="true"></i></a>
+                <a href="https://github.com"><i class="fa fa-github fa-2x" aria-hidden="true"></i></a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,26 +1,114 @@
 .container 
     width: 100%
 
-.center
+.header
+    background: #5db4e9
+    color: white
+    height: 95vh
+    position: relative
+    
+.header-container
+    display: block
+    margin: auto
+    position: absolute
+    top: 0
+    bottom: 0
+    left: 0
+    right: 0
+    width: 50%
+    height: 100%
     text-align: center
 
-.text-block
-    padding: 20px
-    display: flex
-    justify-content: center
-    flex-direction: column
-    height: 100%
-.text-block-categories 
-    margin-top: 0
-
-.first-block 
+.first-block, .statistics
     color: #6E6D6D
     padding: 0 5%
-
+    
 .second-block 
     background: #5db4e9
     color: white
     padding: 40px 5%
+
+.statistics, .join-us
+    height: 45vh
+
+.comments
+    padding: 20px 7%
+    color: #6E6D6D
+.comments h3, .projects h3
+    font-size: 3em
+
+.projects
+    padding: 20px 7%
+    color: white
+    background: #5db4e9
+
+.join-us
+    background: #5db4e9
+    padding: 0 5%
+    font-size: 1.5em
+    color: white
+
+.join-us button
+    width: 40%
+    height: 10vh
+    font-size: 2em
+    border: none
+    cursor: pointer
+    border-radius: 5px
+    margin: 0 auto
+    box-shadow: 0 0 10px rgba(0,0,0,0.5)
+    background: orange
+
+.footer
+    width: 90%
+    height: 45px
+    vertical-align: center
+    margin: 20px auto 0 auto
+    font-size: 0.7em
+    display: flex
+    justify-content: space-between
+
+.footer span
+    margin-top: 15px
+
+.footer i
+    margin: -7px 0 0 6px
+
+a  
+    color: black
+
+.text-block
+    padding: 7%
+    height: 100%
+    display: flex
+    justify-content: center
+    flex-direction: column
+
+.text-block-center
+    padding: 7%
+    display: flex
+    justify-content: center
+    flex-direction: column
+    text-align: center
+    height: 100%
+
+.text-block-categories 
+    margin-top: 0
+
+.image-container
+    position: relative
+
+.image-container img
+    display: block
+    position: absolute
+    top: 0
+    bottom: 0
+    left: 0
+    right: 0
+
+.img-center
+    display: inline-block
+    margin: 0 auto
 
 h3
     text-align: center
@@ -50,5 +138,8 @@ h3
 .active
     border: 1px solid blue
 
-.projects
-    padding: 10px 0
+.highlighted 
+    font-weight: bold
+
+.liked-project
+    cursor: pointer

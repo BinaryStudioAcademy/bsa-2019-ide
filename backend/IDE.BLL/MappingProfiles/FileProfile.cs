@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using IDE.Common.DTO.File;
+using IDE.DAL.Entities.Elastic;
 using IDE.DAL.Entities.NoSql;
 
 namespace IDE.BLL.MappingProfiles
@@ -12,6 +13,7 @@ namespace IDE.BLL.MappingProfiles
             CreateMap<FileDTO, File>();
             CreateMap<FileCreateDTO, File>();
             CreateMap<FileUpdateDTO, File>();
+            CreateMap<File, FileSearch>();
         }
     }
 }

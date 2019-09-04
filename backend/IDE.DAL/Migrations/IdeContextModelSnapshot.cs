@@ -13,7 +13,7 @@ namespace IDE.DAL.Migrations
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
-
+#pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
@@ -44,6 +44,37 @@ namespace IDE.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Builds");
+                });
+
+            modelBuilder.Entity("IDE.DAL.Entities.EditorSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CursorStyle");
+
+                    b.Property<int>("FontSize");
+
+                    b.Property<string>("Language");
+
+                    b.Property<int>("LineHeight");
+
+                    b.Property<string>("LineNumbers");
+
+                    b.Property<bool>("ReadOnly");
+
+                    b.Property<bool>("RoundedSelection");
+
+                    b.Property<bool>("ScrollBeyondLastLine");
+
+                    b.Property<int>("TabSize");
+
+                    b.Property<string>("Theme");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EditorSettings");
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.FavouriteProjects", b =>
@@ -93,6 +124,35 @@ namespace IDE.DAL.Migrations
                     b.ToTable("Images");
                 });
 
+            modelBuilder.Entity("IDE.DAL.Entities.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateTime");
+
+                    b.Property<bool>("IsRead");
+
+                    b.Property<string>("Message");
+
+                    b.Property<string>("Metadata");
+
+                    b.Property<int?>("ProjectId");
+
+                    b.Property<int>("Status");
+
+                    b.Property<int>("Type");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("IDE.DAL.Entities.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -115,6 +175,8 @@ namespace IDE.DAL.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<int?>("EditorProjectSettingsId");
+
                     b.Property<int?>("GitCredentialId");
 
                     b.Property<int>("Language");
@@ -128,6 +190,8 @@ namespace IDE.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
+
+                    b.HasIndex("EditorProjectSettingsId");
 
                     b.HasIndex("GitCredentialId");
 
@@ -198,6 +262,8 @@ namespace IDE.DAL.Migrations
 
                     b.Property<DateTime?>("Birthday");
 
+                    b.Property<int?>("EditorSettingsId");
+
                     b.Property<string>("Email");
 
                     b.Property<bool>("EmailConfirmed");
@@ -221,6 +287,8 @@ namespace IDE.DAL.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AvatarId");
+
+                    b.HasIndex("EditorSettingsId");
 
                     b.ToTable("Users");
                 });
@@ -266,12 +334,24 @@ namespace IDE.DAL.Migrations
                         .HasForeignKey("UserId");
                 });
 
+            modelBuilder.Entity("IDE.DAL.Entities.Notification", b =>
+                {
+                    b.HasOne("IDE.DAL.Entities.User", "User")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("IDE.DAL.Entities.Project", b =>
                 {
                     b.HasOne("IDE.DAL.Entities.User", "Author")
                         .WithMany("Projects")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("IDE.DAL.Entities.EditorSetting", "EditorProjectSettings")
+                        .WithMany()
+                        .HasForeignKey("EditorProjectSettingsId");
 
                     b.HasOne("IDE.DAL.Entities.GitCredential", "GitCredential")
                         .WithMany()
@@ -311,6 +391,10 @@ namespace IDE.DAL.Migrations
                     b.HasOne("IDE.DAL.Entities.Image", "Avatar")
                         .WithMany()
                         .HasForeignKey("AvatarId");
+
+                    b.HasOne("IDE.DAL.Entities.EditorSetting", "EditorSettings")
+                        .WithMany()
+                        .HasForeignKey("EditorSettingsId");
                 });
 
             modelBuilder.Entity("IDE.DAL.Entities.VerificationToken", b =>
@@ -320,7 +404,7 @@ namespace IDE.DAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
-
+#pragma warning restore 612, 618
         }
     }
 }

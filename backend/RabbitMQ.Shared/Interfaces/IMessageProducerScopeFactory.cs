@@ -1,4 +1,5 @@
-﻿using RabbitMQ.Shared.Settings;
+﻿using RabbitMQ.Shared.ModelsDTO;
+using RabbitMQ.Shared.Settings;
 
 namespace RabbitMQ.Shared.Interfaces
 {

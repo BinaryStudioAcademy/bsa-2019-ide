@@ -22,7 +22,7 @@ import { DialogService } from 'primeng/api';
 import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { GeneralModule } from './general/general.module';
 import { TreeModule } from 'primeng/tree';
-import { MenuModule,AutoCompleteModule } from 'primeng/primeng';
+import { MenuModule,AutoCompleteModule, ListboxModule, AccordionModule, OverlayPanelModule } from 'primeng/primeng';
 import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { LoginGuard } from './guards/login.guard';
 import { JwtModule } from '@auth0/angular-jwt';
@@ -34,14 +34,27 @@ import { FormsModule } from '@angular/forms';
 import { ProjectSettingsRouteGuard } from './guards/project-settings-route.guard';
 import { AddCollaboratorsComponent } from './modules/collaborator/components/add-collaborators/add-collaborators.component';
 import { FileInfoComponent } from './modules/workspace/file-info/file-info.component';
+import { ChartsModule } from 'ng2-charts';
+
+import { HighlightMatchDirective } from './directives/highlight-match.directive';
+import { ImportFileComponent } from './modules/workspace/import-file/import-file.component';
+import { NotificationStatusDirective } from './directives/notification-status/notification-status.directive';
+import { NotificationComponent } from './notification/notification.component';
 
 
 @NgModule({
     declarations: [
         AppComponent,
-        NavMenuComponent
+        NavMenuComponent,
+        NotificationStatusDirective,
+        NotificationComponent,
+
     ],
     imports: [
+        OverlayPanelModule,
+        AccordionModule,
+        ListboxModule,
+        ChartsModule,
         CollaboratorModule,
         AutoCompleteModule,
         FormsModule,
@@ -90,7 +103,8 @@ import { FileInfoComponent } from './modules/workspace/file-info/file-info.compo
     ],
     entryComponents: [
         AddCollaboratorsComponent,
-        FileInfoComponent
+        FileInfoComponent,
+        ImportFileComponent
     ],
     bootstrap: [AppComponent]
 })

@@ -1,20 +1,25 @@
-<p-card header="User statistics" [style]="{width:'100%'}">
-    <p-table [value]="userstatistics" [scrollable]="true" scrollHeight="150px" [rowHover]="true">
-    <ng-template pTemplate="header">
-        <tr>
-            <th>Member</th>
-            <th>Code lines</th>
-            <th>Successful builds</th>
-            <th>Failed builds</th>
-        </tr>
-    </ng-template>
-    <ng-template class="table-row" pTemplate="body" let-userstatistic>
-        <tr (click)="OpenUserDetailedPage(userstatistic.id)">
-            <td><img class="table-user-avatar"src="{{userstatistic.avatar}}"> {{userstatistic.name}}</td>
-            <td>{{userstatistic.codelines}}</td>
-            <td>{{userstatistic.successfulBuilds}}</td>
-            <td>{{userstatistic.failedBuilds}}</td>
-        </tr>
+<h2 style="text-align: center">Users statistics</h2>
+<p-table [columns]="cols" [value]="usersData">
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th *ngFor="let col of columns" [ngClass]="'stat-table-header'">
+        {{col.header}}
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template class="table-row" pTemplate="body" let-rowData let-columns="columns">
+    <tr>
+      <td *ngFor="let col of columns" [ngClass]="'table-element'" [ngSwitch]="col.field">
+        <ng-container *ngSwitchCase="'isAuthor'">
+          {{ rowData[col.field] ? 'Author' : 'Collaborator'}}
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          {{ rowData[col.field]}}
+        </ng-container>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="summary">
+        Total files: {{totalFilesNum}} 
     </ng-template>
 </p-table>
-</p-card>

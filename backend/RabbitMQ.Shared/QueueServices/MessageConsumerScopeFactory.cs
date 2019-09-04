@@ -8,7 +8,6 @@ namespace RabbitMQ.Shared.QueueServices
     {
         private readonly IConnectionFactory _connectionFactory;
 
-
         public MessageConsumerScopeFactory(IConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory;
@@ -16,15 +15,17 @@ namespace RabbitMQ.Shared.QueueServices
 
         public IMessageConsumerScope Open(MessageScopeSettings messageScopeSettings)
         {
-            return new MessageConsumerScope(_connectionFactory, messageScopeSettings);
-        }
 
+            var _mqConsumerScopeRun = new MessageConsumerScope(_connectionFactory, messageScopeSettings);
+            _mqConsumerScopeRun.MessageConsumer.Connect();
+            return _mqConsumerScopeRun;
+        }
         public IMessageConsumerScope Connect(MessageScopeSettings messageScopeSettings)
         {
             var mqConsumerScope = Open(messageScopeSettings);
-            mqConsumerScope.MessageConsumer.Connect();
+            //mqConsumerScope.MessageConsumer.Connect();
 
             return mqConsumerScope;
-        }        
+        }
     }
 }

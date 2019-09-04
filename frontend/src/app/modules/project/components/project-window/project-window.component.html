@@ -6,9 +6,10 @@
     </div>
 </div>
 
-<div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded || projectUpdate">
+<div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded">
     <p-progressSpinner></p-progressSpinner>
 </div>
+
 <div *ngIf="!isCreateForm() && !isPageLoaded && !projectUpdate" class="error">
     <p>Can't load project details</p>
 </div>
@@ -118,11 +119,6 @@
                 </div>
             </div>
 
-            <!--Collaborators-->
-            <div class="label" *ngIf="!isCreateForm() && collaborators && collaborators.length > 0">Collaborators:</div>
-            <app-add-collaborators-list [collaborators]="collaborators" [area]="area"
-                *ngIf="!isCreateForm() && collaborators && collaborators.length > 0"></app-add-collaborators-list>
-
             <!-- Color -->
             <div class="label">Project color</div>
             <div class="ui-g ui-fluid">
@@ -140,8 +136,8 @@
             </div>
 
             <!-- Import -->
-            <div class="label">Choose Existing Project</div>
-            <div class="ui-g ui-fluid project-upload">
+            <div *ngIf="isCreateForm()" class="label">Choose Existing Project</div>
+            <div *ngIf="isCreateForm()" class="ui-g ui-fluid project-upload">
                 <div class="ui-g-5 ui-g-offset-1">
                     <p-fileUpload #uploadElement maxFileSize="10485760" accept=".zip" chooseLabel="Choose archive" (onSelect)="selectHandler()"
                         mode="basic" [customUpload]="true"></p-fileUpload>
@@ -149,12 +145,25 @@
                 <div class="ui-g-5">
                     <button class="ui-g-5 reset-btn" pButton label="Reset" [disabled]="!isFileSelected" (click)="resetSelection()"></button>
                 </div>
+                <div class="ui-g-10 ui-g-offset-1">
+                    <p-inplace >
+                        <span pInplaceDisplay>
+                           <span style="width:100%;"> Add github url</span>
+                        </span>
+                        <span pInplaceContent>
+                            <input type="text" placeholder="Github url" pInputText formControlName="githuburl">
+                        </span>
+                        
+                    </p-inplace>
+                    <div class="invalid" *ngIf="projectForm.get('githuburl').invalid && projectForm.get('githuburl').dirty">
+                {{getErrorMessage('githuburl')}}</div>
+                </div>
             </div>
 
             <!-- Submit -->
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
-                    <button *ngIf="isCreateForm()" type="submit" [disabled]="!projectForm.valid" pButton
+                    <button *ngIf="isCreateForm() && hasDetailsSaveResponse" type="submit" [disabled]="!projectForm.valid" pButton
                         label="Create"></button>
                     <button *ngIf="!isCreateForm() && hasDetailsSaveResponse" type="submit"
                         [disabled]="!projectForm.valid || projectItemIsNotChange()" pButton label="Save"></button>

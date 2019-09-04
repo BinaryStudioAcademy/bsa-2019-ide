@@ -14,5 +14,6 @@ namespace IDE.Common.DTO.Project
         public BuildStatus? BuildStatus { get; set; }
         public DateTime? LastBuild { get; set; }
         public string Color { get; set; }
+        public bool IsPublic {get; set; }
     }
 }

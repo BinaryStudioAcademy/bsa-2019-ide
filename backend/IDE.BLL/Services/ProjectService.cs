@@ -2,18 +2,23 @@
 using IDE.BLL.ExceptionsCustom;
 using IDE.BLL.Interfaces;
 using IDE.Common.DTO.Common;
-using IDE.Common.DTO.File;
 using IDE.Common.DTO.Project;
+using IDE.Common.DTO.User;
 using IDE.Common.Enums;
+using IDE.Common.ModelsDTO.DTO.Common;
 using IDE.Common.ModelsDTO.DTO.Project;
 using IDE.Common.ModelsDTO.DTO.User;
+using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Context;
 using IDE.DAL.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using RabbitMQ.Shared.ModelsDTO.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,17 +29,57 @@ namespace IDE.BLL.Services
         private readonly IdeContext _context;
         private readonly IMapper _mapper;
         private readonly FileService _fileService;
+        private readonly ILogger<ProjectService> _logger;
+        private readonly INotificationService _notificationService;
+        private readonly IQueueService _queueService;
+        private readonly IBuildService _buildService;
+        private readonly UserService _userService;
+        private readonly IEditorSettingService _editorSettingService;
 
-        public ProjectService(IdeContext context, IMapper mapper, FileService fileService)
+        public ProjectService(IdeContext context,
+            IMapper mapper,
+            FileService fileService,
+            UserService userService,
+            INotificationService notificationService,
+            ILogger<ProjectService> logger,
+            IQueueService queueService,
+            IEditorSettingService editorSettingService,
+            IBuildService buildService)
         {
             _context = context;
             _mapper = mapper;
             _fileService = fileService;
+            _notificationService = notificationService;
+            _logger = logger;
+            _editorSettingService = editorSettingService;
+            _userService = userService;
+            _queueService = queueService;
+            _buildService = buildService;
+        }
+
+        public async Task BuildProject(int projectId, int userId)
+        {
+            var project = await GetProjectById(projectId);
+            if (project.Language == Language.CSharp && project.ProjectType == ProjectType.Console)
+                await _buildService.BuildProject(projectId, userId, ProjectLanguageType.CSharpConsoleApp);
+            else if (project.Language == Language.Go)
+                await _buildService.BuildProject(projectId, userId, ProjectLanguageType.GoConsoleApp);
+            else if (project.Language == Language.TypeScript)
+                await _buildService.BuildProject(projectId, userId, ProjectLanguageType.TypeScriptConsoleApp);
+        }
+
+        public async Task RunProject(int projectId, string connectiondId)
+        {
+            var project = _context.Projects.FirstOrDefault(p => p.Id == projectId);
+            if (project == null)
+                return;
+            if (project.Language == Language.CSharp)
+                await _buildService.RunProject(projectId, connectiondId);
         }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
         public async Task<ProjectDTO> GetProjectByIdAsync(int projectId)
-        {            
+        {
             var project = await _context.Projects
                 .Include(p => p.Author)
                 .FirstOrDefaultAsync(p => p.Id == projectId);
@@ -42,11 +87,15 @@ namespace IDE.BLL.Services
             return _mapper.Map<ProjectDTO>(project);
         }
 
-        public async Task<ICollection<SearchProjectDTO>> GetProjectsName()
+        public async Task<ICollection<SearchProjectDTO>> GetProjectsName(int userId)
         {
-            var project = await _context.Projects
-                .Select(item => new SearchProjectDTO { Id = item.Id, Name = item.Name }).ToListAsync();
-            return project;
+            var availableProjects = _context.Projects
+            .Where(pr => pr.AccessModifier == AccessModifier.Public
+                    || pr.AuthorId == userId
+                    || pr.ProjectMembers.Any(prM => prM.UserId == userId))
+            .Select(item => new SearchProjectDTO { Id = item.Id, Name = item.Name }).ToListAsync();
+            
+            return await availableProjects;
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetAssignedUserProjects(int userId)
@@ -69,12 +118,34 @@ namespace IDE.BLL.Services
                 .Where(a => a.ProjectId == projectId && a.UserId != authorId)
                 .Select(a => new CollaboratorDTO
                 {
-                    Id=a.UserId,
-                    NickName=a.User.NickName,
-                    Access=a.UserAccess
+                    Id = a.UserId,
+                    NickName = a.User.NickName,
+                    Access = a.UserAccess
                 }).ToListAsync();
 
             return colaborators;
+        }
+
+        public async Task<ICollection<ProjectUserPageDTO>> GetProjectsByUserId(int userId)
+        {
+            var projects = _context.Projects
+               .Where(pr => pr.AuthorId == userId);
+
+            var collection = await projects.ToListAsync();
+
+            return _mapper.Map<ICollection<ProjectUserPageDTO>>(collection);
+        }
+
+        public async Task<ICollection<ProjectUserPageDTO>> GetAssignedProjectsByUserId(int userId)
+        {
+            var projects = _context.ProjectMembers
+              .Where(pr => pr.UserId == userId)
+              .Include(x => x.Project)
+              .Select(x => x.Project);
+
+            var collection = await projects.ToListAsync();
+
+            return _mapper.Map<ICollection<ProjectUserPageDTO>>(collection);
         }
 
         public async Task<ICollection<ProjectDescriptionDTO>> GetUserProjects(int userId)
@@ -127,9 +198,26 @@ namespace IDE.BLL.Services
         public async Task<int> CreateProject(ProjectCreateDTO projectCreateDto, int userId)
         {
             var project = _mapper.Map<Project>(projectCreateDto);
+            var user = await _userService.GetUserDetailsById(userId);
             project.AuthorId = userId;
             project.CreatedAt = DateTime.Now;
-            project.AccessModifier = AccessModifier.Private;
+            project.AccessModifier = projectCreateDto.Access;
+            var userEditorSettings = (await _userService.GetUserDetailsById(userId)).EditorSettings;
+            var newProjectEditorSetting = new EditorSettingDTO
+            {
+                CursorStyle = userEditorSettings.CursorStyle,
+                FontSize = userEditorSettings.FontSize,
+                ScrollBeyondLastLine = userEditorSettings.ScrollBeyondLastLine,
+                RoundedSelection = userEditorSettings.RoundedSelection,
+                TabSize = userEditorSettings.TabSize,
+                LineHeight = userEditorSettings.LineHeight,
+                LineNumbers = userEditorSettings.LineNumbers,
+                ReadOnly = userEditorSettings.ReadOnly,
+                Theme = userEditorSettings.Theme,
+                Language = (projectCreateDto.Language.ToString()).ToLower()
+            };
+            var createDTO = await _editorSettingService.CreateEditorSettings(newProjectEditorSetting);
+            project.EditorProjectSettingsId = _mapper.Map<EditorSetting>(createDTO).Id;
 
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
@@ -141,6 +229,7 @@ namespace IDE.BLL.Services
         {
             var project = await _context.Projects
                 .Include(x => x.Author)
+                .Include(i => i.EditorProjectSettings)
                 .SingleOrDefaultAsync(p => p.Id == projectId);
 
             return _mapper.Map<ProjectInfoDTO>(project);
@@ -152,6 +241,7 @@ namespace IDE.BLL.Services
 
             if (targetProject == null)
             {
+                _logger.LogWarning(LoggingEvents.HaveException, $"update project not found");
                 throw new NotFoundException(nameof(targetProject), projectUpdateDTO.Id);
             }
 
@@ -181,9 +271,15 @@ namespace IDE.BLL.Services
                 .Include(pr => pr.Builds)
                 .FirstOrDefaultAsync(p => p.Id == id);
             if (project == null)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"delete project not found");
                 throw new NotFoundException(nameof(Project), id);
+            }
             if (project.AuthorId != ownerId)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"not author delete project");
                 throw new InvalidAuthorException();
+            }
 
             //var filesDelete = await _fileService.GetAllForProjectAsync(id);
             //foreach (var file in filesDelete)
@@ -195,59 +291,48 @@ namespace IDE.BLL.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<LikedProjectInLanguageDTO>> GetLikedProjects()
+        public async Task<IEnumerable<LikedProjectDTO>> GetLikedProjects()
         {
-            return await _context.FavouriteProjects
+            var likedProjects = await _context.FavouriteProjects
                 .Include(x => x.Project)
                 .Include(x => x.Project.Author)
                 .Where(x => x.Project.AccessModifier != AccessModifier.Private)
-                .GroupBy(x => x.Project.Language)
-                .Select(x =>
-                    new LikedProjectInLanguageDTO()
+                .GroupBy(x => x.ProjectId)
+                    .Select(z => new LikedProjectDTO()
                     {
-                        ProjectType = x.Key,
-                        LikedProjects =
-                                x.GroupBy(y => y.ProjectId)
-                                .Select(z => new LikedProjectDTO()
-                                {
-                                    ProjectId = z.FirstOrDefault().ProjectId,
-                                    ProjectDescription = z.FirstOrDefault().Project.Description,
-                                    ProjectName = z.FirstOrDefault().Project.Name,
-                                    AuthorNickName = z.FirstOrDefault().Project.Author.NickName,
-                                    LikesCount = z.Count()
-                                }).OrderByDescending(i => i.LikesCount).Take(5).ToArray()
-                    })
-                    .OrderBy(x => x.ProjectType).ToListAsync();
+                        ProjectId = z.FirstOrDefault().ProjectId,
+                        ProjectDescription = z.FirstOrDefault().Project.Description,
+                        ProjectName = z.FirstOrDefault().Project.Name,
+                        AuthorNickName = z.FirstOrDefault().Project.Author.NickName,
+                        LikesCount = z.Count(),
+                    }).OrderByDescending(i => i.LikesCount).Take(6).ToListAsync();
+            return await SetLastFileChangedDate(likedProjects);
         }
 
-        public async Task<bool> CreateProjectZipFile(int projectId, string path)
+        private async Task<IEnumerable<LikedProjectDTO>> SetLastFileChangedDate(IEnumerable<LikedProjectDTO> likedProjects)
         {
-            ICollection<FileDTO> filesForProject = await _fileService.GetAllForProjectAsync(projectId);
+            foreach (var project in likedProjects)
+            {
+                var projects = (await _fileService.GetAllForProjectAsync(project.ProjectId)).ToList();
+                project.LastChangedDate = projects.OrderByDescending(x => x.UpdatedAt).First()?.UpdatedAt;
+            }
+            return likedProjects;
+        }
+
+        public async Task<IFormFile> ConvertFilestreamToIFormFile(Stream contentStream, string name, string fileName)
+        {
+            var ms = new MemoryStream();
             try
             {
-                foreach (var f in filesForProject)
-                {
-                    f.Folder.TrimStart('/', '.');
-                    var dest = Path.Combine(path, "ProjectFolder", f.Folder);
-                    Directory.CreateDirectory(dest);
-                    using (StreamWriter sw = File.CreateText(Path.Combine(dest, f.Name)))
-                    {
-                        sw.Write(f.Content);
-                    }
-
-                }
-
-                ZipFile.CreateFromDirectory(Path.Combine(path,"ProjectFolder"), Path.Combine(path, $"project_{projectId}.zip"));
-                var dirToDelete = Path.Combine(path, "ProjectFolder");
-                Directory.Delete(dirToDelete, true);
+               await contentStream.CopyToAsync(ms);
+                ms.Seek(0, SeekOrigin.Begin);
+                return new FormFile(ms, 0, ms.Length,  name, fileName);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                return false;
+                _logger.LogWarning(LoggingEvents.HaveException, $"convert stream exception");
+                return null;
             }
-            return true;
-
         }
     }
 }

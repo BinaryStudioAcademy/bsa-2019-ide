@@ -3,7 +3,7 @@ import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
 import { SelectItem } from 'primeng/api';
 import { AddCollaboratorsComponent } from '../add-collaborators/add-collaborators.component';
-import { ProjectWindowComponent } from '../../../project/components/project-window/project-window.component';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-add-collaborators-list',
@@ -19,13 +19,10 @@ export class AddCollaboratorsListComponent implements OnInit {
     public label: string;
 
     @Input() collaborators: CollaboratorDTO[];
-    @Input() area: string;
-    @Output() onChanged = new EventEmitter<CollaboratorDTO[]>();
 
     constructor(
-        private addCollaboratorsComponent: AddCollaboratorsComponent,
-        private projectSettingComponent: ProjectWindowComponent
-    ) { }
+        private router: Router,
+        private addCollaboratorsComponent: AddCollaboratorsComponent) { }
 
     ngOnInit() {
         this.userAccess = [
@@ -37,12 +34,15 @@ export class AddCollaboratorsListComponent implements OnInit {
     }
 
     public delete(collaboratorId: number): void {
-        if(this.area=="workspace")
-        {
-            this.addCollaboratorsComponent.delete(collaboratorId);
-        }
-        else{
-            this.projectSettingComponent.delete(collaboratorId);
-        }
+        this.addCollaboratorsComponent.delete(collaboratorId);
+    }
+
+    public openUserDetails(id: number):void {
+        this.router.navigate([`/user/details/${id}`]);   
+    }
+
+    public isAuthor(): boolean
+    {
+        return this.addCollaboratorsComponent.isAuthor();
     }
 }

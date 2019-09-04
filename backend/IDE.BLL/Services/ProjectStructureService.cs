@@ -15,6 +15,10 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using File = System.IO.File;
+using Newtonsoft.Json;
 
 namespace IDE.BLL.Services
 {
@@ -23,15 +27,20 @@ namespace IDE.BLL.Services
         private readonly IProjectStructureRepository _projectStructureRepository;
         private readonly FileService _fileService;
         private readonly IMapper _mapper;
+        private readonly ILogger<ProjectStructureService> _logger;
+        private readonly IConfiguration _configuration;
 
         public ProjectStructureService(
             IProjectStructureRepository projectStructureRepository,
             FileService fileService,
-            IMapper mapper)
+            IMapper mapper, ILogger<ProjectStructureService> logger,
+            IConfiguration configuration)
         {
             _projectStructureRepository = projectStructureRepository;
             _fileService = fileService;
             _mapper = mapper;
+            _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task<ProjectStructureDTO> GetByIdAsync(string id)
@@ -101,26 +110,84 @@ namespace IDE.BLL.Services
             return await GetByIdAsync(createdProjectStructure.Id);
         }
 
-        public async Task UnzipProject(ProjectStructureDTO projectStructure, IFormFile zipFile, int userId, int projectId)
+        //public async Task UnzipProject(ProjectStructureDTO projectStructure, IFormFile zipFile, int userId, int projectId)
+        //{
+        //    string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\Temp", Guid.NewGuid().ToString());
+        //    try
+        //    {
+        //        if (!Directory.Exists(tempFolder))
+        //        {
+        //            Directory.CreateDirectory(tempFolder);
+        //        }
+        //        if (zipFile.Length > 0)
+        //        {
+        //            string fullPathToFile = Path.Combine(tempFolder, zipFile.FileName);
+        //            using (var stream = new FileStream(fullPathToFile, FileMode.Create))
+        //            {
+        //                await zipFile.CopyToAsync(stream).ConfigureAwait(false);
+        //            }
+        //            var pathToProject = UnzipProject(fullPathToFile, tempFolder);
+        //            var rootFileStructure = projectStructure.NestedFiles.FirstOrDefault();
+
+        //            await GetFilesRecursive(pathToProject, rootFileStructure, userId, projectId).ConfigureAwait(false);
+        //            var projectStructureDto = _mapper.Map<ProjectStructureDTO>(projectStructure);
+        //            await UpdateAsync(projectStructureDto);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine(ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        if (Directory.Exists(tempFolder))
+        //        {
+        //            Directory.Delete(tempFolder, true);
+        //        }
+        //    }
+        //}
+
+        public async Task ImportProject(string projectStructureId, IFormFile file, string fileStructureId, int userId, bool partial, string nodeids)
         {
-            string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "Temp", Guid.NewGuid().ToString());
+            string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\Temp", Guid.NewGuid().ToString());
+            var filesFolder = Path.Combine(tempFolder, file.FileName.Substring(0, file.FileName.LastIndexOf('.')));
+            var ids = new List<string>();// JsonConvert.DeserializeObject<List<string>>(nodeids);
+            partial = false;
+            var projectStructure = _mapper.Map<ProjectStructureDTO>(await _projectStructureRepository.GetByIdAsync(projectStructureId));
+
+            var rootFileStructure = projectStructure.NestedFiles.SingleOrDefault();
+
+            if (partial)
+            {
+                rootFileStructure = projectStructure.NestedFiles.SingleOrDefault(u => u.Id == ids[0]);
+
+                for (int i = 1; i<ids.Count(); i++)
+                {
+                    rootFileStructure = rootFileStructure.NestedFiles.SingleOrDefault(n => n.Id == ids[i]);
+                }
+            }
+            else
+            {
+                rootFileStructure = projectStructure.NestedFiles.SingleOrDefault();
+            }
             try
             {
                 if (!Directory.Exists(tempFolder))
                 {
                     Directory.CreateDirectory(tempFolder);
                 }
-                if (zipFile.Length > 0)
+
+                if (file.Length > 0)
                 {
-                    string fullPathToFile = Path.Combine(tempFolder, zipFile.FileName);
+                    string fullPathToFile = Path.Combine(tempFolder, file.FileName);
                     using (var stream = new FileStream(fullPathToFile, FileMode.Create))
                     {
-                        await zipFile.CopyToAsync(stream).ConfigureAwait(false);
+                        await file.CopyToAsync(stream).ConfigureAwait(false);
                     }
-                    var pathToProject = UnzipProject(fullPathToFile, tempFolder);
-                    var rootFileStructure = projectStructure.NestedFiles.FirstOrDefault();
 
-                    await GetFilesRecursive(pathToProject, rootFileStructure, userId, projectId).ConfigureAwait(false);
+                    var pathToProject = UnzipProject(fullPathToFile, filesFolder);
+
+                    await GetFilesRecursive(filesFolder, rootFileStructure, userId, Convert.ToInt32(projectStructureId)).ConfigureAwait(false);
                     var projectStructureDto = _mapper.Map<ProjectStructureDTO>(projectStructure);
                     await UpdateAsync(projectStructureDto);
                 }
@@ -158,9 +225,12 @@ namespace IDE.BLL.Services
                 foreach (var file in Directory.GetFiles(sourseDir))
                 {
                     var fileName = file.Substring(file.LastIndexOf('\\') + 1);
+                    var dirName = sourseDir.Substring(sourseDir.LastIndexOf('\\') + 1);
+
+                    Debug.WriteLine(dirName);
 
                     var fileCreateDto = new FileCreateDTO();
-                    fileCreateDto.Folder = sourseDir;
+                    fileCreateDto.Folder = dirName;
                     fileCreateDto.Name = fileName;
                     fileCreateDto.ProjectId = projectId;
                     fileCreateDto.Content = await GetFileContent(file);
@@ -211,6 +281,122 @@ namespace IDE.BLL.Services
             return pathToProject;
         }
 
+        public async Task<byte[]> CreateProjectZipFile(int projectId, string folderGuid = "")
+        {
+            var tempDir = _configuration.GetSection("TempDir").Value;
+            var path = Path.Combine(tempDir, Guid.NewGuid().ToString());
+            byte[] emptyAchive;
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                {
+                }
+                emptyAchive = memoryStream.ToArray();
+            }
+            try
+            {
+                var fileStructure = await GetFolderNode(projectId, folderGuid).ConfigureAwait(false);
+
+                if (fileStructure == null || fileStructure.NestedFiles.Count == 0)
+                    return emptyAchive;
+
+                var filesId = GetListOfFilesId(fileStructure);
+                if (filesId.Count == 0)
+                    return emptyAchive;
+
+                var allFileInFileStructure = await _fileService.GetRangeByListOfIdAsync(filesId);
+
+                await SaveFilesOnDisk(fileStructure, allFileInFileStructure, Path.Combine(path, "ProjectFolder")).ConfigureAwait(false);
+                ZipFile.CreateFromDirectory(Path.Combine(path, "ProjectFolder"), Path.Combine(path, $"{projectId}.zip"));
+
+                var fileByteArray = await File.ReadAllBytesAsync(Path.Combine(path, $"{projectId}.zip")).ConfigureAwait(false);
+                return fileByteArray;
+            }
+            catch (Exception exception)
+            {
+                _logger.LogWarning(exception, exception.Message);
+                throw exception;
+            }
+            finally
+            {
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
+            }
+        }
+
+        private async Task SaveFilesOnDisk(FileStructureDTO fileStructure, IDictionary<string, FileDTO> allFileInFileStructure, string path)
+        {
+            foreach (var node in fileStructure.NestedFiles)
+            {
+                if (node.Type == TreeNodeType.File)
+                {
+
+                    var hasFile = allFileInFileStructure.TryGetValue(node.Id, out var file);
+                    if (!hasFile)
+                        continue;
+
+                    Directory.CreateDirectory(path);
+                    using (StreamWriter streamWriter = File.CreateText(Path.Combine(path, file.Name)))
+                    {
+                        await streamWriter.WriteAsync(file.Content).ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    await SaveFilesOnDisk(node, allFileInFileStructure, Path.Combine(path, node.Name)).ConfigureAwait(false);
+                }
+            }
+        }
+
+        private ICollection<string> GetListOfFilesId(FileStructureDTO fileStructure)
+        {
+            var filesId = new List<string>();
+
+            var queue = new Queue<FileStructureDTO>(fileStructure.NestedFiles);
+
+            while (queue.Count > 0)
+            {
+                var node = queue.Dequeue();
+
+                if (node.Type == TreeNodeType.File)
+                {
+                    filesId.Add(node.Id);
+                    continue;
+                }
+                foreach (var subFolder in node.NestedFiles)
+                {
+                     queue.Enqueue(subFolder);
+                }
+            }
+            return filesId;
+        }
+
+        private async Task<FileStructureDTO> GetFolderNode(int projectId, string folderGuid)
+        {
+            var projectStructure = await GetByIdAsync(projectId.ToString()).ConfigureAwait(false);
+
+            if (string.IsNullOrEmpty(folderGuid))
+                return projectStructure.NestedFiles.FirstOrDefault();
+
+            var queue = new Queue<FileStructureDTO>(projectStructure.NestedFiles);
+
+            while (queue.Count > 0)
+            {
+                var folder = queue.Dequeue();
+
+                if (folder.Id == folderGuid)
+                    return folder;
+
+                foreach (var subFolder in folder.NestedFiles)
+                {
+                    if (subFolder.Type == TreeNodeType.Folder)
+                        queue.Enqueue(subFolder);
+                }
+            }
+            return null;
+        }
 
         private async Task<FileStructureDTO> CalculateSize(FileStructureDTO projectStructureDTO)
         {

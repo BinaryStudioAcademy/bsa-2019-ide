@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { UserNicknameDTO } from '../../../../models/DTO/User/userNicknameDTO';
 import { UserService } from 'src/app/services/user.service/user.service';
 import { CollaboratorDTO } from 'src/app/models/DTO/User/collaboratorDTO';
 import { ProjectService } from 'src/app/services/project.service/project.service';
-import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/api';
 import { ToastrService } from 'ngx-toastr';
 import { HttpResponse } from '@angular/common/http';
 import { RightsService } from 'src/app/services/rights.service/rights.service'
@@ -11,36 +10,50 @@ import { UpdateUserRightDTO } from 'src/app/models/DTO/User/updateUserRightDTO';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DeleteCollaboratorRightDTO } from 'src/app/models/DTO/Common/deleteCollaboratorRightDTO';
 import { BlockUIModule } from 'primeng/primeng';
+import { element } from 'protractor';
+import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
+import { TokenService } from 'src/app/services/token.service/token.service';
 
 @Component({
     selector: 'app-add-collaborators',
     templateUrl: './add-collaborators.component.html',
     styleUrls: ['./add-collaborators.component.sass']
 })
+
 export class AddCollaboratorsComponent implements OnInit {
+
+    @Input() projectId: number
 
     public collaborator: UserNicknameDTO;
     public filterCollaborators: UserNicknameDTO[];
     public newCollaborators: CollaboratorDTO[] = [];
     public isCollaboratorsSaved: boolean = true;
-    public projectId: number;
     public deleteCollaborators: CollaboratorDTO[] = [];
     public area: string
+    public isCollaboratorChange = false;
+    public userId: number;
+    public authorId: number;
 
     private startCollaborators = [] as CollaboratorDTO[];
+
 
     constructor(private route: ActivatedRoute,
         private userService: UserService,
         private projectService: ProjectService,
-        public config: DynamicDialogConfig,
-        public ref: DynamicDialogRef,
+        private tokenService: TokenService,
         private router: Router,
         private rightService: RightsService,
-        private toastService: ToastrService) { }
+        private toastService: ToastrService,
+        private signalRService: SignalRService) { }
 
     public ngOnInit(): void {
-        this.area="workspace";
-        this.projectId = this.config.data.id;
+        this.userId=this.tokenService.getUserId();
+        this.projectService.getAuthorId(this.projectId)
+            .subscribe(
+                (resp)=>{
+                    this.authorId=resp.body;
+                }
+            );
         this.projectService.getProjectCollaborators(this.projectId)
             .subscribe(
                 (resp) => {
@@ -61,6 +74,17 @@ export class AddCollaboratorsComponent implements OnInit {
         }
     }
 
+    public wasInStartList(deleteItem: DeleteCollaboratorRightDTO): boolean{
+        let deletedItemWasEarlier = false
+        this.startCollaborators.forEach(element => {
+            if (deleteItem.id==element.id)
+            {
+                deletedItemWasEarlier = true;
+            }
+        });
+        return deletedItemWasEarlier;
+    }
+
     public save(): void {
         this.isCollaboratorsSaved = false;
         this.deleteCollaborators.forEach(item => {
@@ -71,38 +95,51 @@ export class AddCollaboratorsComponent implements OnInit {
                 nickName: item.nickName,
                 projectId: this.projectId
             }
-            if (!this.IsSelected(deleteItem)) {
+            if (!this.IsSelected(deleteItem) && this.wasInStartList(deleteItem)) {
                 this.rightService.deleteCollaborator(deleteItem)
                     .subscribe(
                         (resp) => {
-                            this.ref.close();
+                            this.toastService.success(`Collaborator ${deleteItem.nickName} was deleted`);
                         },
                         (error) => {
-                            this.toastService.error('Can\'t delete collacortors access', 'Error Message');
+                            this.toastService.error('Can\'t delete collaborators access', 'Error Message');
                         }
                     );
+                this.UpdateNewCollaborators();
             }
         });
-        this.newCollaborators.forEach(item => {
-            const update: UpdateUserRightDTO =
-            {
-                projectId: this.projectId,
-                access: item.access,
-                userId: item.id
-            }
-            this.rightService.setUsersRigths(update)
-                .subscribe(
-                    (resp) => {
-                        this.isCollaboratorsSaved = true;
-                        this.ref.close();
-                        this.toastService.success('New collacortors access have successfully saved!');
-                    },
-                    (error) => {
-                        this.isCollaboratorsSaved = true;
-                        this.toastService.error('Can\'t save new collacortors access', 'Error Message');
-                    }
-                );
-        });
+        this.deleteCollaborators = [];
+        if (this.newCollaborators.length > 0) {
+            this.newCollaborators.forEach(item => {
+                const update: UpdateUserRightDTO =
+                {
+                    projectId: this.projectId,
+                    access: item.access,
+                    userId: item.id
+                }
+                this.rightService.setUsersRigths(update)
+                    .subscribe(
+                        (resp) => {
+                            this.deleteCollaborators = [];
+                            this.startCollaborators = [];
+                            this.UpdateNewCollaborators();
+                            if (!this.isCollaboratorsSaved) {
+                                this.toastService.success('New collaborators access have successfully saved!');
+                            }
+                            this.isCollaboratorsSaved = true;
+                            this.isCollaboratorChange = true;
+                        },
+                        (error) => {
+                            this.isCollaboratorsSaved = true;
+                            this.toastService.error('Can\'t save new collaborators access', 'Error Message');
+                        }
+                    );
+                });
+        } else {
+            this.isCollaboratorsSaved = true;
+            this.startCollaborators = [];
+            this.UpdateNewCollaborators();
+        }
     }
 
 
@@ -113,6 +150,7 @@ export class AddCollaboratorsComponent implements OnInit {
         if (this.deleteCollaborators.length != 0) {
             return false;
         }
+
         if (this.newCollaborators.length != this.startCollaborators.length) {
             return false;
         }
@@ -122,6 +160,7 @@ export class AddCollaboratorsComponent implements OnInit {
                 return false;
             }
         }
+
         return true;
 
     }
@@ -135,10 +174,6 @@ export class AddCollaboratorsComponent implements OnInit {
         }
         this.newCollaborators.push(newCollaborators);
         this.collaborator = null;
-    }
-
-    public close(): void {
-        this.ref.close();
     }
 
     public filterCollarator(event): void {
@@ -158,7 +193,6 @@ export class AddCollaboratorsComponent implements OnInit {
         for (let i = 0; i < collaborators.length; i++) {
             const collaborator = collaborators[i];
             if (collaborator.nickName.toLowerCase().indexOf(query.toLowerCase()) !== -1) {
-                console.log(this.IsSelected(collaborator));
                 if (!this.IsSelected(collaborator)) {
                     filtered.push(collaborator);
                 }
@@ -167,11 +201,15 @@ export class AddCollaboratorsComponent implements OnInit {
         if (filtered.length === 0) {
             const notFound: UserNicknameDTO = {
                 id: 0,
-                nickName: "We couldn’t find any project matching " + query
+                nickName: "We couldn’t find any user nickname matching " + query
             }
             filtered.push(notFound);
         }
         return filtered;
+    }
+
+    public isAuthor(): boolean{
+        return this.userId==this.authorId;
     }
 
     private IsSelected(collaborator: UserNicknameDTO): boolean {
@@ -184,16 +222,19 @@ export class AddCollaboratorsComponent implements OnInit {
         return result;
     }
 
+    private UpdateNewCollaborators() {
+        this.newCollaborators.forEach(element => {
+            var colaborator: CollaboratorDTO = {
+                id: element.id,
+                nickName: element.nickName,
+                access: element.access
+            }
+            this.startCollaborators.push(colaborator);
+        })
+    }
+
     private SetCollaboratorsFromResponse(resp: HttpResponse<CollaboratorDTO[]>): void {
         this.newCollaborators = resp.body;
-        this.newCollaborators.forEach(element => {
-            let newElement: CollaboratorDTO =
-            {
-                id: element.id,
-                access: element.access,
-                nickName: element.nickName
-            }
-            this.startCollaborators.push(newElement);
-        });
+        this.UpdateNewCollaborators();
     }
 }

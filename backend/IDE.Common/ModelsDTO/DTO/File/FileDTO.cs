@@ -15,9 +15,11 @@ namespace IDE.Common.DTO.File
         public DateTime CreatedAt { get; set; }
         public int CreatorId { get; set; }
         public UserDTO Creator { get; set; }
+        public bool IsOpen { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
         public int? UpdaterId { get; set; }
         public UserDTO Updater { get; set; }
+        public string Language { get; set; }
     }
 }

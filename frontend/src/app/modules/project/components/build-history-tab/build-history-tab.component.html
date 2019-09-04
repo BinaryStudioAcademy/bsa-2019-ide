@@ -1,0 +1,22 @@
+<p-card *ngIf="build.buildMessage">
+    <div class="build-card" [ngStyle]="{'border-left-color': getBackgroundColor(build)}">
+        <div class="build-message">
+            <span class="property-name">Build message:</span>
+            <span> {{build.buildMessage}} </span>
+        </div>
+        <div class="user-name">
+            <span class="property-name">User name:</span>
+            <span> {{build.userName}} </span>
+        </div>
+        <div class="build-perior">
+            <div>
+                <span class="property-name">Build started:</span>
+                <span> {{build.buildStarted | date}} </span>
+            </div>
+            <div>
+                <span class="property-name">Build finished:</span>
+                <span> {{build.buildFinished | date}} </span>
+            </div>
+        </div>
+    </div>
+</p-card>

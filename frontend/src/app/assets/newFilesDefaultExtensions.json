@@ -1,0 +1,18 @@
+[
+    { 
+        "language": "0",
+        "extension": ".cs"
+    },    
+    {
+        "language": "1",
+        "extension": ".ts"
+    },
+    { 
+        "language": "2",
+        "extension": ".js"
+    },    
+    {
+        "language": "3",
+        "extension": ".go"
+    }
+]

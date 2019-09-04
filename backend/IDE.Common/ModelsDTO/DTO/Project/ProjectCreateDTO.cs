@@ -13,5 +13,6 @@ namespace IDE.Common.DTO.Project
         public int CountOfBuildAttempts { get; set; }
         public string Color { get; set; }
         public AccessModifier Access { get; set; }
+        public string GithubUrl {get;set;}
     }
 }

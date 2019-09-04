@@ -401,3 +401,11 @@ Thumbs.db
 # dev configuration
 backend/IDE.API/appsettings.Development.json
 frontend/src/environments/environment.ts
+
+backend/IDE.API/Temp/
+backend/Temp/
+backend/BuildServer/Build/
+backend/BuildServer/Input/
+backend/BuildServer/Output/
+backend/BuildServer/BuildServer/appsettings.Development.json
+docker/*

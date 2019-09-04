@@ -10,6 +10,9 @@ using IDE.BLL.Services;
 using IDE.BLL.Interfaces;
 using IDE.BLL.MappingProfiles;
 using System;
+using IDE.BLL.HubConfig;
+using Microsoft.Extensions.Logging;
+using IDE.BLL.Services.Queue;
 
 namespace IDE.BLL
 {
@@ -21,7 +24,8 @@ namespace IDE.BLL
 
             services.AddScoped<AuthService>();
             services.AddScoped<UserService>();
-            services.AddScoped<IEmailService>(x => new EmailService(Environment.GetEnvironmentVariable("emailApiKey"), configuration["CurrentWebAPIAddressForMail"], configuration["websiteMail"]));
+            services.AddScoped<IEmailService>(x => new EmailService(Environment.GetEnvironmentVariable("emailApiKey"), configuration["CurrentWebAPIAddressForMail"], configuration["websiteMail"], x.GetService<ILogger<EmailService>>()));
+            services.AddScoped<INotificationService,NotificationService>();
             services.AddScoped<IProjectMemberSettingsService, ProjectMemberSettingsService>();
             services.AddScoped<IProjectStructureService, ProjectStructureService>();
             services.AddScoped<IProjectTemplateService, ProjectTemplateService>();
@@ -29,6 +33,9 @@ namespace IDE.BLL
             services.AddScoped<IRightsService, RightsService>();
             services.AddScoped<ISocialAuthService, SocialAuthService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IBuildService, BuildService>();
+            services.AddScoped<IInfoService, InfoService>();
+            services.AddScoped<IEditorSettingService, EditorSettingService>();
 
             services.AddScoped<IQueueService, QueueService>();
 
@@ -38,11 +45,13 @@ namespace IDE.BLL
 
             RegisterHttpClientFactories(services, configuration);
             RegisterAutoMapper(services);
+
+            services.AddHostedService<BuildQueueSubscriberService>();
+            services.AddHostedService<RunQueueSubscriberService>();
         }
 
         public static void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-
         }
 
         private static void RegisterAutoMapper(IServiceCollection services)
@@ -57,6 +66,7 @@ namespace IDE.BLL
                 cfg.AddProfile<FileHistoryProfile>();
                 cfg.AddProfile<GitCredentialProfile>();
                 cfg.AddProfile<ProjectStructureProfile>();
+                cfg.AddProfile<NotificationProfile>();
             });
         }
 
