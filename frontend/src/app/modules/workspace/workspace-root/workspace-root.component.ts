@@ -3,8 +3,7 @@ import { LeavePageDialogService } from './../../../services/leave-page-dialog.se
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
-import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, OnChanges, ChangeDetectorRef, AfterContentInit } from '@angular/core';
-import { ResizeEvent } from 'angular-resizable-element';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, OnChanges, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
@@ -14,8 +13,6 @@ import { map } from 'rxjs/internal/operators/map';
 
 import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
-import { MenuItem } from 'primeng/api';
-import { catchError } from 'rxjs/internal/operators/catchError';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { TokenService } from 'src/app/services/token.service/token.service';
@@ -23,7 +20,6 @@ import { ProjectDialogService } from 'src/app/services/proj-dialog.service/proje
 import { ProjectType } from '../../project/models/project-type';
 import { RightsService } from 'src/app/services/rights.service/rights.service';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
-import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { FileBrowserSectionComponent, SelectedFile } from '../file-browser-section/file-browser-section.component';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
@@ -31,11 +27,10 @@ import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 import { BuildService } from 'src/app/services/build.service';
 import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
-import { element } from 'protractor';
-import { ConcatSource } from 'webpack-sources';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
-import { filter, throwIfEmpty } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
+import { FileEditService } from 'src/app/services/file-edit.service/file-edit.service';
 
 
 @Component({
@@ -73,15 +68,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     @ViewChild(FileBrowserSectionComponent, { static: false })
     private fileBrowser: FileBrowserSectionComponent;
 
-    @ViewChild('monacoEditor', { static: false })
-    private monacoEditor: FileBrowserSectionComponent;
 
     constructor(
         private route: ActivatedRoute,
         private toast: ToastrService,
         private workSpaceService: WorkspaceService,
         private saveOnExit: LeavePageDialogService,
-        private fileService: FileService,
         private rightService: RightsService,
         private projectService: ProjectService,
         private projectEditService: ProjectDialogService,
@@ -91,7 +83,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         private eventService: EventService,
         private cdr: ChangeDetectorRef,
         private signalRService: SignalRService,
-        private errorHandlerService: ErrorHandlerService) {
+        private errorHandlerService: ErrorHandlerService,
+        private fileEditService: FileEditService) {
 
         this.hotkeys.addShortcut({ keys: 'control.h' })
             .subscribe(() => {
@@ -131,7 +124,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.eventService.initComponentFinished$.
             pipe(
                 filter(m => m === "EditorSectionComponent"),
-                switchMap(m => {
+                switchMap(() => {
                     return this.route.queryParams;
                 }),
                 filter(params => !!params['fileId']),
@@ -163,8 +156,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                                 }
                             )
                     }
+                    this.fileEditService.startConnection(this.userId, this.project.id);
+                    this.fileEditService.openedFiles.subscribe(x => 
+                        {
+                            console.log(x)
+                        });
                 },
-                (error) => {
+                () => {
                     this.toast.error("Can't load selected project.", 'Error Message');
                 }
             );
@@ -244,7 +242,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                         var tabName = name;
                         this.editor.AddFileToOpened(fileUpdateDTO);
                         if (!fileUpdateDTO.isOpen) {
-                            fileUpdateDTO.isOpen = true;
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
                             this.editor.monacoOptions.readOnly = false;
@@ -258,8 +255,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                             if (this.fileBrowser.selectedItem)
                                 this.fileBrowser.selectedItem.label += " (editing...)";
                         }
-                        else {
-
+                        else if(fileUpdateDTO.isOpen) {
                             this.editor.monacoOptions.readOnly = true;
                         }
                         if(this.showFileBrowser) {
@@ -269,6 +265,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
                         this.findAllOccurence(selectedFile.filterString);
                         this.editor.code = content;
+
+                        this.fileEditService.openFile(selectedFile.fileId, this.project.id);
                     } else {
                         this.toast.error("Can't load selected file.", 'Error Message');
                     }
@@ -282,7 +280,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     public onBuild() {
         this.buildService.buildProject(this.project.id).subscribe(
-            (response) => {
+            () => {
                 this.toast.info('Build was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {
@@ -305,7 +303,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         }
 
         this.buildService.runProject(this.project.id, connectionId).subscribe(
-            (response) => {
+            () => {
                 this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {
@@ -433,6 +431,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     ngOnDestroy() {
         this.routeSub.unsubscribe();
+        this.fileEditService.openedFiles.unsubscribe();
+        this.fileEditService.closeProject(this.project.id);
         this.signalRService.deleteConnectionIdListener();
     }
 }

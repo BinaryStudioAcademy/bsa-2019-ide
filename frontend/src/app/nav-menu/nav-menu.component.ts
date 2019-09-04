@@ -118,7 +118,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.showNotification = !this.showNotification;
         const dataForDelete = this.data;
         if (!this.showNotification) {
-            this.signalRService.crearData();
+            this.signalRService.clearData();
             this.signalRService.deleteTransferChartDataListener();
             this.data = this.signalRService.addTransferChartDataListener();
             dataForDelete.forEach(element => {
@@ -213,7 +213,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public LogOut() {
         this.tokenService.logout();
         this.isAuthorized = undefined;
-        this.signalRService.crearData();
+        this.signalRService.clearData();
         this.signalRService.deleteTransferChartDataListener();
     }
 

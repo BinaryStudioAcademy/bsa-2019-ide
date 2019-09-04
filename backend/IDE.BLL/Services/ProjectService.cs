@@ -328,7 +328,7 @@ namespace IDE.BLL.Services
                 ms.Seek(0, SeekOrigin.Begin);
                 return new FormFile(ms, 0, ms.Length,  name, fileName);
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 _logger.LogWarning(LoggingEvents.HaveException, $"convert stream exception");
                 return null;

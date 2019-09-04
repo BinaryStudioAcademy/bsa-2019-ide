@@ -5,6 +5,7 @@ import { EditorSettingDTO } from '../../../models/DTO/Common/editorSettingDTO'
 import editorTabsThemes from '../../../assets/editor-tabs-themes.json';
 import { EventService } from 'src/app/services/event.service/event.service';
 import { MonacoEditorComponent } from '@materia-ui/ngx-monaco-editor';
+import { FileEditService } from 'src/app/services/file-edit.service/file-edit.service';
 
 export interface TabFileWrapper {
     isChanged: boolean;
@@ -41,7 +42,9 @@ export class EditorSectionComponent implements OnInit {
     
     code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
 
-    constructor(private eventService: EventService) { }
+    constructor(
+        private eventService: EventService,
+        private fileEditService: FileEditService) { }
 
     ngAfterViewInit() {
         this.eventService.componentAfterInit("EditorSectionComponent");
@@ -76,10 +79,11 @@ export class EditorSectionComponent implements OnInit {
     }
 
     public closeItem(event, index) {
-        this.saveFiles([this.openedFiles[index].innerFile]);
+        const file = this.openedFiles[index].innerFile;
+        this.saveFiles([file]);
+        this.fileEditService.closeFile(file.id);
         this.tabs = this.tabs.filter((item, i) => i !== index);
         this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
-
         // if 1st tab closed
         if (this.openedFiles.length === 0) {
             event.preventDefault();

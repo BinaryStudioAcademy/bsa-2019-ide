@@ -41,7 +41,7 @@ export class SignalRService {
         return this.notifications;
     }
 
-    public crearData()
+    public clearData()
     {
         this.notifications=[];
     }
