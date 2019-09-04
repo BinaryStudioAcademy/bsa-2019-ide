@@ -1,5 +1,7 @@
 ﻿using BuildServer.Interfaces;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using NLog;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Shared.Interfaces;
@@ -7,6 +9,7 @@ using RabbitMQ.Shared.ModelsDTO;
 using RabbitMQ.Shared.Settings;
 using System;
 using System.Text;
+
 
 namespace BuildServer.Services
 {
@@ -17,14 +20,19 @@ namespace BuildServer.Services
         private readonly IMessageConsumerScope _messageConsumerScopeBuild;
         private readonly IMessageConsumerScope _messageConsumerScopeRun;
         private readonly Worker _worker;
+        private readonly ILogger<QueueService> _logger;
 
         public QueueService(IMessageProducerScopeFactory messageProducerScopeFactory,
                             IMessageConsumerScopeFactory messageConsumerScopeFactory,
                             IAzureService azureService,
                             IBuilder builder,
-                            IFileArchiver fileArchiver)
+                            IFileArchiver fileArchiver,
+                            ILogger<QueueService> logger
+                            )
         {
             
+            _logger = logger;
+            _logger.LogInformation("queue service start");
             _messageProducerScopeBuild = messageProducerScopeFactory.Open(new MessageScopeSettings
             {
                 ExchangeName = "BuildServerExchangeBuild",
@@ -62,6 +70,7 @@ namespace BuildServer.Services
 
         private void MessageConsumer_BuildReceived(object sender, BasicDeliverEventArgs evn)
         {
+            _logger.LogInformation("message build received");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Received Build message");
             var message = Encoding.UTF8.GetString(evn.Body);
@@ -87,6 +96,7 @@ namespace BuildServer.Services
 
         private void MessageConsumer_RunReceived(object sender, BasicDeliverEventArgs evn)
         {
+            _logger.LogInformation("message run received");
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("Received Run message");
             var message = Encoding.UTF8.GetString(evn.Body);
@@ -113,6 +123,7 @@ namespace BuildServer.Services
 
         public bool SendBuildMessage(string value)
         {
+            _logger.LogInformation("sending build message");
             try
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -123,11 +134,13 @@ namespace BuildServer.Services
             }
             catch
             {
+                _logger.LogError("cant send build message ");
                 return false;
             }
         }
         public bool SendRunMessage(string value)
         {
+            _logger.LogInformation("sending run message");
             try
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
@@ -138,6 +151,7 @@ namespace BuildServer.Services
             }
             catch
             {
+                _logger.LogError("cant send run message");
                 return false;
             }
         }

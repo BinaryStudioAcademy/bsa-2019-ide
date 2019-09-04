@@ -1,6 +1,7 @@
 ﻿using BuildServer.Helpers;
 using BuildServer.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -10,17 +11,20 @@ namespace BuildServer.Services
 {
     public class DotNetBuilder : IBuilder
     {
+        private readonly ILogger<DotNetBuilder> _logger;
         private string _buildDirectory;
         ProcessKiller _processKiller;
 
-        public DotNetBuilder(IConfiguration configuration, ProcessKiller processKiller)
+        public DotNetBuilder(IConfiguration configuration, ProcessKiller processKiller, ILogger<DotNetBuilder> logger)
         {
             _buildDirectory = configuration.GetSection("BuildDirectory").Value;
             _processKiller = processKiller;
+            _logger = logger;
         }
 
         public string Build(string projectName)
         {
+            _logger.LogInformation("Start dot net build");
             var commandToBuild = $"/c dotnet build {_buildDirectory}\\{projectName}";
             var outputMessage = "";
 
@@ -50,6 +54,7 @@ namespace BuildServer.Services
             }
             catch (Exception e)
             {
+                _logger.LogError(e,"Start dot net build error");
                 Console.WriteLine(e.Message);
             }
 
@@ -58,6 +63,7 @@ namespace BuildServer.Services
 
         public string Execute(string projectName)
         {
+            _logger.LogInformation("Start dot net execute");
             //count of nested "projectName" will be depend on the template
             var commandToExecute = $"/c dotnet {_buildDirectory}{projectName}\\{projectName}\\{projectName}\\bin\\Debug\\netcoreapp2.2\\{projectName}.dll run";
             var outputMessage = "";
@@ -88,6 +94,7 @@ namespace BuildServer.Services
             }
             catch (Exception e)
             {
+                _logger.LogError(e, "Start dot net execute error");
                 Console.WriteLine(e.Message);
             }
 
@@ -96,6 +103,7 @@ namespace BuildServer.Services
 
         public string Run(string projectName)
         {
+            _logger.LogInformation("Start dot net run");
             var projNames = GetCsProjProjectName(projectName);
             if (projNames.Length == 0 || projNames.Length > 1)
                 return "There is no startup files, or there is more than one of them";

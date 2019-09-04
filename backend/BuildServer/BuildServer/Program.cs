@@ -3,6 +3,9 @@ using BuildServer.Interfaces;
 using BuildServer.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NLog;
+using NLog.Extensions.Logging;
 using RabbitMQ.Shared;
 using Storage;
 using System;
@@ -15,6 +18,9 @@ namespace BuildServer
     {
         public static void Main(string[] args)
         {
+            var logger = LogManager.GetCurrentClassLogger();
+             try
+            {
             IConfiguration configuration;
 
             configuration = new ConfigurationBuilder()
@@ -22,26 +28,10 @@ namespace BuildServer
                 .AddJsonFile($"appsettings.json", true, true)
                 .AddJsonFile($"appsettings.development.json", true, true)
                 .Build();
-
+               LogManager.Configuration = new NLogLoggingConfiguration(configuration.GetSection("NLog"));
             //setup our DI
-            var services = new ServiceCollection();
-            services.AddSingleton<IConfiguration>(configuration);
-            services.AddTransient<IBuilder, DotNetBuilder>();
-            services.Configure<DotNetBuilder>(configuration);
-            services.AddTransient<IFileArchiver, FileArchiver>();
-            services.Configure<FileArchiver>(configuration);
-
-            services.AddTransient<IAzureService, AzureService>();
-            services.Configure<AzureService>(configuration);
-            services.AddTransient(x => new ProcessKiller(configuration));
-
-            RabbitMQConfigurations.ConfigureServices(services, configuration);
-            services.AddScoped<IQueueService, QueueService>();
-            StorageConfigurations.ConfigureServices(services, configuration);
-            services.AddTransient<IAzureService, AzureService>();
-            services.Configure<AzureService>(configuration);
-
-            var serviceProvider = services.BuildServiceProvider();
+           
+            var serviceProvider = BuildDi(configuration);
 
             // This line need for creating instance of QueueService
             var queueService = serviceProvider.GetService<IQueueService>();
@@ -56,6 +46,48 @@ namespace BuildServer
             Console.WriteLine("HelloWorld");
 
             while (true) { }
+
+            }
+            catch (Exception ex)
+            { // NLog: catch any exception and log it.
+                logger.Error(ex, "Stopped program because of exception");
+                throw;
+            }
+            finally
+            {
+                // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+                LogManager.Shutdown();
+            }
+        }
+
+        private static IServiceProvider BuildDi(IConfiguration config)
+        {
+            return ConfigureDi(new ServiceCollection(), config).BuildServiceProvider();
+        }
+
+        private static IServiceCollection ConfigureDi(IServiceCollection services, IConfiguration config)
+        {
+            RabbitMQConfigurations.ConfigureServices(services, config);
+            StorageConfigurations.ConfigureServices(services, config);
+            return services
+                        .AddSingleton<IConfiguration>(config)
+                        .AddTransient<IBuilder, DotNetBuilder>()
+                        .Configure<DotNetBuilder>(config)
+                        .AddTransient<IFileArchiver, FileArchiver>()
+                        .Configure<FileArchiver>(config)
+                        .AddTransient<IAzureService, AzureService>()
+                        .Configure<AzureService>(config)
+                        .AddTransient(x => new ProcessKiller(config))
+                        .AddScoped<IQueueService, QueueService>()
+                        .AddLogging(loggingBuilder =>
+                            {
+                            // configure Logging with NLog
+                                loggingBuilder.ClearProviders();
+                                loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                                loggingBuilder.AddNLog();
+                            })
+                        .AddTransient<IAzureService, AzureService>()
+                        .Configure<AzureService>(config);
         }
     }
 }
