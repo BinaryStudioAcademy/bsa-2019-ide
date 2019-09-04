@@ -116,4 +116,8 @@ export class ProjectCardComponent implements OnInit {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
     }
+
+    get accessType() {
+        return this.project.isPublic ? 'public' : 'private';
+    }
 }
