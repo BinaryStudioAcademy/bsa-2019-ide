@@ -61,10 +61,26 @@ namespace IDE.API.Controllers
             return Ok();
         }
 
-        [HttpGet("run/{projectId}/{connectionId}")]
-        public async Task<ActionResult> RunProjectById(int projectId, string connectionId)
+        [HttpGet("tryrun/{projectId}/{connectionId}")]
+        public async Task<ActionResult<IEnumerable<string>>> TryRunProjectById(int projectId, string connectionId)
         {
-            await _projectService.RunProject(projectId, connectionId);
+            var inputItem = await _projectService.GetInputElements(projectId) as List<string>;
+            if (inputItem.Count == 0)
+            {
+                await _projectService.RunProject(projectId, connectionId);
+                return Ok();
+            }
+            else
+            {
+                return Ok(inputItem);
+            }
+        }
+
+        [HttpGet("run/{projectId}/{connectionId}")]
+        public async Task<ActionResult> RunProjectById(int projectId, string connectionId, [FromQuery] string inputs)
+        {
+            string[] variebles = inputs.Split(", ");
+            await _projectService.RunProject(projectId, connectionId, inputs);
             return Ok();
         }
 

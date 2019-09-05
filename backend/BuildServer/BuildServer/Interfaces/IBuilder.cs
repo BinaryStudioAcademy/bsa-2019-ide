@@ -8,6 +8,6 @@ namespace BuildServer.Interfaces
     public interface IBuilder
     {
         BuildResult Build(string projectName);
-        string Run(string projectName);
+        string Run(string projectName, params string[] inputs);
     }
 }

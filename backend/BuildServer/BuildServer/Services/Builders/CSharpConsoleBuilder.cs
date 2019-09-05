@@ -67,7 +67,7 @@ namespace BuildServer.Services.Builders
             return buildResult;
         }
 
-        public string Run(string projectName)
+        public string Run(string projectName, params string[] inputs)
         {
             _logger.LogInformation("Start dot net run");
             var projNames = GetCsProjProjectName(projectName);
@@ -82,31 +82,25 @@ namespace BuildServer.Services.Builders
                 {
                     FileName = "dotnet",
                     Arguments = $"{_buildDirectory}{projectName}\\bin\\Debug\\netcoreapp2.2\\{projName}",
-                    //p.StartInfo.RedirectStandardInput = true;
+                    RedirectStandardInput = true,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     CreateNoWindow = true,
-                    UseShellExecute = false
+                    UseShellExecute = false,
                 };
 
                 _processKiller.KillProcess(p);
                 p.Start();
 
-                //StreamWriter writer = p.StandardInput;
+                StreamWriter writer = p.StandardInput;
+                int count = 0;
+                while(count<inputs.Length)
+                {
+                    writer.WriteLine(inputs[count]);
+                    count++;
+                }
 
-                //string inputText;
-                //writer.WriteLine("\n");
-                //int numLines = 0;
-                //do
-                //{
-                //    inputText = Console.ReadLine();
-                //    if (inputText.Length > 0)
-                //    {
-                //        numLines++;
-                //        writer.WriteLine("\n");
-                //    }
-                //} while (inputText.Length > 0);
-                //writer.Dispose();
+                writer.Dispose();
 
                 string output = "";
                 string line = "";

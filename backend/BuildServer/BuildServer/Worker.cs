@@ -54,7 +54,7 @@ namespace BuildServer
             return buildResult;
         }
 
-        public string Run(Uri uriForDownload, string projectName)
+        public string Run(Uri uriForDownload, string projectName, params string[] inputs)
         {
             Console.WriteLine("Downloading...");
             _azureService.Download(uriForDownload, projectName).GetAwaiter().GetResult();
@@ -78,7 +78,7 @@ namespace BuildServer
             Console.WriteLine(buildResult);
 
             Console.WriteLine("Running project");
-            string executeResult = _builder.Run(projectName, ProjectLanguageType.CSharpConsoleApp);
+            string executeResult = _builder.Run(projectName, ProjectLanguageType.CSharpConsoleApp, inputs);
 
             Console.WriteLine("Removing temporrary files...");
             _fileArchiver.RemoveTemporaryFiles(projectName);

@@ -107,8 +107,8 @@ namespace BuildServer.Services
             Console.WriteLine($"{projectName} = =========  {projectForRun.TimeStamp}");
             Console.ForegroundColor = ConsoleColor.White;
 
-            var runningResult = _worker.Run(projectForRun.UriForProjectDownload, projectName);
-
+            var runningResult = _worker.Run(projectForRun.UriForProjectDownload, projectName, projectForRun.Inputs);
+            
             var runResult = new RunResultDTO()
             {
                 ProjectId = projectForRun.ProjectId,

@@ -36,6 +36,8 @@ export class EditorSectionComponent implements OnInit {
     public openedFiles = [] as TabFileWrapper[];
     public language:string;
     @Input() canEdit: boolean;
+    @Input()
+    public isInputTerminalOpen:boolean;
     @ViewChild('monacoEditor', { static: false })
     private monacoEditor: MonacoEditorComponent;
     
@@ -48,6 +50,15 @@ export class EditorSectionComponent implements OnInit {
     }
     ngOnInit() {
 
+    }
+
+    public getProjectColor(){
+        if(this.isInputTerminalOpen){
+            return "60vh";
+        }
+        else{
+            return "90vh";
+        }
     }
 
     onChange(ev) {

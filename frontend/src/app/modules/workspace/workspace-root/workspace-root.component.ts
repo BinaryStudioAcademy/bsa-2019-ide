@@ -30,6 +30,7 @@ import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 import { filter, throwIfEmpty } from 'rxjs/operators';
 import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
+import { TerminalService } from 'primeng/components/terminal/terminalservice';
 
 
 @Component({
@@ -55,6 +56,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     public project: ProjectInfoDTO;
     public options: EditorSettingDTO;
     public iOpenFile: FileUpdateDTO[] = [];
+    public inputItems: string[];
+    public connectionId: string;
+    public isInputTerminalOpen=false;
 
     private routeSub: Subscription;
     private authorId: number;
@@ -85,8 +89,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         private eventService: EventService,
         private cdr: ChangeDetectorRef,
         private signalRService: SignalRService,
-        private errorHandlerService: ErrorHandlerService) {
-
+        private errorHandlerService: ErrorHandlerService
+    ) {
         this.hotkeys.addShortcut({ keys: 'control.h' })
             .subscribe(() => {
                 this.hideFileBrowser();
@@ -119,7 +123,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         });
     }
 
-
+    public OnChange(event: boolean){
+        if(event)
+        {
+            this.inputItems=null;
+            this.isInputTerminalOpen=false;
+        }
+    }
 
     ngOnInit() {
         this.eventService.initComponentFinished$.
@@ -292,14 +302,16 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             return;
         }
 
-        const connectionId = this.signalRService.getConnectionId();
-        if (connectionId == null) {
+        this.connectionId = this.signalRService.getConnectionId();
+        if (this.connectionId == null) {
             this.toast.error('Please check your internet connection and refresh page before run', 'Info Message', { tapToDismiss: true });
             return;
         }
 
-        this.buildService.runProject(this.project.id, connectionId).subscribe(
-            (response) => {
+        this.buildService.runProject(this.project.id, this.connectionId).subscribe(
+            (resp) => {
+                this.inputItems = resp.body;
+                this.isInputTerminalOpen=true;
                 this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {

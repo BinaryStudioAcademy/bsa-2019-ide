@@ -68,13 +68,45 @@ namespace IDE.BLL.Services
                 await _buildService.BuildProject(projectId, userId, ProjectLanguageType.TypeScriptConsoleApp);
         }
 
-        public async Task RunProject(int projectId, string connectiondId)
+        public async Task<IEnumerable<string>> GetInputElements(int projectId)
+        {
+            var result = new List<string>();
+            var projectFiles = await _fileService.GetAllForProjectAsync(projectId);
+            string inputStart = "Console.ReadLine()";
+            foreach (var file in projectFiles)
+            {
+                var content = file.Content;
+                while (content.Contains(inputStart))
+                {
+                    var indexOdReadLine = content.IndexOf(inputStart);
+                    var substring = content.Substring(0, indexOdReadLine);
+                    var posision = substring.LastIndexOf(";") + 1;
+                    substring = substring.Substring(posision);
+                    string variable = "";
+                    int index = 0;
+                    while (substring[index] != '=')
+                    {
+                        if (substring[index] != ' ' && substring[index] != '\n')
+                        {
+                            variable += substring[index];
+                        }
+                        index++;
+                    }
+                    result.Add(variable);
+                    var newContent = content.Remove(posision, substring.Length + inputStart.Length + 1);
+                    content = newContent;
+                }
+            }
+            return result;
+        }
+
+        public async Task RunProject(int projectId, string connectiondId, params string[] inputs)
         {
             var project = _context.Projects.FirstOrDefault(p => p.Id == projectId);
             if (project == null)
                 return;
             if (project.Language == Language.CSharp)
-                await _buildService.RunProject(projectId, connectiondId);
+                await _buildService.RunProject(projectId, connectiondId, inputs);
         }
 
         // TODO: understand what type to use ProjectDescriptionDTO or ProjectDTO
@@ -94,7 +126,7 @@ namespace IDE.BLL.Services
                     || pr.AuthorId == userId
                     || pr.ProjectMembers.Any(prM => prM.UserId == userId))
             .Select(item => new SearchProjectDTO { Id = item.Id, Name = item.Name }).ToListAsync();
-            
+
             return await availableProjects;
         }
 
@@ -325,11 +357,11 @@ namespace IDE.BLL.Services
             var ms = new MemoryStream();
             try
             {
-               await contentStream.CopyToAsync(ms);
+                await contentStream.CopyToAsync(ms);
                 ms.Seek(0, SeekOrigin.Begin);
-                return new FormFile(ms, 0, ms.Length,  name, fileName);
+                return new FormFile(ms, 0, ms.Length, name, fileName);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogWarning(LoggingEvents.HaveException, $"convert stream exception");
                 return null;
