@@ -52,7 +52,7 @@ describe('Online-IDE authorization', () => {
     
     });
 
-    xit('should try to login with invalid data', () => {
+    xit('should not login with invalid data', () => {
        
       
         loginActions.enterDataForLogin(credentials.email, credentials.changedPassword);
@@ -63,29 +63,27 @@ describe('Online-IDE authorization', () => {
         
     });
 
-    xit('should try to login with empty fields', () => {
+    xit('should not login with empty fields', () => {
        
      
         loginActions.enterDataForLogin('', '');
         loginActions.waitEnabledCreateButton();
-       // validate.notificationTextIs(credentials.notificationLoginError);
-        
+            
        
         
     });
 
-    xit('should register with empty fields', () => {
+    xit('should not register a new account with empty fields', () => {
        
       
         loginActions.registerNewAccount('', '', '', '', '');
         loginActions.waitEnabledCreateButton();
-       // validate.notificationTextIs(credentials.notificationError);
-        
+               
            
             
     });
 
-    xit('should try register a new account with already used email', () => {
+    xit('should not register a new account with already used email', () => {
        
       
         loginActions.enterDataForRegistration(credentials.name, credentials.surname, credentials.nickname, credentials.email, credentials.password);
@@ -97,19 +95,17 @@ describe('Online-IDE authorization', () => {
                     
     });
 
-    xit('should register with email without domain', () => {
+    xit('should not register a new account with email without domain', () => {
            
           
         loginActions.enterDataForRegistration(credentials.name, credentials.surname, credentials.nickname, 'test@test', credentials.password);
         loginActions.waitEnabledCreateButton();
        
-       // validate.notificationTextIs(credentials.notificationError);
-        
-               
+       
                 
     });
 
-    xit('should recovery password with not registered email', () => {
+    xit('should not recovery password with not registered email', () => {
            
           
         loginActions.recoveryPassword(credentials.notRegisteredEmail);
@@ -119,7 +115,7 @@ describe('Online-IDE authorization', () => {
                 
     });
 
-    /*it('recovery password with registered email', () => {
+    /*it('should recovery password with registered email', () => {
            
           
         Help.recoveryPassword(credentials.email);
@@ -128,7 +124,7 @@ describe('Online-IDE authorization', () => {
                    
                     
         });*/
-    xit('should recovery password with invalid data', () => {
+    xit('should not recovery password with invalid data', () => {
            
           
         loginActions.recoveryPassword(credentials.invalidEmail);

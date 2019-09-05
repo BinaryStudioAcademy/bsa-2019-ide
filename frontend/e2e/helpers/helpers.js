@@ -50,8 +50,7 @@ class HelpClass
     loginWithDefaultUser() {
                 
         page.clickloginbtn();
-        $("div.ng-trigger.ng-trigger-animation").waitForDisplayed(10000);
-       // const form = $("div.ui-dialog-content.ui-widget-content").waitForDisplayed(10000);
+        page.waitFormContainer();
         page.enterEmail(credentials.email);
         page.enterPassword(credentials.password);
         page.clickCreateButton();
@@ -135,49 +134,11 @@ class HelpClass
       
     }
 
-    returnExpectedNotificationDeletionProject(){
-        
-        projectDetails.clickMyProjectTab();
-        browser.pause(3000);
-        const projectNameDeleted = dashboardObject.projectCardTitle[0].getText();
-        const expectednotification = `Project "${projectNameDeleted}" was successfully deleted`
-        return expectednotification;
-    }
-    clickProjectDetailsOnCard() {
-        browser.pause(3000);
-        this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 2);;
-        browser.pause(1000);
-        projectDetails.clickCardMenuButton();
-        browser.pause(1000);
-        this.browserClickOnArrayElement("a.ui-menuitem-link.ui-corner-all.ng-star-inserted", 2);
-    }
-    clickProjectSettingsOnCard() {
-
-        this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 2);
-        browser.pause(3000);
-        projectDetails.clickCardMenuButton();
-        browser.pause(3000);
-        this.browserClickOnArrayElement("a.ui-menuitem-link.ui-corner-all.ng-star-inserted", 3);
-    }
-    DeleteProject() {
-        const deletebtn = $$("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left")[2];
-        deletebtn.click();
-        const deletebtnconfirm = $$("button.undefined.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left.ng-star-inserted")[0];
-        deletebtnconfirm.click();
-    }
-    returnUrl (){
+     returnUrl (){
         const urlPage = new URL(browser.getUrl());
         return urlPage;
     }
-    addToFavourite(index){
-       
-        this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 2);
-        const cards =  $("div.cards-area");
-        cards.waitForDisplayed(10000);
-        dashboard.starProject(index);
-        const projectNameToFavourite = dashboardObject.projectCardTitle[index].getText();
-        return projectNameToFavourite
-    }
+    
     navigateToFavouriteProjects() {
         this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 1);
     }
@@ -213,15 +174,7 @@ class HelpClass
         projectDetails.clickSaveButton();
 
     }
-    deleteCollaborator(index) {
-        
-        $('//span[contains(text(),"Collaborators")]/..').click();
-        $('//h2[contains(text(),"Search and add new collaborators:")]').waitForDisplayed(10000);
-        projectDetails.clickDeleteButton(index);
-        projectDetails.clickSaveButton();
-       
 
-    }
     checkDetails() {
         $('//span[contains(text(),"Details")]/..').click();
         browser.pause(1000);
@@ -236,21 +189,18 @@ class HelpClass
         const button = $("span.ui-button-secondary.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only.ng-star-inserted");
         button.click();
 
-        console.log("111______________");
-        //this.browserClickOnArrayElement(dashboardObject.listboxProjects, index);
-       // console.log("123______________________");
-
+       
     }
     changePassword(currentPassword, newPassword) {
         profile.clickMyProfileButton();
         profile.clickEditProfileButton();
-        browser.pause(1000);
+      //  browser.pause(1000);
         this.browserClickOnArrayElement(profileObject.editingOptions, 5);
-        browser.pause(1000);
+      //  browser.pause(1000);
         profile.entercurrentPassword(currentPassword);
       //  browser.pause(1000);
         profile.enterChangedPassword(newPassword);
-        browser.pause(2000);
+     //   browser.pause(2000);
        // profile.clickChangeButton();
        this.browserClickOnArrayElement("span.ui-button-text.ui-clickable", 6);
     };

@@ -41,11 +41,14 @@ class ProjectPageActions {
     }
     waitFormOfProjectCreation(){
         
-        page.formOfProjectCreation.waitForDisplayed(5000);
+        page.formOfProjectCreation.waitForDisplayed(10000);
     }
     waitEnableSaveButton(){
-      //  $("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only")
+      
         page.createButton.waitForEnabled(5000, true);
+    }
+    waitContentProjectDetailPage(){
+        page.contentOfProjectDetailPage.waitForDisplayed(10000);
     }
   
 }

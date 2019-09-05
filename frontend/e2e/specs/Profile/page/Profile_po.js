@@ -1,9 +1,14 @@
 class ProfilePage {
 
     get profileButton () {return $("button.ui-button.ui-widget.ui-state-default.ui-corner-left.ui-button-text-icon-left")};
-    get editProfileButton () {return $("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left.ng-star-inserted")};
+    get changeImageButton () {return $("//span[contains(text(), 'Change Image')]/..")};
+    get deleteImageButton () {return $("//span[contains(text(), 'Delete Image')]/..")};
+    get updateInfoButton () {return $("//span[contains(text(), 'Update Info')]/..")};
+    get changePasswordButton () {return $("//span[contains(text(), 'Change password')]/..")};
+   
+   /* get editProfileButton () {return $("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left.ng-star-inserted")};
     get editingOptions() {return ("a.ui-menuitem-link.ui-corner-all.ng-star-inserted")};
-    get projectsTabpanel () {return ("span.ui-tabview-title.ng-star-inserted")};
+   */ get projectsTabpanel () {return ("span.ui-tabview-title.ng-star-inserted")};
     get editorSettingsTabpanel () {return ("li.ui-state-default.ui-corner-top.ng-star-inserted.ui-tabview-selected.ui-state-active")};
     
     get lineHeightInput() {return $("input[formcontrolname='lineHeight']")};
