@@ -29,14 +29,14 @@ describe('Online-IDE User profile', () => {
    });
 
 
-    it('change password', () => {
+    xit('change password', () => {
         
-        /*$("button.ui-button.ui-widget.ui-state-default.ui-corner-left.ui-button-text-icon-left").click();
+        $("button.ui-button.ui-widget.ui-state-default.ui-corner-left.ui-button-text-icon-left").click();
         $("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left.ng-star-inserted").click();
         Help.browserClickOnArrayElement("a.ui-menuitem-link.ui-corner-all.ng-star-inserted", 5);
-*/
+
        //browser.pause(2000);
-        profile.changePassword(credentials.password, credentials.changedPassword);
+       // profile.changePassword(credentials.password, credentials.changedPassword);
         Help.logOut();
         Help.loginWithCustomUser(credentials.email, credentials.changedPassword);
         

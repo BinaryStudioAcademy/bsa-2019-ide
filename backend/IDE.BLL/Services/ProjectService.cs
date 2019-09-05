@@ -221,7 +221,7 @@ namespace IDE.BLL.Services
 
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
-
+            _logger.LogInformation($"project created {project.Name}");
             return project.Id;
         }
 
@@ -254,7 +254,7 @@ namespace IDE.BLL.Services
 
             _context.Projects.Update(targetProject);
             await _context.SaveChangesAsync();
-
+            _logger.LogInformation($"project updated {projectUpdateDTO.Id}");
             return await GetProjectById(projectUpdateDTO.Id);
         }
 
@@ -289,6 +289,7 @@ namespace IDE.BLL.Services
 
             _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
+            _logger.LogInformation($"project deleted {project.Id}");
         }
 
         public async Task<IEnumerable<LikedProjectDTO>> GetLikedProjects()

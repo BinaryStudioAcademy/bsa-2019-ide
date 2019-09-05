@@ -7,9 +7,21 @@ class ProfileActions {
         page.profileButton.waitForDisplayed(5000);
         page.profileButton.click();
     }
-    clickEditProfileButton(){
-        page.editProfileButton.waitForDisplayed(5000);
-        page.editProfileButton.click();
+    clickChangeImageButton(){
+        page.changeImageButton.waitForDisplayed(5000);
+        page.changeImageButton.click();
+    }
+    clickDeleteImageButton(){
+        page.deleteImageButton.waitForDisplayed(5000);
+        page.deleteImageButton.click();
+    }
+    clickUpdateInfoButton(){
+        page.updateInfoButton.waitForDisplayed(5000);
+        page.updateInfoButton.click();
+    }
+    clickChangePasswordButton(){
+        page.changePasswordButton.waitForDisplayed(5000);
+        page.changePasswordButton.click();
     }
     enterlineHeight(value){
         page.lineHeightInput.waitForDisplayed(5000);
@@ -74,13 +86,14 @@ class ProfileActions {
      }
     changePassword(currentPassword, newPassword) {
         
-       // this.clickMyProfileButton();
+        this.clickMyProfileButton();
        // browser.pause(10000);
-       // $("div.panel.p-grid.ng-star-inserted").waitForDisplayed(10000);
-       browser.url('https://bsa-ide.azurewebsites.net/user/details/10')
-        this.clickEditProfileButton();
+        $("div.panel.p-grid.ng-star-inserted").waitForDisplayed(10000);
+        this.clickChangePasswordButton();
+      // browser.url('https://bsa-ide.azurewebsites.net/user/details/10')
+       // this.clickEditProfileButton();
         //browser.pause(1000);
-        Help.browserClickOnArrayElement(profileObject.editingOptions, 5);
+       // Help.browserClickOnArrayElement(profileObject.editingOptions, 5);
        // browser.pause(1000);
         this.entercurrentPassword(currentPassword);
       //  browser.pause(1000);

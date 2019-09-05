@@ -2,6 +2,7 @@ class LoginPage {
 
     get loginbtn () {return $("button.login-btn.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only")};
     get signupbtn () {return $("button.signup-btn.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only")};
+    get formContainer () {return $("div.ng-trigger.ng-trigger-animation")};
     get firstNameInput () {return $("input#float-firstName-input")};
     get lastNameInput () {return $("input#float-lastName-input")};
     get nicknameInput () {return $("input#float-nickName-input")}

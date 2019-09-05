@@ -7,8 +7,8 @@ const wait = new Wait();
 
 const DashboardActions = require('./actions/Dashboard_pa');
 const dashboard = new DashboardActions();
-
-//const assert = require('chai').assert;
+const DashboardPage = require('./page/Dashboard_po');
+const page = new DashboardPage();
 describe('Online-IDE Dashboard', () => {
     
     beforeEach(() => {
@@ -24,15 +24,22 @@ describe('Online-IDE Dashboard', () => {
    });
 
 
-    xit('add project to favourite', () => {
+    xit('should add project to favourite', () => {
         
-        dashboard.waitDashboardMenu();
+        wait.ofDashboardMenu();
         validate.successnavigationToPage(credentials.dashboardUrl);
-        projectNameToFavourite = Help.addToFavourite(0);
-        Help.navigateToFavouriteProjects();
-        validate.verifyFavouriteProjectTitle(projectNameToFavourite);
-        Help.addToFavourite(0);
-        Help.navigateToFavouriteProjects();
+        Help.browserClickXPath(page.tabMyProjects);
+        wait.cardsArea();
+        dashboard.starProject();
+      //  $('//div[@Class="cards-area"]/div[1]/app-project-card/p-card')
+      
+        Help.browserClickXPath(page.tabFavouriteProjects);
+        wait.cardsArea();
+        validate.verifyFavouriteProjectTitle("changedProject");
+        Help.browserClickXPath(page.tabMyProjects);
+        wait.cardsArea();
+        dashboard.starProject();
+        Help.browserClickXPath(page.tabFavouriteProjects);
         validate.successnavigationToPage(credentials.dashboardUrl);
         validate.verifyNoProjectsInFavourite(credentials.expectedmessageonFavourite);
         Help.logOut();
@@ -43,11 +50,11 @@ describe('Online-IDE Dashboard', () => {
     xit('should search project by title in all projects', () => {
         
         
-        dashboard.waitDashboardMenu();
-        console.log("1____________________");
+        wait.ofDashboardMenu();
+      
         validate.successnavigationToPage(credentials.dashboardUrl);
         Help.searchProjectByTitleOf("test");
-        console.log("2____________________");       
+         
         validate.navigationToPage(credentials.projectDetailsUrl);
         validate.checkProjectDetailsData(0, `Name: ${credentials.projectName}`);
         Help.logOut();
@@ -56,11 +63,11 @@ describe('Online-IDE Dashboard', () => {
     xit('should search project by title in user`s projects', () => {
         
         
-        dashboard.waitDashboardMenu();
-        console.log("1____________________");
+        wait.ofDashboardMenu();
+        
         validate.successnavigationToPage(credentials.dashboardUrl);
         Help.searchProjectByTitleOf("test");
-        console.log("2____________________");   
+        
         Help.browserClickOnArrayElement("ul.ui-autocomplete-items.ui-autocomplete-list.ui-widget-content.ui-widget.ui-corner-all.ui-helper-reset li", 1);    
         validate.navigationToPage(credentials.projectDetailsUrl);
         validate.checkProjectDetailsData(0, `Name: ${credentials.projectName}`);
