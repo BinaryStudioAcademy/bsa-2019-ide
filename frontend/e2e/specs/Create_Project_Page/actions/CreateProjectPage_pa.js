@@ -32,12 +32,23 @@ class ProjectPageActions {
     }
  
     clickCreateButton() {
-        page.createButton.waitForDisplayed(2000);
+        page.createButton.waitForDisplayed(5000);
         page.createButton.click();
     }
     getTextProjectDetails(index) {
         page.projectDetailData(index).waitForDisplayed(2000);
         page.projectDetailData.getText();
+    }
+    waitFormOfProjectCreation(){
+        
+        page.formOfProjectCreation.waitForDisplayed(10000);
+    }
+    waitEnableSaveButton(){
+      
+        page.createButton.waitForEnabled(5000, true);
+    }
+    waitContentProjectDetailPage(){
+        page.contentOfProjectDetailPage.waitForDisplayed(10000);
     }
   
 }

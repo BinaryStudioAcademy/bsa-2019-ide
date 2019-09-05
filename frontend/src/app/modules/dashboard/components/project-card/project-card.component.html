@@ -20,6 +20,11 @@
     </p-header>
     <div>
         <p>
+            <span class="highlighted">Access type:</span> {{accessType}}
+            <i *ngIf="project.isPublic" class="pi pi-lock-open access-type"></i>
+            <i *ngIf="!project.isPublic" class="pi pi-lock access-type"></i>
+        </p>
+        <p>
             <span class="highlighted">Created:</span> {{project.created | date:'d MMMM yyyy'}}
         </p>
         <p *ngIf="project.lastBuild" [ngClass]="{

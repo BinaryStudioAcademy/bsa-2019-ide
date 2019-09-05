@@ -4,7 +4,7 @@ import { AuthDialogService } from '../services/auth-dialog.service/auth-dialog.s
 import { DialogType } from '../modules/authorization/models/auth-dialog-type';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
 import { ProjectService } from '../services/project.service/project.service';
 import { TokenService } from '../services/token.service/token.service';
 import { SearchProjectDTO } from '../models/DTO/Project/searchProjectDTO'
@@ -73,10 +73,11 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         ];
 
         this.tokenService.isAuthenticatedEvent$
-            .pipe(takeUntil(this.unsubscribe$))
+            .pipe(takeUntil(this.unsubscribe$),tap(isAuth => {if(isAuth) this.userNickName = this.tokenService.getUser().nickName;}))
             .subscribe((auth) => {
+              
                 this.isAuthorized = auth;
-                if (this.isAuthorized && this.userId) {
+                if (this.isAuthorized ) {
                     this.getUser();
                     this.data = this.signalRService.addTransferChartDataListener();
                     this.loadNotifications(this.userId);
@@ -92,7 +93,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.items = [
             {
                 label: 'Log out', icon: 'pi pi-sign-out', command: () => {
-                    this.LogOut();
+                    this.logOut();
                 }
             }
         ];
@@ -210,7 +211,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.authDialogService.openAuthDialog(type);
     }
 
-    public LogOut() {
+    public logOut() {
         this.tokenService.logout();
         this.isAuthorized = undefined;
         this.signalRService.crearData();

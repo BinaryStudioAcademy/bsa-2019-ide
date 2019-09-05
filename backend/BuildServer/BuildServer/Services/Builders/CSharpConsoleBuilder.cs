@@ -2,6 +2,7 @@
 using BuildServer.Interfaces;
 using BuildServer.OperationsResults;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -10,17 +11,20 @@ namespace BuildServer.Services.Builders
 {
     public class CSharpConsoleBuilder : IBuilder
     {
+        private readonly ILogger<CSharpConsoleBuilder> _logger;
         private string _buildDirectory;
         ProcessKiller _processKiller;
 
-        public CSharpConsoleBuilder(IConfiguration configuration, ProcessKiller processKiller)
+        public CSharpConsoleBuilder(IConfiguration configuration, ProcessKiller processKiller,  ILogger<CSharpConsoleBuilder> logger)
         {
             _buildDirectory = configuration.GetSection("BuildDirectory").Value;
             _processKiller = processKiller;
+            _logger = logger;
         }
 
         public BuildResult Build(string projectName)
         {
+            _logger.LogInformation("Start dot net build");
             var commandToBuild = $"/c dotnet build {_buildDirectory}\\{projectName}";
             var outputMessage = "";
 
@@ -50,6 +54,7 @@ namespace BuildServer.Services.Builders
             }
             catch (Exception e)
             {
+                _logger.LogError(e,"Start dot net build error");
                 Console.WriteLine(e.Message);
             }
 
@@ -64,6 +69,7 @@ namespace BuildServer.Services.Builders
 
         public string Run(string projectName, params string[] inputs)
         {
+            _logger.LogInformation("Start dot net run");
             var projNames = GetCsProjProjectName(projectName);
             if (projNames.Length == 0 || projNames.Length > 1)
                 return "There is no startup files, or there is more than one of them";
@@ -111,7 +117,7 @@ namespace BuildServer.Services.Builders
 
                 return output;
             }
-        } 
+        }
         private string[] GetCsProjProjectName(string projectName)
         {
             return Directory.GetFiles($"{_buildDirectory}{projectName}", "*.csproj", SearchOption.TopDirectoryOnly);

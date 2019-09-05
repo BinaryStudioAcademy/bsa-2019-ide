@@ -44,8 +44,50 @@ class LoginActions {
     clickLogOutButton() {
         page.logOutButton.waitForDisplayed(3000);
         page.logOutButton.click();
-       // page.logOutLink.waitForDisplayed(5000);
-       // page.logOutLink.click();
+
+    }
+    waitFormContainer(){
+        page.formContainer.waitForDisplayed(10000);
+    }
+    registerNewAccount(name, surname, nickname, email, password) {
+
+        this.clickSignupbtn();
+        this.waitFormContainer();
+        this.enterFirstName(name);
+        this.enterLastName(surname);
+        this.enterNickname(nickname);
+        this.enterEmail(email);
+        this.enterPassword(password);
+        this.clickCreateButton();
+    }
+    enterDataForRegistration(name, surname, nickname, email, password) {
+
+        this.clickSignupbtn();
+        this.waitFormContainer();
+        this.enterFirstName(name);
+        this.enterLastName(surname);
+        this.enterNickname(nickname);
+        this.enterEmail(email);
+        this.enterPassword(password);
+        
+    }
+    recoveryPassword(email) {
+
+        this.clickloginbtn();       
+        this.clickRecoveryPassword();
+        this.enterEmail(email);
+        this.clickCreateButton();
+    }
+    enterDataForLogin(email, password){
+
+        this.clickloginbtn();
+        this.waitFormContainer();
+        this.enterEmail(email);
+        this.enterPassword(password);
+    }
+    waitEnabledCreateButton(){
+
+        page.createButton.waitForEnabled(5000, true);
     }
 
 }

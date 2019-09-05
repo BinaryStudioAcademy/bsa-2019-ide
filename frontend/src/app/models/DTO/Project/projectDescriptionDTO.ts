@@ -12,4 +12,5 @@ export interface ProjectDescriptionDTO {
     buildStatus?: BuildStatus;
     lastBuild?: Date;
     color: string;
+    isPublic: boolean;
 }

@@ -4,7 +4,6 @@ import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
 import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, OnChanges, ChangeDetectorRef, AfterContentInit } from '@angular/core';
-import { ResizeEvent } from 'angular-resizable-element';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
@@ -14,8 +13,6 @@ import { map } from 'rxjs/internal/operators/map';
 
 import { HttpResponse } from '@angular/common/http';
 import { FileService } from 'src/app/services/file.service/file.service';
-import { MenuItem } from 'primeng/api';
-import { catchError } from 'rxjs/internal/operators/catchError';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { TokenService } from 'src/app/services/token.service/token.service';
@@ -23,7 +20,6 @@ import { ProjectDialogService } from 'src/app/services/proj-dialog.service/proje
 import { ProjectType } from '../../project/models/project-type';
 import { RightsService } from 'src/app/services/rights.service/rights.service';
 import { UserAccess } from 'src/app/models/Enums/userAccess';
-import { ProjectUpdateDTO } from 'src/app/models/DTO/Project/projectUpdateDTO';
 import { FileBrowserSectionComponent, SelectedFile } from '../file-browser-section/file-browser-section.component';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { HotkeyService } from 'src/app/services/hotkey.service/hotkey.service';
@@ -31,10 +27,8 @@ import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
 import { BuildService } from 'src/app/services/build.service';
 import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
-import { element } from 'protractor';
-import { ConcatSource } from 'webpack-sources';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
-import { filter } from 'rxjs/operators';
+import { filter, throwIfEmpty } from 'rxjs/operators';
 import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
 import { TerminalService } from 'primeng/components/terminal/terminalservice';
 
@@ -272,6 +266,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
                             this.editor.monacoOptions.readOnly = true;
                         }
+                        if(this.showFileBrowser) {
+                            document.getElementById('workspace').style.width = ((this.workspaceWidth) / this.maxSize()) + '%';
+                        }
                         this.editor.tabs.push({ label: tabName, icon: selectedFile.fileIcon, id: id });
                         this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
                         this.findAllOccurence(selectedFile.filterString);
@@ -345,7 +342,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                         this.toast.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
                 },
-                error => { console.log(error); this.toast.error("Error: can't save files", 'Error', { tapToDismiss: true }) });
+                error => { this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error', { tapToDismiss: true }) });
     }
 
     public fileIsOpen(files: FileUpdateDTO) {
@@ -363,6 +360,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         }
         if (this.showFileBrowser) {
             this.showSearchField = false;
+        }
+        if(!this.showFileBrowser) {
+            this.workspaceWidth = document.getElementById('workspace').offsetWidth;
+            document.getElementById('workspace').style.width = '100%';
+        } else {
+            document.getElementById('workspace').style.width = ((this.workspaceWidth - 1)/ this.maxSize() * 100) + '%';
         }
     }
 
@@ -383,6 +386,48 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             files = this.editor.openedFiles.map(x => x.innerFile);
         }
         return this.workSpaceService.saveFilesRequest(files);
+    }
+
+    private isDown: boolean;
+    private workspaceWidth: number;
+    private startHorPos: number;
+    private movingRight: number; 
+
+    public draggableDown(e: MouseEvent) {
+        e.preventDefault();
+        this.isDown = true;
+        this.startHorPos = e.x;
+    }
+
+    public draggableMove(e: MouseEvent) {
+        if (this.isDown) {
+            e.preventDefault();
+            this.movingRight = e.x - this.startHorPos;
+            this.startHorPos = e.x;
+            let browserElement = document.getElementById('browser'); 
+            let workspaceElement = document.getElementById('workspace'); 
+            let width = browserElement.offsetWidth + this.movingRight;
+            browserElement.style.width = (width / this.maxSize() * 100) + '%';
+            workspaceElement.style.width = (this.calc(width) / this.maxSize() * 100) + '%';
+            this.workspaceWidth = workspaceElement.offsetWidth;
+        }
+    }
+    
+    private maxSize() {
+        return document.getElementById('container').offsetWidth;
+    }
+
+    private calc(size: number): number {
+        return document.getElementById('container').offsetWidth - size - 5;
+    }
+
+    public draggableUp(e: MouseEvent) {
+        if(e.type === 'mouseup') {
+            this.isDown = false;
+        }
+        else if (e.y < 100 || e.x < 50) {
+            this.isDown = false;
+        }
     }
 
     canDeactivate(): Observable<boolean> {

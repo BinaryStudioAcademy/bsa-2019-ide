@@ -1,67 +1,47 @@
 const assert = require('chai').assert;
 const expect = require('chai').expect;
 
+const workspaceActions = require('./../specs/Workspace/actions/workspace_pa');
+const workspace = new workspaceActions();
+const WorkspacePage = require('./../specs/Workspace/page/workspace_po');
+const workPage = new WorkspacePage();
+
+
 class CustomValidates {
+ 
+    notificationOfSuccessRegistration(expectedText) {
 
-    
-
-   /* elementCountIs(locator, expectedQty) {
-        const els = locator;
-        const actualQty = els.length;
-
-        assert.strictEqual(actualQty, expectedQty, `Expected ${expectedQty} is not equal to ${actualQty}`);
+    const notification = $('div.toast-message');
+    notification.waitForDisplayed(10000);
+    const actualText = notification.getText();
+       assert.equal(actualText, expectedText);
     }
-
-    wrongValueIndicationOnField(locator) {
-        const attr = locator.getAttribute('class');
-        expect(attr, `${attr} doesn't include validation class`).to.include("is-danger");
-    }
-
-    wrongValueIndicationOnLable(locator) {
-
-        const attr = locator.getAttribute('class');
-        expect(attr, `${attr} doesn't include error class`).to.include("error");
-    }
-*/  
 
     notificationTextIs(expectedText) {
       
     const notification = $('div.toast-message.ng-star-inserted');
+    notification.waitForDisplayed(10000);
     const actualText = notification.getText()
+    console.log("_________________________" + actualText);
     assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
     
+    }
+    errorNotificationTextIs(expectedText) {
+        const notification = $("div.toast-error");
+        notification.waitForDisplayed(10000);
+    const actualText = notification.getText()
+  //  console.log("_________________________" + actualText);
+    assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
     }
     tooltipNotificationTextIs(expectedText, index) {
     const notification = $("div.invalid.ng-star-inserted")[index];
     const actualText = notification.getText()
     assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
     }
-   /* errorNotificationTextIs(expectedText) {
-        const notification = $('div.toast-message.ng-star-inserted');
-        const actualText = notification.getText()
-        assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
-    }
-    
-
-    successNotificationTextIs(expectedText) {
-        
-        const notification = $("div.toast-success.ngx-toastr.ng-trigger.ng-trigger-flyInOut");
-        const actualText = notification.getText()
-        assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
-        
-    }
-    InfoNotificationTextIs(expectedText) {
-      
-        const notification = $('div.toast-message.ng-star-inserted');
-        const actualText = notification.getText()
-        assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
-        
-    }*/
-
    
     successnavigationToPage(expectedUrl) {
         const url = new URL(browser.getUrl());
-        const actualUrl = url.hostname.toString() + url.pathname.toString();
+        const actualUrl = 'http://' + url.hostname.toString() + url.pathname.toString();
         assert.equal(actualUrl, expectedUrl);
     }
     navigationToPage(expectedUrl) {
@@ -79,8 +59,8 @@ class CustomValidates {
         assert.equal($$("div.card p")[index].getText(), expectedData);;
     }
     verifyFavouriteProjectTitle(expectedProjectName) {
-        browser.pause(2000);
-        const title =  $$("h2.title-ellipsis")[0];
+       
+        const title =  $("h2.title-ellipsis");
         const actualProjectName = title.getText()
         assert.equal(actualProjectName, expectedProjectName)
     }
@@ -96,7 +76,19 @@ class CustomValidates {
     verifyAbsence() {
         const element = $("div.collaborator-item");
         element.waitForExist(undefined, true);;
-    }
+    };
+
+    verifyEditedFile(expectedChanges) {
+        workspace.openFirstfile();
+        workPage.editorField.waitForDisplayed(10000);
+        assert.equal(workPage.editorField.getText(), expectedChanges);
+    };
+
+    verifyProjectHistory(expectedChanges) {
+        const historyText = $('//*[@id="ui-accordiontab-0-content"]/div').getText();
+        const firstWord = historyText.split(' ', 1);
+        assert.equal(firstWord, expectedChanges);
+    };
 }
 
 module.exports = CustomValidates;

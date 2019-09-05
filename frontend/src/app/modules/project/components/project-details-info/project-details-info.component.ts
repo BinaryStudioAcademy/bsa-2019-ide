@@ -78,4 +78,10 @@ export class ProjectDetailsInfoComponent implements OnInit {
     public showSettings() {
         this.projectSettingsService.show(ProjectType.Update, this.project.id);
     }
+
+    get accessType() {
+        if (this.project.accessModifier === AccessModifier.private)
+            return 'private';
+        return 'public';
+    }
 }

@@ -194,6 +194,8 @@ namespace IDE.BLL.Services
             }
             catch (Exception ex)
             {
+                if (ex is TooHeavyFileException || ex is TooManyFilesInProjectException)
+                    throw ex;
                 Debug.WriteLine(ex.Message);
             }
             finally
@@ -246,9 +248,11 @@ namespace IDE.BLL.Services
                     fileStructureRoot.NestedFiles.Add(nestedFileStructure);
                 }
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                if (e is TooHeavyFileException || e is TooManyFilesInProjectException)
+                    throw e;
+                Debug.WriteLine(e.Message);
             }
         }
 
