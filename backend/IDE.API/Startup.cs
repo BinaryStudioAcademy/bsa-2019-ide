@@ -2,7 +2,6 @@ using FluentValidation.AspNetCore;
 using IDE.API.Extensions;
 using IDE.BLL;
 using IDE.BLL.HubConfig;
-using IDE.BLL.Interfaces;
 using IDE.DAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -71,14 +70,15 @@ namespace IDE.API
                 .WithExposedHeaders("Token-Expired", "Content-Disposition")
                 .AllowCredentials()
                .WithOrigins("http://localhost:4200"));
+          
+            app.UseHttpsRedirection();
+            app.UseAuthentication();
 
             app.UseSignalR(routes =>
             {
                 routes.MapHub<NotificationHub>("/notification");
             });
 
-            app.UseHttpsRedirection();
-            app.UseAuthentication();
             app.UseMvc();
         }
 

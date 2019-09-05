@@ -58,13 +58,15 @@ namespace IDE.BLL.Services
             return access.UserAccess;
         }
 
-        public async Task DeleteRights(int userId,int projectId, int currentUserId)
+        public async Task DeleteRights(int collaboratorId, int projectId, int currentUserId)
         {
             var project = await _context.Projects.Where(item => item.Id == projectId).FirstOrDefaultAsync();
 
-            if (project.AuthorId==currentUserId)
+            if (project.AuthorId == currentUserId)
             {
-                var collaborator = await _context.ProjectMembers.Where(item => item.UserId == userId && item.ProjectId == projectId).FirstOrDefaultAsync();
+                var collaborator = await _context.ProjectMembers
+                    .Where(item => item.UserId == collaboratorId && item.ProjectId == projectId)
+                    .FirstOrDefaultAsync();
                 _context.ProjectMembers.Remove(collaborator);
                 await _context.SaveChangesAsync();
             }
@@ -72,6 +74,21 @@ namespace IDE.BLL.Services
             {
                 _logger.LogWarning(LoggingEvents.HaveException, $"NonAuthorRightsChange");
                 throw new NonAuthorRightsChange();
+            }
+
+            var notification = new NotificationDTO()
+            {
+                Type = NotificationType.AssinedToProject,
+                ProjectId = projectId,
+                DateTime = DateTime.Now,
+                Message = $"You was deleted from project \"{project.Name}\".",
+                Status = NotificationStatus.Message
+            };
+
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var notificationService = scope.ServiceProvider.GetService<INotificationService>();
+                await notificationService.SendNotificationToUserById(collaboratorId, notification);
             }
         }
 
@@ -89,15 +106,17 @@ namespace IDE.BLL.Services
                 throw new RightsChangeForProjectAuthorException();
             }
 
-            var projectMember = await _context.ProjectMembers.FirstOrDefaultAsync(pm => pm.UserId == update.UserId && pm.ProjectId == update.ProjectId);
+            var projectMember = await _context.ProjectMembers
+                .FirstOrDefaultAsync(pm => pm.UserId == update.UserId && pm.ProjectId == update.ProjectId);
             if (projectMember == null)
             {
                 await _context.AddAsync(new ProjectMember()
-                {
-                    ProjectId = update.ProjectId,
-                    UserId = update.UserId,
-                    UserAccess = update.Access
-                });
+                    {
+                        ProjectId = update.ProjectId,
+                        UserId = update.UserId,
+                        UserAccess = update.Access
+                    }
+                );
             }
             else
             {
@@ -128,17 +147,17 @@ namespace IDE.BLL.Services
 
             var notification = new NotificationDTO()
             {
-                Type = NotificationType.ProjectRun,
+                Type = NotificationType.AssinedToProject,
                 ProjectId = update.ProjectId,
                 DateTime = DateTime.Now,
-                Message = $"Now you can {opportunity} {project.Name} project",
+                Message = $"Now you can {opportunity} project \"{project.Name}\".",
                 Status = NotificationStatus.Message
             };
 
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var notificationService = scope.ServiceProvider.GetService<INotificationService>();
-                await notificationService.SendNotification(update.ProjectId, notification); //change on method "send to user" when realise
+                await notificationService.SendNotificationToUserById(update.UserId, notification); 
             }
         }
     }
