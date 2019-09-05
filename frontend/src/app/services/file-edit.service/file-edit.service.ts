@@ -18,6 +18,7 @@ export class FileEditService {
         this.hubConnection
             .start()
             .then(() => {
+                this.addProjectFilesListener();
                 this.connect(userId, projectId);
                 this.addChangeFileListener();
                 console.log(`SignalR file for project ${projectId} Connection started`);
@@ -35,6 +36,16 @@ export class FileEditService {
             this.openedFiles.next({ fileId: fileId, isOpen: isOpen, userId: userId, nickName: nickName });
             console.log(`file ${fileId} was changed to state ${isOpen}`)
         });
+    }
+
+    private addProjectFilesListener(): void {
+        this.hubConnection.on("getProjectchangesFiles", (files: OpenedFile[]) => {
+            console.log(files);
+            files.forEach(f => {
+                this.openedFiles.next(f);
+            });
+            this.hubConnection.off("getProjectchangesFiles");
+        })
     }
 
     public openFile(fileId: string, projectId: number): void {

@@ -159,10 +159,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                     this.fileEditService.startConnection(this.userId, this.project.id);
                     this.fileEditService.openedFiles.subscribe(x => 
                         {
-                            console.log(x);
-                            console.log(this.editor.contains(x.fileId));
                             if (x.userId !== this.userId) {
-                                console.log("another user");
                                 this.fileBrowser.changeFileState(x.fileId, x.isOpen, x.nickName);
                                 this.editor.monacoOptions.readOnly = true;
                                 
@@ -170,16 +167,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                                     this.fileEditService.openFile(x.fileId, this.project.id);
                                 }
                             } else if(x.userId === this.userId && this.editor.contains(x.fileId)) {
-                                // debugger;
-                                // this.fileBrowser.selectFileById(x.fileId);
-                                // this.onFileSelected({fileId = x.fileId});
                                 console.log("it's my own file");
                                 this.editor.changeFileState(x.fileId);
-                                // this.editor.monacoOptions.readOnly = false;
-                                // console.log(this.editor.monacoOptions.readOnly)
+                                this.workSpaceService.getFileById(x.fileId).subscribe(resp => {
+                                    this.editor.updateFile({content: resp.body.content, id: resp.body.id, name: null, folder: null, isOpen: null, updater: null, language: null});
+                                })
                                 setTimeout(() => {
                                     this.editor.changeReadOnlyState(false);
-                                }, 1000);
+                                }, 1500);
                             }
                         });
                 },
@@ -266,16 +261,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                         if (!fileUpdateDTO.isOpen) {
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
-                            // this.editor.monacoOptions.readOnly = false;
                             this.fileBrowser.selectedItem.label = tabName;
                         }
                         else if (this.project.accessModifier == 1) {
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
-                            // this.editor.monacoOptions.readOnly = false;
-                        }
-                        else if(fileUpdateDTO.isOpen) {
-                            // this.editor.monacoOptions.readOnly = true;
                         }
                         if(this.showFileBrowser) {
                             document.getElementById('workspace').style.width = ((this.workspaceWidth) / this.maxSize()) + '%';
@@ -284,7 +274,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                         this.findAllOccurence(selectedFile.filterString);
                         this.editor.code = content;
 
-                        this.fileEditService.openFile(selectedFile.fileId, this.project.id);
                     } else {
                         this.toast.error("Can't load selected file.", 'Error Message');
                     }
@@ -292,6 +281,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 (error) => {
                     this.toast.error("Can't load selected file.", 'Error Message');
                     console.error(error.message);
+                },
+                () => {
+                    this.fileEditService.openFile(selectedFile.fileId, this.project.id);
                 }
             );
     }

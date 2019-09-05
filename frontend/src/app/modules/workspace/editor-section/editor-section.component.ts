@@ -67,7 +67,7 @@ export class EditorSectionComponent implements OnInit {
             if(f.innerFile.id === fileId)
                 console.log('change file state');
                 f.innerFile.isOpen = false;
-        })
+        });
     }
 
     public changeReadOnlyState(readOnly: boolean = false) {
@@ -126,6 +126,21 @@ export class EditorSectionComponent implements OnInit {
         this.code = this.openedFiles[index].innerFile.content;
         this.language = this.openedFiles[index].innerFile.language;
         this.monacoEditor.editor.updateOptions({readOnly: this.openedFiles[index].innerFile.isOpen});
+    }
+
+    public updateFile(file: FileUpdateDTO) {
+        console.log('update');
+        this.openedFiles.forEach(f => {
+            if(f.innerFile.id === file.id)
+                f.innerFile.content = file.content;
+                console.log('change file state');
+                f.innerFile.isOpen = false;
+        })
+        if(this.activeItem.id === file.id){
+            console.log('update active');
+            this.code = file.content;
+            console.log(this.code);
+        }
     }
 
     public saveFiles(files: FileUpdateDTO[]) {

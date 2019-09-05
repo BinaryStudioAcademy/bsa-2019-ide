@@ -34,6 +34,7 @@ namespace IDE.BLL.HubConfig
         private async Task ConnectToProject(int projectId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, projectId.ToString());
+            await GetOpenedFiles(projectId);
         }
 
         public async Task OpenFile(string fileId, int projectId) // open file
@@ -50,6 +51,12 @@ namespace IDE.BLL.HubConfig
         public bool GetFileState(string fileId)
         {
             return _files.ContainsFile(fileId);
+        }
+
+        public async Task GetOpenedFiles(int projectId)
+        {
+            var files = _files.GetProjectFiles(projectId);
+            await Clients.Caller.SendAsync("getProjectchangesFiles", files);
         }
 
         public async Task CloseFile(string fileId) // close file

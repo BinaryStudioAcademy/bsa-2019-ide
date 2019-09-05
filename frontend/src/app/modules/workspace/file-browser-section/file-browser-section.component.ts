@@ -139,6 +139,7 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     public changeFileState(fileId: string, state: boolean, nickName: string) {
+        console.log('change file state');
         this.changeFilesState(fileId, state, nickName, this.files);
     }
 
@@ -147,9 +148,11 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     private changeFilesState(fileId: string, state: boolean, nickName: string, tree: TreeNode[]){
+        console.log(tree);
         tree.forEach(f => {
             if(f.type === TreeNodeType.file.toString()) {
                 if (f.key === fileId) {
+                    console.log('file found');
                     f.data = { state: state, nickName: nickName };
                     return;
                 }
