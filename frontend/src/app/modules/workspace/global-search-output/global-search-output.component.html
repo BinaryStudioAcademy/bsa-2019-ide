@@ -1,22 +1,25 @@
-<div class="content-wrapper ">
-     <div class="spinnerwaiter p-grid p-justify-center" *ngIf="isSpinner"> <div class="spinner-content p-col-2"><p-progressSpinner></p-progressSpinner></div></div>  
-  <div class="inner-wrapper" *ngFor="let f of filesToShow$ | async; index as i">
+<div class="content-wrapper">
+    <div class="spinnerwaiter p-grid p-justify-center" *ngIf="isSpinner"> 
+        <div class="spinner-content p-col-2"><p-progressSpinner></p-progressSpinner></div>
+    </div>
+    <P *ngIf="!isSpinner && !!filesToShow$" class="results-title">Results for query "{{query}}":</P>
+    <p-accordion class="content-results" [multiple]="true" *ngFor="let fts of filesToShow$ | async">
+        <p-accordionTab header="Project: {{fts.proj}}, file: {{fts.file.name}}">
+            <pre [appHighlightMatch]="query"> {{fts.file.content}}</pre>
+        </p-accordionTab>
+    </p-accordion>
+    <!-- <p-panel [toggleable]="true" collapsed="true" [style]="{width: '70%'}">
+        <p-header>
+            <div class="ui-panel-title " style="font-size:16px;display:inline-block;margin:0; width:80%"   >
+            <span [appHighlightMatch]="query" class="ui-panel-title " style="font-size:16px;display:inline-block;margin: 2px 0 0 10px; width: 30%">
+                {{f.proj}}</span>
+            <span  (click)="clicked(f.file)" class="ui-panel-title "
+                style="font-size:16px;display:inline-block;margin: 2px 0 0 10px">
+                File Name:  <span [appHighlightMatch]="query">{{f.file.name}}</span>
+            </span>
+            </div>
 
-    <p-panel [toggleable]="true" collapsed="true" [style]="{width: '100%'}">
-      <p-header>
-        <div class="ui-panel-title "
-        style="font-size:16px;display:inline-block;margin:0; width:80%"
-        >
-          <span [appHighlightMatch]="query" class="ui-panel-title " style="font-size:16px;display:inline-block;margin: 2px 0 0 10px; width: 30%">
-            {{f.proj}}</span>
-          <span  (click)="clicked(f.file)" class="ui-panel-title "
-            style="font-size:16px;display:inline-block;margin: 2px 0 0 10px">
-            File Name:  <span [appHighlightMatch]="query">{{f.file.name}}</span>
-          </span>
-        </div>
-
-      </p-header>
-      <pre [appHighlightMatch]="query"> {{f.file.content}}</pre>
-    </p-panel>
-  </div>
+        </p-header>
+        <pre [appHighlightMatch]="query"> {{f.file.content}}</pre>
+    </p-panel> -->
 </div>
