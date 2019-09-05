@@ -7,7 +7,7 @@ pr:
 
 variables:
   BuildConfiguration: 'Release'
-  BackendSolution: 'backend/IDE.sln'
+  BackendSolution: 'backend/**/*.sln'
   TestProjects: 'backend/**/*[Tt]ests/*.csproj'
 
 jobs:
