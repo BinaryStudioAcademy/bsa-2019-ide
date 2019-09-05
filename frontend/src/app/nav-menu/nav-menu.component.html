@@ -44,7 +44,7 @@
                     <button pButton type="button" icon='pi pi-sign-out' (click)="logOut()" class="ui-button-danger"></button>
                 </div>
                         
-                <p-overlayPanel #notifications [dismissable]="false" class="notification">
+                <p-overlayPanel #notifications class="notification">
                     <div class="notification-panel-content">
                         <div *ngIf="notReadNotification.length!=0">
                             <div class="notification-item" *ngFor="let item of notReadNotification"
