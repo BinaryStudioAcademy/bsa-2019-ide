@@ -67,13 +67,13 @@ export class SignalRService {
 
     public addTransferChartDataListener(): NotificationDTO[] {
         this.hubConnection.on('transferchartdata', (notification) => {
-            this.notifications.push(notification);
+            this.notifications.unshift(notification);
         });
         this.hubConnection.on('transferRunResult', (notification) => {
-            this.notifications.push(notification);
+            this.notifications.unshift(notification);
         });
         return this.notifications;
-    }   
+    }
 
     public addConnectionIdListener(): void{
         this.hubConnection.on('sendConnectionId', (connectionId, userId) => {
@@ -91,7 +91,7 @@ export class SignalRService {
     {
         this.hubConnection.invoke("MarkAsRead", notificationId)
             .catch((error) => console.log(error));
-    }    
+    }
 
     public deleteTransferChartDataListener()
     {
@@ -103,5 +103,5 @@ export class SignalRService {
     public deleteConnectionIdListener()
     {
         this.hubConnection.off('sendConnectionId');
-    } 
+    }
 }
