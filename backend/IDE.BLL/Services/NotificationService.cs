@@ -6,8 +6,6 @@ using IDE.DAL.Context;
 using IDE.DAL.Entities;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using RabbitMQ.Shared.ModelsDTO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,20 +14,16 @@ namespace IDE.BLL.Services
 {
     public class NotificationService : INotificationService
     {
-
         private readonly IHubContext<NotificationHub> _hubContext;
         private readonly IdeContext _context;
-        //private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IMapper _mapper;
         public NotificationService(IHubContext<NotificationHub> hubContext,
             IdeContext context,
-            //IServiceScopeFactory serviceScopeFactory,
             IMapper mapper)
         {
             _hubContext = hubContext;
             _context = context;
             _mapper = mapper;
-            //_serviceScopeFactory = serviceScopeFactory;
         }
 
         public async Task SendNotificationToUser(int userId, NotificationDTO notificationDTO)
@@ -39,43 +33,37 @@ namespace IDE.BLL.Services
                     .SendAsync("transferchartdata", notificationDTO)
                     .ConfigureAwait(false);
         }
-        public async Task SendNotification(int projectId, NotificationDTO notificationDTO)
+        public async Task SendNotificationToProjectParticipants(int projectId, NotificationDTO notificationDTO)
         {
-            //using (var scope = _serviceScopeFactory.CreateScope())
-            //{
-            //    var _context = scope.ServiceProvider.GetService<IdeContext>();
+            var users = await _context.ProjectMembers
+                .Where(item => item.ProjectId == projectId)
+                .Select(item => item.User)
+                .ToListAsync() ?? new List<User>();
 
-                var users = await _context.ProjectMembers
-                    .Where(item => item.ProjectId == projectId)
-                    .Select(item => item.User)
-                    .ToListAsync() ?? new List<User>();
+            var author = await _context.Projects
+                .Where(item => item.Id == projectId)
+                .Select(item => item.Author)
+                .FirstOrDefaultAsync();
 
-                var author = await _context.Projects
-                    .Where(item => item.Id == projectId)
-                    .Select(item => item.Author)
-                    .FirstOrDefaultAsync();
-
-                if (author != null)
-                    users.Add(author);
-
+            if (author != null)
+                users.Add(author);
+            
+            foreach (var user in users)
+            {
                 var notification = _mapper.Map<Notification>(notificationDTO);
+                user.Notifications.Add(notification);
+                _context.Update(user);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
 
-                foreach (var user in users)
-                {
-                    // BUG: Ovveriding uderId in notification
-                    user.Notifications.Add(notification);
-                    _context.Update(user);
-                    await _context.SaveChangesAsync().ConfigureAwait(false);
-                }
+                var notificationToSend = _mapper.Map<NotificationDTO>(notification);
 
-                notificationDTO = _mapper.Map<NotificationDTO>(notification);
-                await _hubContext.Clients.Groups(projectId.ToString())
-                    .SendAsync("transferchartdata", notificationDTO)
+                await _hubContext.Clients.User(user.Id.ToString())
+                    .SendAsync("transferchartdata", notificationToSend)
                     .ConfigureAwait(false);
-            //}
+            }                
         }
 
-        public async Task SendRunResultNotificationToUser(NotificationDTO notification, string connectionId)
+        public async Task SendNotificationToSpecificConnection(NotificationDTO notification, string connectionId)
         {
             await _hubContext.Clients.Client(connectionId)
                 .SendAsync("transferRunResult", notification)

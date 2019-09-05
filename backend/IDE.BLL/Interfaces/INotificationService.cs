@@ -1,5 +1,4 @@
 ﻿using IDE.Common.ModelsDTO.DTO.Common;
-using RabbitMQ.Shared.ModelsDTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -7,10 +6,10 @@ namespace IDE.BLL.Interfaces
 {
     public interface INotificationService
     {
-        Task SendNotificationToUser(int userId, NotificationDTO notificationDTO);
-        Task SendNotification(int projectId, NotificationDTO notificationDTO);
         Task MarkAsRead(int notificationId);
         Task<IEnumerable<NotificationDTO>> GetNotificationByUserId(int userId);
-        Task SendRunResultNotificationToUser(NotificationDTO notification, string connectionId);
+        Task SendNotificationToUser(int userId, NotificationDTO notificationDTO);
+        Task SendNotificationToProjectParticipants(int projectId, NotificationDTO notificationDTO);
+        Task SendNotificationToSpecificConnection(NotificationDTO notification, string connectionId);
     }
 }
