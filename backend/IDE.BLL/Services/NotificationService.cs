@@ -28,9 +28,15 @@ namespace IDE.BLL.Services
 
         public async Task SendNotificationToUser(int userId, NotificationDTO notificationDTO)
         {
+            var user = await _context.Users.FirstOrDefaultAsync(item => item.Id == userId);
             var notification = _mapper.Map<Notification>(notificationDTO);
+            user.Notifications.Add(notification);
+            _context.Update(user);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+            var notificationToSend = _mapper.Map<NotificationDTO>(notification);
+
             await _hubContext.Clients.User(userId.ToString())
-                    .SendAsync("transferchartdata", notificationDTO)
+                    .SendAsync("transferchartdata", notificationToSend)
                     .ConfigureAwait(false);
         }
         public async Task SendNotificationToProjectParticipants(int projectId, NotificationDTO notificationDTO)
