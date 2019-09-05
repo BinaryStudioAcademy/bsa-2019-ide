@@ -7,6 +7,7 @@ using IDE.DAL.Entities;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using RabbitMQ.Shared.ModelsDTO;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace IDE.BLL.Services
 {
     public class NotificationService : INotificationService
     {
-
+        private readonly ILogger<NotificationService> _logger;
         private readonly IHubContext<NotificationHub> _hubContext;
         private readonly IdeContext _context;
         //private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -24,11 +25,12 @@ namespace IDE.BLL.Services
         public NotificationService(IHubContext<NotificationHub> hubContext,
             IdeContext context,
             //IServiceScopeFactory serviceScopeFactory,
-            IMapper mapper)
+            IMapper mapper, ILogger<NotificationService> logger)
         {
             _hubContext = hubContext;
             _context = context;
             _mapper = mapper;
+            _logger = logger;
             //_serviceScopeFactory = serviceScopeFactory;
         }
         public async Task SendNotification(int projectId, NotificationDTO notificationDTO)
@@ -59,7 +61,7 @@ namespace IDE.BLL.Services
                     _context.Update(user);
                     await _context.SaveChangesAsync().ConfigureAwait(false);
                 }
-
+                _logger.LogInformation("user notification updated");
                 notificationDTO = _mapper.Map<NotificationDTO>(notification);
                 await _hubContext.Clients.Groups(projectId.ToString())
                     .SendAsync("transferchartdata", notificationDTO)
@@ -94,6 +96,7 @@ namespace IDE.BLL.Services
             _context.Update(notification);
             await _context.SaveChangesAsync()
                 .ConfigureAwait(false);
+            _logger.LogInformation("notification marked as read");
         }
 
         private async Task<NotificationDTO> CreateNotificationByUser(NotificationDTO notificationDTO)
@@ -105,7 +108,7 @@ namespace IDE.BLL.Services
 
             await _context.SaveChangesAsync()
                 .ConfigureAwait(false);
-
+            _logger.LogInformation("created notifications");
             return _mapper.Map<NotificationDTO>(notification);
         }
     }
