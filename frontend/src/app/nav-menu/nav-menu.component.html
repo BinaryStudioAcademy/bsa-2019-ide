@@ -1,7 +1,7 @@
 <div class="menu-wrapper">
     <p-menubar [model]="getMenuItems()">
         <div class="right-part">
-            <div *ngIf="isAuthorized">
+            <div *ngIf="isAuthorized" class="authorized-right-part">
                 <p-autoComplete class="auto-complete" [(ngModel)]="project" [suggestions]="filterProhects"
                     (completeMethod)="filterProject($event)" field="name" [size]="30" placeholder="Project title..."
                     [minLength]="1" (onSelect)="checkProject(project)">
@@ -39,17 +39,11 @@
                 </button>
 
                 <span class="avatar" [ngStyle]="{'content': 'url(' + userAvatar + ')'}"></span>
-
-                <p-splitButton label="{{userNickName}}" icon="pi" (onClick)="goToUserDetails()" [model]="items">
-                </p-splitButton>
-                <div class="ui-g ui-fluid">
-                    <div class="ui-g-12 ui-md-4">
-                        <div class="ui-inputgroup">
-                            <button pButton type="button" label="Search"></button>
-                            <input type="text" pInputText placeholder="Keyword">         
-                        </div>
-                    </div>
+                <div class="ui-inputgroup">
+                    <button pButton type="button" icon="pi" (click)="goToUserDetails()" label="{{userNickName}}"></button>
+                    <button pButton type="button" icon='pi pi-sign-out' (click)="logOut()" class="ui-button-danger"></button>
                 </div>
+                        
                 <p-overlayPanel #notifications [dismissable]="false" class="notification">
                     <div class="notification-panel-content">
                         <div *ngIf="notReadNotification.length!=0">

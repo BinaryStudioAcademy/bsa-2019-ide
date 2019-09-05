@@ -75,6 +75,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.tokenService.isAuthenticatedEvent$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((auth) => {
+              
                 this.isAuthorized = auth;
                 if (this.isAuthorized && this.userId) {
                     this.getUser();
@@ -92,7 +93,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.items = [
             {
                 label: 'Log out', icon: 'pi pi-sign-out', command: () => {
-                    this.LogOut();
+                    this.logOut();
                 }
             }
         ];
@@ -210,7 +211,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.authDialogService.openAuthDialog(type);
     }
 
-    public LogOut() {
+    public logOut() {
         this.tokenService.logout();
         this.isAuthorized = undefined;
         this.signalRService.crearData();
