@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ɵConsole } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { AuthDialogService } from '../services/auth-dialog.service/auth-dialog.service';
 import { DialogType } from '../modules/authorization/models/auth-dialog-type';
@@ -75,7 +75,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.tokenService.isAuthenticatedEvent$
             .pipe(takeUntil(this.unsubscribe$),tap(isAuth => {if(isAuth) this.userNickName = this.tokenService.getUser().nickName;}))
             .subscribe((auth) => {
-              
+
                 this.isAuthorized = auth;
                 if (this.isAuthorized ) {
                     this.getUser();
@@ -110,7 +110,17 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.notificationService.getUserNotifications(userId)
             .subscribe(
                 (resp) => {
-                    this.notReadNotification = resp.body;
+                    this.notReadNotification = resp.body.sort(function (a, b) {
+                        if (a.dateTime > b.dateTime) {
+                            return -1;
+                        }
+                        if (a.dateTime < b.dateTime) {
+                            return 1;
+                        }
+                        return 0;
+                    });
+                    console.log(resp.body);
+                    console.log(this.notReadNotification);
                 }
             );
     }
@@ -123,14 +133,10 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             this.signalRService.deleteTransferChartDataListener();
             this.data = this.signalRService.addTransferChartDataListener();
             dataForDelete.forEach(element => {
-                if (element.type == NotificationType.projectBuild) {
-                    this.signalRService.markNotificationAsRead(element.id);
-                }
+                this.signalRService.markNotificationAsRead(element.id);
             });
             this.notReadNotification.forEach(element => {
-                if (element.type == NotificationType.projectBuild) {
-                    this.signalRService.markNotificationAsRead(element.id);
-                }
+                this.signalRService.markNotificationAsRead(element.id);
             })
             this.notReadNotification = [];
         }

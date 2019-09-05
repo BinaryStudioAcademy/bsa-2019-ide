@@ -17,6 +17,8 @@ using System.Text;
 using System.Threading.Tasks;
 using IDE.Common.ModelsDTO.DTO.File;
 using IDE.Common.DTO.Project;
+using Microsoft.AspNetCore.SignalR;
+using IDE.BLL.Services.SignalR;
 
 namespace IDE.API.Extensions
 {
@@ -45,6 +47,7 @@ namespace IDE.API.Extensions
             services.AddSingleton<IValidator<FileRenameDTO>, FileRenameDTOValidator>();
             services.AddSingleton<IValidator<ProjectCreateDTO>, ProjectCreateDTOValidator>();
             services.AddSingleton<IValidator<ProjectUpdateDTO>, ProjectUpdateDTOValidator>();
+            services.AddSingleton<IUserIdProvider, UserIdProvider>();
         }
 
         public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
@@ -95,6 +98,21 @@ namespace IDE.API.Extensions
                             context.Response.Headers.Add("Token-Expired", "true");
                         }
 
+                        return Task.CompletedTask;
+                    },
+                    OnMessageReceived = context =>
+                    {
+                        if (string.IsNullOrEmpty(context.Request.Query["access_token"]))
+                        {
+                            return Task.CompletedTask;
+                        }
+                        var accessToken = context.Request.Query["access_token"].ToString();
+                        accessToken = accessToken.Replace("\"","");
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notification"))
+                        {
+                            context.Token = accessToken;
+                        }
                         return Task.CompletedTask;
                     }
                 };

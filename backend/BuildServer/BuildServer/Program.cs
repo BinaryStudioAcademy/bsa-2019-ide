@@ -81,7 +81,7 @@ namespace BuildServer
                         .AddScoped<IQueueService, QueueService>()
                         .AddLogging(loggingBuilder =>
                             {
-                            // configure Logging with NLog
+                                // configure Logging with NLog
                                 loggingBuilder.ClearProviders();
                                 loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                                 loggingBuilder.AddNLog();
@@ -93,9 +93,9 @@ namespace BuildServer
                         .AddTransient<GoConsoleBuilder>()
                         .AddTransient<TSConsoleBuilder>()
                         .AddTransient<CSharpConsoleBuilder>()
-                        .Configure<CSharpConsoleBuilder>(configuration)
-                        .Configure<TSConsoleBuilder>(configuration)
-                        .Configure<GoConsoleBuilder>(configuration)
+                        .Configure<CSharpConsoleBuilder>(config)
+                        .Configure<TSConsoleBuilder>(config)
+                        .Configure<GoConsoleBuilder>(config);
         }
     }
 }

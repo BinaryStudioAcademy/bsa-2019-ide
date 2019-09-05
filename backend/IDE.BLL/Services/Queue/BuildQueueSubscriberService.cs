@@ -1,5 +1,4 @@
 ﻿using IDE.BLL.Interfaces;
-using IDE.Common.DTO.Common;
 using IDE.Common.Enums;
 using IDE.Common.ModelsDTO.DTO.Common;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,8 +16,6 @@ namespace IDE.BLL.Services.Queue
     public class BuildQueueSubscriberService : BaseQueueSubscriber
     {
         private readonly IServiceScopeFactory _serviceScopeFactory;
-
-        private IMessageConsumerScope _messageConsumerScopeBuild;
 
         public BuildQueueSubscriberService(IMessageConsumerScopeFactory messageConsumerScopeFactory,
                             ILogger<BuildQueueSubscriberService> logger,
@@ -53,7 +50,6 @@ namespace IDE.BLL.Services.Queue
             else
             {
                 notification.Status = NotificationStatus.Error;
-
             }
             notification.Message=$"Build project";
             notification.Type = NotificationType.ProjectBuild;
@@ -61,12 +57,11 @@ namespace IDE.BLL.Services.Queue
             notification.Metadata = buildResult.Message;
             notification.DateTime = DateTime.Now;
 
-
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var notificationService = scope.ServiceProvider.GetService<INotificationService>();
                 var buildService = scope.ServiceProvider.GetService<IBuildService>();
-                await notificationService.SendNotification(buildResult.ProjectId, notification);
+                await notificationService.SendNotificationToProjectParticipants(buildResult.ProjectId, notification);
                 await buildService.CreateFinishBuildArtifacts(buildResult);
             }
         }
