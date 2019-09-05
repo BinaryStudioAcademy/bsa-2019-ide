@@ -505,7 +505,7 @@ export class FileBrowserSectionComponent implements OnInit {
                     newNode.expanded = true;
                     if (file.hightlights && file.hightlights.length)
                     {
-                        
+
                         file.hightlights.forEach(highlight => { 
                             const newChildNode : TreeNode = {
                                 type: TreeNodeType.file.toString(),
