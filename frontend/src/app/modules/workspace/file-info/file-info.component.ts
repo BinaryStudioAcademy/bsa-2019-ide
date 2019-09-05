@@ -34,7 +34,6 @@ export class FileInfoComponent implements OnInit {
         {
             this.getCountOfInternalItem(this.fileInfoData.node);
         }
-        console.log(this.fileInfoData);
         this.infoService.getFileStructureSize(this.fileInfoData.projectId,this.fileInfoData.node.key).subscribe(
             (resp)=>
             {

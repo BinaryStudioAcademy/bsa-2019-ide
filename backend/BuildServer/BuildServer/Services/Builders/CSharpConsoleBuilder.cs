@@ -2,6 +2,7 @@
 using BuildServer.Interfaces;
 using BuildServer.OperationsResults;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -10,17 +11,20 @@ namespace BuildServer.Services.Builders
 {
     public class CSharpConsoleBuilder : IBuilder
     {
+        private readonly ILogger<CSharpConsoleBuilder> _logger;
         private string _buildDirectory;
         ProcessKiller _processKiller;
 
-        public CSharpConsoleBuilder(IConfiguration configuration, ProcessKiller processKiller)
+        public CSharpConsoleBuilder(IConfiguration configuration, ProcessKiller processKiller,  ILogger<CSharpConsoleBuilder> logger)
         {
             _buildDirectory = configuration.GetSection("BuildDirectory").Value;
             _processKiller = processKiller;
+            _logger = logger;
         }
 
         public BuildResult Build(string projectName)
         {
+            _logger.LogInformation("Start dot net build");
             var commandToBuild = $"/c dotnet build {_buildDirectory}\\{projectName}";
             var outputMessage = "";
 
@@ -50,6 +54,7 @@ namespace BuildServer.Services.Builders
             }
             catch (Exception e)
             {
+                _logger.LogError(e,"Start dot net build error");
                 Console.WriteLine(e.Message);
             }
 
@@ -62,8 +67,9 @@ namespace BuildServer.Services.Builders
             return buildResult;
         }
 
-        public string Run(string projectName)
+        public string Run(string projectName, params string[] inputs)
         {
+            _logger.LogInformation("Start dot net run");
             var projNames = GetCsProjProjectName(projectName);
             if (projNames.Length == 0 || projNames.Length > 1)
                 return "There is no startup files, or there is more than one of them";
@@ -76,32 +82,26 @@ namespace BuildServer.Services.Builders
                 {
                     FileName = "dotnet",
                     Arguments = $"{_buildDirectory}{projectName}\\bin\\Debug\\netcoreapp2.2\\{projName}",
-                    //p.StartInfo.RedirectStandardInput = true;
+                    RedirectStandardInput = true,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     CreateNoWindow = true,
-                    UseShellExecute = false
+                    UseShellExecute = false,
                 };
 
                 _processKiller.KillProcess(p);
                 p.Start();
 
-                //StreamWriter writer = p.StandardInput;
+                StreamWriter writer = p.StandardInput;
+                int count = 0;
+                while(count<inputs.Length)
+                {
+                    writer.WriteLine(inputs[count]);
+                    count++;
+                }
 
-                //string inputText;
-                //writer.WriteLine("\n");
-                //int numLines = 0;
-                //do
-                //{
-                //    inputText = Console.ReadLine();
-                //    if (inputText.Length > 0)
-                //    {
-                //        numLines++;
-                //        writer.WriteLine("\n");
-                //    }
-                //} while (inputText.Length > 0);
-                //writer.Dispose();
-                
+                writer.Dispose();
+
                 string output = "";
                 string line = "";
                 while (!p.StandardOutput.EndOfStream)
@@ -117,7 +117,7 @@ namespace BuildServer.Services.Builders
 
                 return output;
             }
-        } 
+        }
         private string[] GetCsProjProjectName(string projectName)
         {
             return Directory.GetFiles($"{_buildDirectory}{projectName}", "*.csproj", SearchOption.TopDirectoryOnly);

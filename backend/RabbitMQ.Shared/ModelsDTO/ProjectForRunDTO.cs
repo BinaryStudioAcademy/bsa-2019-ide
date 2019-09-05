@@ -12,5 +12,6 @@ namespace RabbitMQ.Shared.ModelsDTO
         public Uri UriForProjectDownload { get; set; }
 
         public DateTime TimeStamp { get; set; }
+        public string[] Inputs { get; set; }
     }
 }

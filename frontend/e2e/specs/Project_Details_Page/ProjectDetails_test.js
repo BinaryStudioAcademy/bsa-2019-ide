@@ -5,8 +5,10 @@ const Wait = require('../../helpers/waiters');
 const validate = new Assert();
 const wait = new Wait();
 
-//const DashboardPage = require('../page/Dashboard_po');
-//const dashboardObject = new DashboardPage();
+const ProjectDetailsActions = require('./actions/ProjectDetails_pa');
+const projectDetails = new ProjectDetailsActions();
+const ProjectDetailsObjects = require('./page/ProjectDetails_po');
+const page = new ProjectDetailsObjects();
 
 //const assert = require('chai').assert;
 describe('Online-IDE ProjectDetails Page', () => {
@@ -15,7 +17,8 @@ describe('Online-IDE ProjectDetails Page', () => {
        browser.maximizeWindow();
        browser.url(credentials.appUrl);
        Help.loginWithDefaultUser();
-       wait.forSpinner();
+      // wait.forSpinner();
+      wait.forNotificationToDisappear();
     
    });
 
@@ -23,35 +26,49 @@ describe('Online-IDE ProjectDetails Page', () => {
        browser.reloadSession();
    });
 
-
+//passed
     xit('change project settings', () => {
         
-        browser.pause(1000);
-        Help.clickProjectSettingsOnCard();
-        //wait.forSpinner();
-        browser.pause(3000);
-        Help.inputChangedDataInForm(credentials.changedProjectName, credentials.changeddescription, credentials.changedBuildsNumber, credentials.changedBuildAttempts, 4);
-        //wait.forSpinner();
+       
+        wait.ofDashboardMenu();
+        validate.successnavigationToPage(credentials.dashboardUrl);
+        Help.browserClickXPath(page.tabMyProjects);
+        projectDetails.clickCardMenuButton();
+        Help.browserClickXPath(page.settingsButtonOnProjectCard);
 
+        Help.fillOutChangedDataInForm(credentials.changedProjectName, credentials.changeddescription, credentials.changedBuildsNumber, credentials.changedBuildAttempts);
+        projectDetails.clickSaveProjectButton();
+        
         validate.notificationTextIs(credentials.successchangedsettingsnotification);
         wait.forNotificationToDisappear();
 
-        Help.clickProjectDetailsOnCard();
-        browser.pause(3000);
+        wait.ofDashboardMenu();
+        validate.successnavigationToPage(credentials.dashboardUrl);
+        Help.browserClickXPath(page.tabMyProjects);
+        projectDetails.clickCardMenuButton();
+        Help.browserClickXPath(page.detailsButtonOnProjectCard);
+        wait.contentOfProjectDetailPage();
+
+        validate.navigationToPage(credentials.projectDetailsUrl);
         validate.checkProjectDetailsData(0, "Name: "+ credentials.changedProjectName);
         validate.checkProjectDetailsData(1, "Description: "+ credentials.changeddescription);
-        validate.checkProjectDetailsData(7, "Amount of saved builds: "+ credentials.changedBuildsNumber);
-        validate.checkProjectDetailsData(8, "Amount of build attempts: "+ credentials.changedBuildAttempts);
+        validate.checkProjectDetailsData(8, "Amount of saved builds: "+ credentials.changedBuildsNumber);
+        validate.checkProjectDetailsData(9, "Amount of build attempts: "+ credentials.changedBuildAttempts);
         Help.logOut();
         
     });
 
 
-
+//failed
     xit('navigate to project details page', () => {
         
-        Help.clickProjectDetailsOnCard();
-        browser.pause(1000);
+        wait.ofDashboardMenu();
+        validate.successnavigationToPage(credentials.dashboardUrl);
+        Help.browserClickXPath(page.tabMyProjects);
+        projectDetails.clickCardMenuButton();
+        Help.browserClickXPath(page.detailsButtonOnProjectCard);
+
+        wait.contentOfProjectDetailPage();
         validate.navigationToPage(credentials.projectDetailsUrl);
         
         Help.logOut();
@@ -59,64 +76,76 @@ describe('Online-IDE ProjectDetails Page', () => {
     });
 
 
-    xit('add collaborator', () => {
+    it('should add a collaborator in project', () => {
         
-        Help.clickProjectDetailsOnCard();
-        browser.pause(3000);
-        Help.addCollaborators("test");
-        browser.pause(3000);
+        wait.ofDashboardMenu();
+        validate.successnavigationToPage(credentials.dashboardUrl);
+        Help.browserClickXPath(page.tabMyProjects);
+        projectDetails.clickCardMenuButton();
+        Help.browserClickXPath(page.detailsButtonOnProjectCard);
+        wait.contentOfProjectDetailPage();
+        Help.addCollaborators("testUser1");
+        console.log(credentials.notificationSuccessAddCollaborator);
         validate.notificationTextIs(credentials.notificationSuccessAddCollaborator);
         Help.checkDetails();
-        browser.pause(2000);
+        
         validate.verifyText($$("div.collaborator-item div")[0], "testUser1");
         validate.verifyText($("div label"), "Can edit and build");
         Help.logOut();
         
     });
-    xit('change collaborators rights', () => {
+    xit('should change collaborators rights', () => {
         
-        Help.clickProjectDetailsOnCard();
-        browser.pause(3000);
+        wait.ofDashboardMenu();
+        validate.successnavigationToPage(credentials.dashboardUrl);
+        Help.browserClickXPath(page.tabMyProjects);
+        projectDetails.clickCardMenuButton();
+        Help.browserClickXPath(page.detailsButtonOnProjectCard);
+
+        wait.contentOfProjectDetailPage();
         Help.changeCollaboratorsRights(4);
-       // browser.pause(3000);
+       
         validate.notificationTextIs(credentials.notificationSuccessChangeCollaboratorRight);
         Help.checkDetails();
-        browser.pause(2000);
+        
         validate.verifyText($$("div.collaborator-item div")[0], "testUser1");
         validate.verifyText($("div label"), "Provide all access rights");
         Help.logOut();
         
     });
-    xit('delete collaborator', () => {
+    it('should delete collaborator', () => {
         
-        Help.clickProjectDetailsOnCard();
-        browser.pause(3000);
-        Help.deleteCollaborator(0);
-        browser.pause(3000);
-        //validate.notificationTextIs(credentials.notificationSuccessDeleteCollaborator);
+        wait.ofDashboardMenu();
+        validate.successnavigationToPage(credentials.dashboardUrl);
+        Help.browserClickXPath(page.tabMyProjects);
+        projectDetails.clickCardMenuButton();
+        Help.browserClickXPath(page.detailsButtonOnProjectCard);
+
+        wait.contentOfProjectDetailPage();
+        projectDetails.deleteCollaborator(0);
         Help.checkDetails();
-        browser.pause(2000);
+        
         validate.verifyAbsence();
-       // validate.verifyText($$("div.collaborator-item div")[0], "test");
-       // validate.verifyText($("div label"), "Can read");
+  
         Help.logOut();
         
     });
 
 
-    xit('delete a project', () => {
+    it('should delete a project', () => {
             
-            
-        expectednotification = Help.returnExpectedNotificationDeletionProject();
-        
-        Help.clickProjectDetailsOnCard();
-        browser.pause(3000);
+        wait.ofDashboardMenu();
+        validate.successnavigationToPage(credentials.dashboardUrl);
+        Help.browserClickXPath(page.tabMyProjects);
+        projectDetails.clickCardMenuButton();
+        Help.browserClickXPath(page.detailsButtonOnProjectCard);
+      
+        wait.contentOfProjectDetailPage();
         validate.navigationToPage(credentials.projectDetailsUrl);
         const projectUrl = Help.returnUrl();
-        Help.DeleteProject();
+        projectDetails.deleteProject();
 
-        
-        validate.notificationTextIs(expectednotification);
+        validate.notificationTextIs(credentials.notificationSuccessProjectRemoval);
         wait.forNotificationToDisappear(); 
         
         browser.url(projectUrl.toString());

@@ -128,7 +128,7 @@ namespace IDE.BLL.Services
             return builds;
         }
 
-        public async Task RunProject(int projectId, string connectionId)
+        public async Task RunProject(int projectId, string connectionId, params string[] inputs)
         {
             var archive = await _projectStructureService.CreateProjectZipFile(projectId);
             var uri = await _blobRepo.UploadProjectArchiveAsync(archive, $"project_{projectId}");
@@ -137,7 +137,8 @@ namespace IDE.BLL.Services
                 ProjectId = projectId,
                 UriForProjectDownload = uri,
                 ConnectionId = connectionId,
-                TimeStamp = DateTime.Now
+                TimeStamp = DateTime.Now,
+                Inputs=inputs
             };
 
             var strMessage = JsonConvert.SerializeObject(message);

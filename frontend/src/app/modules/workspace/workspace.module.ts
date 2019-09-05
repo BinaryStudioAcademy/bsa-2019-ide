@@ -10,7 +10,7 @@ import {TreeModule} from 'primeng/tree';
 import {MonacoEditorModule} from '@materia-ui/ngx-monaco-editor';
 import { FormsModule } from '@angular/forms';
 import {TabMenuModule} from 'primeng/tabmenu';
-import { ContextMenuModule, MenuModule, FieldsetModule, CardModule, ScrollPanelModule, PanelModule, ProgressSpinnerModule } from 'primeng/primeng';
+import { ContextMenuModule, MenuModule, FieldsetModule, CardModule, ScrollPanelModule, PanelModule, ProgressSpinnerModule, TerminalModule } from 'primeng/primeng';
 import { FileInfoComponent } from './file-info/file-info.component';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {OrderListModule} from 'primeng/orderlist';
@@ -21,6 +21,8 @@ import {FileUploadModule} from 'primeng/fileupload';
 import { GlobalSearchOutputComponent } from './global-search-output/global-search-output.component';
 import { HighlightMatchDirective } from 'src/app/directives/highlight-match.directive';
 import { ConsoleComponent } from './console/console.component';
+import { RunInputComponent } from './run-input/run-input.component';
+import { TerminalService } from 'primeng/components/terminal/terminalservice';
 
 
 @NgModule({
@@ -29,9 +31,10 @@ import { ConsoleComponent } from './console/console.component';
       FileBrowserSectionComponent,
       EditorSectionComponent,
       FileInfoComponent,
-      ImportFileComponent, GlobalSearchOutputComponent,HighlightMatchDirective,ConsoleComponent
+      ImportFileComponent, GlobalSearchOutputComponent,HighlightMatchDirective,ConsoleComponent, RunInputComponent
     ],
   imports: [
+    TerminalModule,
     MenuModule,
     ContextMenuModule,
     CommonModule,
@@ -54,9 +57,13 @@ import { ConsoleComponent } from './console/console.component';
     FileUploadModule,
     ProgressSpinnerModule
   ],
+  providers:[
+      TerminalService
+  ],
   entryComponents: [
       EditorSettingsComponent,
-      ConsoleComponent
+      ConsoleComponent,
+      RunInputComponent
   ]
 })
 export class WorkspaceModule { }

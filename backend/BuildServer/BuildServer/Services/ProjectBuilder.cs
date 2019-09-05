@@ -39,12 +39,12 @@ namespace BuildServer.Services
             }
         }
 
-        public string Run(string projectName, ProjectLanguageType type)
+        public string Run(string projectName, ProjectLanguageType type, params string[] inputs)
         {
             switch (type)
             {
                 case ProjectLanguageType.CSharpConsoleApp:
-                    return _cSharpBuilder.Run(projectName);
+                    return _cSharpBuilder.Run(projectName, inputs);
                 case ProjectLanguageType.GoConsoleApp:
                     return _goBuilder.Run(projectName);
                 case ProjectLanguageType.TypeScriptConsoleApp:

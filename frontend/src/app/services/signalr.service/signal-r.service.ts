@@ -3,13 +3,17 @@ import * as signalR from "@aspnet/signalr";
 import { NotificationDTO } from 'src/app/models/DTO/Common/notificationDTO';
 import { environment } from 'src/environments/environment';
 import { NotificationService } from '../notification.service/notification.service';
+import { TokenService } from '../token.service/token.service';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SignalRService {
 
-    constructor(private notificationService: NotificationService) { }
+    constructor(
+        private notificationService: NotificationService,
+        private tokenService: TokenService
+    ) { }
 
     public notifications: NotificationDTO[] = [];
 
@@ -19,8 +23,13 @@ export class SignalRService {
 
     public startConnection = (isAuth: boolean, userId: number) => {
         this.userId = userId;
+
         this.hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl(`${environment.apiUrl}notification`)
+            .withUrl(`${environment.apiUrl}notification`, {
+                skipNegotiation: true,
+                transport: signalR.HttpTransportType.WebSockets,
+                accessTokenFactory: () => this.tokenService.getAccessToken()
+            })
             .build();
 
         this.hubConnection
@@ -58,13 +67,13 @@ export class SignalRService {
 
     public addTransferChartDataListener(): NotificationDTO[] {
         this.hubConnection.on('transferchartdata', (notification) => {
-            this.notifications.push(notification);
+            this.notifications.unshift(notification);
         });
         this.hubConnection.on('transferRunResult', (notification) => {
-            this.notifications.push(notification);
+            this.notifications.unshift(notification);
         });
         return this.notifications;
-    }   
+    }
 
     public addConnectionIdListener(): void{
         this.hubConnection.on('sendConnectionId', (connectionId, userId) => {
@@ -82,7 +91,7 @@ export class SignalRService {
     {
         this.hubConnection.invoke("MarkAsRead", notificationId)
             .catch((error) => console.log(error));
-    }    
+    }
 
     public deleteTransferChartDataListener()
     {
@@ -94,5 +103,5 @@ export class SignalRService {
     public deleteConnectionIdListener()
     {
         this.hubConnection.off('sendConnectionId');
-    } 
+    }
 }
