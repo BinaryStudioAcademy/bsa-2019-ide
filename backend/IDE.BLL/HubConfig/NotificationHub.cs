@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IDE.BLL.HubConfig
 {
+    [Authorize]
     public class NotificationHub : Hub
     {
         public readonly IdeContext _context;
