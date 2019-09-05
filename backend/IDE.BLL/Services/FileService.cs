@@ -7,6 +7,7 @@ using IDE.DAL.Entities.Elastic;
 using IDE.DAL.Entities.NoSql;
 using IDE.DAL.Interfaces;
 using IDE.DAL.Repositories;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -23,13 +24,17 @@ namespace IDE.BLL.Services
         private readonly UserService _userService;
         private readonly IMapper _mapper;
         private readonly ILogger<FileService> _logger;
+        private readonly int _maxFilesInProjectCount;
+        private readonly int _maxFileSize;
+
         public FileService(
             INoSqlRepository<File> fileRepository,
             FileSearchRepository fileSearchRepository,
             FileHistoryService fileHistoryService, 
             UserService userService,
             IMapper mapper,
-            ILogger<FileService> logger)
+            ILogger<FileService> logger,
+            ConfigurationService configuration)
         {
             _fileRepository = fileRepository;
             _fileSearchRepository = fileSearchRepository;
@@ -37,6 +42,8 @@ namespace IDE.BLL.Services
             _userService = userService;
             _mapper = mapper;
             _logger = logger;
+            _maxFilesInProjectCount = configuration.MaxFilesInProjectCount;
+            _maxFileSize = configuration.MaxFileSize;
         }
 
         public async Task<ICollection<FileDTO>> GetAllForProjectAsync(int projectId)
@@ -88,14 +95,28 @@ namespace IDE.BLL.Services
             var file = await GetByIdAsync(id);
             return file.Content.Length;
         }
+        private int GetStringSize(string str)
+        {
+            return str.Length;
+        }
 
         public async Task<FileDTO> CreateAsync(FileCreateDTO fileCreateDto, int creatorId)
         {
+            if((await _fileRepository.GetItemsCount()) > _maxFilesInProjectCount)
+            {
+                throw new TooManyFilesInProjectException(_maxFilesInProjectCount);
+            }
+            if(GetStringSize(fileCreateDto.Content) > _maxFileSize)
+            {
+                throw new TooHeavyFileException(_maxFileSize);
+            }
+
             var fileCreate = _mapper.Map<File>(fileCreateDto);
             fileCreate.CreatedAt = DateTime.Now;
             fileCreate.UpdatedAt = DateTime.Now;
             fileCreate.CreatorId = creatorId;
             fileCreate.IsOpen = false;
+
             var index = fileCreate.Name.IndexOf('.') + 1;
             var name = fileCreate.Name;
             var expantion = name.Substring(index, name.Length- index);
@@ -121,6 +142,11 @@ namespace IDE.BLL.Services
 
         public async Task UpdateAsync(FileUpdateDTO fileUpdateDTO, int updaterId)
         {
+            if (GetStringSize(fileUpdateDTO.Content) > _maxFileSize)
+            {
+                throw new TooHeavyFileException(_maxFileSize);
+            }
+
             var currentFileDto = await GetByIdAsync(fileUpdateDTO.Id);
             currentFileDto.Name = fileUpdateDTO.Name;
             currentFileDto.Folder = fileUpdateDTO.Folder;
