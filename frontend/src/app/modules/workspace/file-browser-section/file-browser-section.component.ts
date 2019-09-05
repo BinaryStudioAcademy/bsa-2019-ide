@@ -143,10 +143,6 @@ export class FileBrowserSectionComponent implements OnInit {
         this.changeFilesState(fileId, state, nickName, this.files);
     }
 
-    public selectFileById(fileId: string) {
-        this.selectFile(fileId, this.files);
-    }
-
     private changeFilesState(fileId: string, state: boolean, nickName: string, tree: TreeNode[]){
         console.log(tree);
         tree.forEach(f => {
@@ -158,19 +154,6 @@ export class FileBrowserSectionComponent implements OnInit {
                 }
             } else {
                 this.changeFilesState(fileId, state, nickName, f.children);
-            }
-        });
-    }
-
-    private selectFile(fileId: string, tree: TreeNode[]){
-        tree.forEach(f => {
-            if(f.type === TreeNodeType.file.toString()) {
-                if (f.key === fileId) {
-                    this.select(f);
-                    return;
-                }
-            } else {
-                this.selectFile(fileId, f.children);
             }
         });
     }
