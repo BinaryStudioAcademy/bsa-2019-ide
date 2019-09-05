@@ -24,7 +24,9 @@ namespace IDE.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] ProjectStructureDTO projectStructureDTO)
         {
-            var createdProjectStructure = await _projectStructureService.CreateAsync(projectStructureDTO);
+            
+              var createdProjectStructure = await _projectStructureService.CreateAsync(projectStructureDTO);
+            _logger.LogInformation("created project structure");
             return CreatedAtAction(nameof(GetByIdAsync), new { id = createdProjectStructure.Id }, createdProjectStructure);
         }
 
@@ -33,6 +35,7 @@ namespace IDE.API.Controllers
         {
             projectStructureDTO=await _projectStructureService.CalculateProjectStructureSize(projectStructureDTO);
             await _projectStructureService.UpdateAsync(projectStructureDTO);
+            _logger.LogInformation("updated project structure");
             return NoContent();
         }
 

@@ -8,41 +8,30 @@ const workPage = new WorkspacePage();
 
 
 class CustomValidates {
-
-    
-
-   /* elementCountIs(locator, expectedQty) {
-        const els = locator;
-        const actualQty = els.length;
-
-        assert.strictEqual(actualQty, expectedQty, `Expected ${expectedQty} is not equal to ${actualQty}`);
-    }
-
-    wrongValueIndicationOnField(locator) {
-        const attr = locator.getAttribute('class');
-        expect(attr, `${attr} doesn't include validation class`).to.include("is-danger");
-    }
-
-    wrongValueIndicationOnLable(locator) {
-
-        const attr = locator.getAttribute('class');
-        expect(attr, `${attr} doesn't include error class`).to.include("error");
-    }
-*/  
+ 
     notificationOfSuccessRegistration(expectedText) {
 
     const notification = $('div.toast-message');
-    notification.waitForDisplayed(2000);
+    notification.waitForDisplayed(10000);
     const actualText = notification.getText();
-    console.log("2_______________"+ actualText);
-    assert.equal(actualText, expectedText);// || expectedNotification, `Expected ${actualText} to be equal to ${expectedInfo} or ${expectedNotification}`);
+       assert.equal(actualText, expectedText);
     }
+
     notificationTextIs(expectedText) {
       
     const notification = $('div.toast-message.ng-star-inserted');
+    notification.waitForDisplayed(10000);
     const actualText = notification.getText()
+    console.log("_________________________" + actualText);
     assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
     
+    }
+    errorNotificationTextIs(expectedText) {
+        const notification = $("div.toast-error");
+        notification.waitForDisplayed(10000);
+    const actualText = notification.getText()
+  //  console.log("_________________________" + actualText);
+    assert.equal(actualText, expectedText, `Expected ${actualText} to be equal to ${expectedText}`);
     }
     tooltipNotificationTextIs(expectedText, index) {
     const notification = $("div.invalid.ng-star-inserted")[index];
@@ -70,8 +59,8 @@ class CustomValidates {
         assert.equal($$("div.card p")[index].getText(), expectedData);;
     }
     verifyFavouriteProjectTitle(expectedProjectName) {
-        browser.pause(2000);
-        const title =  $$("h2.title-ellipsis")[0];
+       
+        const title =  $("h2.title-ellipsis");
         const actualProjectName = title.getText()
         assert.equal(actualProjectName, expectedProjectName)
     }
