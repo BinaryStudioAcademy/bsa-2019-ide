@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output,EventEmitter } from '@angular/core';
 import { DynamicDialogRef, DynamicDialogConfig, MenuItem } from 'primeng/api';
 import { TerminalService } from 'primeng/components/terminal/terminalservice';
 import { Subscribable, Subscription } from 'rxjs';
@@ -17,6 +17,8 @@ export class RunInputComponent implements OnDestroy, OnInit {
     public connectionId: string;
     @Input()
     public projectId: number;
+    @Output()
+    public OnChange=new EventEmitter<boolean>();
     public request: string;
     public firstInputMessage: string;
     public subscription: Subscription;
@@ -34,8 +36,12 @@ export class RunInputComponent implements OnDestroy, OnInit {
                 this.terminalService.sendResponse(`Enter ${this.inputItems[this.count]}:`);
             }
             if (this.inputItems.length == this.inputResult.length) {
-                this.buildService.runProjectWithInputs(this.projectId,this.connectionId, this.inputResult).subscribe(resp=>{});
-                console.log("all items is entered "+ this.inputResult);
+                this.buildService.runProjectWithInputs(this.projectId,this.connectionId, this.inputResult).subscribe(
+                    (resp=>
+                        {
+                            this.OnChange.emit(true);
+                        })
+                );
             }
         });
     }

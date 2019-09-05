@@ -34,10 +34,10 @@
                 </app-file-browser-section>
             </div>
             <div *ngIf="project" class="p-col-12 p-md-8 p-xl-9 p-align-stretch " [ngStyle]="{'background-color':getProjectColor()}" [ngClass]="{large:!showFileBrowser}">
-                <app-editor-section  [canEdit]="canNotEdit" [monacoOptions]='options' (filesSaveEvent)="onFilesSave($event)"></app-editor-section>
+                <app-editor-section  [canEdit]="canNotEdit" [monacoOptions]='options' (filesSaveEvent)="onFilesSave($event)" [isInputTerminalOpen]="isInputTerminalOpen"></app-editor-section>
+                <app-run-input *ngIf="inputItems" (OnChange)="OnChange($event)" [inputItems]="inputItems" [connectionId]="connectionId" [projectId]="project.id"></app-run-input>
             </div>
-        </div>
-        <app-run-input *ngIf="inputItems" [inputItems]="inputItems" [connectionId]="connectionId" [projectId]="project.id"></app-run-input>
+        </div>       
     </div>
 </div>
 

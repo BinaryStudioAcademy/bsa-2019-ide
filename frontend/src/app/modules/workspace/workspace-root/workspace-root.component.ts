@@ -64,6 +64,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     public iOpenFile: FileUpdateDTO[] = [];
     public inputItems: string[];
     public connectionId: string;
+    public isInputTerminalOpen=false;
 
     private routeSub: Subscription;
     private authorId: number;
@@ -128,7 +129,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         });
     }
 
-
+    public OnChange(event: boolean){
+        if(event)
+        {
+            this.inputItems=null;
+            this.isInputTerminalOpen=false;
+        }
+    }
 
     ngOnInit() {
         this.eventService.initComponentFinished$.
@@ -307,6 +314,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.buildService.runProject(this.project.id, this.connectionId).subscribe(
             (resp) => {
                 this.inputItems = resp.body;
+                this.isInputTerminalOpen=true;
                 this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {
