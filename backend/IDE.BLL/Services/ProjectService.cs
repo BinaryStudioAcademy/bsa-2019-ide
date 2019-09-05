@@ -59,7 +59,6 @@ namespace IDE.BLL.Services
 
         public async Task BuildProject(int projectId, int userId)
         {
-            await GetInputElements(projectId);
             var project = await GetProjectById(projectId);
             if (project.Language == Language.CSharp && project.ProjectType == ProjectType.Console)
                 await _buildService.BuildProject(projectId, userId, ProjectLanguageType.CSharpConsoleApp);
@@ -73,23 +72,28 @@ namespace IDE.BLL.Services
         {
             var result = new List<string>();
             var projectFiles = await _fileService.GetAllForProjectAsync(projectId);
-            string inputStart = "Console.ReadLine(";
-            string inputEnd = ");";
+            string inputStart = "Console.ReadLine()";
             foreach (var file in projectFiles)
             {
                 var content = file.Content;
                 while (content.Contains(inputStart))
                 {
-                    var indexOdReadLine = content.IndexOf("Console.ReadLine(");
-                    var substring = content.Substring(indexOdReadLine + inputStart.Length);
-                    var indexOfEndReadLine = substring.IndexOf(")");
-                    var readLineItems = substring.Substring(0, indexOfEndReadLine);
-                    var newContent = content.Remove(indexOdReadLine, indexOfEndReadLine + inputStart.Length + inputEnd.Length);
-                    var inputItems = readLineItems.Split(',');
-                    for (int i = 0; i < inputItems.Length; i++)
+                    var indexOdReadLine = content.IndexOf(inputStart);
+                    var substring = content.Substring(0, indexOdReadLine);
+                    var posision = substring.LastIndexOf(";") + 1;
+                    substring = substring.Substring(posision);
+                    string variable = "";
+                    int index = 0;
+                    while (substring[index] != '=')
                     {
-                        result.Add(inputItems[i]);
+                        if (substring[index] != ' ' && substring[index] != '\n')
+                        {
+                            variable += substring[index];
+                        }
+                        index++;
                     }
+                    result.Add(variable);
+                    var newContent = content.Remove(posision, substring.Length + inputStart.Length + 1);
                     content = newContent;
                 }
             }
@@ -122,7 +126,7 @@ namespace IDE.BLL.Services
                     || pr.AuthorId == userId
                     || pr.ProjectMembers.Any(prM => prM.UserId == userId))
             .Select(item => new SearchProjectDTO { Id = item.Id, Name = item.Name }).ToListAsync();
-            
+
             return await availableProjects;
         }
 
@@ -352,11 +356,11 @@ namespace IDE.BLL.Services
             var ms = new MemoryStream();
             try
             {
-               await contentStream.CopyToAsync(ms);
+                await contentStream.CopyToAsync(ms);
                 ms.Seek(0, SeekOrigin.Begin);
-                return new FormFile(ms, 0, ms.Length,  name, fileName);
+                return new FormFile(ms, 0, ms.Length, name, fileName);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogWarning(LoggingEvents.HaveException, $"convert stream exception");
                 return null;

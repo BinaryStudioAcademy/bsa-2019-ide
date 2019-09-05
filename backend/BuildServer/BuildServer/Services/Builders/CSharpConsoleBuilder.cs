@@ -76,11 +76,11 @@ namespace BuildServer.Services.Builders
                 {
                     FileName = "dotnet",
                     Arguments = $"{_buildDirectory}{projectName}\\bin\\Debug\\netcoreapp2.2\\{projName}",
-                    //p.StartInfo.RedirectStandardInput = true;
+                    RedirectStandardInput = true,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     CreateNoWindow = true,
-                    UseShellExecute = false
+                    UseShellExecute = false,
                 };
 
                 _processKiller.KillProcess(p);
