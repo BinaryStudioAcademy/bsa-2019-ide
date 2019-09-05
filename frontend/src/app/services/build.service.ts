@@ -24,25 +24,7 @@ export class BuildService {
         return this.httpClient.getRequest(`${this.address}tryrun/${id}/${connectionId}`);
     }
 
-    public showInputWindow(inputItem: string[])
-    {
-        const ref = this.dialogService.open(RunInputComponent,
-            {
-                data: { 
-                    input: inputItem
-                },
-                width: '500px',
-                style: {
-                    'box-shadow': '0 0 3px 0 #000',
-                },
-                contentStyle: {
-                    'border-radius': '3px',
-                    'overflow-y': 'auto',
-                    'max-height': '90vh'
-                },
-                showHeader: false,
-                closeOnEscape: true
-            });
-            return ref.onClose;
+    public runProjectWithInputs(id: number, connectionId: string, inputs: string[]): Observable<HttpResponse<string>> {
+        return this.httpClient.getRequest(`${this.address}run/${id}/${connectionId}`, inputs);
     }
 }

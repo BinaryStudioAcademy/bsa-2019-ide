@@ -63,6 +63,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     public options: EditorSettingDTO;
     public iOpenFile: FileUpdateDTO[] = [];
     public inputItems: string[];
+    public connectionId: string;
 
     private routeSub: Subscription;
     private authorId: number;
@@ -297,13 +298,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             return;
         }
 
-        const connectionId = this.signalRService.getConnectionId();
-        if (connectionId == null) {
+        this.connectionId = this.signalRService.getConnectionId();
+        if (this.connectionId == null) {
             this.toast.error('Please check your internet connection and refresh page before run', 'Info Message', { tapToDismiss: true });
             return;
         }
 
-        this.buildService.runProject(this.project.id, connectionId).subscribe(
+        this.buildService.runProject(this.project.id, this.connectionId).subscribe(
             (resp) => {
                 this.inputItems = resp.body;
                 this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });

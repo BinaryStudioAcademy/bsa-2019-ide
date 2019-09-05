@@ -26,7 +26,7 @@ namespace IDE.BLL.Interfaces
         Task DeleteProjectAsync(int id, int userId);
         Task<IEnumerable<LikedProjectDTO>> GetLikedProjects();
         Task BuildProject(int projectId, int userId);
-        Task RunProject(int projectId, string connectionId);
+        Task RunProject(int projectId, string connectionId, params string[] inputs);
         Task<IFormFile> ConvertFilestreamToIFormFile(Stream fileStream, string name, string fileName);
         Task<IEnumerable<string>> GetInputElements(int projectId);
     }
