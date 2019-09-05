@@ -34,7 +34,7 @@ describe('Online-IDE creation project', () => {
         validate.notificationTextIs(credentials.notificationProjectCreateSuccess);
         wait.forNotificationToDisappear(); 
         
-        $("div.ui-tabview.ui-widget.ui-widget-content.ui-corner-all.ui-tabview-left").waitForDisplayed(10000);
+        wait.contentOfProjectDetailPage();
        
         validate.navigationToPage(credentials.projectDetailsUrl);
         
@@ -43,7 +43,7 @@ describe('Online-IDE creation project', () => {
         Help.logOut();
        
     });
-    xit('create a new project with too short name', () => {
+   xit('should not create a new project with too short name', () => {
        
         project.addButtonClick();
         project.waitFormOfProjectCreation();
@@ -52,7 +52,7 @@ describe('Online-IDE creation project', () => {
         Help.logOut();
      
     });
-    xit('create a new project with too long name', () => {
+    xit('should not create a new project with too long name', () => {
        
   
         project.addButtonClick();
@@ -62,7 +62,7 @@ describe('Online-IDE creation project', () => {
         Help.logOut();
      
     });
-    xit('create a new project with invalid saved builds number', () => {
+   xit('should not create a new project with invalid saved builds number', () => {
        
         project.addButtonClick();
         project.waitFormOfProjectCreation();
@@ -71,7 +71,7 @@ describe('Online-IDE creation project', () => {
         Help.logOut();
      
     });
-    xit('create a new project with invalid builds attempts number', () => {
+    xit('should not create a new project with invalid builds attempts number', () => {
        
    
         project.addButtonClick();
