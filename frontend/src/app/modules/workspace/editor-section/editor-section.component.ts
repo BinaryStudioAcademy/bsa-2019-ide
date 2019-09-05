@@ -49,9 +49,7 @@ export class EditorSectionComponent implements OnInit {
     ngAfterViewInit() {
         this.eventService.componentAfterInit("EditorSectionComponent");
     }
-    ngOnInit() {
-
-    }
+    ngOnInit() { }
 
     onChange(ev) {
         if (!this.canEdit) {
@@ -62,6 +60,32 @@ export class EditorSectionComponent implements OnInit {
             }
             this.monacoOptions.language = this.language;
         }
+    }
+
+    public changeFileState(fileId: string) {
+        this.openedFiles.forEach(f => {
+            if(f.innerFile.id === fileId)
+                console.log('change file state');
+                f.innerFile.isOpen = false;
+        })
+    }
+
+    public changeReadOnlyState(readOnly: boolean = false) {
+        this.monacoEditor.editor.updateOptions({readOnly: readOnly});
+    }
+
+    public addActiveTab(tabName: string, icon: string, id: string) {
+        this.tabs.push({ label: tabName, icon: icon, id: id });
+        this.activeItem = this.tabs[this.tabs.length - 1];
+    }
+
+    public contains(fileId: string) {
+        let contain: boolean = false;
+        this.openedFiles.forEach(f => {
+            if(f.innerFile.id === fileId)
+                contain = true;
+        })
+        return contain;
     }
 
     public hightlineMatches(substring: string){
@@ -101,7 +125,7 @@ export class EditorSectionComponent implements OnInit {
         this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
         this.language = this.openedFiles[index].innerFile.language;
-
+        this.monacoEditor.editor.updateOptions({readOnly: this.openedFiles[index].innerFile.isOpen});
     }
 
     public saveFiles(files: FileUpdateDTO[]) {

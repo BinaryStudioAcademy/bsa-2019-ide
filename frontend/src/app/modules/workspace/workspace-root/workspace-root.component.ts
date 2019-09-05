@@ -159,7 +159,28 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                     this.fileEditService.startConnection(this.userId, this.project.id);
                     this.fileEditService.openedFiles.subscribe(x => 
                         {
-                            console.log(x)
+                            console.log(x);
+                            console.log(this.editor.contains(x.fileId));
+                            if (x.userId !== this.userId) {
+                                console.log("another user");
+                                this.fileBrowser.changeFileState(x.fileId, x.isOpen, x.nickName);
+                                this.editor.monacoOptions.readOnly = true;
+                                
+                                if (!x.isOpen && this.editor.contains(x.fileId)) {
+                                    this.fileEditService.openFile(x.fileId, this.project.id);
+                                }
+                            } else if(x.userId === this.userId && this.editor.contains(x.fileId)) {
+                                // debugger;
+                                // this.fileBrowser.selectFileById(x.fileId);
+                                // this.onFileSelected({fileId = x.fileId});
+                                console.log("it's my own file");
+                                this.editor.changeFileState(x.fileId);
+                                // this.editor.monacoOptions.readOnly = false;
+                                // console.log(this.editor.monacoOptions.readOnly)
+                                setTimeout(() => {
+                                    this.editor.changeReadOnlyState(false);
+                                }, 1000);
+                            }
                         });
                 },
                 () => {
@@ -241,28 +262,25 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                         const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, isOpen, updaterId, updater, language };
                         var tabName = name;
                         this.editor.AddFileToOpened(fileUpdateDTO);
+                        this.editor.monacoOptions.readOnly = true;
                         if (!fileUpdateDTO.isOpen) {
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
-                            this.editor.monacoOptions.readOnly = false;
+                            // this.editor.monacoOptions.readOnly = false;
                             this.fileBrowser.selectedItem.label = tabName;
                         }
                         else if (this.project.accessModifier == 1) {
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
-                            this.editor.monacoOptions.readOnly = false;
-                            tabName += " (editing...)";
-                            if (this.fileBrowser.selectedItem)
-                                this.fileBrowser.selectedItem.label += " (editing...)";
+                            // this.editor.monacoOptions.readOnly = false;
                         }
                         else if(fileUpdateDTO.isOpen) {
-                            this.editor.monacoOptions.readOnly = true;
+                            // this.editor.monacoOptions.readOnly = true;
                         }
                         if(this.showFileBrowser) {
                             document.getElementById('workspace').style.width = ((this.workspaceWidth) / this.maxSize()) + '%';
                         }
-                        this.editor.tabs.push({ label: tabName, icon: selectedFile.fileIcon, id: id });
-                        this.editor.activeItem = this.editor.tabs[this.editor.tabs.length - 1];
+                        this.editor.addActiveTab(tabName, selectedFile.fileIcon, id);
                         this.findAllOccurence(selectedFile.filterString);
                         this.editor.code = content;
 

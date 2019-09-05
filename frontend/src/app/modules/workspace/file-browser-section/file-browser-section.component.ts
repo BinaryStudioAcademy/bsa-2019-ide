@@ -138,6 +138,48 @@ export class FileBrowserSectionComponent implements OnInit {
         )
     }
 
+    public changeFileState(fileId: string, state: boolean, nickName: string) {
+        this.changeFilesState(fileId, state, nickName, this.files);
+    }
+
+    public selectFileById(fileId: string) {
+        this.selectFile(fileId, this.files);
+    }
+
+    private changeFilesState(fileId: string, state: boolean, nickName: string, tree: TreeNode[]){
+        tree.forEach(f => {
+            if(f.type === TreeNodeType.file.toString()) {
+                if (f.key === fileId) {
+                    f.data = { state: state, nickName: nickName };
+                    return;
+                }
+            } else {
+                this.changeFilesState(fileId, state, nickName, f.children);
+            }
+        });
+    }
+
+    private selectFile(fileId: string, tree: TreeNode[]){
+        tree.forEach(f => {
+            if(f.type === TreeNodeType.file.toString()) {
+                if (f.key === fileId) {
+                    this.select(f);
+                    return;
+                }
+            } else {
+                this.selectFile(fileId, f.children);
+            }
+        });
+    }
+
+    public isTrue(data?: any) {
+        return data !== undefined && data !== null && data.state;
+    }
+
+    public getNickName(data?: any) {
+        return data !== null ? data.nickName : "";
+    }
+
     private downloadFolder(node: TreeNode){
         if (!node.children || node.children.length == 0)
         {
@@ -237,9 +279,7 @@ export class FileBrowserSectionComponent implements OnInit {
         };
 
         this.projectStructureService.updateProjectStructure(this.projectId, projectStructured).subscribe(
-            () => {
-
-            },
+            () => { },
             (error) => {
                 console.log(error);
             }
@@ -573,6 +613,12 @@ export class FileBrowserSectionComponent implements OnInit {
         const nodeSelected: TreeNode = evt.node;
         if (nodeSelected.type === TreeNodeType.file.toString()) {
             const selectedFile: SelectedFile = {fileId: nodeSelected.key, fileIcon: nodeSelected.icon};
+            this.fileSelected.emit(selectedFile);
+        }
+    }    
+    select(node: TreeNode) {
+        if (node.type === TreeNodeType.file.toString()) {
+            const selectedFile: SelectedFile = {fileId: node.key, fileIcon: node.icon};
             this.fileSelected.emit(selectedFile);
         }
     }

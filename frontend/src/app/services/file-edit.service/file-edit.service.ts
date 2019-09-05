@@ -31,8 +31,8 @@ export class FileEditService {
     }
 
     private addChangeFileListener(): void {
-        this.hubConnection.on('changefilestate', (fileId: string, isOpen: boolean) => {
-            this.openedFiles.next({ fileId: fileId, isOpen: isOpen });
+        this.hubConnection.on('changefilestate', (fileId: string, userId: number, isOpen: boolean, nickName: string) => {
+            this.openedFiles.next({ fileId: fileId, isOpen: isOpen, userId: userId, nickName: nickName });
             console.log(`file ${fileId} was changed to state ${isOpen}`)
         });
     }
@@ -58,7 +58,9 @@ export class FileEditService {
     } 
 }
 
-export class OpenedFile {
+export interface OpenedFile {
     fileId: string;
     isOpen: boolean;
+    userId: number;
+    nickName: string;
 }

@@ -1,8 +1,10 @@
 ﻿using IDE.BLL.Interfaces;
 using IDE.BLL.Services.SignalR;
+using IDE.DAL.Context;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,11 +14,13 @@ namespace IDE.BLL.HubConfig
     {
         private readonly IFileEditStateService _files;
         private readonly ConnectionsService _connections;
+        private readonly IdeContext _context;
 
-        public FileEditingHub(IFileEditStateService files, ConnectionsService connections) 
+        public FileEditingHub(IFileEditStateService files, ConnectionsService connections, IdeContext context) 
         {
             _files = files;
             _connections = connections;
+            _context = context;
         }
 
         public async Task Connect(int userId, int projectId) // connection
@@ -36,8 +40,11 @@ namespace IDE.BLL.HubConfig
         {
             var userId = _connections.GetUserIdByConnection(Context.ConnectionId);
             //await Groups.AddToGroupAsync(Context.ConnectionId, fileId);
-            _files.AddFileToEdit(userId, fileId, projectId);
-            await SendNewFileState(projectId, fileId);
+            if(!_files.ContainsFile(fileId))
+            {
+                _files.AddFileToEdit(userId, fileId, projectId);
+                await SendNewFileState(projectId, fileId, userId);
+            }
         }
 
         public bool GetFileState(string fileId)
@@ -58,7 +65,7 @@ namespace IDE.BLL.HubConfig
         private async Task RemoveFile(string fileId, int userId, int projectId)
         {
             _files.RemoveFile(fileId, userId);
-            await SendNewFileState(projectId, fileId);
+            await SendNewFileState(projectId, fileId, userId);
         }
 
         public async Task CloseProject(int projectId) // close project
@@ -72,11 +79,21 @@ namespace IDE.BLL.HubConfig
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, projectId.ToString());
         }
 
-        public async Task SendNewFileState(int projectId, string fileId) 
+        public async Task SendNewFileState(int projectId, string fileId, int userId) 
         {
-            await Clients.Group(projectId.ToString())
-                .SendAsync("changeFileState", fileId, GetFileState(fileId))
-                .ConfigureAwait(false);
+            var state = GetFileState(fileId);
+            if(state)
+            {
+                await Clients.Group(projectId.ToString())
+                    .SendAsync("changeFileState", fileId, userId, GetFileState(fileId), _context.Users.First(x => x.Id == userId).NickName)
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                await Clients.Group(projectId.ToString())
+                    .SendAsync("changeFileState", fileId, userId, GetFileState(fileId))
+                    .ConfigureAwait(false);
+            }
         }
 
         public async Task Disconnect() // disconect
