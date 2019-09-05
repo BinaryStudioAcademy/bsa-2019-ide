@@ -8,7 +8,7 @@ namespace IDE.BLL.Interfaces
     {
         Task MarkAsRead(int notificationId);
         Task<IEnumerable<NotificationDTO>> GetNotificationByUserId(int userId);
-        Task SendNotificationToUser(int userId, NotificationDTO notificationDTO);
+        Task SendNotificationToUserById(int userId, NotificationDTO notificationDTO);
         Task SendNotificationToProjectParticipants(int projectId, NotificationDTO notificationDTO);
         Task SendNotificationToSpecificConnection(NotificationDTO notification, string connectionId);
     }

@@ -88,7 +88,7 @@ namespace IDE.BLL.Services
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var notificationService = scope.ServiceProvider.GetService<INotificationService>();
-                await notificationService.SendNotificationToUser(collaboratorId, notification);
+                await notificationService.SendNotificationToUserById(collaboratorId, notification);
             }
         }
 
@@ -157,7 +157,7 @@ namespace IDE.BLL.Services
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var notificationService = scope.ServiceProvider.GetService<INotificationService>();
-                await notificationService.SendNotificationToUser(update.UserId, notification); 
+                await notificationService.SendNotificationToUserById(update.UserId, notification); 
             }
         }
     }

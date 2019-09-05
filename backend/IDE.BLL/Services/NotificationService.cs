@@ -26,18 +26,10 @@ namespace IDE.BLL.Services
             _mapper = mapper;
         }
 
-        public async Task SendNotificationToUser(int userId, NotificationDTO notificationDTO)
+        public async Task SendNotificationToUserById(int userId, NotificationDTO notificationDTO)
         {
             var user = await _context.Users.FirstOrDefaultAsync(item => item.Id == userId);
-            var notification = _mapper.Map<Notification>(notificationDTO);
-            user.Notifications.Add(notification);
-            _context.Update(user);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            var notificationToSend = _mapper.Map<NotificationDTO>(notification);
-
-            await _hubContext.Clients.User(userId.ToString())
-                    .SendAsync("transferchartdata", notificationToSend)
-                    .ConfigureAwait(false);
+            await SendNotificationToUser(user, notificationDTO);
         }
         public async Task SendNotificationToProjectParticipants(int projectId, NotificationDTO notificationDTO)
         {
@@ -56,17 +48,8 @@ namespace IDE.BLL.Services
             
             foreach (var user in users)
             {
-                var notification = _mapper.Map<Notification>(notificationDTO);
-                user.Notifications.Add(notification);
-                _context.Update(user);
-                await _context.SaveChangesAsync().ConfigureAwait(false);
-
-                var notificationToSend = _mapper.Map<NotificationDTO>(notification);
-
-                await _hubContext.Clients.User(user.Id.ToString())
-                    .SendAsync("transferchartdata", notificationToSend)
-                    .ConfigureAwait(false);
-            }                
+                await SendNotificationToUser(user, notificationDTO);
+            }
         }
 
         public async Task SendNotificationToSpecificConnection(NotificationDTO notification, string connectionId)
@@ -109,6 +92,19 @@ namespace IDE.BLL.Services
                 .ConfigureAwait(false);
 
             return _mapper.Map<NotificationDTO>(notification);
+        }
+
+        private async Task SendNotificationToUser(User user, NotificationDTO notificationDTO)
+        {
+            var notification = _mapper.Map<Notification>(notificationDTO);
+            user.Notifications.Add(notification);
+            _context.Update(user);
+            await _context.SaveChangesAsync().ConfigureAwait(false);
+            var notificationToSend = _mapper.Map<NotificationDTO>(notification);
+
+            await _hubContext.Clients.User(user.Id.ToString())
+                    .SendAsync("transferchartdata", notificationToSend)
+                    .ConfigureAwait(false);
         }
     }
 }
