@@ -35,7 +35,7 @@ export class RunInputComponent implements OnDestroy, OnInit {
             }
             if (this.inputItems.length == this.inputResult.length) {
                 this.buildService.runProjectWithInputs(this.projectId,this.connectionId, this.inputResult).subscribe(resp=>{});
-                console.log("all items is entered");
+                console.log("all items is entered "+ this.inputResult);
             }
         });
     }

@@ -77,9 +77,9 @@ namespace IDE.API.Controllers
         }
 
         [HttpGet("run/{projectId}/{connectionId}")]
-        public async Task<ActionResult> RunProjectById(int projectId, string connectionId)
+        public async Task<ActionResult> RunProjectById(int projectId, string connectionId, [FromQuery] string inputs)
         {
-            string[] inputs =  { "tania", "3", "hello" };
+            string[] variebles = inputs.Split(", ");
             await _projectService.RunProject(projectId, connectionId, inputs);
             return Ok();
         }
