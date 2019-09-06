@@ -112,8 +112,6 @@ export class UserDialogWindowComponent implements OnInit {
 
         if(this.isUpdateInfo()) {
             this.getValuesForUpdateInfo();
-            console.log(this.userUpdateInfo);
-            debugger;
             this.userService.updateProfile(this.userUpdateInfo)
                 .subscribe(res => {
                         this.toastrService.success("Your profile info was successfully updated");
@@ -158,7 +156,6 @@ export class UserDialogWindowComponent implements OnInit {
     }
     
     private getValuesForUpdateInfo() {
-        console.log(this.userForm.get('birthday').value);
         const birthday = new Date(this.userForm.get('birthday').value);
         this.userUpdateInfo = {
             id: this.tokenService.getUserId(),
@@ -168,6 +165,7 @@ export class UserDialogWindowComponent implements OnInit {
             gitHubUrl: this.userForm.get('gitHubUrl').value,
             birthday:  birthday === null ? new Date('0001-01-01T00:00:00') : birthday
         }
+        this.userUpdateInfo.birthday.setHours(birthday.getHours()+2);
     }
 
     private getValuesForUpdatePassword(){
