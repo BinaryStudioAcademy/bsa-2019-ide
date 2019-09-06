@@ -109,14 +109,14 @@ namespace IDE.BLL.Services
 
         public async Task<FileDTO> CreateAsync(FileCreateDTO fileCreateDto, int creatorId)
         {
-            if((await _fileRepository.GetItemsCount()) > _maxFilesInProjectCount)
-            {
-                throw new TooManyFilesInProjectException(_maxFilesInProjectCount);
-            }
-            if(GetStringSize(fileCreateDto.Content) > _maxFileSize)
-            {
-                throw new TooHeavyFileException(_maxFileSize);
-            }
+            //if((await _fileRepository.GetItemsCount()) > _maxFilesInProjectCount)
+            //{
+            //    throw new TooManyFilesInProjectException(_maxFilesInProjectCount);
+            //}
+            //if(GetStringSize(fileCreateDto.Content) > _maxFileSize)
+            //{
+            //    throw new TooHeavyFileException(_maxFileSize);
+            //}
 
             var fileCreate = _mapper.Map<File>(fileCreateDto);
             fileCreate.CreatedAt = DateTime.Now;
@@ -149,10 +149,10 @@ namespace IDE.BLL.Services
 
         public async Task UpdateAsync(FileUpdateDTO fileUpdateDTO, int updaterId)
         {
-            if (GetStringSize(fileUpdateDTO.Content) > _maxFileSize)
-            {
-                throw new TooHeavyFileException(_maxFileSize);
-            }
+            //if (GetStringSize(fileUpdateDTO.Content) > _maxFileSize)
+            //{
+            //    throw new TooHeavyFileException(_maxFileSize);
+            //}
 
             var currentFileDto = await GetByIdAsync(fileUpdateDTO.Id);
             currentFileDto.Name = fileUpdateDTO.Name;
