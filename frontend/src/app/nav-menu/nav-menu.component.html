@@ -40,7 +40,7 @@
 
                 <span class="avatar" [ngStyle]="{'content': 'url(' + userAvatar + ')'}"></span>
                 <div class="ui-inputgroup">
-                    <button pButton type="button" icon="pi" (click)="goToUserDetails()" label="{{userNickName}}"></button>
+                    <button pButton type="button" class="profile-btn" icon="pi" (click)="goToUserDetails()" label="{{ userNickName | lessSymbols : 10 }}"></button>
                     <button pButton type="button" icon='pi pi-sign-out' (click)="logOut()" class="ui-button-danger"></button>
                 </div>
 
