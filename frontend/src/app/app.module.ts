@@ -47,8 +47,7 @@ import { NotificationComponent } from './notification/notification.component';
         AppComponent,
         NavMenuComponent,
         NotificationStatusDirective,
-        NotificationComponent,
-
+        NotificationComponent
     ],
     imports: [
         OverlayPanelModule,
