@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
+using IDE.BLL.Interfaces;
+using IDE.BLL.Services.SignalR;
 using IDE.Common.DTO.File;
 using IDE.Common.ModelsDTO.DTO.File;
 using IDE.Common.ModelsDTO.Enums;
@@ -24,6 +26,8 @@ namespace IDE.BLL.Services
         private readonly UserService _userService;
         private readonly IMapper _mapper;
         private readonly ILogger<FileService> _logger;
+        private readonly IFileEditStateService _stateService;
+
         private readonly int _maxFilesInProjectCount;
         private readonly int _maxFileSize;
 
@@ -34,7 +38,8 @@ namespace IDE.BLL.Services
             UserService userService,
             IMapper mapper,
             ILogger<FileService> logger,
-            ConfigurationService configuration)
+            ConfigurationService configuration,
+            IFileEditStateService stateService)
         {
             _fileRepository = fileRepository;
             _fileSearchRepository = fileSearchRepository;
@@ -42,6 +47,8 @@ namespace IDE.BLL.Services
             _userService = userService;
             _mapper = mapper;
             _logger = logger;
+            _stateService = stateService;
+
             _maxFilesInProjectCount = configuration.MaxFilesInProjectCount;
             _maxFileSize = configuration.MaxFileSize;
         }
@@ -218,6 +225,7 @@ namespace IDE.BLL.Services
         {
             file.Creator = await _userService.GetUserById(file.CreatorId);
             file.Updater = file.UpdaterId.HasValue ? await _userService.GetUserById(file.UpdaterId.Value) : null;
+            file.IsOpen = _stateService.ContainsFile(file.Id);
         }
 
         private string  GetFileLanguage(string name)

@@ -29,18 +29,21 @@ namespace IDE.BLL.Services
         private readonly IMapper _mapper;
         private readonly ILogger<ProjectStructureService> _logger;
         private readonly IConfiguration _configuration;
+        private readonly IFileEditStateService _stateService;
 
         public ProjectStructureService(
             IProjectStructureRepository projectStructureRepository,
             FileService fileService,
             IMapper mapper, ILogger<ProjectStructureService> logger,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IFileEditStateService stateService)
         {
             _projectStructureRepository = projectStructureRepository;
             _fileService = fileService;
             _mapper = mapper;
             _logger = logger;
             _configuration = configuration;
+            _stateService = stateService;
         }
 
         public async Task<ProjectStructureDTO> GetByIdAsync(string id)
@@ -50,10 +53,35 @@ namespace IDE.BLL.Services
             {
                 throw new NotFoundException(nameof(ProjectStructure), id);
             }
-
+            
             var projectStructureDto = _mapper.Map<ProjectStructureDTO>(projectStructure);
-
+            SetOpenedFilesToProject(projectStructureDto);
             return projectStructureDto;
+        }
+
+        private void SetOpenedFilesToProject(ProjectStructureDTO projectStructure)
+        {
+            foreach (var p in projectStructure.NestedFiles)
+            {
+                SetOpenedFilesToStructure(p);
+            }
+        }
+        private void SetOpenedFilesToStructure(FileStructureDTO fileStructure)
+        {
+            foreach(var f in fileStructure.NestedFiles)
+            {
+                if(f.Type == TreeNodeType.File)
+                {
+                    if (_stateService.ContainsFile(f.Id))
+                    {
+                        f.IsOpened = true;
+                    }
+                }
+                else
+                {
+                    SetOpenedFilesToStructure(f);
+                }
+            }
         }
 
         public async Task<int> GetFileStructureSize(FileStructureDTO projectStructureDTO, string fileStructureId)
@@ -109,44 +137,7 @@ namespace IDE.BLL.Services
             var createdProjectStructure = await _projectStructureRepository.CreateAsync(emptyStructure);
             return await GetByIdAsync(createdProjectStructure.Id);
         }
-
-        //public async Task UnzipProject(ProjectStructureDTO projectStructure, IFormFile zipFile, int userId, int projectId)
-        //{
-        //    string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\Temp", Guid.NewGuid().ToString());
-        //    try
-        //    {
-        //        if (!Directory.Exists(tempFolder))
-        //        {
-        //            Directory.CreateDirectory(tempFolder);
-        //        }
-        //        if (zipFile.Length > 0)
-        //        {
-        //            string fullPathToFile = Path.Combine(tempFolder, zipFile.FileName);
-        //            using (var stream = new FileStream(fullPathToFile, FileMode.Create))
-        //            {
-        //                await zipFile.CopyToAsync(stream).ConfigureAwait(false);
-        //            }
-        //            var pathToProject = UnzipProject(fullPathToFile, tempFolder);
-        //            var rootFileStructure = projectStructure.NestedFiles.FirstOrDefault();
-
-        //            await GetFilesRecursive(pathToProject, rootFileStructure, userId, projectId).ConfigureAwait(false);
-        //            var projectStructureDto = _mapper.Map<ProjectStructureDTO>(projectStructure);
-        //            await UpdateAsync(projectStructureDto);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine(ex.Message);
-        //    }
-        //    finally
-        //    {
-        //        if (Directory.Exists(tempFolder))
-        //        {
-        //            Directory.Delete(tempFolder, true);
-        //        }
-        //    }
-        //}
-
+        
         public async Task ImportProject(string projectStructureId, IFormFile file, string fileStructureId, int userId, bool partial, string nodeids)
         {
             string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\Temp", Guid.NewGuid().ToString());
