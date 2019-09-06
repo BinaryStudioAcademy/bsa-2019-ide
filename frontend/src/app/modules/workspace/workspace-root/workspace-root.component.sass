@@ -31,8 +31,27 @@
 .project-name
     margin-left: 5px
     font-weight: 900
-    
+::ng-deep .ui-button-icon-left.ui-clickable.pi.pi-save-all
+    &:before
+        content: "\e95b"
+        position: relative
+        top: -8px
+        left: 1px
+
+        font-size: 0.7em
+    &::after
+        content: "\e95b"
+        position: absolute
+        left: -3px
+        top: 3px
+        font-size: 0.7em
+        
+        
+        
+
+
 // *****below styles are for resizable blocks****
+        //background-color: #c8d1de
 
 // mwlResizable 
 //     box-sizing: border-box
