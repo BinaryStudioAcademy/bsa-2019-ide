@@ -80,7 +80,7 @@ namespace IDE.API.Controllers
         public async Task<ActionResult> RunProjectById(int projectId, string connectionId, [FromQuery] string inputs)
         {
             string[] variebles = inputs.Split(", ");
-            await _projectService.RunProject(projectId, connectionId, inputs);
+            await _projectService.RunProject(projectId, connectionId, variebles);
             return Ok();
         }
 
