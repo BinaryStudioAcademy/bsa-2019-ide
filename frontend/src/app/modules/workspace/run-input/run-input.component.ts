@@ -3,6 +3,7 @@ import { DynamicDialogRef, DynamicDialogConfig, MenuItem } from 'primeng/api';
 import { TerminalService } from 'primeng/components/terminal/terminalservice';
 import { Subscribable, Subscription } from 'rxjs';
 import { BuildService } from 'src/app/services/build.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-run-input',
@@ -27,7 +28,8 @@ export class RunInputComponent implements OnDestroy, OnInit {
 
 
     constructor(private terminalService: TerminalService,
-        private buildService: BuildService) {
+        private buildService: BuildService,
+        private toast: ToastrService) {
         this.terminalService.commandHandler.subscribe(command => {
             this.inputResult.push(command);
             this.count++;
@@ -40,6 +42,7 @@ export class RunInputComponent implements OnDestroy, OnInit {
                     (resp=>
                         {
                             this.OnChange.emit(true);
+                            this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
                         })
                 );
             }
