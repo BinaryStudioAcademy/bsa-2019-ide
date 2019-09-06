@@ -133,7 +133,10 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             this.signalRService.deleteTransferChartDataListener();
             this.data = this.signalRService.addTransferChartDataListener();
             dataForDelete.forEach(element => {
-                this.signalRService.markNotificationAsRead(element.id);
+                if(element.type!=NotificationType.projectRun)
+                {
+                    this.signalRService.markNotificationAsRead(element.id);
+                }
             });
             this.notReadNotification.forEach(element => {
                 this.signalRService.markNotificationAsRead(element.id);
