@@ -153,6 +153,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                     this.project = resp.body;
                     this.eventService.currProjectSwitch({ id: this.project.id, name: this.project.name });
                     this.authorId = resp.body.authorId;
+                    //this.project.editorProjectSettings.readOnly=false;
                     this.options = this.project.editorProjectSettings;
                     if (this.canNotEdit) {
                         this.options.readOnly = true;
@@ -326,7 +327,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             (resp) => {
                 this.inputItems = resp.body;
                 this.isInputTerminalOpen=true;
-                this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
+                if(!this.inputItems || this.inputItems.length==0)
+                {
+                    this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
+                }
             },
             (error) => {
                 console.log(error);
