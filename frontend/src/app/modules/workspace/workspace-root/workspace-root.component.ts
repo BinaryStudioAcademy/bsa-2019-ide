@@ -160,7 +160,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                             observer.next(true);
 
                         },
-                        error => { this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error', { tapToDismiss: true }) }
+                        error => { this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error', { tapToDismiss: true }); observer.next(true); }
                     )
 
                 },
