@@ -36,6 +36,8 @@ namespace IDE.BLL
             services.AddScoped<IInfoService, InfoService>();
             services.AddScoped<IEditorSettingService, EditorSettingService>();
 
+            services.AddScoped<IGitService, GitService>();
+
             services.AddScoped<IQueueService, QueueService>();
 
             services.AddScoped<FileService>();

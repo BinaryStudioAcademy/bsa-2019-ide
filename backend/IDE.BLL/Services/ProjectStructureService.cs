@@ -151,14 +151,16 @@ namespace IDE.BLL.Services
         {
             string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\Temp", Guid.NewGuid().ToString());
             var filesFolder = Path.Combine(tempFolder, file.FileName.Substring(0, file.FileName.LastIndexOf('.')));
-            var ids = new List<string>();// JsonConvert.DeserializeObject<List<string>>(nodeids);
-            partial = false;
+
+
             var projectStructure = _mapper.Map<ProjectStructureDTO>(await _projectStructureRepository.GetByIdAsync(projectStructureId));
 
             var rootFileStructure = projectStructure.NestedFiles.SingleOrDefault();
 
             if (partial)
             {
+                var ids = JsonConvert.DeserializeObject<List<string>>(nodeids);
+
                 rootFileStructure = projectStructure.NestedFiles.SingleOrDefault(u => u.Id == ids[0]);
 
                 for (int i = 1; i<ids.Count(); i++)
@@ -202,6 +204,69 @@ namespace IDE.BLL.Services
                 {
                     Directory.Delete(tempFolder, true);
                 }
+            }
+        }
+
+        public async Task UnzipGitFileAsync(MemoryStream memoryStream, string pathToFile, string fileName)
+        {
+            //tempFolder + "\\ProjectFolder\\.git.zip"
+            using (FileStream fs = new FileStream(pathToFile + "\\" + fileName, FileMode.OpenOrCreate))
+            {
+                await memoryStream.CopyToAsync(fs);
+                await fs.FlushAsync();
+                memoryStream.Close();
+            }
+
+            UnzipProject(pathToFile + "\\" + fileName, pathToFile);
+            File.Delete(pathToFile + "\\" + fileName);
+        }
+
+        public void ZipGitFileAsync(string pathToFile, string projectId)
+        {
+            //ZipFile.CreateFromDirectory(pathToFile, pathToFile+".zip");
+            using (var zip = new Ionic.Zip.ZipFile())
+            {
+                zip.AddDirectory(pathToFile+ "\\.git", ".git");
+                zip.Save(pathToFile+$"{projectId}.zip");
+            }
+        }
+
+#warning Придумать норм название
+        public async Task ProjectStructureForGit(string projectStructureId, string tempFolder)
+        {
+            var projectStructure = _mapper.Map<ProjectStructureDTO>(await _projectStructureRepository.GetByIdAsync(projectStructureId));
+
+            if (!Directory.Exists(tempFolder))
+            {
+                Directory.CreateDirectory(tempFolder);
+            }
+
+            try
+            {
+                var fileStructure = await GetFolderNode(Convert.ToInt32(projectStructureId), "").ConfigureAwait(false);
+
+                var filesId = GetListOfFilesId(fileStructure);
+
+                var allFileInFileStructure = await _fileService.GetRangeByListOfIdAsync(filesId);
+
+                await SaveFilesOnDisk(fileStructure, allFileInFileStructure, Path.Combine(tempFolder, "ProjectFolder")).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                if (Directory.Exists(tempFolder))
+                {
+                    Directory.Delete(tempFolder, true);
+                }
+                _logger.LogWarning(exception, exception.Message);
+                throw exception;
+            }
+        }
+
+        public void DeleteTempFolder(string path)
+        {
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, true);
             }
         }
 

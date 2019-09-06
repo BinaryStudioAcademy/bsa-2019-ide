@@ -5,6 +5,8 @@ import { EditorSettingDTO } from '../../../models/DTO/Common/editorSettingDTO'
 import editorTabsThemes from '../../../assets/editor-tabs-themes.json';
 import { EventService } from 'src/app/services/event.service/event.service';
 import { MonacoEditorComponent } from '@materia-ui/ngx-monaco-editor';
+import { GitService } from 'src/app/services/git.service/git.service';
+import { ToastrService } from 'ngx-toastr';
 
 export interface TabFileWrapper {
     isChanged: boolean;

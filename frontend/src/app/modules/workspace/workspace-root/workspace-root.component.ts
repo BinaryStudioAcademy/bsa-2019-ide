@@ -36,6 +36,7 @@ import { ConcatSource } from 'webpack-sources';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 import { filter } from 'rxjs/operators';
 import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
+import { GitService } from 'src/app/services/git.service/git.service';
 
 
 @Component({
@@ -91,7 +92,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         private eventService: EventService,
         private cdr: ChangeDetectorRef,
         private signalRService: SignalRService,
-        private errorHandlerService: ErrorHandlerService) {
+        private errorHandlerService: ErrorHandlerService,
+        private gitService: GitService,
+        private toastr: ToastrService) {
 
         this.hotkeys.addShortcut({ keys: 'shift.h' })
             .subscribe(() => {
@@ -377,5 +380,41 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.routeSub.unsubscribe();
         this.signalRService.deleteProjectRunDataListener();
         this.signalRService.deleteConnectionIdListener();
+    }
+
+    public push(event){
+        this.gitService.push('94', 'master').subscribe(res =>{
+            this.toastr.success('push');
+        }, error =>{
+            this.toastr.error('error');
+            console.log(error);
+        })
+    }
+
+    public pull(event){
+        this.gitService.pull('94', 'master').subscribe(res =>{
+            this.toastr.success('push');
+        }, error =>{
+            this.toastr.error('error');
+            console.log(error);
+        })
+    }
+
+    public commit(event){
+        this.gitService.commit('94', 'my super first commit').subscribe(res =>{
+            this.toastr.success('push');
+        }, error =>{
+            this.toastr.error('error');
+            console.log(error);
+        })
+    }
+
+    public clone(event){
+        this.gitService.clone().subscribe(res =>{
+            this.toastr.success('push');
+        }, error =>{
+            this.toastr.error('error');
+            console.log(error);
+        })
     }
 }

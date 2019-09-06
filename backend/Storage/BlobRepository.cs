@@ -50,11 +50,12 @@ namespace Storage
         {
             var blobContainer = await _connectionFactory.GetBlobContainer(containerName).ConfigureAwait(false);
             var uri = new Uri(fileUri);
-            var directory = blobContainer.GetDirectoryReference(uri.Segments[URL_PARTS_COUNT].TrimEnd('/'));
+            //var directory = blobContainer.GetDirectoryReference(uri.Segments[URL_PARTS_COUNT].TrimEnd('/'));
 
             var filename = Path.GetFileName(uri.LocalPath);
 
-            var blob = directory.GetBlobReference(filename);
+            //var blob = directory.GetBlobReference(filename);
+            var blob = blobContainer.GetBlobReference(uri.Segments[URL_PARTS_COUNT].TrimEnd('/'));
 
             var memStream = new MemoryStream();
 
@@ -114,7 +115,8 @@ namespace Storage
 
         private async Task<Uri> UploadAsync(byte[] fileToUpload, CloudBlobContainer blobContainer, string destinationFileNameSufix)
         {
-            var blobName = $"{DateTime.Now.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss")}_{destinationFileNameSufix}.zip";
+            //var blobName = $"{DateTime.Now.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss")}_{destinationFileNameSufix}.zip";
+            var blobName = $"{destinationFileNameSufix}.zip";
             var blob = blobContainer.GetBlockBlobReference(blobName);
             blob.Properties.ContentType = "application/zip";
             await blob.UploadFromByteArrayAsync(fileToUpload, 0, fileToUpload.Length).ConfigureAwait(false);

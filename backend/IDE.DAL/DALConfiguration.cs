@@ -23,6 +23,7 @@ namespace IDE.DAL
             services.AddScoped<INoSqlRepository<File>, NoSqlRepository<File>>();
             services.AddScoped<INoSqlRepository<FileHistory>, NoSqlRepository<FileHistory>>();
             services.AddScoped<IProjectStructureRepository, ProjectStructureRepository>();
+            services.AddScoped<IGitRepository, GitRepository>();
 
 
             services.AddDbContext<IdeContext>(option =>

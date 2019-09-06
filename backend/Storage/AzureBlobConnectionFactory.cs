@@ -35,7 +35,7 @@ namespace Storage
                 return _blobContainer;
             }
 
-            var containerName = _configuration.GetValue<string>(containerNameKey);
+            var containerName = containerNameKey;//_configuration.GetValue<string>(containerNameKey);
             var blobClient = GetBlobClient();
 
             _blobContainer = blobClient.GetContainerReference(containerName);
