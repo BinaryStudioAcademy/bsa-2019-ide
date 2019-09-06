@@ -44,7 +44,7 @@
             <span>{{accessType}}</span>
         </p>
         <!--here will be check(if project access modifier - public)-->
-        <p *ngIf="IsPublic()">
+        <p *ngIf="IsPublic() && project.projectLink">
             <span class="highlighted">Project link: </span>
             <span>{{project.projectLink}}</span>
         </p>
