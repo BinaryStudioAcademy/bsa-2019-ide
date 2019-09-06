@@ -13,14 +13,14 @@
 
 .editor-content
     opacity: 0.5
-    
+
 
 .inner-wrapper
     height: 100%
 
-.large 
+.large
     width: 100%
- 
+
 .hor-navbar button
     background-color: #c8d1de
     margin: 2px
@@ -38,8 +38,8 @@
     padding-right: 5px
     padding-left: 5px
     border-radius: 2px
-    
-.draggableLine 
+
+.draggableLine
     width: 3px
     height: 100%
     border-left: 3px double black
@@ -50,3 +50,18 @@
 
 .workspace
     width: calc(70% - 3px)
+    
+::ng-deep .ui-button-icon-left.ui-clickable.pi.pi-save-all
+    &:before
+        content: "\e95b"
+        position: relative
+        top: -8px
+        left: 1px
+
+        font-size: 0.7em
+    &::after
+        content: "\e95b"
+        position: absolute
+        left: -3px
+        top: 3px
+        font-size: 0.7em
