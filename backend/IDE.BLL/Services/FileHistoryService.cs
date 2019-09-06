@@ -81,19 +81,6 @@ namespace IDE.BLL.Services
             }
 
             return files.OrderByDescending(f => f.UpdatedAt);
-
-            //return filesForProject.Select(async (f) =>
-            //{
-            //    var fileHistory = (await _fileHistoryRepository.GetAllAsync(fh => fh.FileId == f.Id)).OrderBy(fh => fh.CreatedAt).Last();
-            //    return new FileShownHistoryDTO()
-            //    {
-            //        Content = fileHistory.Content,
-            //        FileName = fileHistory.Name,
-            //        Id = fileHistory.Id,
-            //        UpdatedAt = fileHistory.CreatedAt,
-            //        CreatorNickname = (await _userService.GetUserById(fileHistory.CreatorId)).NickName
-            //    };
-            //});
         }
 
         public async Task<FileHistoryDTO> CreateAsync(FileHistoryDTO item)
