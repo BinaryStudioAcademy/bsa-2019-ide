@@ -105,6 +105,17 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             .subscribe(() => {
                 this.onRun();
             });
+
+            //Save file Ctrl+S
+            this.hotkeys.addShortcut({ keys: 'control.s' })
+            .subscribe(() => {
+                this.onSaveButtonClick();
+            });
+            //Save All Ctrl+Shift+S
+            this.hotkeys.addShortcut({ keys: 'control.shift.s' })
+            .subscribe(() => {
+                this.onSaveButtonClick();
+            });
     }
 
     ngAfterViewInit() {
