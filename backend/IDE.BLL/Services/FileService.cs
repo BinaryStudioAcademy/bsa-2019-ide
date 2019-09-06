@@ -149,10 +149,10 @@ namespace IDE.BLL.Services
 
         public async Task UpdateAsync(FileUpdateDTO fileUpdateDTO, int updaterId)
         {
-            //if (GetStringSize(fileUpdateDTO.Content) > _maxFileSize)
-            //{
-            //    throw new TooHeavyFileException(_maxFileSize);
-            //}
+            if (GetStringSize(fileUpdateDTO.Content) > _maxFileSize)
+            {
+                throw new TooHeavyFileException(_maxFileSize);
+            }
 
             var currentFileDto = await GetByIdAsync(fileUpdateDTO.Id);
             currentFileDto.Name = fileUpdateDTO.Name;
