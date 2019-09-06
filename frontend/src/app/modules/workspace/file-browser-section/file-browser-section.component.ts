@@ -1,6 +1,6 @@
 import { MenuItem, TreeNode } from 'primeng/primeng';
 import { FileBrowserService } from './../../../services/file-browser.service';
-import { Component, OnInit, Output, EventEmitter, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { TreeNodeType } from "../../../models/Enums/treeNodeType"
 import { ActivatedRoute } from '@angular/router';
 import { FileService } from 'src/app/services/file.service/file.service';
@@ -14,11 +14,8 @@ import { Extension } from '../model/extension';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import filesExtensions from '../../../assets/file-extensions.json';
 import defaultExtensions from '../../../assets/newFilesDefaultExtensions.json';
-import { FileUpdateDTO } from 'src/app/models/DTO/File/fileUpdateDTO';
-import { delay, throwIfEmpty } from 'rxjs/operators';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
-import {ProgressBarModule} from 'primeng/progressbar';
 import { saveAs } from 'file-saver';
 import { SearchFileService } from 'src/app/services/search-file.service/search-file.service';
 import { FileSearchResultDTO } from 'src/app/models/DTO/File/fileSearchResultDTO';
@@ -64,7 +61,6 @@ export class FileBrowserSectionComponent implements OnInit {
     private lastActionFolderCreated: boolean = false;
     private lastCreatedNode: TreeNode;
     private eventsSubscription: any;
-    private currentInputPos: 0;
     private fileNameRegex: RegExp;
 
     constructor(private projectStructureService: FileBrowserService,
@@ -107,7 +103,7 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'delete', icon: 'pi pi-fw pi-trash', command: () => this.delete(this.selectedItem) },
             { label: 'info', icon: 'pi pi-fw pi-info', command: () => this.openInfoWindow(this.selectedItem)},
             { label: 'rename', icon: 'pi pi-fw pi-refresh', command: () => this.rename(this.selectedItem)},
-            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) },
+            { label: 'download', icon: 'pi pi-download', command: () => this.download(this.selectedItem) },
             { label: 'import', icon: 'pi pi-upload', command: ()=> this.openImportWindow(this.selectedItem)}
         ];
 
@@ -140,6 +136,34 @@ export class FileBrowserSectionComponent implements OnInit {
                 this.toast.error('Something went wrong(. Couldn\'t download file','Error Message', {tapToDismiss: true});
             }
         )
+    }
+
+    public changeFileState(fileId: string, state: boolean, nickName: string) {
+        console.log('change file state');
+        this.changeFilesState(fileId, state, nickName, this.files);
+    }
+
+    private changeFilesState(fileId: string, state: boolean, nickName: string, tree: TreeNode[]){
+        console.log(tree);
+        tree.forEach(f => {
+            if(f.type === TreeNodeType.file.toString()) {
+                if (f.key === fileId) {
+                    console.log('file found');
+                    f.data = { state: state, nickName: nickName };
+                    return;
+                }
+            } else {
+                this.changeFilesState(fileId, state, nickName, f.children);
+            }
+        });
+    }
+
+    public isTrue(data?: any) {
+        return data !== undefined && data !== null && data.state;
+    }
+
+    public getNickName(data?: any) {
+        return data !== null ? data.nickName : "";
     }
 
     private downloadFolder(node: TreeNode){
@@ -222,6 +246,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 type : element.type === TreeNodeType.folder.toString() ?
                     TreeNodeType.folder : TreeNodeType.file,
                 nestedFiles : [],
+                isOpened: false,
                 size: 0
             };
             file.nestedFiles = this.getFileStructure(element.children);
@@ -240,9 +265,7 @@ export class FileBrowserSectionComponent implements OnInit {
         };
 
         this.projectStructureService.updateProjectStructure(this.projectId, projectStructured).subscribe(
-            (response) => {
-
-            },
+            () => { },
             (error) => {
                 console.log(error);
             }
@@ -398,7 +421,7 @@ export class FileBrowserSectionComponent implements OnInit {
             return;
         }
         const fileRename: FileRenameDTO = { name: node.label, id: node.key };
-        this.fileService.updateFileName(fileRename).subscribe((response) => {
+        this.fileService.updateFileName(fileRename).subscribe(() => {
             this.toast.success(`Successfully renamed to "${newName}"`, "Success Message", { tapToDismiss: true })
             this.updateProjectStructure();
             this.renameFile.emit(fileRename);
@@ -536,7 +559,7 @@ export class FileBrowserSectionComponent implements OnInit {
         this.filteredFiles = null;
     }
 
-    public onFilteredFileSelected(event){
+    public onFilteredFileSelected(){
         const selectedItem = this.selectedFilteredFile.parent === undefined ? 
             this.selectedFilteredFile :
             this.selectedFilteredFile.parent;
@@ -576,6 +599,12 @@ export class FileBrowserSectionComponent implements OnInit {
         const nodeSelected: TreeNode = evt.node;
         if (nodeSelected.type === TreeNodeType.file.toString()) {
             const selectedFile: SelectedFile = {fileId: nodeSelected.key, fileIcon: nodeSelected.icon};
+            this.fileSelected.emit(selectedFile);
+        }
+    }    
+    select(node: TreeNode) {
+        if (node.type === TreeNodeType.file.toString()) {
+            const selectedFile: SelectedFile = {fileId: node.key, fileIcon: node.icon};
             this.fileSelected.emit(selectedFile);
         }
     }

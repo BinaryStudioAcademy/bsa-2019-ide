@@ -61,10 +61,26 @@ namespace IDE.API.Controllers
             return Ok();
         }
 
-        [HttpGet("run/{projectId}/{connectionId}")]
-        public async Task<ActionResult> RunProjectById(int projectId, string connectionId)
+        [HttpGet("tryrun/{projectId}/{connectionId}")]
+        public async Task<ActionResult<IEnumerable<string>>> TryRunProjectById(int projectId, string connectionId)
         {
-            await _projectService.RunProject(projectId, connectionId);
+            var inputItem = await _projectService.GetInputElements(projectId) as List<string>;
+            if (inputItem.Count == 0)
+            {
+                await _projectService.RunProject(projectId, connectionId);
+                return Ok();
+            }
+            else
+            {
+                return Ok(inputItem);
+            }
+        }
+
+        [HttpGet("run/{projectId}/{connectionId}")]
+        public async Task<ActionResult> RunProjectById(int projectId, string connectionId, [FromQuery] string inputs)
+        {
+            string[] variebles = inputs.Split(", ");
+            await _projectService.RunProject(projectId, connectionId, variebles);
             return Ok();
         }
 
@@ -121,47 +137,51 @@ namespace IDE.API.Controllers
         public async Task<ActionResult> CreateProject([FromForm] ProjectCreateDTO project)
         {
             var author = this.GetUserIdFromToken();
-            IFormFile formfile = null;
-            if (!string.IsNullOrEmpty(project.GithubUrl)){
-                
-                Uri url = new Uri(project.GithubUrl);
-                var fileNameFromUri = $"{url.Segments[url.Segments.Length - 1]}-master.zip";
-                UriBuilder uriBuilder = new UriBuilder(url);
-                uriBuilder.Path = Path.Combine(url.AbsolutePath, "archive/master.zip");
-                
-                using (HttpClient client = new HttpClient())
-                {    
-                    HttpResponseMessage response = await client.GetAsync(uriBuilder.ToString());
-                    if (response.IsSuccessStatusCode)
-                    {
-                        
-                        var streamResult = await response.Content.ReadAsStreamAsync();
-                        streamResult.Seek(0, SeekOrigin.Begin);
-                        if (streamResult != null)
-                        {
-                            formfile = await _projectService.ConvertFilestreamToIFormFile(streamResult, fileNameFromUri, fileNameFromUri);
-                           
-                            
-                        }
 
-                    }
-                }
-            }
             var projectId = await _projectService.CreateProject(project, author);
             _logger.LogInformation(LoggingEvents.InsertItem, $"Created project {projectId}");
 
             if (Request.Form.Files.Count > 0)
             {
-                var projectStructure  = await _projectStructureService.CreateEmptyAsync(projectId, project.Name);
+                var projectStructure = await _projectStructureService.CreateEmptyAsync(projectId, project.Name);
                 var zipFile = Request.Form.Files[0];
                 //await _projectStructureService.UnzipProject(projectStructure, zipFile, author, projectId);
                 await _projectStructureService.ImportProject(projectStructure.Id, zipFile, projectId.ToString(), author, false, null);
             }
-            else if (formfile != null)
+            else  if (!string.IsNullOrEmpty(project.GithubUrl))
             {
+                IFormFile formfile = null;
+
+                Uri url = new Uri(project.GithubUrl);
+                var fileNameFromUri = $"{url.Segments[url.Segments.Length - 1]}-master.zip";
+                UriBuilder uriBuilder = new UriBuilder(url);
+                uriBuilder.Path = Path.Combine(url.AbsolutePath, "archive/master.zip");
+
+                using (HttpClient client = new HttpClient())
+                {
+                    HttpResponseMessage response = await client.GetAsync(uriBuilder.ToString());
+                    if (response.IsSuccessStatusCode)
+                    {
+
+                        var streamResult = await response.Content.ReadAsStreamAsync();
+                        streamResult.Seek(0, SeekOrigin.Begin);
+                        if (streamResult != null)
+                        {
+                            formfile = await _projectService.ConvertFilestreamToIFormFile(streamResult, fileNameFromUri, fileNameFromUri);
+                        }
+
+                    }
+                }
+
                 var projectStructure = await _projectStructureService.CreateEmptyAsync(projectId, project.Name);
                 await _projectStructureService.ImportProject(projectStructure.Id, formfile, projectId.ToString(), author, false, null);
-            }else
+            }
+            //else if (formfile != null)
+            //{
+            //    var projectStructure = await _projectStructureService.CreateEmptyAsync(projectId, project.Name);
+            //    await _projectStructureService.ImportProject(projectStructure.Id, formfile, projectId.ToString(), author, false, null);
+            //}
+            else
             {
                 var projectStructureDTO = await _projectTemplateService.GenerateProjectTemplate(project.Name, projectId, author, project.Language);
                 await _projectStructureService.CreateAsync(projectStructureDTO);
@@ -169,6 +189,7 @@ namespace IDE.API.Controllers
 
             return Created("/project", projectId);
         }
+
 
         [HttpPut]
         public async Task<ActionResult<ProjectInfoDTO>> UpdateProject([FromBody] ProjectUpdateDTO project)

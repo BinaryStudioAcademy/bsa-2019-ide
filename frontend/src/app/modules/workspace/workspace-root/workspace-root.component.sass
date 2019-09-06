@@ -13,14 +13,14 @@
 
 .editor-content
     opacity: 0.5
-    
+
 
 .inner-wrapper
     height: 100%
 
-.large 
+.large
     width: 100%
- 
+
 .hor-navbar button
     background-color: #c8d1de
     margin: 2px
@@ -31,6 +31,26 @@
 .project-name
     margin-left: 5px
     font-weight: 900
+    border: 1px solid #F4F4F4
+    background-color: #C8D1DE
+    padding-bottom: 5px
+    padding-top: 3px
+    padding-right: 5px
+    padding-left: 5px
+    border-radius: 2px
+
+.draggableLine
+    width: 3px
+    height: 100%
+    border-left: 3px double black
+    cursor: col-resize
+
+.browser
+    width: 30%
+
+.workspace
+    width: calc(70% - 3px)
+    
 ::ng-deep .ui-button-icon-left.ui-clickable.pi.pi-save-all
     &:before
         content: "\e95b"
@@ -45,52 +65,3 @@
         left: -3px
         top: 3px
         font-size: 0.7em
-        
-        
-        
-
-
-// *****below styles are for resizable blocks****
-        //background-color: #c8d1de
-
-// mwlResizable 
-//     box-sizing: border-box
-
-// .resize-rect 
-//     position: relative
-//     display: flex
-//     width: 100px
-//     .resize-handle-top,
-//     .resize-handle-bottom 
-//         position: absolute
-//         height: 5px
-//         cursor: row-resize
-//         width: 100%
-//         background-color: #eee
-//     .resize-handle-left,
-//     .resize-handle-right 
-//         position: absolute
-//         height: 100%
-//         cursor: col-resize
-//         width: 5px
-//         background-color: #eee
-//     .resize-handle-top 
-//         top: 0
-//     .resize-handle-bottom 
-//         bottom: 0
-//     .resize-handle-left 
-//         left: 0
-//     .resize-handle-right 
-//         right: 0
-
-.draggableLine 
-    width: 3px
-    height: 100%
-    border-left: 3px double black
-    cursor: col-resize
-
-.browser
-    width: 30%
-
-.workspace
-    width: calc(70% - 3px)

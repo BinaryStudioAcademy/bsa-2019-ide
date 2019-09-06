@@ -47,7 +47,7 @@ export class ProjectWindowComponent implements OnInit {
     private projectUpdateStartState: ProjectUpdateDTO;
     private projectType: ProjectType;
     private projectId: number;
-    private githubPattern = /^https:\/\/github.com\/\w[\d,\w,-]+\/\w[\d,\w,-]+$/i;
+    private githubPattern = /^https:\/\/github.com\/\w[\d,\w,-]+\/\w[\d,\w,-\-\.]+$/i;
 
     constructor(private ref: DynamicDialogRef,
                 private config: DynamicDialogConfig,

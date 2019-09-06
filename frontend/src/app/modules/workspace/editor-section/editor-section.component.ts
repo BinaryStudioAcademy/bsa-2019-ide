@@ -5,6 +5,7 @@ import { EditorSettingDTO } from '../../../models/DTO/Common/editorSettingDTO'
 import editorTabsThemes from '../../../assets/editor-tabs-themes.json';
 import { EventService } from 'src/app/services/event.service/event.service';
 import { MonacoEditorComponent } from '@materia-ui/ngx-monaco-editor';
+import { FileEditService } from 'src/app/services/file-edit.service/file-edit.service';
 
 export interface TabFileWrapper {
     isChanged: boolean;
@@ -34,6 +35,8 @@ export class EditorSectionComponent implements OnInit {
     public openedFiles = [] as TabFileWrapper[];
     public language: string;
     @Input() canEdit: boolean;
+    @Input()
+    public isInputTerminalOpen:boolean;
     @ViewChild('monacoEditor', { static: false })
     private monacoEditor: MonacoEditorComponent;
 
@@ -41,13 +44,21 @@ export class EditorSectionComponent implements OnInit {
 
     constructor(
         private eventService: EventService,
-        private confirmationService: ConfirmationService, ) { }
+        private confirmationService: ConfirmationService,
+        private fileEditService: FileEditService) { }
 
     ngAfterViewInit() {
         this.eventService.componentAfterInit("EditorSectionComponent");
     }
-    ngOnInit() {
+    ngOnInit() { }
 
+    public getProjectColor(){
+        if(this.isInputTerminalOpen){
+            return "60vh";
+        }
+        else{
+            return "90vh";
+        }
     }
 
     confirm(index: number) {
@@ -82,7 +93,33 @@ export class EditorSectionComponent implements OnInit {
         }
     }
 
-    public hightlineMatches(substring: string) {
+    public changeFileState(fileId: string) {
+        this.openedFiles.forEach(f => {
+            if(f.innerFile.id === fileId)
+                console.log('change file state');
+                f.innerFile.isOpen = false;
+        });
+    }
+
+    public changeReadOnlyState(readOnly: boolean = false) {
+        this.monacoEditor.editor.updateOptions({readOnly: readOnly});
+    }
+
+    public addActiveTab(tabName: string, icon: string, id: string) {
+        this.tabs.push({ label: tabName, icon: icon, id: id });
+        this.activeItem = this.tabs[this.tabs.length - 1];
+    }
+
+    public contains(fileId: string) {
+        let contain: boolean = false;
+        this.openedFiles.forEach(f => {
+            if(f.innerFile.id === fileId)
+                contain = true;
+        })
+        return contain;
+    }
+
+    public hightlineMatches(substring: string){
         console.log(substring);
 
         var matches = this.monacoEditor.editor.getModel().findMatches(substring, false, false, false, "", true);
@@ -126,11 +163,28 @@ export class EditorSectionComponent implements OnInit {
         this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
         this.language = this.openedFiles[index].innerFile.language;
-        this.monacoOptions.language = this.language;
+this.monacoOptions.language = this.language;
+this.monacoEditor.editor.updateOptions({readOnly: this.openedFiles[index].innerFile.isOpen});
+}
+
+public closedFileSave(file: FileUpdateDTO) {
+this.tabClosedEvent.emit({ file, mustSave: true });
+
     }
 
-    public closedFileSave(file: FileUpdateDTO) {
-        this.tabClosedEvent.emit({ file, mustSave: true });
+    public updateFile(file: FileUpdateDTO) {
+        console.log('update');
+        this.openedFiles.forEach(f => {
+            if(f.innerFile.id === file.id)
+                f.innerFile.content = file.content;
+                console.log('change file state');
+                f.innerFile.isOpen = false;
+        })
+        if(this.activeItem.id === file.id){
+            console.log('update active');
+            this.code = file.content;
+            console.log(this.code);
+        }
     }
 
     public closedFileNotSave(file: FileUpdateDTO) {
@@ -149,7 +203,7 @@ export class EditorSectionComponent implements OnInit {
 
     public confirmSaving(fileIds: string[]) {
         const files = this.openedFiles.filter(f => fileIds.indexOf(f.innerFile.id) != -1);
-        
+
         files.forEach(x => x.isChanged = false);
 
     }
