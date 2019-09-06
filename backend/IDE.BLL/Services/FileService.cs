@@ -20,7 +20,7 @@ namespace IDE.BLL.Services
 {
     public class FileService
     {
-        private readonly INoSqlRepository<File> _fileRepository;
+        private readonly IFileRepository _fileRepository;
         private readonly FileSearchRepository _fileSearchRepository;
         private readonly FileHistoryService _fileHistoryService;
         private readonly UserService _userService;
@@ -32,7 +32,7 @@ namespace IDE.BLL.Services
         private readonly int _maxFileSize;
 
         public FileService(
-            INoSqlRepository<File> fileRepository,
+            IFileRepository fileRepository,
             FileSearchRepository fileSearchRepository,
             FileHistoryService fileHistoryService, 
             UserService userService,
@@ -109,7 +109,7 @@ namespace IDE.BLL.Services
 
         public async Task<FileDTO> CreateAsync(FileCreateDTO fileCreateDto, int creatorId)
         {
-            if((await _fileRepository.GetItemsCount()) > _maxFilesInProjectCount)
+            if((await _fileRepository.ProjectFilesCount(fileCreateDto.ProjectId)) > _maxFilesInProjectCount)
             {
                 throw new TooManyFilesInProjectException(_maxFilesInProjectCount);
             }
