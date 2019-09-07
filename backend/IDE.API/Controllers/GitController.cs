@@ -1,5 +1,6 @@
 ﻿using IDE.API.Extensions;
 using IDE.BLL.Interfaces;
+using IDE.Common.ModelsDTO.DTO.Git;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -28,32 +29,32 @@ namespace IDE.API.Controllers
         //    return Ok();
         //}
 
-        [HttpGet("pull/{projectId}/{branch}")]
-        public async Task<ActionResult> PullOrigin(string projectId, string branch)
+        [HttpPost("pull")]
+        public async Task<ActionResult> PullOrigin([FromBody] GitBranchDTO gitBranchDTO)
         {
             var userId = this.GetUserIdFromToken();
 
-            await _gitService.PullAsync(projectId, branch, userId);
+            await _gitService.PullAsync(gitBranchDTO.ProjectId, gitBranchDTO.Branch, userId);
 
             return Ok();
         }
 
-        [HttpGet("commit/{projectId}/{message}")]
-        public async Task<ActionResult> Commit(string projectId, string message)
+        [HttpPost("commit")]
+        public async Task<ActionResult> Commit([FromBody] GitMessageDTO gitMessageDTO)
         {
             var userId = this.GetUserIdFromToken();
 
-            await _gitService.CreateCommitAsync(projectId, message, userId);
+            await _gitService.CreateCommitAsync(gitMessageDTO.ProjectId, gitMessageDTO.Message, userId);
 
             return Ok();
         }
 
-        [HttpGet("push/{projectId}/{branch}")]
-        public async Task<ActionResult> Push(string projectId, string branch)
+        [HttpPost("push")]
+        public async Task<ActionResult> Push([FromBody] GitBranchDTO gitBranchDTO)
         {
             var userId = this.GetUserIdFromToken();
 
-            await _gitService.PushAsync(projectId, branch, userId);
+            await _gitService.PushAsync(gitBranchDTO.ProjectId, gitBranchDTO.Branch, userId);
 
             return Ok();
         }

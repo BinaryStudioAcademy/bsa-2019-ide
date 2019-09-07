@@ -97,7 +97,7 @@ namespace IDE.DAL.Repositories
                         }
                     };
 
-                    repo.Network.Push(remote, @"refs/heads/master", options);
+                    repo.Network.Push(remote, $"refs/heads/{branchName}", options);
                 }
             }
             catch (Exception e)

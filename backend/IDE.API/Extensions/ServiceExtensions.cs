@@ -49,7 +49,7 @@ namespace IDE.API.Extensions
 
         public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
         {
-            var secretKey = "some_big_key_value_here_secret";// configuration["SecretJWTKey"];
+            var secretKey = configuration["SecretJWTKey"];
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
             var jwtAppSettingOptions = configuration.GetSection(nameof(JwtIssuerOptions));
 

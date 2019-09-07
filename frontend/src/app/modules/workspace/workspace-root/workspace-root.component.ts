@@ -92,9 +92,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         private eventService: EventService,
         private cdr: ChangeDetectorRef,
         private signalRService: SignalRService,
-        private errorHandlerService: ErrorHandlerService,
-        private gitService: GitService,
-        private toastr: ToastrService) {
+        private errorHandlerService: ErrorHandlerService) {
 
         this.hotkeys.addShortcut({ keys: 'shift.h' })
             .subscribe(() => {
@@ -380,41 +378,5 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.routeSub.unsubscribe();
         this.signalRService.deleteProjectRunDataListener();
         this.signalRService.deleteConnectionIdListener();
-    }
-
-    public push(event){
-        this.gitService.push('94', 'master').subscribe(res =>{
-            this.toastr.success('push');
-        }, error =>{
-            this.toastr.error('error');
-            console.log(error);
-        })
-    }
-
-    public pull(event){
-        this.gitService.pull('94', 'master').subscribe(res =>{
-            this.toastr.success('push');
-        }, error =>{
-            this.toastr.error('error');
-            console.log(error);
-        })
-    }
-
-    public commit(event){
-        this.gitService.commit('94', 'my super first commit').subscribe(res =>{
-            this.toastr.success('push');
-        }, error =>{
-            this.toastr.error('error');
-            console.log(error);
-        })
-    }
-
-    public clone(event){
-        this.gitService.clone().subscribe(res =>{
-            this.toastr.success('push');
-        }, error =>{
-            this.toastr.error('error');
-            console.log(error);
-        })
     }
 }

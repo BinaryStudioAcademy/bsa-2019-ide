@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClientWrapperService } from '../http-client-wrapper.service';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
+import { GitBranchDTO } from 'src/app/models/DTO/Git/gitBranchDTO';
+import { GitMessageDTO } from 'src/app/models/DTO/Git/gitMessageDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -16,15 +18,15 @@ export class GitService {
         return this.httpClient.getRequest('git/clone');
     }
 
-    pull(projectId: string, branch: string): Observable<HttpResponse<any>>{
-        return this.httpClient.getRequest('git/pull/'+ projectId + '/' + branch);
+    pull(git:GitBranchDTO): Observable<HttpResponse<any>>{
+        return this.httpClient.postRequest(this.address + `pull`, git);
     }
 
-    commit(projectId: string, message: string): Observable<HttpResponse<any>>{
-        return this.httpClient.getRequest(this.address + `commit/${projectId}/${message}`);
+    commit(git:GitMessageDTO): Observable<HttpResponse<any>>{
+        return this.httpClient.postRequest(this.address + `commit`, git);
     }
 
-    push(projectId: string, branch: string): Observable<HttpResponse<any>>{
-        return this.httpClient.getRequest(this.address + `push/${projectId}/${branch}`);
+    push(git: GitBranchDTO): Observable<HttpResponse<any>>{
+        return this.httpClient.postRequest(this.address + `push`, git);
     }
 }

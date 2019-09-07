@@ -3,8 +3,10 @@ using IDE.DAL.Context;
 using IDE.DAL.Interfaces;
 using LibGit2Sharp;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Storage.Interfaces;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -13,13 +15,19 @@ namespace IDE.BLL.Services
     public class GitService : IGitService
     {
         private readonly IdeContext _context;
+        private readonly ILogger<GitService> _logger;
         private readonly IGitRepository _gitRepository;
         private readonly IBlobRepository _blobRepository;
-
         private readonly IProjectStructureService _projectStructureService;
 
-        public GitService(IGitRepository gitRepository, IdeContext context, IBlobRepository blobRepository,IProjectStructureService projectStructureService)
+        public GitService(
+            IdeContext context,
+            IGitRepository gitRepository,
+            IBlobRepository blobRepository,
+            ILogger<GitService> logger,
+            IProjectStructureService projectStructureService)
         {
+            _logger = logger;
             _context = context;
             _gitRepository = gitRepository;
             _blobRepository = blobRepository;
@@ -59,26 +67,31 @@ namespace IDE.BLL.Services
 
             //создание папки сюда
             string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\GitTemp", Guid.NewGuid().ToString());
-
             await _projectStructureService.ProjectStructureForGit(projectId, tempFolder);
-            var memoryStr = await _blobRepository.DownloadFileAsync($"http://127.0.0.1:10000/devstoreaccount1/gitconteiner/{projectId}.zip", "gitconteiner");
 
-            await _projectStructureService.UnzipGitFileAsync(memoryStr, tempFolder + "\\ProjectFolder", $"{projectId}.zip");
+            try
+            {
+                await AddGitToFolder($"http://127.0.0.1:10000/devstoreaccount1/gitconteiner/", tempFolder, projectId, "gitcontainer");
 
-            _gitRepository.FetchAll(tempFolder + "\\ProjectFolder", username, password);
-            _gitRepository.Pull(tempFolder + "\\ProjectFolder", branchName, author.NickName, author.Email);
+                _gitRepository.FetchAll(tempFolder + "\\ProjectFolder", username, password);
+                _gitRepository.Pull(tempFolder + "\\ProjectFolder", branchName, author.NickName, author.Email);
 
-            _projectStructureService.ZipGitFileAsync(tempFolder + "\\ProjectFolder\\", projectId);
+                await ReturnGitToBlob(tempFolder, projectId);
 
-            byte[] data = File.ReadAllBytes(tempFolder + $"\\ProjectFolder\\{projectId}.zip");
+                _projectStructureService.DeleteTempFolder(tempFolder + "\\ProjectFolder\\.git");
 
-            await _blobRepository.UploadProjectArchiveAsync(data, $"{projectId}");
+                //await _projectStructureService.UpdateAsync(await _projectStructureService.GetByIdAsync(projectId));
 
-            _projectStructureService.DeleteTempFolder(tempFolder + "\\ProjectFolder\\.git");
-
-            //await _projectStructureService.UpdateAsync(await _projectStructureService.GetByIdAsync(projectId));
-
-            _projectStructureService.DeleteTempFolder(tempFolder);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                _logger.LogError(ex.Message);
+            }
+            finally
+            {
+                _projectStructureService.DeleteTempFolder(tempFolder);
+            }
         }
 
         public async Task CreateCommitAsync(string projectId, string message, int authorId)
@@ -87,28 +100,33 @@ namespace IDE.BLL.Services
             //add to index
             //commit 
 
-            //нужно будет проверить работу с папками, в которых есть гит
             var author = await _context.Users.SingleOrDefaultAsync(u => u.Id == authorId);
 
-            string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\GitTemp", Guid.NewGuid().ToString());
-
+            string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\GitTemp", Guid.NewGuid().ToString());            
             await _projectStructureService.ProjectStructureForGit(projectId, tempFolder);
-            var memoryStr = await _blobRepository.DownloadFileAsync($"http://127.0.0.1:10000/devstoreaccount1/gitconteiner/{projectId}.zip", "gitconteiner");
 
-            await _projectStructureService.UnzipGitFileAsync(memoryStr, tempFolder + "\\ProjectFolder", $"{projectId}.zip");
+            try
+            {
+                await AddGitToFolder($"http://127.0.0.1:10000/devstoreaccount1/gitconteiner/", tempFolder, projectId, "gitcontainer");
 
-            _gitRepository.AddToGitRepository(tempFolder + "\\ProjectFolder");
-            _gitRepository.CommitAllChanges(tempFolder + "\\ProjectFolder", message, author.NickName, author.Email);
+                _gitRepository.AddToGitRepository(tempFolder + "\\ProjectFolder");
+                _gitRepository.CommitAllChanges(tempFolder + "\\ProjectFolder", message, author.NickName, author.Email);
 
-            _projectStructureService.ZipGitFileAsync(tempFolder + "\\ProjectFolder\\", projectId);
+                await ReturnGitToBlob(tempFolder, projectId);
 
-            byte[] data = File.ReadAllBytes(tempFolder + $"\\ProjectFolder\\{projectId}.zip");
+                _projectStructureService.DeleteTempFolder(tempFolder + "\\ProjectFolder\\.git");
 
-            await _blobRepository.UploadProjectArchiveAsync(data, $"{projectId}");
-
-            _projectStructureService.DeleteTempFolder(tempFolder + "\\ProjectFolder\\.git");
-
-            _projectStructureService.DeleteTempFolder(tempFolder);
+                await _projectStructureService.UpdateAsync(await _projectStructureService.GetByIdAsync(projectId));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                _logger.LogError(ex.Message);
+            }
+            finally
+            {
+                _projectStructureService.DeleteTempFolder(tempFolder);
+            }
         }
 
         public async Task PushAsync(string projectId, string branchName, int authorId)
@@ -118,29 +136,45 @@ namespace IDE.BLL.Services
             var author = await _context.Users.SingleOrDefaultAsync(u => u.Id == authorId);
             //get git credentials
             var project = await _context.Projects.Include(p => p.GitCredential).SingleOrDefaultAsync(p => p.Id == Convert.ToInt32(projectId));
-           
 
-            //var userName = project.GitCredential.Login;
+            //var userName = project.GitCredential.Login; 
             //var password = project.GitCredential.PasswordHash, PasswordSalt;
 
             string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\GitTemp", Guid.NewGuid().ToString());
-
             await _projectStructureService.ProjectStructureForGit(projectId, tempFolder);
-            var memoryStr = await _blobRepository.DownloadFileAsync($"http://127.0.0.1:10000/devstoreaccount1/gitconteiner/{projectId}.zip", "gitconteiner");
 
+            try
+            {
+                await AddGitToFolder($"http://127.0.0.1:10000/devstoreaccount1/gitconteiner/", tempFolder, projectId, "gitcontainer");
+
+                _gitRepository.PushCommits(tempFolder + "\\ProjectFolder", branchName, username, password);
+
+                await ReturnGitToBlob(tempFolder, projectId);
+
+                _projectStructureService.DeleteTempFolder(tempFolder + "\\ProjectFolder\\.git");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                _logger.LogError(ex.Message);
+            }
+            finally
+            {
+                _projectStructureService.DeleteTempFolder(tempFolder);
+            }
+        }
+
+        private async Task AddGitToFolder(string url, string tempFolder, string projectId, string container)
+        {
+            var memoryStr = await _blobRepository.DownloadFileAsync(url + $"{projectId}.zip", container);
             await _projectStructureService.UnzipGitFileAsync(memoryStr, tempFolder + "\\ProjectFolder", $"{projectId}.zip");
+        }
 
-            _gitRepository.PushCommits(tempFolder + "\\ProjectFolder", branchName, username, password);
-
-            _projectStructureService.ZipGitFileAsync(tempFolder + "\\ProjectFolder\\", projectId);
-
-            _projectStructureService.DeleteTempFolder(tempFolder + "\\ProjectFolder\\.git");
-
+        private async Task ReturnGitToBlob(string tempFolder, string projectId)
+        {
+            _projectStructureService.ZipGitFileAsync(tempFolder, projectId);
             byte[] data = File.ReadAllBytes(tempFolder + $"\\ProjectFolder\\{projectId}.zip");
-
             await _blobRepository.UploadProjectArchiveAsync(data, $"{projectId}");
-
-            _projectStructureService.DeleteTempFolder(tempFolder);
         }
     }
 }

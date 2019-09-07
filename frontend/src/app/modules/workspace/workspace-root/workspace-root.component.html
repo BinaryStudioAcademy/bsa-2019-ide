@@ -37,13 +37,6 @@
                 <app-editor-section  [canEdit]="canNotEdit" [monacoOptions]='options' (filesSaveEvent)="onFilesSave($event)"></app-editor-section>
             </div>
         </div>
-
-        <button pButton type="button" label="Push" (click)="push($event)"></button>
-        <button pButton type="button" label="Pull" (click)="pull($event)"></button>
-        <button pButton type="button" label="Commit" (click)="commit($event)"></button>
-        <button pButton type="button" label="Clone" (click)="clone($event)"></button>
-
-
     </div>
 </div>
 
