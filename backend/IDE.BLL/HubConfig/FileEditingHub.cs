@@ -2,6 +2,7 @@
 using IDE.BLL.Services.SignalR;
 using IDE.DAL.Context;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,10 +32,22 @@ namespace IDE.BLL.HubConfig
                 await ConnectToProject(projectId);
             }
         }
+
+        public async Task GetProjectFilesStates(int projectId)
+        {
+            var files = _files.GetProjectFiles(projectId);
+            foreach (var file in files)
+            {
+                await Clients.Caller
+                    .SendAsync("changeFileState", file.FileId, file.UserId, GetFileState(file.FileId), _context.Users.First(x => x.Id == file.UserId).NickName)
+                    .ConfigureAwait(false);
+                //await Clients.Caller.SendAsync("getProjectchangesFiles", JsonConvert.SerializeObject(files));
+            }
+        }
+
         private async Task ConnectToProject(int projectId)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, projectId.ToString());
-            await GetOpenedFiles(projectId);
         }
 
         public async Task OpenFile(string fileId, int projectId) // open file
@@ -51,12 +64,6 @@ namespace IDE.BLL.HubConfig
         public bool GetFileState(string fileId)
         {
             return _files.ContainsFile(fileId);
-        }
-
-        public async Task GetOpenedFiles(int projectId)
-        {
-            var files = _files.GetProjectFiles(projectId);
-            await Clients.Caller.SendAsync("getProjectchangesFiles", files);
         }
 
         public async Task CloseFile(string fileId) // close file

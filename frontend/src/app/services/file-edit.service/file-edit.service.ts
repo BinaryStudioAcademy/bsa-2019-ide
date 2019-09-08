@@ -8,6 +8,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 })
 export class FileEditService {
     public openedFiles: Subject<OpenedFile> = new Subject<OpenedFile>();
+    public isConnected: BehaviorSubject<boolean> = new BehaviorSubject(false); 
     private hubConnection: signalR.HubConnection;
 
     public startConnection = (userId: number, projectId: number) => {
@@ -18,7 +19,6 @@ export class FileEditService {
         this.hubConnection
             .start()
             .then(() => {
-                this.addProjectFilesListener();
                 this.connect(userId, projectId);
                 this.addChangeFileListener();
                 console.log(`SignalR file for project ${projectId} Connection started`);
@@ -26,8 +26,15 @@ export class FileEditService {
             .catch(err => console.log('Error while starting connection: ' + err))
     }
 
+    public getProjectFiles(projectId: number) {
+        this.addProjectFilesListener();
+        this.hubConnection.invoke("GetProjectFilesStates", projectId)
+            .catch((error) => console.log(error));
+    }
+
     private connect(userId: number, projectId: number): void {
         this.hubConnection.invoke("Connect", userId, projectId)
+            .then(() => this.isConnected.next(true))
             .catch((error) => console.log("Error while connecting: " + error));
     }
 
@@ -39,8 +46,8 @@ export class FileEditService {
     }
 
     private addProjectFilesListener(): void {
-        this.hubConnection.on("getProjectchangesFiles", (files: OpenedFile[]) => {
-            console.log(files);
+        this.hubConnection.on("getProjectchangesFiles", (filesString: string) => {
+            const files: OpenedFile[] = JSON.parse(filesString);
             files.forEach(f => {
                 this.openedFiles.next(f);
             });

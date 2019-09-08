@@ -28,7 +28,7 @@
     </div>
     <div class="p-col">
         <div class="inner-wrapper p-grid p-nogutter" id="container" (mouseover)="draggableUp($event)" (mousemove)="draggableMove($event)" (mouseup)="draggableUp($event)">
-            <div [hidden]="!showFileBrowser" id="browser" class="file-browser-content p-align-stretch browser">
+            <div *ngIf="project" [hidden]="!showFileBrowser" id="browser" class="file-browser-content p-align-stretch browser">
                 <app-file-browser-section  (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
                     [showSearchField]="showSearchField" [events]="eventsSubject.asObservable()" [project]="project">
                 </app-file-browser-section>

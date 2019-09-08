@@ -73,16 +73,19 @@ export class EditorSectionComponent implements OnInit {
         }
     }
 
-    public changeFileState(fileId: string) {
+    public changeFileState(fileId: string, state: boolean) {
         this.openedFiles.forEach(f => {
             if(f.innerFile.id === fileId)
-                console.log('change file state');
-                f.innerFile.isOpen = false;
+                f.innerFile.isOpen = state;
         });
     }
 
     public changeReadOnlyState(readOnly: boolean = false) {
-        this.monacoEditor.editor.updateOptions({readOnly: readOnly});
+        if (this.monacoEditor !== undefined && this.monacoEditor.editor !== undefined) {
+            this.monacoEditor.editor.updateOptions({readOnly: readOnly});
+        } else {
+            this.monacoOptions.readOnly = readOnly;
+        }
     }
 
     public addActiveTab(tabName: string, icon: string, id: string) {
@@ -100,7 +103,6 @@ export class EditorSectionComponent implements OnInit {
     }
 
     public hightlineMatches(substring: string){
-        console.log(substring);
 
         var matches = this.monacoEditor.editor.getModel().findMatches(substring, false, false, false, "", true);
         const linesToDecorate = matches.map(match => {
@@ -109,7 +111,6 @@ export class EditorSectionComponent implements OnInit {
                 options: { inlineClassName: 'hightliter', stickiness: 2 }
             }
         })
-        console.log(linesToDecorate);
         var decorations = this.monacoEditor.editor.deltaDecorations([], linesToDecorate);
     }
 
@@ -148,9 +149,7 @@ export class EditorSectionComponent implements OnInit {
                 f.innerFile.isOpen = false;
         })
         if(this.activeItem.id === file.id){
-            console.log('update active');
             this.code = file.content;
-            console.log(this.code);
         }
     }
 
@@ -162,6 +161,7 @@ export class EditorSectionComponent implements OnInit {
         const fileWrapper: TabFileWrapper = { isChanged: false, innerFile: file }
         this.openedFiles.push(fileWrapper);
         this.monacoOptions.language = file.language;
+        this.changeReadOnlyState(file.isOpen);
     }
 
     public getFileFromActiveItem(item: MenuItem): TabFileWrapper {

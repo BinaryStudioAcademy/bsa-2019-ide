@@ -28,7 +28,7 @@ import { BuildService } from 'src/app/services/build.service';
 import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
-import { filter } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
 import { FileEditService } from 'src/app/services/file-edit.service/file-edit.service';
 import { TerminalService } from 'primeng/components/terminal/terminalservice';
@@ -167,25 +167,24 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                                 }
                             )
                     }
+
                     this.fileEditService.startConnection(this.userId, this.project.id);
                     this.fileEditService.openedFiles.subscribe(x => 
                         {
                             if (x.userId !== this.userId) {
                                 this.fileBrowser.changeFileState(x.fileId, x.isOpen, x.nickName);
-                                this.editor.monacoOptions.readOnly = true;
+                                this.editor.changeFileState(x.fileId, true);
                                 
                                 if (!x.isOpen && this.editor.contains(x.fileId)) {
                                     this.fileEditService.openFile(x.fileId, this.project.id);
                                 }
                             } else if(x.userId === this.userId && this.editor.contains(x.fileId)) {
                                 console.log("it's my own file");
-                                this.editor.changeFileState(x.fileId);
+                                this.editor.changeFileState(x.fileId, false);
                                 this.workSpaceService.getFileById(x.fileId).subscribe(resp => {
                                     this.editor.updateFile({content: resp.body.content, id: resp.body.id, name: null, folder: null, isOpen: null, updater: null, language: null});
                                 })
-                                setTimeout(() => {
-                                    this.editor.changeReadOnlyState(false);
-                                }, 1500);
+                                this.editor.changeReadOnlyState(false);
                             }
                         });
                 },

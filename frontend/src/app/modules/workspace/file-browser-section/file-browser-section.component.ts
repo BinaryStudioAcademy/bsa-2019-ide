@@ -20,6 +20,7 @@ import { saveAs } from 'file-saver';
 import { SearchFileService } from 'src/app/services/search-file.service/search-file.service';
 import { FileSearchResultDTO } from 'src/app/models/DTO/File/fileSearchResultDTO';
 import { Observable } from 'rxjs';
+import { FileEditService } from 'src/app/services/file-edit.service/file-edit.service';
 
 export interface SelectedFile {
     fileId: string;
@@ -35,7 +36,7 @@ export interface SelectedFile {
 export class FileBrowserSectionComponent implements OnInit {
     
     @Input() project: ProjectInfoDTO;
-    @Input() showSearchField:boolean;
+    @Input() showSearchField: boolean;
     @Output() fileSelected = new EventEmitter<SelectedFile>();
     @Output() renameFile = new EventEmitter<FileRenameDTO>();
     @Input() events: Observable<void>;
@@ -71,7 +72,8 @@ export class FileBrowserSectionComponent implements OnInit {
                 private toast: ToastrService,
                 private hotkeys: HotkeyService,
                 private fileBrowserService: FileBrowserService,
-                private projectService: ProjectService) {
+                private projectService: ProjectService,
+                private filesEditService: FileEditService) {
         this.hotkeys.addShortcut({keys: 'control.e'})
         .subscribe(()=>{
           this.expand();
@@ -89,6 +91,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 this.files.push(this.projectStructureFormaterService.toTreeView(response.body));
                 this.setTreeIcons(this.files[0]);
                 this.files[0].expanded = true;
+                this.filesEditService.getProjectFiles(this.projectId); 
             },
             (error) => {
                 console.log(error);
@@ -143,8 +146,7 @@ export class FileBrowserSectionComponent implements OnInit {
         this.changeFilesState(fileId, state, nickName, this.files);
     }
 
-    private changeFilesState(fileId: string, state: boolean, nickName: string, tree: TreeNode[]){
-        console.log(tree);
+    private changeFilesState(fileId: string, state: boolean, nickName: string, tree: TreeNode[]) { // then refreshing the page, this method get undefined values
         tree.forEach(f => {
             if(f.type === TreeNodeType.file.toString()) {
                 if (f.key === fileId) {
