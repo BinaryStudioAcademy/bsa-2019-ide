@@ -52,7 +52,7 @@ export class UserDialogWindowComponent implements OnInit {
             this.userForm = this.fb.group({
                 firstName: ['', [Validators.required]],
                 lastName: ['', Validators.required],
-                nickName: ['', Validators.required],
+                nickName: ['', [Validators.required, Validators.maxLength(32)]],
                 gitHubUrl: ['', Validators.pattern("^[-a-zA-Z0-9._:\/]+$")],
                 birthday: ['']
             });
@@ -165,7 +165,7 @@ export class UserDialogWindowComponent implements OnInit {
             gitHubUrl: this.userForm.get('gitHubUrl').value,
             birthday:  birthday === null ? new Date('0001-01-01T00:00:00') : birthday
         }
-        this.userUpdateInfo.birthday.setHours(birthday.getHours()+2);
+        this.userUpdateInfo.birthday.setHours(birthday.getHours()-birthday.getTimezoneOffset()/60);
     }
 
     private getValuesForUpdatePassword(){
