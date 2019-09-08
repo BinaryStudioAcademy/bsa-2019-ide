@@ -8,7 +8,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 })
 export class FileEditService {
     public openedFiles: Subject<OpenedFile> = new Subject<OpenedFile>();
-    public isConnected: BehaviorSubject<boolean> = new BehaviorSubject(false); 
+    public isConnected: BehaviorSubject<boolean> = new BehaviorSubject(null); 
     private hubConnection: signalR.HubConnection;
 
     public startConnection = (userId: number, projectId: number) => {
@@ -35,7 +35,10 @@ export class FileEditService {
     private connect(userId: number, projectId: number): void {
         this.hubConnection.invoke("Connect", userId, projectId)
             .then(() => this.isConnected.next(true))
-            .catch((error) => console.log("Error while connecting: " + error));
+            .catch((error) => {
+                console.log("Error while connecting: " + error);
+                this.isConnected.next(false);
+            });
     }
 
     private addChangeFileListener(): void {

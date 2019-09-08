@@ -65,13 +65,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     private authorId: number;
 
     public eventsSubject: Subject<void> = new Subject<void>();
+    public isOpenedConnection: boolean = null;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
     @ViewChild(FileBrowserSectionComponent, { static: false })
     private fileBrowser: FileBrowserSectionComponent;
-
+    
 
     constructor(
         private route: ActivatedRoute,
@@ -146,7 +147,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                     this.project = resp.body;
                     this.eventService.currProjectSwitch({ id: this.project.id, name: this.project.name });
                     this.authorId = resp.body.authorId;
-                    //this.project.editorProjectSettings.readOnly=false;
                     this.options = this.project.editorProjectSettings;
                     if (this.canNotEdit) {
                         this.options.readOnly = true;
@@ -162,6 +162,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                     }
 
                     this.fileEditService.startConnection(this.userId, this.project.id);
+                    this.fileEditService.isConnected.subscribe(state => {
+                        this.isOpenedConnection = state;
+                    })
                     this.fileEditService.openedFiles.subscribe(x => 
                         {
                             if (x.userId !== this.userId) {

@@ -26,7 +26,7 @@
         <button pButton type="button" icon="pi pi-refresh" title="Refresh file section" iconPos="left" class="ui-button-secondary"
             (click)="refresh()"></button>
     </div>
-    <div class="p-col">
+    <div class="p-col" *ngIf="isOpenedConnection">
         <div class="inner-wrapper p-grid p-nogutter" id="container" (mouseover)="draggableUp($event)" (mousemove)="draggableMove($event)" (mouseup)="draggableUp($event)">
             <div *ngIf="project" [hidden]="!showFileBrowser" id="browser" class="file-browser-content p-align-stretch browser">
                 <app-file-browser-section  (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
@@ -39,6 +39,9 @@
                 <app-run-input *ngIf="inputItems" (OnChange)="OnChange($event)" [inputItems]="inputItems" [connectionId]="connectionId" [projectId]="project.id"></app-run-input>
             </div>
         </div>       
+    </div>
+    <div class="p-col" *ngIf="isOpenedConnection === false">
+        Can't connect to server, please try again later, or refresh page
     </div>
 </div>
 
