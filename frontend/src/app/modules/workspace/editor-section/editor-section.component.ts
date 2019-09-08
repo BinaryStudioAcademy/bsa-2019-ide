@@ -1,6 +1,6 @@
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
-import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy, SimpleChanges, SimpleChange,AfterViewInit, ViewChild  } from '@angular/core';
-import { MenuItem } from 'primeng/api';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy, SimpleChanges, SimpleChange, AfterViewInit, ViewChild } from '@angular/core';
+import { MenuItem, ConfirmationService } from 'primeng/api';
 import { EditorSettingDTO } from '../../../models/DTO/Common/editorSettingDTO'
 import editorTabsThemes from '../../../assets/editor-tabs-themes.json';
 import { EventService } from 'src/app/services/event.service/event.service';
@@ -18,7 +18,7 @@ export interface TabFileWrapper {
     styleUrls: ['./editor-section.component.sass']
 })
 export class EditorSectionComponent implements OnInit {
-    @Output() filesSaveEvent = new EventEmitter<FileUpdateDTO[]>();
+    @Output() tabClosedEvent = new EventEmitter<{ file: FileUpdateDTO, mustSave: boolean }>();
 
     private _monacoOptions: EditorSettingDTO;
     get monacoOptions(): EditorSettingDTO {
@@ -30,22 +30,21 @@ export class EditorSectionComponent implements OnInit {
         this.setEditorTabTheme();
     }
 
-    // FOR REFACTOR
-    // think about agregaiting of TabFileWrapper(openedFiles) with MenuItem(tabs)
-    public tabs = [] as MenuItem[]; // maybe reneme on "tab"
+    public tabs = [] as MenuItem[];
     public activeItem: MenuItem;
     public openedFiles = [] as TabFileWrapper[];
-    public language:string;
+    public language: string;
     @Input() canEdit: boolean;
     @Input()
     public isInputTerminalOpen:boolean;
     @ViewChild('monacoEditor', { static: false })
     private monacoEditor: MonacoEditorComponent;
-    
+
     code = '/*\nFor start create new files via options in context menu on file browser item or select existing one \n\n\n\n\n<---- here :) \n*/';
 
     constructor(
         private eventService: EventService,
+        private confirmationService: ConfirmationService,
         private fileEditService: FileEditService) { }
 
     ngAfterViewInit() {
@@ -62,14 +61,35 @@ export class EditorSectionComponent implements OnInit {
         }
     }
 
-    onChange(ev) {
-        if (!this.canEdit) {
-            const touchedFile = this.getFileFromActiveItem(this.activeItem);
-            if (!this.monacoOptions.readOnly) {
-                touchedFile.isChanged = true;
-                touchedFile.innerFile.content = this.code;
+    confirm(index: number) {
+        this.confirmationService.confirm({
+            message: 'Save changes in file?',
+            accept: () => {
+                this.closedFileSave(this.openedFiles[index].innerFile);
+                this.closeTabAction(index);
+            },
+
+            reject: () => {
+                this.closedFileNotSave(this.openedFiles[index].innerFile);
+                this.closeTabAction(index);
             }
-            this.monacoOptions.language = this.language;
+        });
+    }
+
+    public onChange(ev) {
+        if (!this.canEdit) {
+            const touchedFile = this.getFileFromActiveItem();
+
+            if (!this.monacoOptions.readOnly) {
+
+                if (touchedFile.innerFile.content !== this.code) {
+
+                    touchedFile.isChanged = true;
+                    touchedFile.innerFile.content = this.code;
+                }
+
+            }
+
         }
     }
 
@@ -112,9 +132,16 @@ export class EditorSectionComponent implements OnInit {
     }
 
     public closeItem(event, index) {
-        const file = this.openedFiles[index].innerFile;
-        this.saveFiles([file]);
-        this.fileEditService.closeFile(file.id);
+        if(this.openedFiles[index].isChanged){
+            this.confirm(index);
+        }else{
+
+            this.closeTabAction(index);
+        }
+        event.preventDefault();
+    }
+
+    public closeTabAction(index: number) {
         this.tabs = this.tabs.filter((item, i) => i !== index);
         this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
         // if 1st tab closed
@@ -127,15 +154,21 @@ export class EditorSectionComponent implements OnInit {
         index = this.tabs.length === index ? index - 1 : index;
         this.code = this.openedFiles[index].innerFile.content;
         this.activeItem = this.tabs[index];
-        event.preventDefault();
     }
 
     public onTabSelect(evt, index) {
+        console.log(this.openedFiles);
         this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
         this.language = this.openedFiles[index].innerFile.language;
         // console.log('change tab, update readonly to ' + this.openedFiles[index].innerFile.isOpen);
         this.monacoEditor.editor.updateOptions({readOnly: this.openedFiles[index].innerFile.isOpen});
+        this.monacoOptions.language = this.language;
+        this.monacoEditor.editor.updateOptions({readOnly: this.openedFiles[index].innerFile.isOpen});
+    }
+
+    public closedFileSave(file: FileUpdateDTO) {
+        this.tabClosedEvent.emit({ file, mustSave: true });
     }
 
     public updateFile(file: FileUpdateDTO) {
@@ -150,8 +183,8 @@ export class EditorSectionComponent implements OnInit {
         }
     }
 
-    public saveFiles(files: FileUpdateDTO[]) {
-        this.filesSaveEvent.emit(files);
+    public closedFileNotSave(file: FileUpdateDTO) {
+        this.tabClosedEvent.emit({ file, mustSave: false });
     }
 
     public AddFileToOpened(file: FileUpdateDTO) {
@@ -162,12 +195,15 @@ export class EditorSectionComponent implements OnInit {
         this.changeReadOnlyState(file.isOpen);
     }
 
-    public getFileFromActiveItem(item: MenuItem): TabFileWrapper {
-        return this.openedFiles.find(x => x.innerFile.id === item.id);
+    public getFileFromActiveItem(): TabFileWrapper {
+        return this.openedFiles.find(x => x.innerFile.id === this.activeItem.id);
     }
 
     public confirmSaving(fileIds: string[]) {
-        fileIds.map(x => this.openedFiles.filter(f => f.innerFile.id == x)[0]).forEach(x => x.isChanged = false);
+        const files = this.openedFiles.filter(f => fileIds.indexOf(f.innerFile.id) != -1);
+
+        files.forEach(x => x.isChanged = false);
+
     }
 
     public anyFileChanged(): boolean {
@@ -178,7 +214,7 @@ export class EditorSectionComponent implements OnInit {
         const element = document.querySelector('body');
         let tabsThemeName: string;
 
-        switch(this.monacoOptions.theme) {
+        switch (this.monacoOptions.theme) {
             case 'vs': {
                 tabsThemeName = 'light';
                 break;

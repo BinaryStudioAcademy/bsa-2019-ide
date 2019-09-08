@@ -10,7 +10,7 @@ const workspaceRoutes: Routes = [
     {
         path: 'workspace/:id',
         component: WorkspaceRootComponent,
-        canActivate: [LoginGuard]
+        canActivate: [LoginGuard], canDeactivate: [SaveBeforeExitGuard]
     },
     {
         path: 'searchoutput',

@@ -18,7 +18,6 @@ namespace IDE.DAL.Repositories
             var filter = new BsonDocument("ProjectId", projectId);
 
             return (int)(await _items.CountDocumentsAsync(filter));
-            throw new NotImplementedException();
         }
     }
 }
