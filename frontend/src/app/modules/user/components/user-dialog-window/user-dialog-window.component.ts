@@ -112,7 +112,6 @@ export class UserDialogWindowComponent implements OnInit {
 
         if(this.isUpdateInfo()) {
             this.getValuesForUpdateInfo();
-            debugger;
             this.userService.updateProfile(this.userUpdateInfo)
                 .subscribe(res => {
                         this.toastrService.success("Your profile info was successfully updated");
@@ -166,6 +165,7 @@ export class UserDialogWindowComponent implements OnInit {
             gitHubUrl: this.userForm.get('gitHubUrl').value,
             birthday:  birthday === null ? new Date('0001-01-01T00:00:00') : birthday
         }
+        this.userUpdateInfo.birthday.setHours(birthday.getHours()-birthday.getTimezoneOffset()/60);
     }
 
     private getValuesForUpdatePassword(){
