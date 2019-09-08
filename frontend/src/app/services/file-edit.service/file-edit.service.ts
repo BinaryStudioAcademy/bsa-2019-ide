@@ -23,7 +23,7 @@ export class FileEditService {
                 this.addChangeFileListener();
                 console.log(`SignalR file for project ${projectId} Connection started`);
             })
-            .catch(err => console.log('Error while starting connection: ' + err))
+            .catch((error) => console.log('Error while starting connection: ' + error))
     }
 
     public getProjectFiles(projectId: number) {
@@ -41,7 +41,7 @@ export class FileEditService {
     private addChangeFileListener(): void {
         this.hubConnection.on('changefilestate', (fileId: string, userId: number, isOpen: boolean, nickName: string) => {
             this.openedFiles.next({ fileId: fileId, isOpen: isOpen, userId: userId, nickName: nickName });
-            console.log(`file ${fileId} was changed to state ${isOpen}`)
+            // console.log(`file ${fileId} was changed to state ${isOpen}`);
         });
     }
 

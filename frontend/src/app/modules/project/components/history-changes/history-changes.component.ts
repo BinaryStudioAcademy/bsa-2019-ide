@@ -20,8 +20,7 @@ export class HistoryChangesComponent implements OnInit {
                 this.fileChangesList = response.body;
             },
             (error) => {
-                console.log('---> There was an error while getting project histories');
-                console.log(error);
+                console.log('---> There was an error while getting project histories', error);
             }
         )
     }

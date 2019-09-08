@@ -142,7 +142,6 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     public changeFileState(fileId: string, state: boolean, nickName: string) {
-        console.log('change file state');
         this.changeFilesState(fileId, state, nickName, this.files);
     }
 
@@ -150,7 +149,6 @@ export class FileBrowserSectionComponent implements OnInit {
         tree.forEach(f => {
             if(f.type === TreeNodeType.file.toString()) {
                 if (f.key === fileId) {
-                    console.log('file found');
                     f.data = { state: state, nickName: nickName };
                     return;
                 }
@@ -176,7 +174,6 @@ export class FileBrowserSectionComponent implements OnInit {
         }
         this.projectService.exportFolder(this.project.id, node.key).subscribe(
         (result) => {    
-            console.log(result);
             const blob = new Blob([result.body], {
                 type: 'application/zip'
             });
@@ -190,7 +187,6 @@ export class FileBrowserSectionComponent implements OnInit {
     }
     
     private download(node: TreeNode){
-        console.log(this.files);
         if (node.type == TreeNodeType.file.toString()){            
             this.downloadFile(node);
         }
@@ -511,7 +507,6 @@ export class FileBrowserSectionComponent implements OnInit {
         this.isSearchLoading = true;
         this.searchFileService.find(query, this.projectId).subscribe(
             (response) => {
-                console.log(response.body);
                 this.fileSearchResults = response.body;
                 let id : number = 1;
                 this.filteredFiles = [];
@@ -545,7 +540,6 @@ export class FileBrowserSectionComponent implements OnInit {
                     this.setTreeIcons(newNode);
                     this.filteredFiles.push(newNode);
                 })
-                console.log(this.filteredFiles);
                 this.isSearchLoading = false;
             },
             (error) => {
@@ -571,7 +565,6 @@ export class FileBrowserSectionComponent implements OnInit {
             fileIcon: selectedItem.icon,
             filterString: this.searchField
         };
-        console.log(selectedFile);
         this.fileSelected.emit(selectedFile);
     }
 

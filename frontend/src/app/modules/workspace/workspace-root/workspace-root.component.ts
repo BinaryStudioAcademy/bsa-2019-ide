@@ -112,13 +112,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.showSearchField = true;
                 this.cdr.detectChanges();
             }
-            // if (!!params['fileId']) {
-            //     console.log(params['fileId']);
-            //     setTimeout(() => {
-            //         this.onFileSelected(params['fileId']);
-            //     }, 6000)
-            //     this.onFileSelected(params['fileId']);
-            // }
         });
     }
 
@@ -172,6 +165,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                     this.fileEditService.openedFiles.subscribe(x => 
                         {
                             if (x.userId !== this.userId) {
+                                // console.log('its somebodyth else file');
                                 this.fileBrowser.changeFileState(x.fileId, x.isOpen, x.nickName);
                                 this.editor.changeFileState(x.fileId, true);
                                 
@@ -179,10 +173,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                                     this.fileEditService.openFile(x.fileId, this.project.id);
                                 }
                             } else if(x.userId === this.userId && this.editor.contains(x.fileId)) {
-                                console.log("it's my own file");
+                                // console.log("it's my own file");
                                 this.editor.changeFileState(x.fileId, false);
                                 this.workSpaceService.getFileById(x.fileId).subscribe(resp => {
-                                    this.editor.updateFile({content: resp.body.content, id: resp.body.id, name: null, folder: null, isOpen: null, updater: null, language: null});
+                                    this.editor.updateFile({content: resp.body.content, id: resp.body.id, name: null, folder: null, isOpen: false, updater: null, language: null});
                                 })
                                 this.editor.changeReadOnlyState(false);
                             }
