@@ -50,9 +50,9 @@ export class UserDialogWindowComponent implements OnInit {
         if (this.isUpdateInfo()) {
 
             this.userForm = this.fb.group({
-                firstName: ['', [Validators.required]],
-                lastName: ['', Validators.required],
-                nickName: ['', Validators.required],
+                firstName: ['', [Validators.required, Validators.maxLength(32)]],
+                lastName: ['', [Validators.required, Validators.maxLength(32)]],
+                nickName: ['', [Validators.required, Validators.maxLength(32)]],
                 gitHubUrl: ['', Validators.pattern("^[-a-zA-Z0-9._:\/]+$")],
                 birthday: ['']
             });
@@ -112,7 +112,6 @@ export class UserDialogWindowComponent implements OnInit {
 
         if(this.isUpdateInfo()) {
             this.getValuesForUpdateInfo();
-            console.log(this.userUpdateInfo);
             debugger;
             this.userService.updateProfile(this.userUpdateInfo)
                 .subscribe(res => {
@@ -158,7 +157,6 @@ export class UserDialogWindowComponent implements OnInit {
     }
     
     private getValuesForUpdateInfo() {
-        console.log(this.userForm.get('birthday').value);
         const birthday = new Date(this.userForm.get('birthday').value);
         this.userUpdateInfo = {
             id: this.tokenService.getUserId(),
