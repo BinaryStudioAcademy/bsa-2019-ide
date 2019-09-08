@@ -119,8 +119,6 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                         }
                         return 0;
                     });
-                    console.log(resp.body);
-                    console.log(this.notReadNotification);
                 }
             );
     }

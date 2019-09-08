@@ -1,21 +1,23 @@
 <div class="top-panel p-grid p-nogutter" *ngIf="project">
   <div class="hor-navbar p-col-12" [ngStyle]="{'background-color': getProjectColor()}">
-    <button pButton *ngIf="canRun || isAuthor()" type="button" icon="pi pi-play" iconPos="left"
-      class="ui-button-secondary" label="Run" (click)="onRun()" pTooltip="Run - Ctrl+R"
-      tooltipPosition="bottom" showDelay="5000"></button>
-    <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-inbox" iconPos="left"
-      class="ui-button-secondary" label="Build" (click)="onBuild()" pTooltip="Build - Ctrl+B"
-      tooltipPosition="bottom" showDelay="5000"></button>
-    <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onSaveButtonClick()" icon="pi pi-save"
-      iconPos="left" class="ui-button-secondary" label="Save" pTooltip="Save - Ctrl+S"
-      tooltipPosition="bottom" showDelay="5000"></button>
-    <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onSaveAllButtonClick()" icon="pi pi-save-all"
-      iconPos="left" class="ui-button-secondary" label="Save All" pTooltip="Save All - Ctrl+Shift+S"
-      tooltipPosition="bottom" showDelay="5000"></button>
-    <button pButton type="button" *ngIf="isAuthor()" (click)="Settings()" icon="pi pi-cog" iconPos="left"
-      class="ui-button-secondary" label="Settings" pTooltip="Settings" tooltipPosition="bottom"
-      showDelay="5000"></button>
-    <span class="project-name">{{project.name}}</span>
+    <div class="hor-buttons-group">
+        <button pButton *ngIf="canRun || isAuthor()" type="button" icon="pi pi-play" iconPos="left"
+            class="ui-button-secondary" label="Run" (click)="onRun()" pTooltip="Run - Ctrl+R"
+            tooltipPosition="bottom" showDelay="5000"></button>
+        <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-inbox" iconPos="left"
+            class="ui-button-secondary" label="Build" (click)="onBuild()" pTooltip="Build - Ctrl+B"
+            tooltipPosition="bottom" showDelay="5000"></button>
+        <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onSaveButtonClick()" icon="pi pi-save"
+            iconPos="left" class="ui-button-secondary" label="Save" pTooltip="Save - Ctrl+S"
+            tooltipPosition="bottom" showDelay="5000"></button>
+        <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onSaveAllButtonClick()" icon="pi pi-save-all"
+            iconPos="left" class="ui-button-secondary" label="Save All" pTooltip="Save All - Ctrl+Shift+S"
+            tooltipPosition="bottom" showDelay="5000"></button>
+        <button pButton type="button" *ngIf="isAuthor()" (click)="Settings()" icon="pi pi-cog" iconPos="left"
+            class="ui-button-secondary" label="Settings" pTooltip="Settings" tooltipPosition="bottom"
+            showDelay="5000"></button>
+    </div>
+    <span class="project-name">{{ project.name }}</span>
   </div>
 </div>
 <div class="wks-wrapper p-grid p-nogutter">
@@ -33,9 +35,9 @@
         <button pButton type="button" icon="pi pi-refresh" title="Refresh file section" iconPos="left" class="ui-button-secondary"
             (click)="refresh()"></button>
     </div>
-    <div class="p-col">
+    <div class="p-col" *ngIf="isOpenedConnection">
         <div class="inner-wrapper p-grid p-nogutter" id="container" (mouseover)="draggableUp($event)" (mousemove)="draggableMove($event)" (mouseup)="draggableUp($event)">
-            <div [hidden]="!showFileBrowser" id="browser" class="file-browser-content p-align-stretch browser">
+            <div *ngIf="project" [hidden]="!showFileBrowser" id="browser" class="file-browser-content p-align-stretch browser">
                 <app-file-browser-section  (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
                     [showSearchField]="showSearchField" [events]="eventsSubject.asObservable()" [project]="project">
                 </app-file-browser-section>
@@ -47,7 +49,9 @@
             </div>
         </div>
     </div>
-  </div>
-
+    <div class="p-col" *ngIf="isOpenedConnection === false">
+        Can't connect to server, please try again later, or refresh page
+    </div>
+</div>
 
 

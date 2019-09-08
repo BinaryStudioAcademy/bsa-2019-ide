@@ -41,7 +41,7 @@ export class ImportFileComponent implements OnInit {
 
         this.listOfParents.reverse();
 
-        if(this.fileInfoData.parent === undefined)
+        if (this.fileInfoData.parent === undefined)
             console.log('Its root folder');
 
     }
@@ -51,9 +51,9 @@ export class ImportFileComponent implements OnInit {
     }
 
     public Uploader(event): void {  
-        if(event.files.length == 0){
-        console.log('No file selected.');
-        return;
+        if (event.files.length == 0){
+            console.log('No file selected.');
+            return;
         }
 
         this.hasDetailsSaveResponse = false;
@@ -67,12 +67,12 @@ export class ImportFileComponent implements OnInit {
         formData.append("file", fileToUpload);                
 
         this.projectStructure.importFile(formData)
-            .subscribe(response =>{
+            .subscribe(() => {
                 this.toastr.success('File uploaded successfully');
                 this.hasDetailsSaveResponse = true;
                 this.close();
     
-            }, error =>{
+            }, () => {
                 this.toastr.error("Can`t upload file");
                 this.hasDetailsSaveResponse = true;
             });

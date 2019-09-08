@@ -70,13 +70,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     public eventsSubject: Subject<void> = new Subject<void>();
+    public isOpenedConnection: boolean = null;
 
     @ViewChild(EditorSectionComponent, { static: false })
     private editor: EditorSectionComponent;
 
     @ViewChild(FileBrowserSectionComponent, { static: false })
     private fileBrowser: FileBrowserSectionComponent;
-
+    
 
     constructor(
         private route: ActivatedRoute,
@@ -128,7 +129,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.showSearchField = true;
                 this.cdr.detectChanges();
             }
-
         });
     }
 
@@ -193,7 +193,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                     this.project = resp.body;
                     this.eventService.currProjectSwitch({ id: this.project.id, name: this.project.name });
                     this.authorId = resp.body.authorId;
-                    //this.project.editorProjectSettings.readOnly=false;
                     this.options = this.project.editorProjectSettings;
                     if (this.canNotEdit) {
                         this.options.readOnly = true;
@@ -207,25 +206,27 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                                 }
                             )
                     }
+
                     this.fileEditService.startConnection(this.userId, this.project.id);
-                    this.fileEditService.openedFiles.subscribe(x =>
+                    this.fileEditService.isConnected.subscribe(state => {
+                        this.isOpenedConnection = state;
+                    })
+                    this.fileEditService.openedFiles.subscribe(x => 
                         {
                             if (x.userId !== this.userId) {
+                                // console.log('its somebodyth else file');
                                 this.fileBrowser.changeFileState(x.fileId, x.isOpen, x.nickName);
-                                this.editor.monacoOptions.readOnly = true;
-
+                                this.editor.changeFileState(x.fileId, true);
                                 if (!x.isOpen && this.editor.contains(x.fileId)) {
                                     this.fileEditService.openFile(x.fileId, this.project.id);
                                 }
                             } else if(x.userId === this.userId && this.editor.contains(x.fileId)) {
-                                console.log("it's my own file");
-                                this.editor.changeFileState(x.fileId);
+                                // console.log("it's my own file");
+                                this.editor.changeFileState(x.fileId, false);
                                 this.workSpaceService.getFileById(x.fileId).subscribe(resp => {
-                                    this.editor.updateFile({content: resp.body.content, id: resp.body.id, name: null, folder: null, isOpen: null, updater: null, language: null});
+                                    this.editor.updateFile({content: resp.body.content, id: resp.body.id, name: null, folder: null, isOpen: false, updater: null, language: null});
                                 })
-                                setTimeout(() => {
-                                    this.editor.changeReadOnlyState(false);
-                                }, 1500);
+                                this.editor.changeReadOnlyState(false);
                             }
                         });
                 },

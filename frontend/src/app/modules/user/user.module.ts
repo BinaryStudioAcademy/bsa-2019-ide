@@ -23,6 +23,7 @@ import { CalendarModule } from 'primeng/calendar';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ProgressBarModule} from 'primeng/progressbar';
 import { ProgressSpinnerModule}  from 'primeng/progressspinner';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
     declarations: [
@@ -55,7 +56,8 @@ import { ProgressSpinnerModule}  from 'primeng/progressspinner';
         CardModule,
         CalendarModule,
         ConfirmDialogModule,
-        ProgressSpinnerModule
+        ProgressSpinnerModule,
+        SharedModule
     ],
     entryComponents: [
         UserDialogWindowComponent

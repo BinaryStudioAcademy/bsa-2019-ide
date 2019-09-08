@@ -145,7 +145,6 @@ export class EditorSettingsComponent implements OnInit {
     }
 
     public InitializeEditorSettings(): void {
-        console.log(this.settings);
         if (!this.settings) {
             this.user.editorSettings = this.editorOptions;
             this.settings = this.editorOptions;

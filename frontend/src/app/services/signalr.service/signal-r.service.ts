@@ -43,7 +43,7 @@ export class SignalRService {
                     this.join(userId);
                 }
             })
-            .catch(err => console.log('Error while starting connection: ' + err))
+            .catch((error) => console.log('Error while starting connection: ' + error))
     }
 
     public getNotifications(): NotificationDTO[] {
