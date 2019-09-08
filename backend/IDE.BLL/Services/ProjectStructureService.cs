@@ -55,33 +55,7 @@ namespace IDE.BLL.Services
             }
             
             var projectStructureDto = _mapper.Map<ProjectStructureDTO>(projectStructure);
-            SetOpenedFilesToProject(projectStructureDto);
             return projectStructureDto;
-        }
-
-        private void SetOpenedFilesToProject(ProjectStructureDTO projectStructure)
-        {
-            foreach (var p in projectStructure.NestedFiles)
-            {
-                SetOpenedFilesToStructure(p);
-            }
-        }
-        private void SetOpenedFilesToStructure(FileStructureDTO fileStructure)
-        {
-            foreach(var f in fileStructure.NestedFiles)
-            {
-                if(f.Type == TreeNodeType.File)
-                {
-                    if (_stateService.ContainsFile(f.Id))
-                    {
-                        f.IsOpened = true;
-                    }
-                }
-                else
-                {
-                    SetOpenedFilesToStructure(f);
-                }
-            }
         }
 
         public async Task<int> GetFileStructureSize(FileStructureDTO projectStructureDTO, string fileStructureId)
@@ -137,22 +111,24 @@ namespace IDE.BLL.Services
             var createdProjectStructure = await _projectStructureRepository.CreateAsync(emptyStructure);
             return await GetByIdAsync(createdProjectStructure.Id);
         }
-        
+
         public async Task ImportProject(string projectStructureId, IFormFile file, string fileStructureId, int userId, bool partial, string nodeids)
         {
             string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\Temp", Guid.NewGuid().ToString());
             var filesFolder = Path.Combine(tempFolder, file.FileName.Substring(0, file.FileName.LastIndexOf('.')));
-            var ids = new List<string>();// JsonConvert.DeserializeObject<List<string>>(nodeids);
-            partial = false;
+
+
             var projectStructure = _mapper.Map<ProjectStructureDTO>(await _projectStructureRepository.GetByIdAsync(projectStructureId));
 
             var rootFileStructure = projectStructure.NestedFiles.SingleOrDefault();
 
             if (partial)
             {
+                var ids = JsonConvert.DeserializeObject<List<string>>(nodeids);
+
                 rootFileStructure = projectStructure.NestedFiles.SingleOrDefault(u => u.Id == ids[0]);
 
-                for (int i = 1; i<ids.Count(); i++)
+                for (int i = 1; i < ids.Count(); i++)
                 {
                     rootFileStructure = rootFileStructure.NestedFiles.SingleOrDefault(n => n.Id == ids[i]);
                 }
@@ -187,6 +163,7 @@ namespace IDE.BLL.Services
             {
                 if (ex is TooHeavyFileException || ex is TooManyFilesInProjectException)
                     throw ex;
+
                 Debug.WriteLine(ex.Message);
             }
             finally

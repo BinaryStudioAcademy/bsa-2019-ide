@@ -10,7 +10,7 @@ import {TreeModule} from 'primeng/tree';
 import {MonacoEditorModule} from '@materia-ui/ngx-monaco-editor';
 import { FormsModule } from '@angular/forms';
 import {TabMenuModule} from 'primeng/tabmenu';
-import { ContextMenuModule, MenuModule, FieldsetModule, CardModule, ScrollPanelModule, PanelModule, ProgressSpinnerModule, TerminalModule } from 'primeng/primeng';
+import { ContextMenuModule, MenuModule, FieldsetModule, CardModule, ScrollPanelModule, PanelModule, ProgressSpinnerModule, ConfirmDialogModule, TooltipModule,  TerminalModule } from 'primeng/primeng';
 import { FileInfoComponent } from './file-info/file-info.component';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {OrderListModule} from 'primeng/orderlist';
@@ -23,6 +23,7 @@ import { HighlightMatchDirective } from 'src/app/directives/highlight-match.dire
 import { ConsoleComponent } from './console/console.component';
 import { RunInputComponent } from './run-input/run-input.component';
 import { TerminalService } from 'primeng/components/terminal/terminalservice';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -55,7 +56,10 @@ import { TerminalService } from 'primeng/components/terminal/terminalservice';
     ScrollPanelModule,
     PanelModule,
     FileUploadModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    SharedModule,
+    ConfirmDialogModule,
+    TooltipModule
   ],
   providers:[
       TerminalService

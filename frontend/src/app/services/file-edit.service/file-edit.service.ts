@@ -8,6 +8,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 })
 export class FileEditService {
     public openedFiles: Subject<OpenedFile> = new Subject<OpenedFile>();
+    public isConnected: BehaviorSubject<boolean> = new BehaviorSubject(null); 
     private hubConnection: signalR.HubConnection;
 
     public startConnection = (userId: number, projectId: number) => {
@@ -18,29 +19,38 @@ export class FileEditService {
         this.hubConnection
             .start()
             .then(() => {
-                this.addProjectFilesListener();
                 this.connect(userId, projectId);
                 this.addChangeFileListener();
                 console.log(`SignalR file for project ${projectId} Connection started`);
             })
-            .catch(err => console.log('Error while starting connection: ' + err))
+            .catch((error) => console.log('Error while starting connection: ' + error))
+    }
+
+    public getProjectFiles(projectId: number) {
+        this.addProjectFilesListener();
+        this.hubConnection.invoke("GetProjectFilesStates", projectId)
+            .catch((error) => console.log(error));
     }
 
     private connect(userId: number, projectId: number): void {
         this.hubConnection.invoke("Connect", userId, projectId)
-            .catch((error) => console.log("Error while connecting: " + error));
+            .then(() => this.isConnected.next(true))
+            .catch((error) => {
+                console.log("Error while connecting: " + error);
+                this.isConnected.next(false);
+            });
     }
 
     private addChangeFileListener(): void {
         this.hubConnection.on('changefilestate', (fileId: string, userId: number, isOpen: boolean, nickName: string) => {
             this.openedFiles.next({ fileId: fileId, isOpen: isOpen, userId: userId, nickName: nickName });
-            console.log(`file ${fileId} was changed to state ${isOpen}`)
+            // console.log(`file ${fileId} was changed to state ${isOpen}`);
         });
     }
 
     private addProjectFilesListener(): void {
-        this.hubConnection.on("getProjectchangesFiles", (files: OpenedFile[]) => {
-            console.log(files);
+        this.hubConnection.on("getProjectchangesFiles", (filesString: string) => {
+            const files: OpenedFile[] = JSON.parse(filesString);
             files.forEach(f => {
                 this.openedFiles.next(f);
             });

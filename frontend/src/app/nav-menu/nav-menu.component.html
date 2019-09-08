@@ -6,7 +6,7 @@
                     (completeMethod)="filterProject($event)" field="name" [size]="30" placeholder="Project title..."
                     [minLength]="1" (onSelect)="checkProject(project)">
                     <ng-template let-proj pTemplate="item">
-                        <div class="ui-helper-clearfix" style="" [ngSwitch]="proj.id">
+                        <div class="ui-helper-clearfix" [ngSwitch]="proj.id">
                             <svg *ngIf="proj.id == -1 || proj.id == -3" height="16" width="16" title="Search"
                                 aria-label="Search" viewBox="0 0 16 16" version="1.1" role="img"
                                 style="width:32px;display:inline-block;margin:5px 0 -2px 5px">
@@ -35,12 +35,12 @@
                 <button class="bell-wrapper ui-button-secondary" pButton icon="pi pi-bell"
                     (click)="notifications.toggle($event)" (click)="showNotificationPanel()">
                     <div *ngIf="data.length!=0 || notReadNotification.length!=0" class="count-of-notification">
-                        {{data.length+notReadNotification.length}}</div>
+                        {{ data.length + notReadNotification.length }}</div>
                 </button>
 
                 <span class="avatar" [ngStyle]="{'content': 'url(' + userAvatar + ')'}"></span>
                 <div class="ui-inputgroup">
-                    <button pButton type="button" icon="pi" (click)="goToUserDetails()" label="{{userNickName}}"></button>
+                    <button pButton type="button" class="profile-btn" icon="pi" (click)="goToUserDetails()" label="{{ userNickName | lessSymbols : 10 }}"></button>
                     <button pButton type="button" icon='pi pi-sign-out' (click)="logOut()" class="ui-button-danger"></button>
                 </div>
 

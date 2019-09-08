@@ -10,7 +10,7 @@
             <div class="file-container-tree">
                 <input class="input-item" type="text" [ngModel]="node.label" (focusout)="focusout(node)"
                             (input)="setIcon(node)" (keyup.enter)="focusout(node)" (keydown)="inputKeyDown($event)" disabled>
-                <i *ngIf="isTrue(node.data)" class="pi pi-lock" title="{{getNickName(node.data)}}" style="z-index: 1000"></i>
+                <i *ngIf="isTrue(node.data)" class="pi pi-lock" title="{{ getNickName(node.data) | lessSymbols : 20 }}" style="z-index: 1000"></i>
             </div>
         </ng-template>
     </p-tree>

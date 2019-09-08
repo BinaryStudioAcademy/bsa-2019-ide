@@ -50,8 +50,8 @@ export class UserDialogWindowComponent implements OnInit {
         if (this.isUpdateInfo()) {
 
             this.userForm = this.fb.group({
-                firstName: ['', [Validators.required]],
-                lastName: ['', Validators.required],
+                firstName: ['', [Validators.required, Validators.maxLength(32)]],
+                lastName: ['', [Validators.required, Validators.maxLength(32)]],
                 nickName: ['', [Validators.required, Validators.maxLength(32)]],
                 gitHubUrl: ['', Validators.pattern("^[-a-zA-Z0-9._:\/]+$")],
                 birthday: ['']

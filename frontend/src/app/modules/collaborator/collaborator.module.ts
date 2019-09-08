@@ -9,6 +9,7 @@ import { AddCollaboratorsListComponent } from './components/add-collaborators-li
 import { DropdownModule } from 'primeng/dropdown';
 import { ProjectWindowComponent } from '../project/components/project-window/project-window.component';
 import { UserAccessDirective } from 'src/app/directives/userAccess/user-access.directive';
+import { SharedModule as MySharedModule } from 'src/app/modules/shared/shared.module'
 
 @NgModule({
     declarations: [
@@ -23,7 +24,8 @@ import { UserAccessDirective } from 'src/app/directives/userAccess/user-access.d
         AutoCompleteModule,
         ProgressSpinnerModule,
         ButtonModule,
-        SharedModule
+        SharedModule,
+        MySharedModule
     ],
     exports:[
         AddCollaboratorsListComponent,

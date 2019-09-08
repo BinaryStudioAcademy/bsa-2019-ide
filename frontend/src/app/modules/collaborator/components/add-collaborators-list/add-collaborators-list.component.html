@@ -1,7 +1,7 @@
 <div class="collaboratorContainer">
     <div *ngFor="let collaborator of collaborators">
         <div class="collaborator-item">
-            <div>{{collaborator.nickName}}</div>
+            <div>{{collaborator.nickName | lessSymbols : 20}}</div>
 
             <span *ngIf="!isAuthor()" appUserAccess [userAccess]="collaborator.access"></span>
             <p-dropdown *ngIf="isAuthor()" [options]="userAccess" [(ngModel)]="collaborator.access"></p-dropdown>

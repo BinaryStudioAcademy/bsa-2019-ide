@@ -44,10 +44,10 @@
               Last name can only contain latin letters (upper\lowercase) and digits.
             </div>
             <div *ngIf="upNickName.errors.minlength">
-              Last name mininum length is 2.
+              Nickname mininum length is 2.
             </div>
             <div *ngIf="upNickName.errors.maxlength">
-              Last name maximun length is 32.
+              Nickname maximun length is 32.
             </div>
           </div>
     </div>
@@ -55,7 +55,7 @@
   <div class="auth-field">
     <label for="float-email-input">Your E-mail</label>
     <input id="float-email-input" type="text" size="30" [(ngModel)]="email" name="email" #inEmail="ngModel" pInputText
-      required pattern="[a-zA-Z0-9]{1}[-a-zA-Z0-9._]{1,33}[a-zA-Z0-9]{1}@[a-zA-Z0-9-]{1,17}[.][a-zA-Z-]{1,17}">
+      required pattern="[a-zA-Z0-9]{1}[-a-zA-Z0-9._]{1,33}[a-zA-Z0-9]{1}@[a-zA-Z0-9]{1,17}(-[a-zA-Z0-9]{1,17})?[.][a-zA-Z]{1,17}">
     <div *ngIf="inEmail.invalid && (inEmail.dirty || inEmail.touched)" class="alert-danger">
       <div *ngIf="inEmail.errors.pattern">
         Email can only contain latin letters (upper\lowercase), digits, ".", "_", "@", ".", "-" can not be first or last symbol.

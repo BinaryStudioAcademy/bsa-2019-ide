@@ -25,7 +25,6 @@ export class HttpClientWrapperService {
     }
 
     public getRequest<T>(url: string, params?: any): Observable<HttpResponse<T>> {
-        console.log("param: "+params);
         return this.http.get<T>(this.buildUrl(url), { headers: this.headers, params, observe: 'response' });
     }
     public getBlobRequest(url: string, params?: any): Observable<HttpResponse<Blob>> {

@@ -20,7 +20,7 @@ namespace IDE.BLL.Services
 {
     public class FileService
     {
-        private readonly INoSqlRepository<File> _fileRepository;
+        private readonly IFileRepository _fileRepository;
         private readonly FileSearchRepository _fileSearchRepository;
         private readonly FileHistoryService _fileHistoryService;
         private readonly UserService _userService;
@@ -32,7 +32,7 @@ namespace IDE.BLL.Services
         private readonly int _maxFileSize;
 
         public FileService(
-            INoSqlRepository<File> fileRepository,
+            IFileRepository fileRepository,
             FileSearchRepository fileSearchRepository,
             FileHistoryService fileHistoryService, 
             UserService userService,
@@ -81,6 +81,13 @@ namespace IDE.BLL.Services
             return fileForProjectDtos;
         }
 
+        public async Task<FileDTO> GetByIdAsync(string id, int userId)
+        {
+            var file = await GetByIdAsync(id);
+            file.IsOpen = !_stateService.OpenedFileByUser(file.Id, userId);
+            return file;
+        }
+
         public async Task<FileDTO> GetByIdAsync(string id)
         {
             var file = await _fileRepository.GetByIdAsync(id);
@@ -109,7 +116,7 @@ namespace IDE.BLL.Services
 
         public async Task<FileDTO> CreateAsync(FileCreateDTO fileCreateDto, int creatorId)
         {
-            if((await _fileRepository.GetItemsCount()) > _maxFilesInProjectCount)
+            if((await _fileRepository.ProjectFilesCount(fileCreateDto.ProjectId)) > _maxFilesInProjectCount)
             {
                 throw new TooManyFilesInProjectException(_maxFilesInProjectCount);
             }
@@ -225,7 +232,6 @@ namespace IDE.BLL.Services
         {
             file.Creator = await _userService.GetUserById(file.CreatorId);
             file.Updater = file.UpdaterId.HasValue ? await _userService.GetUserById(file.UpdaterId.Value) : null;
-            file.IsOpen = _stateService.ContainsFile(file.Id);
         }
 
         private string  GetFileLanguage(string name)
