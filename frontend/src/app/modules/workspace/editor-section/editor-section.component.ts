@@ -74,10 +74,19 @@ export class EditorSectionComponent implements OnInit {
     }
 
     public changeFileState(fileId: string, state: boolean) {
+        this.openedFiles.find(f => f.innerFile.id == fileId).innerFile.isOpen = state;
         this.openedFiles.forEach(f => {
             if(f.innerFile.id === fileId)
-                f.innerFile.isOpen = state;
+                console.log('change '+ fileId + ' file state to ' + state); // state is false
+                if(state) {
+                    f.innerFile.isOpen = true;
+                } else {
+                    f.innerFile.isOpen = false;
+                }
+                f.innerFile.isOpen = state;  // set state to false
+                console.log(this.openedFiles); // state is true...
         });
+        console.log(this.openedFiles);
     }
 
     public changeReadOnlyState(readOnly: boolean = false) {
@@ -137,6 +146,7 @@ export class EditorSectionComponent implements OnInit {
         this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
         this.language = this.openedFiles[index].innerFile.language;
+        console.log('change tab, update readonly to ' + this.openedFiles[index].innerFile.isOpen);
         this.monacoEditor.editor.updateOptions({readOnly: this.openedFiles[index].innerFile.isOpen});
     }
 
@@ -145,7 +155,7 @@ export class EditorSectionComponent implements OnInit {
         this.openedFiles.forEach(f => {
             if(f.innerFile.id === file.id)
                 f.innerFile.content = file.content;
-                console.log('change file state');
+                console.log('change file state' + file.id + '  ' + file.isOpen);
                 f.innerFile.isOpen = false;
         })
         if(this.activeItem.id === file.id){
@@ -161,7 +171,9 @@ export class EditorSectionComponent implements OnInit {
         const fileWrapper: TabFileWrapper = { isChanged: false, innerFile: file }
         this.openedFiles.push(fileWrapper);
         this.monacoOptions.language = file.language;
+        console.log('show new file ' + file.id + ' with state '+ file.isOpen);
         this.changeReadOnlyState(file.isOpen);
+        console.log(this.openedFiles);
     }
 
     public getFileFromActiveItem(item: MenuItem): TabFileWrapper {
