@@ -11,6 +11,7 @@ import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { EventService } from 'src/app/services/event.service/event.service';
 import { Observable, of, interval, throwError } from 'rxjs';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
+import { GlobalSearchResultDTO } from 'src/app/models/DTO/File/globalSearchResultDTO';
 
 @Component({
     selector: 'app-global-search-output',
@@ -21,8 +22,8 @@ export class GlobalSearchOutputComponent implements OnInit {
     public isSpinner = false;
     public projectName: string;
     public query;
-    public fileSearchResults: FileSearchResultDTO[];
-    public filesToShow$;
+    public fileSearchResults: GlobalSearchResultDTO[];
+    //public filesToShow$;
     constructor(private route: ActivatedRoute,
         private searchFileService: SearchFileService,
         private toast: ToastrService,
@@ -34,31 +35,40 @@ export class GlobalSearchOutputComponent implements OnInit {
     ngOnInit() {
         this.route.queryParams.pipe(switchMap(param => {
             this.query = param['query'];
+            this.isSpinner = true;
             return this.searchFileService.findFilesGlobal(param['query']);
         })
-        ).pipe(tap(x => this.isSpinner = true), timeout(60000))
-            .subscribe(response => {
-                this.fileSearchResults = response.body;
-                this.filesToShow$ = forkJoin(this.fileSearchResults
-                    .map(r => this.ws.getFileById(r.fileId)
-                        .pipe(
-                            switchMap(f =>
-                                this.getProjectNameFromId(f.body.projectId)
-                                    .pipe(
-                                        map(projName =>
-                                            ({
-                                                file: f.body,
-                                                proj: projName
-                                            })
-                                        )
-                                    )
-                            ),
-                            tap(x => this.isSpinner = false),
+        ).subscribe(response => {
+            this.fileSearchResults = response.body;
+            console.log(response.body);
+            this.isSpinner = false;
 
-                        ))
-                )
+            
 
-            }, error => { this.isSpinner = false; console.log(error) });
+
+                //this.filesToShow$ = forkJoin(this.fileSearchResults
+                // .map(r => this.ws.getFileById(r.fileId)
+                //     .pipe(
+                //         switchMap(f =>
+                //             this.getProjectNameFromId(f.body.projectId)
+                //                 .pipe(
+                //                     map(projName =>
+                //                         ({
+                //                             file: f.body,
+                //                             proj: projName
+                //                         })
+                //                     )
+                //                 )
+                //         ),
+                //         tap(x => this.isSpinner = false),
+
+                //     ))
+                // )
+            }, 
+            error => { 
+                this.isSpinner = false; 
+                console.log(error); 
+            });
 
     }
     public getProjectNameFromId(projectId: number) {
