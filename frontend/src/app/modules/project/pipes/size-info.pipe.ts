@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'sizeInfo'
 })
 export class SizeInfoPipe implements PipeTransform {
-    transform(size, value) {
+    transform(size) {
         if (size === 0) {
             return "The file did not change";
         }
