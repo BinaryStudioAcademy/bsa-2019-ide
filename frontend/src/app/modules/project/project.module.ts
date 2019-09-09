@@ -27,10 +27,11 @@ import {FileUploadModule} from 'primeng/fileupload';
 import { HistoryChangesComponent } from './components/history-changes/history-changes.component';
 import {AccordionModule} from 'primeng/accordion';
 import { HistorySearchPipe } from './pipes/history-search.pipe';
+import { SizeInfoPipe } from './pipes/size-info.pipe';
 import { UserBuildHistoryComponent } from './components/user-build-history/user-build-history.component';
 import { BuildHistoryTabComponent } from './components/build-history-tab/build-history-tab.component';
 import { InplaceModule } from 'primeng/primeng';
-
+import {ListboxModule} from 'primeng/listbox';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { InplaceModule } from 'primeng/primeng';
     ProjectWindowComponent,
     HistoryChangesComponent,
     HistorySearchPipe,
+    SizeInfoPipe,
     UserBuildHistoryComponent,
     BuildHistoryTabComponent
   ],
@@ -63,7 +65,8 @@ import { InplaceModule } from 'primeng/primeng';
     CollaboratorModule,
     FileUploadModule,
     AccordionModule,
-    InplaceModule
+    InplaceModule,
+    ListboxModule
   ],
   entryComponents: [
     ProjectWindowComponent
