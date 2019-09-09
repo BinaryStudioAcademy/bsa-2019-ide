@@ -70,11 +70,11 @@ namespace IDE.BLL.Services
             return _mapper.Map<FileHistoryDiffContentDTO>(fileHistory);
         }
 
-        public async Task<IDictionary<string, IEnumerable<FileHistoryDTO>>> GetHistoriesForProject(int projectId)
+        public async Task<IList<FileHistoryListDTO>> GetHistoriesForProject(int projectId)
         {
             var filesForProject = await _fileRepository.GetAllAsync(f => f.ProjectId == projectId);
 
-            var files = new Dictionary<string, IEnumerable<FileHistoryDTO>>();
+            var files = new List<FileHistoryListDTO>();
             
             foreach(var file in filesForProject)
             {
@@ -82,7 +82,12 @@ namespace IDE.BLL.Services
                     .OrderByDescending(fh => fh.ChangedAt)
                     .Select(f => _mapper.Map<FileHistoryDTO>(f))
                     .ToList();
-                files.Add($"{file.Id}${file.Name}", fileHistory);
+                files.Add(new FileHistoryListDTO()
+                {
+                    Id = file.Id,
+                    FileName = file.Name,
+                    History = fileHistory
+                });
             }
 
             return files;
