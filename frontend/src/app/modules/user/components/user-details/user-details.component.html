@@ -3,7 +3,7 @@
 <div class="p-grid p-justify-around p-align-start">
     <div *ngIf="user" class="panel p-col-10 p-md-8 p-lg-4 p-grid p-dir-col">
 
-        <img class="p-col-align-center" alt="avatar" (click)="expandImage(user.url)" src="{{user.url}}">
+        <img class="p-col-align-center avatar" alt="avatar" (click)="expandImage(user.url)" src="{{user.url}}">
         <p class="tname p-col-align-center">{{user.firstName}} {{user.lastName}}</p>
         <p>
             <span class="property-name">Nickname: </span>
