@@ -56,7 +56,48 @@ namespace IDE.DAL.Repositories
             return result;
         }
 
-        public async Task<List<FileSearchResultDTO>> SearchAsyncGlobal(string query, ICollection<SearchProjectDTO> allowedProjects, int skip = 0, int take = -1)
+        public async Task<List<GlobalSearchResultDTO>> SearchAsyncGlobal(string query, ICollection<SearchProjectDTO> allowedProjects, int skip = 0, int take = -1)
+        {
+            var result = new List<GlobalSearchResultDTO>();
+            foreach (var project in allowedProjects)
+            {
+                var searchResponce = await _client.SearchAsync<FileSearch>(s => s
+                .Index(_index)
+                .From(skip)
+                .Size(take)
+                .Query(q => q
+                    .MultiMatch(mm => mm
+                        .Type(TextQueryType.PhrasePrefix)
+                        .Fields(fs => fs
+                            .Field(f => f.Content)
+                            .Field(f => f.Name)
+                            .Field(f => f.Folder)
+                        )
+                        .Query(query)
+                    )
+                    && +q.Match(m => m
+                        .Field(f => f.ProjectId)
+                        .Query(project.Id.ToString())
+                    )
+                ));
+                var foundFiles = searchResponce.Hits.Select(h => new FileGlobalSearchResultDTO {
+                    FileId = h.Source.Id, FileName = h.Source.Name, Content = h.Source.Content
+                }).ToList();
+
+                if (foundFiles.Count > 0)
+                {
+                    result.Add(new GlobalSearchResultDTO {
+                        ProjectId = project.Id,
+                        ProjectName = project.Name,
+                        FoundFiles = foundFiles
+                    });;
+                }
+            }
+            return result;
+        }
+
+
+        public async Task<List<FileSearchResultDTO>> SearchAsyncGlobalOld(string query, ICollection<SearchProjectDTO> allowedProjects, int skip = 0, int take = -1)
         {
             var projectIds = allowedProjects.Select(p => p.Id).ToArray();
             var filters = new List<Func<QueryContainerDescriptor<FileSearch>, QueryContainer>>();

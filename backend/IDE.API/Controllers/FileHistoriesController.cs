@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using IDE.BLL.Services;
-using IDE.Common.DTO.File;
+﻿using IDE.BLL.Services;
 using IDE.Common.ModelsDTO.DTO.File;
 using IDE.Common.ModelsDTO.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace IDE.API.Controllers
 {
@@ -40,9 +39,9 @@ namespace IDE.API.Controllers
         }
         
         [HttpGet("histories/{projectId}")]
-        public async Task<ActionResult<IEnumerable<FileShownHistoryDTO>>> GetFileHistoriesForProject(int projectId)
+        public async Task<ActionResult<IList<FileHistoryListDTO>>> GetFileHistoriesForProject(int projectId)
         {
-            return Ok(await _fileHistoryService.GetLastHistoriesForProject(projectId));
+            return Ok(await _fileHistoryService.GetHistoriesForProject(projectId));
         }
     }
 }

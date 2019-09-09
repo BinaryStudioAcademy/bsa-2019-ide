@@ -1,22 +1,25 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { FileHistoryService } from 'src/app/services/file-history.service/file-history.service';
-import { FileShownHistoryDTO } from 'src/app/models/DTO/File/fileShownHistoryDTO';
+import { FileHistoryListDTO } from 'src/app/models/DTO/File/fileHistoryListDTO';
 
 @Component({
   selector: 'app-history-changes',
+  styleUrls: ['./history-changes.component.sass'],
   templateUrl: './history-changes.component.html',
-  styleUrls: ['./history-changes.component.sass']
+  encapsulation: ViewEncapsulation.None,
 })
 export class HistoryChangesComponent implements OnInit {
     @Input() projectId: number;
     public personNickname: string;
-    public fileChangesList: FileShownHistoryDTO[];
+    public fileChangesList: FileHistoryListDTO[];
 
-    constructor(private fileHistoryService: FileHistoryService) { }
+    constructor(private fileHistoryService: FileHistoryService) {
+    }
 
     ngOnInit() {
         this.fileHistoryService.getHistoriesForProject(this.projectId).subscribe(
             (response) => {
+                console.log(response.body);
                 this.fileChangesList = response.body;
             },
             (error) => {

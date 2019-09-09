@@ -599,32 +599,10 @@ namespace IDE.DAL.Context
                     Type = Common.ModelsDTO.Enums.TreeNodeType.File
                 });
 
-                FileHistory fileHistory1 = new FileHistory()
-                {
-                    Content = f1.Content,
-                    CreatedAt = f1.CreatedAt,
-                    FileId = f1.Id,
-                    Name = f1.Name,
-                    Folder = f1.Folder,
-                    CreatorId = 1
-                };
-                FileHistory fileHistory2 = new FileHistory()
-                {
-                    Content = f2.Content,
-                    CreatedAt = f2.CreatedAt,
-                    FileId = f2.Id,
-                    Name = f2.Name,
-                    Folder = f2.Folder,
-                    CreatorId = 1
-                };
-
                 var emptyStructure = new ProjectStructure();
                 emptyStructure.Id = project.Id.ToString();
                 emptyStructure.NestedFiles.Add(fileStructure);
 
-
-                fileHistoriesItems.InsertOne(fileHistory1);
-                fileHistoriesItems.InsertOne(fileHistory2);
                 filesItems.InsertOne(f1);
                 filesItems.InsertOne(f2);
                 projectStructureItems.InsertOne(emptyStructure);

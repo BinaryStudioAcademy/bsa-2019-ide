@@ -1,22 +1,30 @@
-<div class="content-wrapper ">
-     <div class="spinnerwaiter p-grid p-justify-center" *ngIf="isSpinner"> <div class="spinner-content p-col-2"><p-progressSpinner></p-progressSpinner></div></div>  
-  <div class="inner-wrapper" *ngFor="let f of filesToShow$ | async; index as i">
+<div class="content-wrapper">
+    <div class="spinnerwaiter p-grid p-justify-center" *ngIf="isSpinner"> 
+        <div class="spinner-content p-col-2"><p-progressSpinner></p-progressSpinner></div>
+    </div>
+    <p *ngIf="!isSpinner && !!fileSearchResults" class="results-title">Global search results for query "{{query}}":</p>
+    
+    <div class="file-search-results" *ngFor="let project of fileSearchResults">
+        <div class="result-project" routerLink="/workspace/{{project.projectId}}">Project "{{project.projectName}}"</div>
+        <p-accordion class="content-results" [multiple]="true" *ngFor="let fts of project.foundFiles">
+            <p-accordionTab>
+                <p-header [appHighlightMatch]="query">{{fts.fileName}}</p-header>
+                <pre [appHighlightMatch]="query">{{fts.content}}</pre>
+            </p-accordionTab>
+        </p-accordion>
+    </div>
+    <!-- <p-panel [toggleable]="true" collapsed="true" [style]="{width: '70%'}">
+        <p-header>
+            <div class="ui-panel-title " style="font-size:16px;display:inline-block;margin:0; width:80%"   >
+            <span [appHighlightMatch]="query" class="ui-panel-title " style="font-size:16px;display:inline-block;margin: 2px 0 0 10px; width: 30%">
+                {{f.proj}}</span>
+            <span  (click)="clicked(f.file)" class="ui-panel-title "
+                style="font-size:16px;display:inline-block;margin: 2px 0 0 10px">
+                File Name:  <span [appHighlightMatch]="query">{{f.file.name}}</span>
+            </span>
+            </div>
 
-    <p-panel [toggleable]="true" collapsed="true" [style]="{width: '100%'}">
-      <p-header>
-        <div class="ui-panel-title "
-        style="font-size:16px;display:inline-block;margin:0; width:80%"
-        >
-          <span [appHighlightMatch]="query" class="ui-panel-title " style="font-size:16px;display:inline-block;margin: 2px 0 0 10px; width: 30%">
-            {{f.proj}}</span>
-          <span  (click)="clicked(f.file)" class="ui-panel-title "
-            style="font-size:16px;display:inline-block;margin: 2px 0 0 10px">
-            File Name:  <span [appHighlightMatch]="query">{{f.file.name}}</span>
-          </span>
-        </div>
-
-      </p-header>
-      <pre [appHighlightMatch]="query"> {{f.file.content}}</pre>
-    </p-panel>
-  </div>
+        </p-header>
+        <pre [appHighlightMatch]="query"> {{f.file.content}}</pre>
+    </p-panel> -->
 </div>
