@@ -3,9 +3,11 @@
 export interface FileHistoryDTO {
     id: string;
     fileId: string;
-    name: string;
-    content: string;
-    folder: string;
-    createdAt: Date;
-    creatorId: number;
+    contentDiffHtml: string;
+    changedAt: Date;
+    authorId: number;
+    authorName: number;
+    sizeDiff: number;
+    linesIncreased: number;
+    linesDecreased: number;
 }
