@@ -106,6 +106,11 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.router.navigate([`/workspace/${notification.projectId}`]);
     }
 
+    public hideNotificationPanel(){
+        this.showNotification=false;
+        this.deleteNotificationPanel();
+    }
+
     public loadNotifications(userId: number): void {
         this.notificationService.getUserNotifications(userId)
             .subscribe(
@@ -123,8 +128,12 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             );
     }
 
-    public showNotificationPanel() {
-        this.showNotification = !this.showNotification;
+    public showNotificationPanel(){
+        this.showNotification=!this.showNotification;
+        this.deleteNotificationPanel();
+    }
+
+    public deleteNotificationPanel() {
         const dataForDelete = this.data;
         if (!this.showNotification) {
             this.signalRService.clearData();
