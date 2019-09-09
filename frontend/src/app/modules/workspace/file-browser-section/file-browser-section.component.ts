@@ -53,7 +53,6 @@ export class FileBrowserSectionComponent implements OnInit {
     public selectedFilteredFile: TreeNode;
     public isSearchLoading: boolean = false;
 
-
     private lastSelectedElement: any;
     private extensions: Extension[];
     private defaultExtension: string;

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using IDE.Common.DTO.File;
+using IDE.Common.ModelsDTO.DTO.File;
 using IDE.DAL.Entities.NoSql;
 
 namespace IDE.BLL.MappingProfiles
@@ -10,6 +10,7 @@ namespace IDE.BLL.MappingProfiles
         {
             CreateMap<FileHistory, FileHistoryDTO>();
             CreateMap<FileHistoryDTO, FileHistory>();
+            CreateMap<FileHistory, FileHistoryDiffContentDTO>();
         }
     }
 }
