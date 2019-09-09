@@ -41,7 +41,7 @@ namespace IDE.API.Controllers
         [HttpGet("histories/{projectId}")]
         public async Task<ActionResult<IDictionary<string, IList<FileHistoryDTO>>>> GetFileHistoriesForProject(int projectId)
         {
-            return Ok(await _fileHistoryService.GetLastHistoriesForProject(projectId));
+            return Ok(await _fileHistoryService.GetHistoriesForProject(projectId));
         }
     }
 }
