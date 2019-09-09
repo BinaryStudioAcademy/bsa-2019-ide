@@ -71,6 +71,13 @@ namespace IDE.BLL.Services.SignalR
         {
             return editingFiles.Where(f => f.UserId == userId).ToArray();
         }
+
+        public bool OpenedFileByUser(string fileId, int userId)
+        {
+            if (!ContainsFile(fileId))
+                return true;
+            return editingFiles.FirstOrDefault(f => f.FileId == fileId)?.UserId == userId;
+        }
     }
 
     public class FileEdit

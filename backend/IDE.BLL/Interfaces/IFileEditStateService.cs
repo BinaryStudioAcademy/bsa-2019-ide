@@ -9,6 +9,7 @@ namespace IDE.BLL.Interfaces
     {
         bool AddFileToEdit(int userId, string fileId, int projectId);
         bool ContainsFile(string fileId);
+        bool OpenedFileByUser(string fileId, int userId);
         bool RemoveFile(string fileId, int userId);
         bool RemoveUserFiles(int userId);
         int? GetFileProjectId(string fileId);

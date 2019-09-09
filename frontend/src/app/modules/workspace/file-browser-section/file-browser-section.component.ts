@@ -20,6 +20,7 @@ import { saveAs } from 'file-saver';
 import { SearchFileService } from 'src/app/services/search-file.service/search-file.service';
 import { FileSearchResultDTO } from 'src/app/models/DTO/File/fileSearchResultDTO';
 import { Observable } from 'rxjs';
+import { FileEditService } from 'src/app/services/file-edit.service/file-edit.service';
 
 export interface SelectedFile {
     fileId: string;
@@ -35,7 +36,7 @@ export interface SelectedFile {
 export class FileBrowserSectionComponent implements OnInit {
     
     @Input() project: ProjectInfoDTO;
-    @Input() showSearchField:boolean;
+    @Input() showSearchField: boolean;
     @Output() fileSelected = new EventEmitter<SelectedFile>();
     @Output() renameFile = new EventEmitter<FileRenameDTO>();
     @Input() events: Observable<void>;
@@ -71,7 +72,8 @@ export class FileBrowserSectionComponent implements OnInit {
                 private toast: ToastrService,
                 private hotkeys: HotkeyService,
                 private fileBrowserService: FileBrowserService,
-                private projectService: ProjectService) {
+                private projectService: ProjectService,
+                private filesEditService: FileEditService) {
         this.hotkeys.addShortcut({keys: 'control.e'})
         .subscribe(()=>{
           this.expand();
@@ -89,6 +91,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 this.files.push(this.projectStructureFormaterService.toTreeView(response.body));
                 this.setTreeIcons(this.files[0]);
                 this.files[0].expanded = true;
+                this.filesEditService.getProjectFiles(this.projectId); 
             },
             (error) => {
                 console.log(error);
@@ -139,16 +142,13 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     public changeFileState(fileId: string, state: boolean, nickName: string) {
-        console.log('change file state');
         this.changeFilesState(fileId, state, nickName, this.files);
     }
 
-    private changeFilesState(fileId: string, state: boolean, nickName: string, tree: TreeNode[]){
-        console.log(tree);
+    private changeFilesState(fileId: string, state: boolean, nickName: string, tree: TreeNode[]) { // then refreshing the page, this method get undefined values
         tree.forEach(f => {
             if(f.type === TreeNodeType.file.toString()) {
                 if (f.key === fileId) {
-                    console.log('file found');
                     f.data = { state: state, nickName: nickName };
                     return;
                 }
@@ -174,7 +174,6 @@ export class FileBrowserSectionComponent implements OnInit {
         }
         this.projectService.exportFolder(this.project.id, node.key).subscribe(
         (result) => {    
-            console.log(result);
             const blob = new Blob([result.body], {
                 type: 'application/zip'
             });
@@ -188,7 +187,6 @@ export class FileBrowserSectionComponent implements OnInit {
     }
     
     private download(node: TreeNode){
-        console.log(this.files);
         if (node.type == TreeNodeType.file.toString()){            
             this.downloadFile(node);
         }
@@ -509,7 +507,6 @@ export class FileBrowserSectionComponent implements OnInit {
         this.isSearchLoading = true;
         this.searchFileService.find(query, this.projectId).subscribe(
             (response) => {
-                console.log(response.body);
                 this.fileSearchResults = response.body;
                 let id : number = 1;
                 this.filteredFiles = [];
@@ -543,7 +540,6 @@ export class FileBrowserSectionComponent implements OnInit {
                     this.setTreeIcons(newNode);
                     this.filteredFiles.push(newNode);
                 })
-                console.log(this.filteredFiles);
                 this.isSearchLoading = false;
             },
             (error) => {
@@ -569,7 +565,6 @@ export class FileBrowserSectionComponent implements OnInit {
             fileIcon: selectedItem.icon,
             filterString: this.searchField
         };
-        console.log(selectedFile);
         this.fileSelected.emit(selectedFile);
     }
 

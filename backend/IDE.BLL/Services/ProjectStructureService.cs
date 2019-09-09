@@ -55,33 +55,7 @@ namespace IDE.BLL.Services
             }
             
             var projectStructureDto = _mapper.Map<ProjectStructureDTO>(projectStructure);
-            SetOpenedFilesToProject(projectStructureDto);
             return projectStructureDto;
-        }
-
-        private void SetOpenedFilesToProject(ProjectStructureDTO projectStructure)
-        {
-            foreach (var p in projectStructure.NestedFiles)
-            {
-                SetOpenedFilesToStructure(p);
-            }
-        }
-        private void SetOpenedFilesToStructure(FileStructureDTO fileStructure)
-        {
-            foreach(var f in fileStructure.NestedFiles)
-            {
-                if(f.Type == TreeNodeType.File)
-                {
-                    if (_stateService.ContainsFile(f.Id))
-                    {
-                        f.IsOpened = true;
-                    }
-                }
-                else
-                {
-                    SetOpenedFilesToStructure(f);
-                }
-            }
         }
 
         public async Task<int> GetFileStructureSize(FileStructureDTO projectStructureDTO, string fileStructureId)

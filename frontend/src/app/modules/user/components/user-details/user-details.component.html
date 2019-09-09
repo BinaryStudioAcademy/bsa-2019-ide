@@ -7,7 +7,7 @@
         <p class="tname p-col-align-center">{{user.firstName}} {{user.lastName}}</p>
         <p>
             <span class="property-name">Nickname: </span>
-            <span class="property-value">{{user.nickName}}</span>
+            <span class="property-value">{{user.nickName | lessSymbols: 20}}</span>
         </p>
         <p>
             <span class="property-name">Email: </span>

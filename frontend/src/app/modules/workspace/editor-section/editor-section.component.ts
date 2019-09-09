@@ -93,16 +93,16 @@ export class EditorSectionComponent implements OnInit {
         }
     }
 
-    public changeFileState(fileId: string) {
-        this.openedFiles.forEach(f => {
-            if(f.innerFile.id === fileId)
-                console.log('change file state');
-                f.innerFile.isOpen = false;
-        });
+    public changeFileState(fileId: string, state: boolean) {
+        this.openedFiles.find(f => f.innerFile.id == fileId).innerFile.isOpen = state;
     }
 
     public changeReadOnlyState(readOnly: boolean = false) {
-        this.monacoEditor.editor.updateOptions({readOnly: readOnly});
+        if (this.monacoEditor !== undefined && this.monacoEditor.editor !== undefined) {
+            this.monacoEditor.editor.updateOptions({readOnly: readOnly});
+        } else {
+            this.monacoOptions.readOnly = readOnly;
+        }
     }
 
     public addActiveTab(tabName: string, icon: string, id: string) {
@@ -120,7 +120,6 @@ export class EditorSectionComponent implements OnInit {
     }
 
     public hightlineMatches(substring: string){
-        console.log(substring);
 
         var matches = this.monacoEditor.editor.getModel().findMatches(substring, false, false, false, "", true);
         const linesToDecorate = matches.map(match => {
@@ -129,7 +128,6 @@ export class EditorSectionComponent implements OnInit {
                 options: { inlineClassName: 'hightliter', stickiness: 2 }
             }
         })
-        console.log(linesToDecorate);
         var decorations = this.monacoEditor.editor.deltaDecorations([], linesToDecorate);
     }
 
@@ -163,27 +161,25 @@ export class EditorSectionComponent implements OnInit {
         this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
         this.language = this.openedFiles[index].innerFile.language;
-this.monacoOptions.language = this.language;
-this.monacoEditor.editor.updateOptions({readOnly: this.openedFiles[index].innerFile.isOpen});
-}
+        // console.log('change tab, update readonly to ' + this.openedFiles[index].innerFile.isOpen);
+        this.monacoEditor.editor.updateOptions({readOnly: this.openedFiles[index].innerFile.isOpen});
+        this.monacoOptions.language = this.language;
+        this.monacoEditor.editor.updateOptions({readOnly: this.openedFiles[index].innerFile.isOpen});
+    }
 
-public closedFileSave(file: FileUpdateDTO) {
-this.tabClosedEvent.emit({ file, mustSave: true });
-
+    public closedFileSave(file: FileUpdateDTO) {
+        this.tabClosedEvent.emit({ file, mustSave: true });
     }
 
     public updateFile(file: FileUpdateDTO) {
-        console.log('update');
         this.openedFiles.forEach(f => {
             if(f.innerFile.id === file.id)
                 f.innerFile.content = file.content;
-                console.log('change file state');
+                // console.log('change file state' + file.id + '  ' + file.isOpen);
                 f.innerFile.isOpen = false;
         })
         if(this.activeItem.id === file.id){
-            console.log('update active');
             this.code = file.content;
-            console.log(this.code);
         }
     }
 
@@ -195,6 +191,8 @@ this.tabClosedEvent.emit({ file, mustSave: true });
         const fileWrapper: TabFileWrapper = { isChanged: false, innerFile: file }
         this.openedFiles.push(fileWrapper);
         this.monacoOptions.language = file.language;
+        // console.log('show new file ' + file.id + ' with state '+ file.isOpen);
+        this.changeReadOnlyState(file.isOpen);
     }
 
     public getFileFromActiveItem(): TabFileWrapper {

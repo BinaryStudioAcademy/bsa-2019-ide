@@ -23,7 +23,6 @@ export class UserBuildHistoryComponent implements OnInit {
         this.buildService.GetBuildsByProjectId(this.projectId)
             .subscribe(
                 (resp) => {
-                    console.log(resp.body);
                     this.builds = resp.body;
                 },
                 (error) => {

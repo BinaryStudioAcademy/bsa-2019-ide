@@ -81,6 +81,13 @@ namespace IDE.BLL.Services
             return fileForProjectDtos;
         }
 
+        public async Task<FileDTO> GetByIdAsync(string id, int userId)
+        {
+            var file = await GetByIdAsync(id);
+            file.IsOpen = !_stateService.OpenedFileByUser(file.Id, userId);
+            return file;
+        }
+
         public async Task<FileDTO> GetByIdAsync(string id)
         {
             var file = await _fileRepository.GetByIdAsync(id);
@@ -225,7 +232,6 @@ namespace IDE.BLL.Services
         {
             file.Creator = await _userService.GetUserById(file.CreatorId);
             file.Updater = file.UpdaterId.HasValue ? await _userService.GetUserById(file.UpdaterId.Value) : null;
-            file.IsOpen = _stateService.ContainsFile(file.Id);
         }
 
         private string  GetFileLanguage(string name)

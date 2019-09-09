@@ -88,7 +88,6 @@ export class AuthDialogComponent implements OnInit {
                     this.toast.success('You have successfully signed in!', `Wellcome, ${result.firstName} ${result.lastName}!`);
                     this.router.navigate(['dashboard']);
                     this.signalRService.addToGroup(this.tokenService.getUserId());
-                    console.log(this.config.data);
                     if(this.config.data.projectId)
                     {
                         this.router.navigate([`project/${this.config.data.projectId}`]);
