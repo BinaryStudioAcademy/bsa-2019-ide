@@ -6,8 +6,9 @@ export interface FileHistoryDTO {
     contentDiffHtml: string;
     changedAt: Date;
     authorId: number;
-    authorName: number;
+    authorName: string;
     sizeDiff: number;
     linesIncreased: number;
     linesDecreased: number;
+    changingAction: string;
 }

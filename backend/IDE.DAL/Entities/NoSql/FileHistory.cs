@@ -9,9 +9,10 @@ namespace IDE.DAL.Entities.NoSql
         public string ContentDiffHtml { get; set; }
         public DateTime ChangedAt { get; set; }
         public int AuthorId { get; set; }
-        public int AuthorName { get; set; }
+        public string AuthorName { get; set; }
         public int SizeDiff { get; set; }
         public int LinesIncreased { get; set; }
         public int LinesDecreased { get; set; }
+        public string ChangingAction { get; set; }
     }
 }
