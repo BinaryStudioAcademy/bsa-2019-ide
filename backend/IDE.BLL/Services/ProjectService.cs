@@ -80,17 +80,21 @@ namespace IDE.BLL.Services
                 {
                     var indexOdReadLine = content.IndexOf(inputStart);
                     var substring = content.Substring(0, indexOdReadLine);
-                    var posision = substring.LastIndexOf(";") + 1;
+                    var posision1 = substring.LastIndexOf(";") + 1;
+                    var posision2 = substring.LastIndexOf("{") + 1;
+                    var posision = posision1 > posision2 ? posision1 : posision2;
                     substring = substring.Substring(posision);
                     string variable = "";
-                    int index = 0;
-                    while (substring[index] != '=')
+                    var eaqual = substring.LastIndexOf("=") - 1;
+                    while (substring[eaqual] == ' ')
                     {
-                        if (substring[index] != ' ' && substring[index] != '\n')
-                        {
-                            variable += substring[index];
-                        }
-                        index++;
+                        eaqual--;
+                    }
+                    int index = eaqual;
+                    while (substring[index] != ' ')
+                    {
+                        variable = substring[index] + variable;
+                        index--;
                     }
                     result.Add(variable);
                     var newContent = content.Remove(posision, substring.Length + inputStart.Length + 1);
@@ -361,7 +365,7 @@ namespace IDE.BLL.Services
                 ms.Seek(0, SeekOrigin.Begin);
                 return new FormFile(ms, 0, ms.Length, name, fileName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 _logger.LogWarning(LoggingEvents.HaveException, $"convert stream exception");
                 return null;

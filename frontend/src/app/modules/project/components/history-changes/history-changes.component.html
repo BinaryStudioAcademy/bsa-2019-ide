@@ -4,24 +4,48 @@
 </div>
 <div class="ui-g-12">
     <div class="card">     
-        <p-accordion [multiple]="true">
-            <p-accordionTab *ngFor="let history of fileChangesList | historySearch : personNickname">
+        <p-accordion *ngIf="fileChangesList" [multiple]="true">
+            <!-- <p-accordionTab *ngFor="let history of fileChangesList | historySearch : personNickname"> -->
+            <p-accordionTab *ngFor="let file of fileChangesList">
                 <p-header>
                     <div class="pheader-container">
                         <div class="headerContainer">
-                            <div>{{history.fileName}}</div>
-                            <div>{{history.updatedAt | date: 'dd LLL HH:mm '}}</div>
+                            <div>{{file.fileName}}</div>
                         </div>
                     </div>
                 </p-header>
-                <div *ngIf="!isEmpty(history.content)">
-                    <pre>{{history.content}}</pre>
-                </div>
-                <div *ngIf="isEmpty(history.content)">
-                    This file was just created :)
-                </div>
-                <div class="nickName">
-                    Made by: <span class="highlighted">{{history.creatorNickname}}</span>
+                <div  *ngFor="let change of file.history">
+                    <div class="build-card">
+                        <div>
+                            <span class="property-name">Description: </span>
+                            <span> {{change.changingAction}} </span>
+                        </div>
+                        <div>
+                            <span class="property-name">Made by: </span>
+                            <span class="highlighted"> {{change.authorName}} </span>
+                        </div>
+                        <div>
+                            <span class="property-name">Changed at: </span>
+                            <span> {{change.changedAt | date:'medium'}} </span>
+                        </div>
+                         <div class="change-info">
+                            <div>
+                                <span class="property-name">Size diff: </span>
+                                <span> {{change.sizeDiff | sizeInfo}} </span>
+                            </div>
+                            <div>
+                                <span class="property-name">Added lines: </span>
+                                <i class="pi pi-arrow-up"></i>
+                                <span> {{change.linesIncreased}} </span>
+                            </div>
+                            <div>
+                                <span class="property-name">Removed lines: </span>
+                                <i class="pi pi-arrow-down"></i>
+                                <span> {{change.linesDecreased}} </span>
+                            </div>
+                        </div>
+                    </div>
+                   
                 </div>
             </p-accordionTab>
         </p-accordion>

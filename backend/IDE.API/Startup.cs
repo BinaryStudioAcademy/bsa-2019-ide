@@ -77,6 +77,7 @@ namespace IDE.API
             app.UseSignalR(routes =>
             {
                 routes.MapHub<NotificationHub>("/notification");
+                routes.MapHub<FileEditingHub>("/filesedit");
             });
 
             app.UseMvc();

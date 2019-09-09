@@ -37,8 +37,9 @@ namespace IDE.API.Controllers
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<FileDTO>> GetByIdAsync(string id)
         {
-            _logger.LogInformation(LoggingEvents.GetItem, $"Getting file {id}" );
-            return Ok(await _fileService.GetByIdAsync(id));
+            var userId = this.GetUserIdFromToken();
+            _logger.LogInformation(LoggingEvents.GetItem, $"Getting file {id}");
+            return Ok(await _fileService.GetByIdAsync(id, userId));
         }
 
         [HttpPost]

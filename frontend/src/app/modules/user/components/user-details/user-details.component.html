@@ -7,7 +7,7 @@
         <p class="tname p-col-align-center">{{user.firstName}} {{user.lastName}}</p>
         <p>
             <span class="property-name">Nickname: </span>
-            <span class="property-value">{{user.nickName}}</span>
+            <span class="property-value">{{user.nickName | lessSymbols: 20}}</span>
         </p>
         <p>
             <span class="property-name">Email: </span>
@@ -28,7 +28,7 @@
             <span class="property-name">Registred At: </span>
             <span class="property-value">{{user.registeredAt | date:'MMM d, y'}}</span>
         </p>
-        <div *ngIf='isAuthor' class="p-grid p-justify-around">
+        <div *ngIf='isAuthor' class="p-grid p-justify-around user-profile-btn">
             <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-cloud-upload' label="Change Image"
                 (click)="userPhotoUpdate()"></button>
             <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-trash' label="Delete Image"

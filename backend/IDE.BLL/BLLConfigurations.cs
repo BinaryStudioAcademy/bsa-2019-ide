@@ -10,6 +10,7 @@ using IDE.BLL.MappingProfiles;
 using System;
 using Microsoft.Extensions.Logging;
 using IDE.BLL.Services.Queue;
+using IDE.BLL.Services.SignalR;
 
 namespace IDE.BLL
 {
@@ -32,6 +33,9 @@ namespace IDE.BLL
             services.AddScoped<IBuildService, BuildService>();
             services.AddScoped<IInfoService, InfoService>();
             services.AddScoped<IEditorSettingService, EditorSettingService>();
+
+            services.AddSingleton<IFileEditStateService, FileEditingStateService>();
+            services.AddSingleton<ConnectionsService>();
 
             services.AddScoped<IQueueService, QueueService>();
 

@@ -106,6 +106,11 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.router.navigate([`/workspace/${notification.projectId}`]);
     }
 
+    public hideNotificationPanel(){
+        this.showNotification=false;
+        this.deleteNotificationPanel();
+    }
+
     public loadNotifications(userId: number): void {
         this.notificationService.getUserNotifications(userId)
             .subscribe(
@@ -119,21 +124,26 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                         }
                         return 0;
                     });
-                    console.log(resp.body);
-                    console.log(this.notReadNotification);
                 }
             );
     }
 
-    public showNotificationPanel() {
-        this.showNotification = !this.showNotification;
+    public showNotificationPanel(){
+        this.showNotification=!this.showNotification;
+        this.deleteNotificationPanel();
+    }
+
+    public deleteNotificationPanel() {
         const dataForDelete = this.data;
         if (!this.showNotification) {
-            this.signalRService.crearData();
+            this.signalRService.clearData();
             this.signalRService.deleteTransferChartDataListener();
             this.data = this.signalRService.addTransferChartDataListener();
             dataForDelete.forEach(element => {
-                this.signalRService.markNotificationAsRead(element.id);
+                if(element.type!=NotificationType.projectRun)
+                {
+                    this.signalRService.markNotificationAsRead(element.id);
+                }
             });
             this.notReadNotification.forEach(element => {
                 this.signalRService.markNotificationAsRead(element.id);
@@ -220,7 +230,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     public logOut() {
         this.tokenService.logout();
         this.isAuthorized = undefined;
-        this.signalRService.crearData();
+        this.signalRService.clearData();
         this.signalRService.deleteTransferChartDataListener();
     }
 

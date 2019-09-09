@@ -11,6 +11,7 @@ namespace IDE.Common.ModelsDTO.DTO.Workspace
         }
         public string Id { get; set; }
         public TreeNodeType Type { get; set; }
+        public bool IsOpened { get; set; }
         public string Name { get; set; }
         public int Size { get; set; }
         public string Details { get; set; }

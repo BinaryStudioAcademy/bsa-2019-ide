@@ -12,7 +12,7 @@ namespace IDE.DAL.Repositories
 {
     public class NoSqlRepository<T> : INoSqlRepository<T> where T : BaseNoSqlModel
     {
-        private readonly IMongoCollection<T> _items;
+        protected readonly IMongoCollection<T> _items;
 
         public NoSqlRepository(IFileStorageNoSqlDbSettings settings)
         {

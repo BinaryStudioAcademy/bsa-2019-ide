@@ -50,9 +50,9 @@ export class UserDialogWindowComponent implements OnInit {
         if (this.isUpdateInfo()) {
 
             this.userForm = this.fb.group({
-                firstName: ['', [Validators.required]],
-                lastName: ['', Validators.required],
-                nickName: ['', Validators.required],
+                firstName: ['', [Validators.required, Validators.maxLength(32)]],
+                lastName: ['', [Validators.required, Validators.maxLength(32)]],
+                nickName: ['', [Validators.required, Validators.maxLength(32)]],
                 gitHubUrl: ['', Validators.pattern("^[-a-zA-Z0-9._:\/]+$")],
                 birthday: ['']
             });
@@ -156,16 +156,16 @@ export class UserDialogWindowComponent implements OnInit {
     }
     
     private getValuesForUpdateInfo() {
-        console.log(this.userForm.get('birthday').value)
-        const birthday = this.userForm.get('birthday').value;
+        const birthday = new Date(this.userForm.get('birthday').value);
         this.userUpdateInfo = {
             id: this.tokenService.getUserId(),
             firstName: this.userForm.get('firstName').value,
             lastName: this.userForm.get('lastName').value,
             nickName: this.userForm.get('nickName').value,
             gitHubUrl: this.userForm.get('gitHubUrl').value,
-            birthday:  birthday === null ? '0001-01-01T00:00:00' : birthday
+            birthday:  birthday === null ? new Date('0001-01-01T00:00:00') : birthday
         }
+        this.userUpdateInfo.birthday.setHours(birthday.getHours()-birthday.getTimezoneOffset()/60);
     }
 
     private getValuesForUpdatePassword(){
