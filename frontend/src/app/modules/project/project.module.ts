@@ -31,7 +31,6 @@ import { SizeInfoPipe } from './pipes/size-info.pipe';
 import { UserBuildHistoryComponent } from './components/user-build-history/user-build-history.component';
 import { BuildHistoryTabComponent } from './components/build-history-tab/build-history-tab.component';
 import { InplaceModule } from 'primeng/primeng';
-import {ListboxModule} from 'primeng/listbox';
 
 @NgModule({
   declarations: [
@@ -65,8 +64,7 @@ import {ListboxModule} from 'primeng/listbox';
     CollaboratorModule,
     FileUploadModule,
     AccordionModule,
-    InplaceModule,
-    ListboxModule
+    InplaceModule
   ],
   entryComponents: [
     ProjectWindowComponent
