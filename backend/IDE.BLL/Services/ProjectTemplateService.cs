@@ -47,7 +47,7 @@ namespace IDE.BLL.Services
                 ProjectId = projectId
                 //FilenameExtension = "cs"//maybe better to use enums
             },
-            authorId); ;
+            authorId);
 
             var projectFile = await _fileService.CreateAsync(new Common.DTO.File.FileCreateDTO()
             {
