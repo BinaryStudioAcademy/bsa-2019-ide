@@ -48,7 +48,7 @@ export class ProjectDetailsUserStatisticsComponent implements OnInit {
         });
         this.cols = [
             { field: 'userName', header: 'User name' },
-            {field: 'isAuthor', header: 'Project Role'},
+            { field: 'isAuthor', header: 'Project Role'},
             { field: 'updatedFiles', header: 'Updated files' },
             { field: 'createdFiles', header: 'Created files' }
         ];

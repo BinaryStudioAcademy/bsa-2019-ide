@@ -350,8 +350,8 @@ namespace IDE.BLL.Services
         {
             foreach (var project in likedProjects)
             {
-                var projects = (await _fileService.GetAllForProjectAsync(project.ProjectId)).ToList();
-                project.LastChangedDate = projects.OrderByDescending(x => x.UpdatedAt).First()?.UpdatedAt;
+                var projectFiles = await _fileService.GetAllForProjectAsync(project.ProjectId);
+                project.LastChangedDate = projectFiles.OrderByDescending(x => x.UpdatedAt).FirstOrDefault()?.UpdatedAt;
             }
             return likedProjects;
         }
