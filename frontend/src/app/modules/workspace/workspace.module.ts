@@ -23,8 +23,8 @@ import { HighlightMatchDirective } from 'src/app/directives/highlight-match.dire
 import { ConsoleComponent } from './console/console.component';
 import { RunInputComponent } from './run-input/run-input.component';
 import { TerminalService } from 'primeng/components/terminal/terminalservice';
+import {AccordionModule} from 'primeng/accordion';
 import { SharedModule } from '../shared/shared.module';
-
 
 @NgModule({
   declarations: [
@@ -57,6 +57,7 @@ import { SharedModule } from '../shared/shared.module';
     PanelModule,
     FileUploadModule,
     ProgressSpinnerModule,
+    AccordionModule,
     SharedModule,
     ConfirmDialogModule,
     TooltipModule

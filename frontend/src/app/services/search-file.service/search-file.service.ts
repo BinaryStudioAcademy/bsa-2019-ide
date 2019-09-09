@@ -4,6 +4,7 @@ import { HttpClientWrapperService } from '../http-client-wrapper.service';
 import { Observable } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { FileSearchResultDTO } from 'src/app/models/DTO/File/fileSearchResultDTO';
+import { GlobalSearchResultDTO } from 'src/app/models/DTO/File/globalSearchResultDTO';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class SearchFileService {
         return this.httpClient.getRequest(this.address, {query, projectId});
     }
 
-    public findFilesGlobal(query: string): Observable<HttpResponse<FileSearchResultDTO[]>>{
+    public findFilesGlobal(query: string): Observable<HttpResponse<GlobalSearchResultDTO[]>>{
         return this.httpClient.getRequest("filesearch/globalsearch", {query});
     }
 }
