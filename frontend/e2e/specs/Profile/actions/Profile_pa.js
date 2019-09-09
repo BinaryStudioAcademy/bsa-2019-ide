@@ -14,6 +14,8 @@ class ProfileActions {
     clickDeleteImageButton(){
         page.deleteImageButton.waitForDisplayed(5000);
         page.deleteImageButton.click();
+        page.confirmDeleteImageButton.waitForDisplayed(5000);
+        page.confirmDeleteImageButton.click();
     }
     clickUpdateInfoButton(){
         page.updateInfoButton.waitForDisplayed(5000);
@@ -48,9 +50,14 @@ class ProfileActions {
         page.currentPaswordInput.setValue(value);
     }
     enterChangedPassword(value){
-       // page.changedPasswordInput.waitForDisplayed(2000);
+        page.changedPasswordInput.waitForDisplayed(2000);
         page.changedPasswordInput.clearValue();
         page.changedPasswordInput.setValue(value);
+    }
+    enterRepeatPassword(value){
+        page.repeatChangedPasswordInput.waitForDisplayed(2000);
+        page.repeatChangedPasswordInput.clearValue();
+        page.repeatChangedPasswordInput.setValue(value);
     }
     clickChangeButton(){
         page.changeButton.waitForDisplayed(2000);
@@ -87,27 +94,21 @@ class ProfileActions {
     changePassword(currentPassword, newPassword) {
         
         this.clickMyProfileButton();
-       // browser.pause(10000);
-        $("div.panel.p-grid.ng-star-inserted").waitForDisplayed(10000);
+         $("div.panel.p-grid.ng-star-inserted").waitForDisplayed(10000);
         this.clickChangePasswordButton();
-      // browser.url('https://bsa-ide.azurewebsites.net/user/details/10')
-       // this.clickEditProfileButton();
-        //browser.pause(1000);
-       // Help.browserClickOnArrayElement(profileObject.editingOptions, 5);
-       // browser.pause(1000);
+        $("app-user-dialog-window").waitForDisplayed(10000);    
         this.entercurrentPassword(currentPassword);
-      //  browser.pause(1000);
         this.enterChangedPassword(newPassword);
-      //  browser.pause(2000);
-       // profile.clickChangeButton();
-       Help.browserClickOnArrayElement("span.ui-button-text.ui-clickable", 6);
+        this.enterRepeatPassword(newPassword);
+        this. clickChangeButton()
+  
     }
     waitPanelOfProjectEditorSettings(){
         const panel = $("div.ui-tabview.ui-widget.ui-widget-content.ui-corner-all.ui-tabview-top");
         panel.waitForDisplayed(5000);
     }
     clickUpdateAvatarButton(){
-        page.updateAvaterButton.waitForDisplayed(2000);
+        page.updateAvatarButton.waitForDisplayed(2000);
         page.updateAvatarButton.click();
     }
     

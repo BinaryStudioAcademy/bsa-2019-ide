@@ -11,6 +11,7 @@ class ProjectDetailsActions {
     clickCardMenuButton() {
         page.menuProjectCard.waitForDisplayed(2000);
         page.menuProjectCard.click();
+        
     }
     clickDeleteButton(index) {
         page.deleteCollaboratorButton[index].waitForDisplayed(2000);
@@ -18,7 +19,7 @@ class ProjectDetailsActions {
     }
     clickSaveProjectButton() {
         page.saveProjectButton.waitForEnabled(5000);
-        page.saveProejctButton.click();
+        page.saveProjectButton.click();
     }
   
     enterCollaboratorName(value) {

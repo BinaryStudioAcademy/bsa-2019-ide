@@ -27,7 +27,7 @@ describe('Online-IDE workspace', () => {
     });
 
 
-    it('should edit file', () => {
+    xit('should edit file', () => {
 
         workspace.openFirstfile();
         workspace.editOpenedFile(credentials.changedCode);
@@ -38,7 +38,7 @@ describe('Online-IDE workspace', () => {
 
     });
 
-    it('should open project history', () => {
+    xit('should open project history', () => {
 
         workspace.openProjectDetails();
         workspace.openProjectHistory();
