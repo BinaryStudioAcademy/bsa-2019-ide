@@ -3,19 +3,19 @@
     <div class="hor-buttons-group">
         <button pButton *ngIf="canRun || isAuthor()" type="button" icon="pi pi-play" iconPos="left"
             class="ui-button-secondary" label="Run" (click)="onRun()" pTooltip="Run - Ctrl+R"
-            tooltipPosition="bottom" showDelay="5000"></button>
+            tooltipPosition="bottom" showDelay="500"></button>
         <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-inbox" iconPos="left"
             class="ui-button-secondary" label="Build" (click)="onBuild()" pTooltip="Build - Ctrl+B"
-            tooltipPosition="bottom" showDelay="5000"></button>
+            tooltipPosition="bottom" showDelay="500"></button>
         <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onSaveButtonClick()" icon="pi pi-save"
             iconPos="left" class="ui-button-secondary" label="Save" pTooltip="Save - Ctrl+S"
-            tooltipPosition="bottom" showDelay="5000"></button>
+            tooltipPosition="bottom" showDelay="500"></button>
         <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onSaveAllButtonClick()" icon="pi pi-save-all"
             iconPos="left" class="ui-button-secondary" label="Save All" pTooltip="Save All - Ctrl+Shift+S"
-            tooltipPosition="bottom" showDelay="5000"></button>
+            tooltipPosition="bottom" showDelay="500"></button>
         <button pButton type="button" *ngIf="isAuthor()" (click)="Settings()" icon="pi pi-cog" iconPos="left"
             class="ui-button-secondary" label="Settings" pTooltip="Settings" tooltipPosition="bottom"
-            showDelay="5000"></button>
+            showDelay="500"></button>
     </div>
     <span class="project-name">{{ project.name }}</span>
   </div>
