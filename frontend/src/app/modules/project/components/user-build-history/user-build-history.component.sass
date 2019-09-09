@@ -4,10 +4,12 @@
 .user-build-history-content
     display: grid
     grid-gap: 10px
-    max-height: 550px
     overflow-y: auto
     overflow-x: hidden
     width: 95%
+    max-height: 86vh
+    margin-bottom: 1%
+    padding-right: 4%
 
 .no-build-results
     font-size: 2rem
@@ -16,3 +18,17 @@
     font-weight: 600
     line-height: 1.6
     margin-top: 15%
+
+::-webkit-scrollbar
+    width: 5px
+
+::-webkit-scrollbar-track
+    background-color: #ebebeb
+    -webkit-border-radius: 10px
+    border-radius: 10px
+
+
+::-webkit-scrollbar-thumb
+    -webkit-border-radius: 10px
+    border-radius: 10px
+    background: #6d6d6d 
