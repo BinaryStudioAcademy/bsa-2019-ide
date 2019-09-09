@@ -329,7 +329,7 @@ namespace IDE.DAL.Context
                     Name = "OnlineIDE",
                     Description = "Online IDE was created to save, build and run your projects from browser, without installing some special programms. Also it's great idea, because now programm work speed won't depend on characteristics of your PC or notebook.",
                     AuthorId = users[2].Id,
-                    Color = "#0080ff",
+                    Color = "#0000ff",
                     CreatedAt = DateTime.Now.AddDays(-10),
                     EditorProjectSettingsId = settings[0].Id,
                     AccessModifier = AccessModifier.Public,

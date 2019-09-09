@@ -11,9 +11,9 @@ import { UserDetailsDTO } from 'src/app/models/DTO/User/userDetailsDTO';
 import { UserChangePasswordDTO } from 'src/app/models/DTO/User/userChangePasswordDTO';
 
 @Component({
-  selector: 'app-user-dialog-window',
-  templateUrl: './user-dialog-window.component.html',
-  styleUrls: ['./user-dialog-window.component.sass']
+    selector: 'app-user-dialog-window',
+    templateUrl: './user-dialog-window.component.html',
+    styleUrls: ['./user-dialog-window.component.sass']
 })
 export class UserDialogWindowComponent implements OnInit {
     public title: string;
@@ -23,9 +23,9 @@ export class UserDialogWindowComponent implements OnInit {
     public email: string;
     public gitHubUrl: string;
     public birthday: Date;
-    
+
     public userForm: FormGroup;
-    
+
     public isPageLoaded: boolean = false;
     public hasDetailsSaveResponse: boolean = true;
 
@@ -43,7 +43,7 @@ export class UserDialogWindowComponent implements OnInit {
         private userService: UserService,
         private toastrService: ToastrService) { }
 
-  ngOnInit(): void {
+    ngOnInit(): void {
         this.userDialogType = this.config.data.userDialogType;
         this.title = this.userDialogType === UserDialogType.UpdateInfo ? 'Edit profile info' : 'Change password';
 
@@ -69,22 +69,22 @@ export class UserDialogWindowComponent implements OnInit {
                     });
         }
 
-        if(this.isUpdatePassword()){
+        if (this.isUpdatePassword()) {
             this.userForm = this.fb.group({
                 password: ['', [Validators.required]],
                 newPassword: ['', Validators.required],
                 repeatPassword: ['', Validators.required]
-            }, {validator: this.checkPasswords });
+            }, { validator: this.checkPasswords });
 
             this.isPageLoaded = true;
         }
     }
 
-    checkPasswords(group: FormGroup) { 
+    checkPasswords(group: FormGroup) {
         let pass = group.get('newPassword').value;
         let confirmPass = group.get('repeatPassword').value;
-    
-        return pass === confirmPass ? null : { notSame: true }     
+
+        return pass === confirmPass ? null : { notSame: true }
     }
 
     public userItemIsNotChange(): boolean {
@@ -93,68 +93,68 @@ export class UserDialogWindowComponent implements OnInit {
 
     public IsUserNotChange(): boolean {
         return this.userForm.get('firsName').value === this.userUpdateStartState.firstName
-        && this.userForm.get('lastName').value === this.userUpdateStartState.lastName
-        && this.userForm.get('nickName').value === this.userUpdateStartState.nickName
-        && this.userForm.get('gitHubUrl').value === this.userUpdateStartState.gitHubUrl
-        && this.userForm.get('birthday').value === this.userUpdateStartState.birthday;
+            && this.userForm.get('lastName').value === this.userUpdateStartState.lastName
+            && this.userForm.get('nickName').value === this.userUpdateStartState.nickName
+            && this.userForm.get('gitHubUrl').value === this.userUpdateStartState.gitHubUrl
+            && this.userForm.get('birthday').value === this.userUpdateStartState.birthday;
     }
 
     public isUpdateInfo() {
         return this.userDialogType === UserDialogType.UpdateInfo;
     }
 
-    public isUpdatePassword(){
+    public isUpdatePassword() {
         return this.userDialogType === UserDialogType.UpdatePassword;
     }
 
     public onSubmit() {
         this.hasDetailsSaveResponse = false;
 
-        if(this.isUpdateInfo()) {
+        if (this.isUpdateInfo()) {
             this.getValuesForUpdateInfo();
             this.userService.updateProfile(this.userUpdateInfo)
                 .subscribe(res => {
-                        this.toastrService.success("Your profile info was successfully updated");
-                        this.hasDetailsSaveResponse = true;
-                        window.location.reload();
-                        this.close();
-                    },
+                    this.toastrService.success("Your profile info was successfully updated");
+                    this.hasDetailsSaveResponse = true;
+                    window.location.reload();
+                    this.close();
+                },
                     error => {
-                        this.toastrService.error('An error occured while updating the profile');                        
+                        this.toastrService.error('An error occured while updating the profile');
                         this.hasDetailsSaveResponse = true;
                     })
         }
-        
-        if(this.isUpdatePassword()){
+
+        if (this.isUpdatePassword()) {
             this.getValuesForUpdatePassword();
             this.userService.updatePassword(this.userUpdatePassword)
-            .subscribe(res => {
-                this.toastrService.success("Your password was updated");
-                this.hasDetailsSaveResponse = true;
-                this.close();
-            },
-            error => {
-                this.toastrService.error('Incorrect password');                        
-                this.hasDetailsSaveResponse = true;
-            })
+                .subscribe(res => {
+                    this.toastrService.success("Your password was updated");
+                    this.hasDetailsSaveResponse = true;
+                    this.close();
+                },
+                    error => {
+                        this.toastrService.error('Incorrect password');
+                        this.hasDetailsSaveResponse = true;
+                    })
         }
     }
 
     public close() {
         this.ref.close();
     }
-    
+
     private Initialize(resp: HttpResponse<UserDetailsDTO>) {
         this.userUpdateStartState = resp.body;
-        this.userForm.patchValue({ 
+        this.userForm.patchValue({
             firstName: this.userUpdateStartState.firstName,
             lastName: this.userUpdateStartState.lastName,
             nickName: this.userUpdateStartState.nickName,
             gitHubUrl: this.userUpdateStartState.gitHubUrl,
-            birthday: this.userUpdateStartState.birthday.toString()=='0001-01-01T00:00:00'? null : new Date(this.userUpdateStartState.birthday)
+            birthday: this.userUpdateStartState.birthday.toString() == '0001-01-01T00:00:00' ? null : new Date(this.userUpdateStartState.birthday)
         });//if(this.user.birthday.toString()=='0001-01-01T00:00:00')
     }
-    
+
     private getValuesForUpdateInfo() {
         const birthday = new Date(this.userForm.get('birthday').value);
         this.userUpdateInfo = {
@@ -163,12 +163,12 @@ export class UserDialogWindowComponent implements OnInit {
             lastName: this.userForm.get('lastName').value,
             nickName: this.userForm.get('nickName').value,
             gitHubUrl: this.userForm.get('gitHubUrl').value,
-            birthday:  birthday === null ? new Date('0001-01-01T00:00:00') : birthday
+            birthday: birthday === null ? new Date('0001-01-01T00:00:00') : birthday
         }
-        this.userUpdateInfo.birthday.setHours(birthday.getHours()-birthday.getTimezoneOffset()/60);
+        this.userUpdateInfo.birthday.setHours(birthday.getHours() - birthday.getTimezoneOffset() / 60);
     }
 
-    private getValuesForUpdatePassword(){
+    private getValuesForUpdatePassword() {
         this.userUpdatePassword = {
             password: this.userForm.get('password').value,
             newPassword: this.userForm.get('newPassword').value

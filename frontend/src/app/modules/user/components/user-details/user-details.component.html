@@ -1,9 +1,9 @@
 <p-progressBar *ngIf="!user" mode="indeterminate" [style]="{'height': '4px'}"></p-progressBar>
 
 <div class="p-grid p-justify-around p-align-start">
-    <div *ngIf="user" class="user-description panel p-col-10 p-md-8 p-lg-4 p-grid p-dir-col">
+    <div *ngIf="user" class="user-description panel p-col-10 p-md-8 p-lg-4 p-grid p-dir-col">   
         <div class="avatar">
-            <img class="p-col-align-center" alt="avatar" (click)="expandImage(user.url)" src="{{user.url}}">
+            <img class="p-col-align-center avatar" alt="avatar" (click)="expandImage(user.url)" src="{{user.url}}">
             <p class="tname p-col-align-center">{{user.firstName}} {{user.lastName}}</p>
         </div>
         <div class="info">
@@ -31,7 +31,7 @@
             </p>
         </div>
         <div class="buttons-group">
-            <div *ngIf='isAuthor' class="p-grid p-justify-around">
+            <div *ngIf='isAuthor' class="p-grid p-justify-around user-profile-btn">
                 <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-cloud-upload' label="Change Image"
                     (click)="userPhotoUpdate()"></button>
                 <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-trash' label="Delete Image"
