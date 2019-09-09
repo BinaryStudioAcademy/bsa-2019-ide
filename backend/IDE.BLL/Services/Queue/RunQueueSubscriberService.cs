@@ -46,7 +46,7 @@ namespace IDE.BLL.Services
             {
                 Type = NotificationType.ProjectRun,
                 ProjectId = runResult.ProjectId,
-                DateTime = DateTime.Now,
+                DateTime = DateTime.UtcNow,
                 Message= $"Run project",
                 Metadata = runResult.Result,
                 Status = NotificationStatus.Message

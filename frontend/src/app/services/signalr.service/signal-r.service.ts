@@ -93,7 +93,7 @@ export class SignalRService {
             .catch((error) => console.log(error));
     }
 
-    public deleteTransferChartDataListener()
+    public deleteDataListeners()
     {
         this.hubConnection.off('transferchartdata');
         this.hubConnection.off('transferRunResult');

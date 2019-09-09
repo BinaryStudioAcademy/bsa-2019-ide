@@ -10,6 +10,9 @@
   <ng-template class="table-row" pTemplate="body" let-rowData let-columns="columns">
     <tr>
       <td *ngFor="let col of columns" [ngClass]="'table-element'" [ngSwitch]="col.field">
+        <ng-container *ngSwitchCase="'userName'">
+            {{ rowData[col.field] | lessSymbols : 18 }}
+        </ng-container>
         <ng-container *ngSwitchCase="'isAuthor'">
           {{ rowData[col.field] ? 'Author' : 'Collaborator'}}
         </ng-container>

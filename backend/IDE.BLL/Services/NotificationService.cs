@@ -79,12 +79,12 @@ namespace IDE.BLL.Services
             var notification = await _context.Notifications
                 .FirstOrDefaultAsync(n => n.Id == notificationId)
                 .ConfigureAwait(false);
-
+            
             notification.IsRead = true;
             _context.Update(notification);
             await _context.SaveChangesAsync()
                 .ConfigureAwait(false);
-            _logger.LogInformation("notification marked as read");
+            _logger.LogInformation($"notification {notificationId} marked as read");
         }
 
         private async Task<NotificationDTO> CreateNotificationByUser(NotificationDTO notificationDTO)
