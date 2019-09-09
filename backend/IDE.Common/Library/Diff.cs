@@ -140,10 +140,6 @@ namespace IDE.Common.Library
         // Chunk size for context length.
         public short Patch_Margin = 4;
 
-        // The number of bits in an int.
-        private short Match_MaxBits = 32;
-
-
         //  DIFF FUNCTIONS
 
 
@@ -1318,16 +1314,16 @@ namespace IDE.Common.Library
             {
                 string text = aDiff.text.Replace("&", "&amp;").Replace("<", "&lt;")
                   .Replace(">", "&gt;").Replace("\n", "&para;<br>");
-                byte equalCount = 0;
+                byte equalCount = 1;
                 switch (aDiff.operation)
                 {
                     case Operation.INSERT:
-                        html.Append("<ins style=\"background:#e6ffe6;\">").Append(text)
+                        html.Append("<ins class=\"added-line\">").Append(text)
                             .Append("</ins>");
                         equalCount = 0;
                         break;
                     case Operation.DELETE:
-                        html.Append("<del style=\"background:#ffe6e6;\">").Append(text)
+                        html.Append("<del class=\"deleted-line\">").Append(text)
                             .Append("</del>");
                         equalCount = 0;
                         break;
