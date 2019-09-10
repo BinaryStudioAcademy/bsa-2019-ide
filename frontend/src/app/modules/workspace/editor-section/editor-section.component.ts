@@ -258,6 +258,7 @@ export class EditorSectionComponent implements OnInit {
         for(let i = 0; i < this.tabs.length; i++) {
             if (this.tabs[i].id === activeTabId) {
                 this.activeItem = this.tabs[i];
+                this.code = this.openedFiles[i].innerFile.content;
             }
         }
         this.fileSaverService.unlockSelections();

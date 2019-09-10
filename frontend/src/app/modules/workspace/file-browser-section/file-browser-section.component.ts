@@ -595,13 +595,7 @@ export class FileBrowserSectionComponent implements OnInit {
             const selectedFile: SelectedFile = {fileId: nodeSelected.key, fileIcon: nodeSelected.icon};
             this.fileSelected.emit(selectedFile);
         }
-    }    
-    select(node: TreeNode) {
-        if (node.type === TreeNodeType.file.toString()) {
-            const selectedFile: SelectedFile = {fileId: node.key, fileIcon: node.icon};
-            this.fileSelected.emit(selectedFile);
-        }
-    }
+    }   
 
     nodeCompare(a : TreeNode, b : TreeNode) : number {
         if (+a.type < (+b.type)){

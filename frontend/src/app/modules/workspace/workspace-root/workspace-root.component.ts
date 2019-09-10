@@ -331,9 +331,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                         this.editor.sortTabs();
                     }
                 });
-        files.forEach(file => {
-            this.loadFile(file, false);
-        });
+        setTimeout(() => {
+            files.forEach(file => {
+                this.loadFile(file, false);
+            });
+        }, 1000); 
     }
 
     private loadFile(file: SelectedFile, onBrowserSelect: boolean = true) {
@@ -351,12 +353,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
                         if(onBrowserSelect) {
                             this.fileBrowser.selectedItem.label = tabName;
+                            this.editor.code = content;
                         }
                         if (this.showFileBrowser) {
                             document.getElementById('workspace').style.width = ((this.workspaceWidth) / this.maxSize()) + '%';
                         }
                         this.findAllOccurence(file.filterString);
-                        this.editor.code = content;
                     } else {
                         this.toast.error("Can't load selected file", 'Error Message');
                     }
@@ -418,6 +420,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         if(evt.mustSave){
             this.onFilesSave([evt.file]);
         }
+        this.fileEditService.closeFile(evt.file.id);
     }
 
     public onSaveButtonClick() {
