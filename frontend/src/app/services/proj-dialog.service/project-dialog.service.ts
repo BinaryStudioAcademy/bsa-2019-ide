@@ -26,7 +26,8 @@ export class ProjectDialogService {
                 'overflow-y': 'auto',
                 'max-height': '90vh'
             },
-            showHeader: false
+            showHeader: false,
+            closeOnEscape: true
         })
     }
 }

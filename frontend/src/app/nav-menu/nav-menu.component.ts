@@ -73,11 +73,11 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         ];
 
         this.tokenService.isAuthenticatedEvent$
-            .pipe(takeUntil(this.unsubscribe$),tap(isAuth => {if(isAuth) this.userNickName = this.tokenService.getUser().nickName;}))
+            .pipe(takeUntil(this.unsubscribe$), tap(isAuth => { if (isAuth) this.userNickName = this.tokenService.getUser().nickName; }))
             .subscribe((auth) => {
 
                 this.isAuthorized = auth;
-                if (this.isAuthorized ) {
+                if (this.isAuthorized) {
                     this.getUser();
                     this.data = this.signalRService.addTransferChartDataListener();
                     this.loadNotifications(this.userId);
@@ -106,8 +106,8 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.router.navigate([`/workspace/${notification.projectId}`]);
     }
 
-    public hideNotificationPanel(){
-        this.showNotification=false;
+    public hideNotificationPanel() {
+        this.showNotification = false;
         this.deleteNotificationPanel();
     }
 
@@ -128,8 +128,8 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             );
     }
 
-    public showNotificationPanel(){
-        this.showNotification=!this.showNotification;
+    public showNotificationPanel() {
+        this.showNotification = !this.showNotification;
         this.deleteNotificationPanel();
     }
 
@@ -140,8 +140,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
             this.signalRService.deleteDataListeners();
             this.data = this.signalRService.addTransferChartDataListener();
             dataForDelete.forEach(element => {
-                if(element.type!=NotificationType.projectRun)
-                {
+                if (element.type != NotificationType.projectRun) {
                     this.signalRService.markNotificationAsRead(element.id);
                 }
             });

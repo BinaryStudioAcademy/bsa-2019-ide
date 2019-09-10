@@ -34,6 +34,8 @@ import { AccessModifier } from 'src/app/models/Enums/accessModifier';
 import { ConfirmationService } from 'primeng/api';
 import { FileEditService } from 'src/app/services/file-edit.service/file-edit.service';
 import { TerminalService } from 'primeng/components/terminal/terminalservice';
+import { FileSaverService } from 'src/app/services/workspace-file-saver.service/file-saver.service';
+import { TouchSequence } from 'selenium-webdriver';
 
 
 @Component({
@@ -69,6 +71,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     private routeSub: Subscription;
     private authorId: number;
 
+    private isDown: boolean;
+    private workspaceWidth: number;
+    private startHorPos: number;
+    private movingRight: number;
+
     private ngUnsubscribe: Subject<void> = new Subject<void>();
 
     public eventsSubject: Subject<void> = new Subject<void>();
@@ -86,7 +93,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             event.preventDefault();
             event.returnValue = '';
         }
-       
+
     }
 
     constructor(
@@ -104,7 +111,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         private cdr: ChangeDetectorRef,
         private signalRService: SignalRService,
         private errorHandlerService: ErrorHandlerService,
-        private confirmationService: ConfirmationService, private fileEditService: FileEditService) {
+        private confirmationService: ConfirmationService,
+        private fileEditService: FileEditService,
+        private fileSaverService: FileSaverService) {
 
         this.hotkeys.addShortcut({ keys: 'control.h' })
             .subscribe(() => {
@@ -119,12 +128,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.onRun();
             });
 
-        //Save file Ctrl+S
+            //Save file Ctrl+S
         this.hotkeys.addShortcut({ keys: 'control.s' })
             .subscribe(() => {
                 this.onSaveButtonClick();
             });
-        //Save All Ctrl+Shift+S
+            //Save All Ctrl+Shift+S
         this.hotkeys.addShortcut({ keys: 'control.shift.s' })
             .subscribe(() => {
                 this.onSaveButtonClick();
@@ -141,8 +150,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             }
         });
 
-        
-       
+
+
     }
 
     public OnChange(event: boolean) {
@@ -156,9 +165,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.eventService.isNotSaveDataAllTabsObserve$.pipe(distinctUntilChanged())
         .subscribe(x => {this.isSaveAllButtonDisabled = !x});
         this.eventService.isNotSaveDataOneTabObserve$.subscribe(x => this.isSaveButtonDisabled = !x);
-        
-        this.confirmationOnLeavePage$ = Observable.create((observer: Observer<boolean>) => {
 
+        this.confirmationOnLeavePage$ = Observable.create((observer: Observer<boolean>) => {
             this.confirmationService.confirm({
                 message: 'Save changes on page?',
                 accept: () => {
@@ -173,14 +181,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                                     this.toast.error("Can't save files", 'Error', { tapToDismiss: true });
                                 }
 
-                                observer.next(true);
-
-                            },
-                            error => { this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error', { tapToDismiss: true }); observer.next(true); }
-                        )
-
+                            observer.next(true);
+                        },
+                        error => { this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error', { tapToDismiss: true }); observer.next(true); }
+                    )
                 },
-
                 reject: () => {
                     observer.next(true);
                 }
@@ -197,11 +202,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 map(params => params['fileId']))
             .subscribe(fileId => this.onFileSelected(fileId));
 
-        
+
         this.userId = this.tokenService.getUserId();
 
         this.routeSub = this.route.params.subscribe(params => {
             this.projectId = params['id'];
+            this.fileSaverService.setProjectId(this.projectId);
         });
 
         this.projectService.getProjectById(this.projectId).pipe(takeUntil(this.ngUnsubscribe))
@@ -211,45 +217,50 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                     this.eventService.currProjectSwitch({ id: this.project.id, name: this.project.name });
                     this.authorId = resp.body.authorId;
                     this.options = this.project.editorProjectSettings;
-                    if (this.canNotEdit) {
-                        this.options.readOnly = true;
-                    }
-                    if (this.project.authorId != this.userId) {
-                        this.rightService.getUserRightById(this.userId, this.projectId)
-                            .subscribe(
-                                (resp) => {
-                                    this.access = resp.body;
-                                    this.setUserAccess();
-                                }
-                            )
-                    }
-
-                    this.fileEditService.startConnection(this.userId, this.project.id);
-                    this.fileEditService.isConnected.subscribe(state => {
-                        this.isOpenedConnection = state;
-                    })
-                    this.fileEditService.openedFiles.subscribe(x => {
-                        if (x.userId !== this.userId) {
-                            // console.log('its somebodyth else file');
-                            this.fileBrowser.changeFileState(x.fileId, x.isOpen, x.nickName);
-                            this.editor.changeFileState(x.fileId, true);
-                            if (!x.isOpen && this.editor.contains(x.fileId)) {
-                                this.fileEditService.openFile(x.fileId, this.project.id);
-                            }
-                        } else if (x.userId === this.userId && this.editor.contains(x.fileId)) {
-                            // console.log("it's my own file");
-                            this.editor.changeFileState(x.fileId, false);
-                            this.workSpaceService.getFileById(x.fileId).subscribe(resp => {
-                                this.editor.updateFile({ content: resp.body.content, id: resp.body.id, name: null, folder: null, isOpen: false, updater: null, language: null });
-                            })
-                            this.editor.changeReadOnlyState(false);
-                        }
-                    });
+                    this.setRights();
+                    this.loadFiles();
+                    this.startConnection();
                 },
                 () => {
                     this.toast.error("Can't load selected project.", 'Error Message');
                 }
             );
+    }
+
+    private setRights() {
+        if (this.project.authorId != this.userId)
+            this.rightService.getUserRightById(this.userId, this.projectId)
+                .subscribe(
+                    (resp) => {
+                        this.access = resp.body;
+                        this.setUserAccess();
+                    }
+                );
+    }
+
+    private startConnection() {
+        this.fileEditService.startConnection(this.userId, this.project.id);
+        this.fileEditService.isConnected.pipe(takeUntil(this.ngUnsubscribe)).subscribe(state => {
+            this.isOpenedConnection = state;
+        });
+        this.fileEditService.openedFiles.pipe(takeUntil(this.ngUnsubscribe)).subscribe(x =>
+            {
+                if (x.userId !== this.userId) {
+                    // console.log('its somebodyth else file');
+                    this.fileBrowser.changeFileState(x.fileId, x.isOpen, x.nickName);
+                    this.editor.changeFileState(x.fileId, true);
+                    if (!x.isOpen && this.editor.contains(x.fileId)) {
+                        this.fileEditService.openFile(x.fileId, this.project.id);
+                    }
+                } else if(x.userId === this.userId && this.editor.contains(x.fileId)) {
+                    // console.log("it's my own file");
+                    this.editor.changeFileState(x.fileId, false);
+                    this.workSpaceService.getFileById(x.fileId).subscribe(resp => {
+                        this.editor.updateFile({content: resp.body.content, id: resp.body.id, name: null, folder: null, isOpen: false, updater: null, language: null});
+                    })
+                    this.editor.changeReadOnlyState(false);
+                }
+            });
     }
 
     private findAllOccurence(substring?: string) {
@@ -309,6 +320,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     }
 
     public onFileSelected(selectedFile: SelectedFile): void {
+        this.fileSaverService.addOpenedFile(selectedFile);
+
         if (this.editor && this.editor.openedFiles.some(f => f.innerFile.id === selectedFile.fileId)) {
             this.editor.activeItem = this.editor.tabs.find(i => i.id === selectedFile.fileId);
             this.editor.code = this.editor.openedFiles.find(f => f.innerFile.id === selectedFile.fileId).innerFile.content;
@@ -316,20 +329,48 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             this.findAllOccurence(selectedFile.filterString);
             return;
         }
+        this.loadFile(selectedFile);
+    }
 
-        this.workSpaceService.getFileById(selectedFile.fileId)
+    private sortTabs: Subject<boolean> = new Subject<boolean>();
+    private openedFiles: number;
+    private filesCount: number;
+
+    private loadFiles() {
+        const files = this.fileSaverService.getAllOpenedFilesForProject();
+        const filesCount = files.length;
+        this.filesCount = filesCount;
+        this.openedFiles = 0;
+        if (filesCount > 0)
+            this.sortTabs.subscribe(() => {
+                    this.openedFiles++;
+                    if(this.openedFiles === this.filesCount) {
+                        this.sortTabs.complete();
+                        this.editor.sortTabs();
+                    }
+                });
+        files.forEach(file => {
+            this.loadFile(file, false);
+        });
+    }
+
+    private loadFile(file: SelectedFile, onBrowserSelect: boolean = true) {
+        this.workSpaceService.getFileById(file.fileId)
             .subscribe(
                 (resp) => {
                     if (resp.ok) {
                         const { id, name, content, folder, updaterId, isOpen, updater, language } = resp.body as FileDTO;
                         const fileUpdateDTO: FileUpdateDTO = { id, name, content, folder, isOpen, updaterId, updater, language };
                         var tabName = name;
+
                         this.editor.AddFileToOpened(fileUpdateDTO);
-                        this.editor.monacoOptions.readOnly = true;
+                        this.editor.monacoOptions.readOnly = fileUpdateDTO.isOpen;
+
                         if (!fileUpdateDTO.isOpen) {
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
-                            this.fileBrowser.selectedItem.label = tabName;
+                            if(onBrowserSelect)
+                                this.fileBrowser.selectedItem.label = tabName;
                         }
                         else if (this.project.accessModifier == AccessModifier.private) {
                             this.fileIsOpen(fileUpdateDTO);
@@ -338,12 +379,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                         if (this.showFileBrowser) {
                             document.getElementById('workspace').style.width = ((this.workspaceWidth) / this.maxSize()) + '%';
                         }
-                        this.editor.addActiveTab(tabName, selectedFile.fileIcon, id);
-                        this.findAllOccurence(selectedFile.filterString);
-                        this.editor.code = content;
 
+                        this.editor.addActiveTab(tabName, file.fileIcon, id);
+                        this.findAllOccurence(file.filterString);
+                        this.editor.code = content;
                     } else {
-                        this.toast.error("Can't load selected file.", 'Error Message');
+                        this.toast.error("Can't load selected file", 'Error Message');
                     }
                 },
                 (error) => {
@@ -351,7 +392,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                     console.error(error.message);
                 },
                 () => {
-                    this.fileEditService.openFile(selectedFile.fileId, this.project.id);
+                    this.fileEditService.openFile(file.fileId, this.project.id);
+                    if (!onBrowserSelect) {
+                        this.sortTabs.next();
+                    }
                 }
             );
     }
@@ -394,6 +438,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             }
         )
     }
+
     public onFileClosed(evt: { file: FileUpdateDTO, mustSave: boolean }) {
         if (evt.mustSave) {
             this.onFilesSave([evt.file]);
@@ -401,19 +446,18 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     }
 
     public onSaveButtonClick() {
-
         const fileToSave = this.editor.getFileFromActiveItem();
+
         if (fileToSave.isChanged) {
             this.onFilesSave([fileToSave.innerFile]);
         }
-
     }
 
     public onSaveAllButtonClick() {
-
         if (!this.editor.anyFileChanged()) {
             return;
         }
+
         const files = this.editor.openedFiles.filter(f => f.isChanged).map(x => x.innerFile);
         this.onFilesSave(files);
     }
@@ -429,21 +473,19 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         }
     }
     public onFilesSave(files: FileUpdateDTO[]) {
-        //this.unblockAllEditingFiles();
-
         this.saveFilesRequest(files).pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(
-                success => {
+                (success) => {
                     if (success.every(x => x.ok)) {
                         this.toast.success("Files saved", 'Success', { tapToDismiss: true });
-                        this.editor.confirmSaving(files.map(f => f.id));
-
+                        this.editor.confirmSaving(files.map(f=> f.id));
                     } else {
                         this.toast.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
-
                 },
-                error => { this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error', { tapToDismiss: true }) });
+                (error) => {
+                    this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error', { tapToDismiss: true });
+                });
     }
 
     public fileIsOpen(files: FileUpdateDTO) {
@@ -486,11 +528,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         return this.workSpaceService.saveFilesRequest(files);
     }
 
-    private isDown: boolean;
-    private workspaceWidth: number;
-    private startHorPos: number;
-    private movingRight: number;
-
     public draggableDown(e: MouseEvent) {
         e.preventDefault();
         this.isDown = true;
@@ -511,14 +548,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         }
     }
 
-    private maxSize() {
-        return document.getElementById('container').offsetWidth;
-    }
-
-    private calc(size: number): number {
-        return document.getElementById('container').offsetWidth - size - 5;
-    }
-
     public draggableUp(e: MouseEvent) {
         if (e.type === 'mouseup') {
             this.isDown = false;
@@ -526,6 +555,14 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         else if (e.y < 100 || e.x < 50) {
             this.isDown = false;
         }
+    }
+
+    private maxSize() {
+        return document.getElementById('container').offsetWidth;
+    }
+
+    private calc(size: number): number {
+        return document.getElementById('container').offsetWidth - size - 5;
     }
 
     canDeactivate(): Observable<boolean> {

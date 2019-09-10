@@ -67,7 +67,7 @@ export class ProjectWindowComponent implements OnInit {
         this.colors = [
             { label: 'Red', value: '#ff0000' },
             { label: 'Black', value: '#000000' },
-            { label: 'Blue', value: '#0080ff' },
+            { label: 'Blue', value: '#0000ff' },
             { label: 'Blueviolet', value: '#bf00ff'},
             { label: 'Aqua', value: '#00ffff' },
             { label: 'Dark Magenta', value: '#8b008b' },

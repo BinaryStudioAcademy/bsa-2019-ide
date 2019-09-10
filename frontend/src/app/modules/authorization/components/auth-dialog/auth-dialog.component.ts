@@ -140,6 +140,11 @@ export class AuthDialogComponent implements OnInit {
             && this.firstName !== undefined && this.namesRegexp.test(this.firstName)));
     }
 
+    public backToLogin(){
+        this.isRecoverPassword = false;
+        this.title = this.config.data.dialogType === DialogType.SignIn ? 'Log in your account' : 'Create your account';
+    }
+
     public recoverPassword() {
         if(!this.isRecoverPassword) {
             this.isRecoverPassword = true;
