@@ -347,7 +347,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                         var tabName = name;
 
                         this.editor.AddFileToOpened(fileUpdateDTO);
-                        this.editor.monacoOptions.readOnly = true;
+                        this.editor.monacoOptions.readOnly = fileUpdateDTO.isOpen;
+
                         if (!fileUpdateDTO.isOpen) {
                             this.fileIsOpen(fileUpdateDTO);
                             this.iOpenFile.push(fileUpdateDTO);
