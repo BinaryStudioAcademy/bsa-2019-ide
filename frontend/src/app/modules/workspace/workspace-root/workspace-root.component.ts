@@ -28,7 +28,7 @@ import { BuildService } from 'src/app/services/build.service';
 import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
-import { filter, throwIfEmpty, tap, takeUntil } from 'rxjs/operators';
+import { filter, throwIfEmpty, tap, takeUntil, delay, distinctUntilChanged } from 'rxjs/operators';
 import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
 import { AccessModifier } from 'src/app/models/Enums/accessModifier';
 import { ConfirmationService } from 'primeng/api';
@@ -63,6 +63,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     public inputItems: string[];
     public connectionId: string;
     public isInputTerminalOpen = false;
+    public isSaveButtonDisabled;
+    public isSaveAllButtonDisabled;
 
     private routeSub: Subscription;
     private authorId: number;
@@ -80,8 +82,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
-        event.preventDefault();
-        event.returnValue = '';
+        if(!this.isSaveAllButtonDisabled){
+            event.preventDefault();
+            event.returnValue = '';
+        }
        
     }
 
@@ -136,6 +140,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.cdr.detectChanges();
             }
         });
+
+        
+       
     }
 
     public OnChange(event: boolean) {
@@ -146,7 +153,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     }
 
     ngOnInit() {
-
+        this.eventService.isNotSaveDataAllTabsObserve$.pipe(distinctUntilChanged())
+        .subscribe(x => {this.isSaveAllButtonDisabled = !x});
+        this.eventService.isNotSaveDataOneTabObserve$.subscribe(x => this.isSaveButtonDisabled = !x);
+        
         this.confirmationOnLeavePage$ = Observable.create((observer: Observer<boolean>) => {
 
             this.confirmationService.confirm({
@@ -187,6 +197,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 map(params => params['fileId']))
             .subscribe(fileId => this.onFileSelected(fileId));
 
+        
         this.userId = this.tokenService.getUserId();
 
         this.routeSub = this.route.params.subscribe(params => {

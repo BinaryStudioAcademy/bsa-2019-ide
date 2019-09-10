@@ -1,3 +1,4 @@
+import { BehaviorSubject } from 'rxjs';
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectionStrategy, SimpleChanges, SimpleChange, AfterViewInit, ViewChild } from '@angular/core';
 import { MenuItem, ConfirmationService } from 'primeng/api';
@@ -29,7 +30,7 @@ export class EditorSectionComponent implements OnInit {
         this._monacoOptions = monacoOptions;
         this.setEditorTabTheme();
     }
-
+   
     public tabs = [] as MenuItem[];
     public activeItem: MenuItem;
     public openedFiles = [] as TabFileWrapper[];
@@ -77,8 +78,8 @@ export class EditorSectionComponent implements OnInit {
     }
 
     public onChange(ev) {
+        const touchedFile = this.getFileFromActiveItem();
         if (!this.canEdit) {
-            const touchedFile = this.getFileFromActiveItem();
                 if (touchedFile.innerFile.content !== this.code) {
 
                     touchedFile.isChanged = true;
@@ -86,6 +87,8 @@ export class EditorSectionComponent implements OnInit {
                 }
 
         }
+        this.eventService.isNotSavedDataAllTabs.next(this.anyFileChanged());
+        this.eventService.isNotSavedDataOneTab.next(touchedFile.isChanged);
     }
 
     public changeFileState(fileId: string, state: boolean) {
@@ -133,6 +136,7 @@ export class EditorSectionComponent implements OnInit {
 
             this.closeTabAction(index);
         }
+        this.eventService.isNotSavedDataAllTabs.next(this.anyFileChanged());
         event.preventDefault();
     }
 
@@ -153,6 +157,7 @@ export class EditorSectionComponent implements OnInit {
 
     public onTabSelect(evt, index) {
         console.log(this.openedFiles);
+        
         this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
         this.language = this.openedFiles[index].innerFile.language;
@@ -188,6 +193,7 @@ export class EditorSectionComponent implements OnInit {
         this.monacoOptions.language = file.language;
         // console.log('show new file ' + file.id + ' with state '+ file.isOpen);
         this.changeReadOnlyState(file.isOpen);
+
     }
 
     public getFileFromActiveItem(): TabFileWrapper {
@@ -196,8 +202,9 @@ export class EditorSectionComponent implements OnInit {
 
     public confirmSaving(fileIds: string[]) {
         const files = this.openedFiles.filter(f => fileIds.indexOf(f.innerFile.id) != -1);
-
         files.forEach(x => x.isChanged = false);
+        this.eventService.isNotSavedDataAllTabs.next(this.anyFileChanged());
+        this.eventService.isNotSavedDataOneTab.next(this.getFileFromActiveItem().isChanged);
 
     }
 
