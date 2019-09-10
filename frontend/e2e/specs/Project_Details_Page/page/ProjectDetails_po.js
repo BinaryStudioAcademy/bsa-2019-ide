@@ -13,7 +13,13 @@ class ProjectDetailsPage {
     get listboxCollaborators () {return "ul.ui-autocomplete-items.ui-autocomplete-list.ui-widget-content.ui-widget.ui-corner-all.ui-helper-reset li"};
     get saveCollaboratorButton () {return $("button.save-btn.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left.ng-star-inserted")};
     get deleteCollaboratorButton () {return $$("button.ui-button-raised.ui-button-danger.b-btn.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only.ng-star-inserted")};
-    
+    get collaboratorItem() {return $$("div.collaborator-item div")[0]};
+    get collaboratorRight() {return $$("div label")[0]};
+    get collaboratorTab () {return $('//span[contains(text(),"Collaborators")]/..')};
+    get detailsTab() {return $('//span[contains(text(),"Details")]/..')};
+    get collaboratorTitle() {return $('//h2[contains(text(),"Search and add new collaborators:")]')};
+    get collaboratorItemFromList() {return  $(`//span[contains(text(),'${nickname}')]/..`)};
+    get dropdownlist() {return $("div.ng-trigger.ng-trigger-overlayAnimation")}; 
 };
 
 module.exports = ProjectDetailsPage;
