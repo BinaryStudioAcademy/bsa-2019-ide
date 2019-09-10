@@ -11,19 +11,19 @@ import { NotificationType } from 'src/app/models/Enums/notificationType';
 })
 export class SignalRService {
 
-    constructor(
-        private notificationService: NotificationService,
-        private tokenService: TokenService
-    ) { }
-
     public notifications: NotificationDTO[] = [];
-    public runState=true;
-    public buildState=true;
+    public runState: boolean = true;
+    public buildState: boolean = true;
     public notification: NotificationDTO;
 
     private hubConnection: signalR.HubConnection;
     private connectionId: string;
     private userId: number;
+
+    constructor(
+        private notificationService: NotificationService,
+        private tokenService: TokenService
+    ) { }
 
     public startConnection = (isAuth: boolean, userId: number) => {
         this.userId = userId;
@@ -42,8 +42,7 @@ export class SignalRService {
                 this.addConnectionIdListener();
                 this.runStateListener();
                 console.log('SignalR Connection started');
-                if (isAuth)
-                {
+                if (isAuth) {
                     this.addToGroup(userId);
                     this.join(userId);
                 }
@@ -55,9 +54,8 @@ export class SignalRService {
         return this.notifications;
     }
 
-    public clearData()
-    {
-        this.notifications=[];
+    public clearData() {
+        this.notifications = [];
     }
 
     public addToGroup(userId: number): void {
@@ -80,20 +78,19 @@ export class SignalRService {
         return this.notifications;
     }
 
-    public runStateListener(){
-        this.hubConnection.on('progressState', (state: NotificationDTO)=>{
-            console.log(state);
-            if(state.type==NotificationType.projectRun){
-                this.runState=false;
+    public runStateListener(): void {
+        this.hubConnection.on('progressState', (state: NotificationDTO) => {
+            if (state.type == NotificationType.projectRun) {
+                this.runState = false;
             }
-            if(state.type==NotificationType.projectBuild){
-                this.notification=state;
-                this.buildState=false;
+            if (state.type == NotificationType.projectBuild) {
+                this.notification = state;
+                this.buildState = false;
             }
         });
     }
 
-    public addConnectionIdListener(): void{
+    public addConnectionIdListener(): void {
         this.hubConnection.on('sendConnectionId', (connectionId, userId) => {
             if (userId === this.userId) {
                 this.connectionId = connectionId;
@@ -105,22 +102,19 @@ export class SignalRService {
         return this.connectionId;
     }
 
-    public markNotificationAsRead(notificationId: number): void
-    {
+    public markNotificationAsRead(notificationId: number): void {
         this.hubConnection.invoke("MarkAsRead", notificationId)
             .catch((error) => console.log(error));
     }
 
-    public deleteDataListeners()
-    {
+    public deleteDataListeners() {
         this.hubConnection.off('transferchartdata');
         this.hubConnection.off('transferRunResult');
         this.hubConnection.off('sendConnectionId');
         this.hubConnection.off('progressState');
     }
 
-    public deleteConnectionIdListener()
-    {
+    public deleteConnectionIdListener() {
         this.hubConnection.off('sendConnectionId');
     }
 }

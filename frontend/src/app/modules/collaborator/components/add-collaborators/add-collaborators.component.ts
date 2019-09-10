@@ -116,7 +116,7 @@ export class AddCollaboratorsComponent implements OnInit {
                     access: item.access,
                     userId: item.id
                 }
-                var colaborator=this.startCollaborators.find(value => value.id == update.userId);
+                const colaborator=this.startCollaborators.find(value => value.id == update.userId);
                 if (!colaborator || colaborator.access!=update.access) {
                     this.rightService.setUsersRigths(update)
                         .subscribe(
