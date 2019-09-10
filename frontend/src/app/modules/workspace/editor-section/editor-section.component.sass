@@ -1,5 +1,6 @@
 .my-code-editor
     width: 100%
+    height: calc(100% - 23px)
 
 ::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem .ui-menuitem-link,
 ::ng-deep .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem a,
@@ -49,12 +50,48 @@
     display: flex
     justify-content: center
 
-.editor-backgound
-    font-size: 10em
-    display: flex
-    justify-content: center
-    margin-top: 25vh
-    height: 35vh
-
 ::ng-deep .hightliter
     background-color: #ffff9f !important 
+
+.help
+    width: 100%
+    margin-top: -1px
+    height: calc(100%)
+    display: flex
+    justify-content: center
+    align-items: center
+    background: white
+
+.help-blocks
+    width: 500px
+    height: 35vh
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+
+.block
+    display: flex
+    margin: 7px 0
+    font-size: 14px
+
+.block-header
+    margin: 0
+    width: 150px
+    padding: 2px 0
+    margin-right: 20px
+    text-align: right
+
+.block-buttons-group
+    width: 150px
+    display: flex 
+    flex-basis: 20px
+
+.button-holder
+    padding: 2px 4px
+    border: 0.5px solid #ccc
+    background: #f4f4f4
+    border-radius: 3px
+
+.plus
+    padding: 0 5px

@@ -149,9 +149,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.cdr.detectChanges();
             }
         });
-
-
-
     }
 
     public OnChange(event: boolean) {

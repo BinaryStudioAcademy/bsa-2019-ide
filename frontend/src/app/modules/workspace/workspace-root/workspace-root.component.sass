@@ -1,19 +1,18 @@
 .wks-wrapper
-    height: -webkit-calc(100% - 33px)
-    height:    -moz-calc(100% - 33px)
-    height:         calc(100% - 33px)
+    height: -webkit-calc(100% - 37px)
+    height:    -moz-calc(100% - 37px)
+    height:         calc(100% - 37px)
     margin: 0px
     background-color: #f4f4f4
 .top-panel
-    padding-left: 2rem
     height: 37px
     background-color: #f4f4f4
+
 .file-browser-content
     background-color: white
 
 .editor-content
     opacity: 0.5
-
 
 .inner-wrapper
     height: 100%
@@ -22,8 +21,14 @@
     width: 100%
 
 .hor-navbar button
-    background-color: #c8d1de
+    background-color: rgba(200, 209, 222, 0.5)
     margin: 2px
+    border: none
+
+.left-panel
+    display: flex
+    flex-direction: column
+    justify-content: space-between
 
 .hor-navbar
     display: flex
@@ -34,15 +39,10 @@
     width: 2.1rem
 
 .project-name
-    margin-left: 10px
     font-weight: 900
-    
-    
     padding-bottom: 5px
     padding-top: 3px
-    padding-right: 5px
-    padding-left: 5px
-    border-radius: 4px
+    color: #fff
 
 .draggableLine
     width: 3px
@@ -51,10 +51,10 @@
     cursor: col-resize
 
 .browser
-    width: 30%
+    width: 25%
 
 .workspace
-    width: calc(70% - 3px)
+    width: calc(75% - 3px)
 
 
 ::ng-deep .ui-button-icon-left.ui-clickable.pi.pi-save-all
