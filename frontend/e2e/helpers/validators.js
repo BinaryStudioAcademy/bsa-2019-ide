@@ -89,6 +89,20 @@ class CustomValidates {
         const firstWord = historyText.split(' ', 1);
         assert.equal(firstWord, expectedChanges);
     };
+    SuccessUploadAvatar(){
+        const defaultAvatar = $('img[src="./assets/img/user-default-avatar.png"]');
+
+        browser.refresh();
+
+        assert.equal(defaultAvatar.isDisplayed(), false); 
+    }
+    SuccessDeleteAvatar(){
+        const defaultAvatar = $('img[src="./assets/img/user-default-avatar.png"]');
+
+        browser.refresh();
+
+        assert.equal(defaultAvatar.isDisplayed(), true); 
+    }
 }
 
 module.exports = CustomValidates;
