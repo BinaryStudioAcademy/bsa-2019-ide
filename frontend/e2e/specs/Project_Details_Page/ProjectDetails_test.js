@@ -26,40 +26,7 @@ describe('Online-IDE ProjectDetails Page', () => {
        browser.reloadSession();
    });
 
-//passed
-    xit('change project settings', () => {
-        
-       
-        wait.ofDashboardMenu();
-        validate.successnavigationToPage(credentials.dashboardUrl);
-        Help.browserClickXPath(page.tabMyProjects);
-        projectDetails.clickCardMenuButton();
-        Help.browserClickXPath(page.settingsButtonOnProjectCard);
 
-        Help.fillOutChangedDataInForm(credentials.changedProjectName, credentials.changeddescription, credentials.changedBuildsNumber, credentials.changedBuildAttempts);
-        projectDetails.clickSaveProjectButton();
-        
-        validate.notificationTextIs(credentials.successchangedsettingsnotification);
-        wait.forNotificationToDisappear();
-
-        wait.ofDashboardMenu();
-        validate.successnavigationToPage(credentials.dashboardUrl);
-        Help.browserClickXPath(page.tabMyProjects);
-        projectDetails.clickCardMenuButton();
-        Help.browserClickXPath(page.detailsButtonOnProjectCard);
-        wait.contentOfProjectDetailPage();
-
-        validate.navigationToPage(credentials.projectDetailsUrl);
-        validate.checkProjectDetailsData(0, "Name: "+ credentials.changedProjectName);
-        validate.checkProjectDetailsData(1, "Description: "+ credentials.changeddescription);
-        validate.checkProjectDetailsData(8, "Amount of saved builds: "+ credentials.changedBuildsNumber);
-        validate.checkProjectDetailsData(9, "Amount of build attempts: "+ credentials.changedBuildAttempts);
-        Help.logOut();
-        
-    });
-
-
-//failed
     xit('navigate to project details page', () => {
         
         wait.ofDashboardMenu();
@@ -76,7 +43,7 @@ describe('Online-IDE ProjectDetails Page', () => {
     });
 
 
-    it('should add a collaborator in project', () => {
+    xit('should add a collaborator in project', () => {
         
         wait.ofDashboardMenu();
         validate.successnavigationToPage(credentials.dashboardUrl);
@@ -84,12 +51,12 @@ describe('Online-IDE ProjectDetails Page', () => {
         projectDetails.clickCardMenuButton();
         Help.browserClickXPath(page.detailsButtonOnProjectCard);
         wait.contentOfProjectDetailPage();
-        Help.addCollaborators("testUser1");
-        console.log(credentials.notificationSuccessAddCollaborator);
+        Help.addCollaborators("testUser");
+      
         validate.notificationTextIs(credentials.notificationSuccessAddCollaborator);
         Help.checkDetails();
         
-        validate.verifyText($$("div.collaborator-item div")[0], "testUser1");
+        validate.verifyText($$("div.collaborator-item div")[0], "testUser");
         validate.verifyText($("div label"), "Can edit and build");
         Help.logOut();
         
@@ -108,12 +75,12 @@ describe('Online-IDE ProjectDetails Page', () => {
         validate.notificationTextIs(credentials.notificationSuccessChangeCollaboratorRight);
         Help.checkDetails();
         
-        validate.verifyText($$("div.collaborator-item div")[0], "testUser1");
+        validate.verifyText($$("div.collaborator-item div")[0], "testUser");
         validate.verifyText($("div label"), "Provide all access rights");
         Help.logOut();
         
     });
-    it('should delete collaborator', () => {
+    xit('should delete collaborator', () => {
         
         wait.ofDashboardMenu();
         validate.successnavigationToPage(credentials.dashboardUrl);
@@ -131,8 +98,43 @@ describe('Online-IDE ProjectDetails Page', () => {
         
     });
 
+    xit('change project settings', () => {
+        
+       
+        wait.ofDashboardMenu();
+        validate.successnavigationToPage(credentials.dashboardUrl);
+        Help.browserClickXPath(page.tabMyProjects);
+        projectDetails.clickCardMenuButton();
+        Help.browserClickXPath(page.detailsButtonOnProjectCard);
+        wait.contentOfProjectDetailPage();
+        validate.navigationToPage(credentials.projectDetailsUrl);
+        projectUrl = Help.returnUrl();
+      
+        browser.url(credentials.dashboardMyProjectsUrl);
+        projectDetails.clickCardMenuButton();
+        Help.browserClickXPath(page.settingsButtonOnProjectCard);
 
-    it('should delete a project', () => {
+        Help.fillOutChangedDataInForm(credentials.changedProjectName, credentials.changeddescription, credentials.changedBuildsNumber, credentials.changedBuildAttempts);
+        projectDetails.clickSaveProjectButton();
+        
+        validate.notificationTextIs(credentials.successchangedsettingsnotification);
+        wait.forNotificationToDisappear();
+
+
+        browser.url(projectUrl.toString());
+
+        wait.contentOfProjectDetailPage();
+
+
+        validate.checkProjectDetailsData(0, "Name: "+ credentials.changedProjectName);
+        validate.checkProjectDetailsData(1, "Description: "+ credentials.changeddescription);
+        validate.checkProjectDetailsData(8, "Amount of saved builds: "+ credentials.changedBuildsNumber);
+        validate.checkProjectDetailsData(9, "Amount of build attempts: "+ credentials.changedBuildAttempts);
+        Help.logOut();
+        
+    });
+
+    xit('should delete a project', () => {
             
         wait.ofDashboardMenu();
         validate.successnavigationToPage(credentials.dashboardUrl);

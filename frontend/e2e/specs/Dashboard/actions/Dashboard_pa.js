@@ -7,6 +7,7 @@ class DashboardActions {
     starProject() {
         page.starProjectCard.waitForDisplayed(6000);
         page.starProjectCard.click();
+        browser.pause(1000);
     }
 
     enterPtojectTitleforSearch(text){

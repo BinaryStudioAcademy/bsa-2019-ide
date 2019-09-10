@@ -74,6 +74,13 @@ class HelpClass
         this.browserClickXPath(el);
         bel.waitForExist(3000, true);
     }
+    clickInDropdownListThemaOptions(ListOption){
+       
+        const el = `li[aria-label='${ListOption}']`;
+        const bel = $(el);
+        this.browserClick(el);
+        bel.waitForExist(3000, true);
+    }
     clickProjectFormDropdownArrowOf(ListName){
     
         const el = $(`//div[contains(text(), "${ListName}")]/following-sibling::div[1]//p-dropdown//div[contains(@class, "ui-dropdown-trigger")]`);
@@ -98,7 +105,7 @@ class HelpClass
 
         browser.url(credentials.appUrl);
         page.clickLogOutButton();
-        this.browserClickOnArrayElement("a.ui-menuitem-link.ui-corner-all.ng-star-inserted", 2);
+       // this.browserClickOnArrayElement("a.ui-menuitem-link.ui-corner-all.ng-star-inserted", 2);
     }
 
     fillOutDataInForm(projectName, description, buildsNumber, buildsAttempts) {
@@ -154,7 +161,7 @@ class HelpClass
         $('//h2[contains(text(),"Search and add new collaborators:")]').waitForDisplayed(10000);
         projectDetails.enterCollaboratorName(nickname);
 
-       $("//span[contains(text(),'testUser1')]/..").click();
+       $(`//span[contains(text(),'${nickname}')]/..`).click();
        
         this.browserClick("div.ui-dropdown-trigger.ui-state-default.ui-corner-right");
        
@@ -186,8 +193,11 @@ class HelpClass
 
         const dropdownlist = $("div.ng-trigger.ng-trigger-overlayAnimation");
         dropdownlist.waitForDisplayed(5000);
-        const button = $("span.ui-button-secondary.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only.ng-star-inserted");
-        button.click();
+        const el = '//p-autocomplete/span/input/following-sibling::div/ul/li[last()]';
+        const bel = $(el);
+        bel.waitForDisplayed(5000);
+        this.browserClickXPath(el);
+  
 
        
     }

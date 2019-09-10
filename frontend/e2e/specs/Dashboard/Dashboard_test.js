@@ -16,6 +16,7 @@ describe('Online-IDE Dashboard', () => {
        browser.url(credentials.appUrl);
        Help.loginWithDefaultUser();
       // wait.forSpinner();
+      wait.forNotificationToDisappear();
     
    });
 
@@ -28,18 +29,21 @@ describe('Online-IDE Dashboard', () => {
         
         wait.ofDashboardMenu();
         validate.successnavigationToPage(credentials.dashboardUrl);
-        Help.browserClickXPath(page.tabMyProjects);
-        wait.cardsArea();
+        Help.browserClickXPath("//li[contains(text(), 'My projects')]");//(page.tabMyProjects);
+        console.log($("//li[contains(text(), 'My projects')]"));
+       // wait.cardsArea();
+       $("//div[@class='cards-area']/div[1]/app-project-card").waitForDisplayed(20000);
         dashboard.starProject();
-      //  $('//div[@Class="cards-area"]/div[1]/app-project-card/p-card')
-      
+        $("i.pi-star").waitForDisplayed(10000);
         Help.browserClickXPath(page.tabFavouriteProjects);
-        wait.cardsArea();
+        $("//div[@class='cards-area']/div[1]/app-project-card").waitForDisplayed(20000);
+    
         validate.verifyFavouriteProjectTitle("changedProject");
-        Help.browserClickXPath(page.tabMyProjects);
-        wait.cardsArea();
+
         dashboard.starProject();
+        Help.browserClickXPath("//li[contains(text(), 'My projects')]");
         Help.browserClickXPath(page.tabFavouriteProjects);
+
         validate.successnavigationToPage(credentials.dashboardUrl);
         validate.verifyNoProjectsInFavourite(credentials.expectedmessageonFavourite);
         Help.logOut();
@@ -47,16 +51,16 @@ describe('Online-IDE Dashboard', () => {
     });
 
 
-    xit('should search project by title in all projects', () => {
+    it('should search project by title in all projects', () => {
         
         
         wait.ofDashboardMenu();
       
         validate.successnavigationToPage(credentials.dashboardUrl);
-        Help.searchProjectByTitleOf("test");
-         
+        Help.searchProjectByTitleOf("13");
+        wait.contentOfProjectDetailPage();
         validate.navigationToPage(credentials.projectDetailsUrl);
-        validate.checkProjectDetailsData(0, `Name: ${credentials.projectName}`);
+        validate.checkProjectDetailsData(0, `Name: 13`);
         Help.logOut();
         
     });
