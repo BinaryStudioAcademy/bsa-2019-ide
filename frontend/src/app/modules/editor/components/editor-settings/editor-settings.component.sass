@@ -18,8 +18,8 @@
     min-height: 450px
 
 .editor-details-property
-    display: flex
-    justify-content: space-between
+    display: grid
+    grid-template-columns: repeat(2,1fr)
     margin-bottom: 2%
 
 .settings-btn
@@ -33,6 +33,10 @@
 input
     padding: 6px
     border-radius: 2px
+
+.dropdown
+    border-radius: 2px
+    display: inline-grid
 
 .modal-close-btn 
     color: #aaa
