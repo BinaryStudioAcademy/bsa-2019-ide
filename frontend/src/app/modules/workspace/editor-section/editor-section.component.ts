@@ -6,6 +6,8 @@ import editorTabsThemes from '../../../assets/editor-tabs-themes.json';
 import { EventService } from 'src/app/services/event.service/event.service';
 import { MonacoEditorComponent } from '@materia-ui/ngx-monaco-editor';
 import { FileEditService } from 'src/app/services/file-edit.service/file-edit.service';
+import { FileSaverService } from 'src/app/services/workspace-file-saver.service/file-saver.service';
+import { Subject } from 'rxjs';
 
 export interface TabFileWrapper {
     isChanged: boolean;
@@ -32,11 +34,11 @@ export class EditorSectionComponent implements OnInit {
 
     public tabs = [] as MenuItem[];
     public activeItem: MenuItem;
-    public openedFiles = [] as TabFileWrapper[];
+    public openedFiles: TabFileWrapper[] = [];
     public language: string;
     @Input() canEdit: boolean;
     @Input()
-    public isInputTerminalOpen:boolean;
+    public isInputTerminalOpen: boolean;
     @ViewChild('monacoEditor', { static: false })
     private monacoEditor: MonacoEditorComponent;
 
@@ -45,7 +47,7 @@ export class EditorSectionComponent implements OnInit {
     constructor(
         private eventService: EventService,
         private confirmationService: ConfirmationService,
-        private fileEditService: FileEditService) { }
+        private fileSaverService: FileSaverService) { }
 
     ngAfterViewInit() {
         this.eventService.componentAfterInit("EditorSectionComponent");
@@ -53,10 +55,10 @@ export class EditorSectionComponent implements OnInit {
     ngOnInit() { }
 
     public getProjectColor(){
-        if(this.isInputTerminalOpen){
+        if (this.isInputTerminalOpen) {
             return "60vh";
         }
-        else{
+        else {
             return "90vh";
         }
     }
@@ -103,6 +105,7 @@ export class EditorSectionComponent implements OnInit {
     public addActiveTab(tabName: string, icon: string, id: string) {
         this.tabs.push({ label: tabName, icon: icon, id: id });
         this.activeItem = this.tabs[this.tabs.length - 1];
+        this.fileSaverService.setSelected(this.activeItem.id);
     }
 
     public contains(fileId: string) {
@@ -127,15 +130,15 @@ export class EditorSectionComponent implements OnInit {
     }
 
     public closeItem(event, index) {
+        this.fileSaverService.removeOpenedFile(this.openedFiles[index].innerFile.id);
         if(this.openedFiles[index].isChanged){
             this.confirm(index);
         }else{
-
             this.closeTabAction(index);
         }
         event.preventDefault();
     }
-
+    
     public closeTabAction(index: number) {
         this.tabs = this.tabs.filter((item, i) => i !== index);
         this.openedFiles = this.openedFiles.filter((item, i) => i !== index);
@@ -149,15 +152,15 @@ export class EditorSectionComponent implements OnInit {
         index = this.tabs.length === index ? index - 1 : index;
         this.code = this.openedFiles[index].innerFile.content;
         this.activeItem = this.tabs[index];
+        this.fileSaverService.setSelected(this.activeItem.id);
     }
 
     public onTabSelect(evt, index) {
-        console.log(this.openedFiles);
         this.activeItem = this.tabs[index];
         this.code = this.openedFiles[index].innerFile.content;
         this.language = this.openedFiles[index].innerFile.language;
+        this.fileSaverService.setSelected(this.activeItem.id);
         // console.log('change tab, update readonly to ' + this.openedFiles[index].innerFile.isOpen);
-        this.monacoEditor.editor.updateOptions({readOnly: this.openedFiles[index].innerFile.isOpen});
         this.monacoOptions.language = this.language;
         this.monacoEditor.editor.updateOptions({readOnly: this.openedFiles[index].innerFile.isOpen});
     }
@@ -230,5 +233,33 @@ export class EditorSectionComponent implements OnInit {
         for (const key in tabTheme.colors) {
             element.style.setProperty(key, tabTheme.colors[key]);
         }
+    }
+
+    public sortTabs() {
+        const files = this.fileSaverService.getAllOpenedFilesForProject();
+        if(this.tabs.length !== files.length)
+            return;
+        for(let i = 0; i < files.length; i++) {
+            for (let j = 0; j < this.tabs.length; j++) {
+                if(files[i].fileId === this.tabs[j].id) {
+                    const element = this.tabs[i];
+                    this.tabs[i] = this.tabs[j];
+                    this.tabs[j] = element;
+
+                    const openedFile = this.openedFiles[i];
+                    this.openedFiles[i] = this.openedFiles[j];
+                    this.openedFiles[j] = openedFile;
+                    break;
+                }
+            }
+        }
+
+        const activeTabId = this.fileSaverService.getSelected();
+        for(let i = 0; i < this.tabs.length; i++) {
+            if (this.tabs[i].id === activeTabId) {
+                this.activeItem = this.tabs[i];
+            }
+        }
+        this.fileSaverService.unlockSelections();
     }
 }
