@@ -5,7 +5,7 @@ class ProjectDetailsPage {
     get menuProjectCard () {return $("//h2[contains(text(), 'changedProject')]/../..//div[contains(@class, 'menu-icon')]/i")};
     get detailsButtonOnProjectCard () {return '//span[contains(text(), "Details")]/..'};
     get settingsButtonOnProjectCard () {return '//span[contains(text(), "Settings")]/..'};
-    get saveProjectButton () {return $("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only.ng-star-inserted")};
+    get saveProjectButton () {return $("//span[contains(text(), 'Save')]/..")};//$("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only.ng-star-inserted")};
     get navbarDetailsPage () {return "ul.ui-tabview-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all.ng-star-inserted li"};
     get deletebtn () {return $("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left")[2]};
     get deletebtnconfirm () {return  $$("button.undefined.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left.ng-star-inserted")[0]};

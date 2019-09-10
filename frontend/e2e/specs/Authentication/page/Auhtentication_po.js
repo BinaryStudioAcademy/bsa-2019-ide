@@ -11,7 +11,7 @@ class LoginPage {
     get createButton () {return $('button.auth-btn.ng-star-inserted')};
     get recoveryPassword () {return $("p.auth-recover.ng-star-inserted")};
     get googleButton () {return $('button.google-btn')};
-    get logOutButton () {return $("button.ui-splitbutton-menubutton.ui-button.ui-widget.ui-state-default.ui-corner-right.ui-button-icon-only")};
+    get logOutButton () {return $("button[title='Logout']")};
    
 };
 
