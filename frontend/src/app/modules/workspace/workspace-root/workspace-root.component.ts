@@ -63,6 +63,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     public inputItems: string[];
     public connectionId: string;
     public isInputTerminalOpen=false;
+    public runState=false;
+    public buildState=false;
 
     private routeSub: Subscription;
     private authorId: number;
@@ -132,17 +134,33 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         });
     }
 
+    public getRunState(){
+        if(this.runState)
+        {
+            this.runState=this.signalRService.runState;
+        }
+        return this.runState;
+    }
+
+    public getBuildState(){
+        if(this.buildState && this.signalRService.notification && this.signalRService.notification.projectId==this.projectId)
+        {
+            this.buildState=this.signalRService.buildState;
+        }
+        return this.buildState;
+    }
+
     public OnChange(event: boolean){
         if(event)
         {
             this.inputItems=null;
             this.isInputTerminalOpen=false;
+            this.runState=true;
         }
     }
 
     ngOnInit() {
         this.confirmationOnLeavePage$ = Observable.create((observer: Observer<boolean>) => {
-
             this.confirmationService.confirm({
                 message: 'Save changes on page?',
                 accept: () => {
@@ -190,7 +208,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.projectService.getProjectById(this.projectId).pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(
                 (resp) => {
-                    this.project = resp.body;
+                    this.project = resp.body;                
                     this.eventService.currProjectSwitch({ id: this.project.id, name: this.project.name });
                     this.authorId = resp.body.authorId;
                     this.options = this.project.editorProjectSettings;
@@ -343,6 +361,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     public onBuild() {
         this.buildService.buildProject(this.project.id).pipe(takeUntil(this.ngUnsubscribe)).subscribe(
             (response) => {
+                this.signalRService.notification=null;
+                this.buildState=true;
                 this.toast.info('Build was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {
@@ -368,8 +388,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             (resp) => {
                 this.inputItems = resp.body;
                 this.isInputTerminalOpen=true;
+                this.signalRService.notification=null;
                 if(!this.inputItems || this.inputItems.length==0)
                 {
+                    this.runState=true;
                     this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
                 }
             },

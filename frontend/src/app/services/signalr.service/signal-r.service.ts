@@ -4,6 +4,7 @@ import { NotificationDTO } from 'src/app/models/DTO/Common/notificationDTO';
 import { environment } from 'src/environments/environment';
 import { NotificationService } from '../notification.service/notification.service';
 import { TokenService } from '../token.service/token.service';
+import { NotificationType } from 'src/app/models/Enums/notificationType';
 
 @Injectable({
     providedIn: 'root'
@@ -16,6 +17,9 @@ export class SignalRService {
     ) { }
 
     public notifications: NotificationDTO[] = [];
+    public runState=true;
+    public buildState=true;
+    public notification: NotificationDTO;
 
     private hubConnection: signalR.HubConnection;
     private connectionId: string;
@@ -36,6 +40,7 @@ export class SignalRService {
             .start()
             .then(() => {
                 this.addConnectionIdListener();
+                this.runStateListener();
                 console.log('SignalR Connection started');
                 if (isAuth)
                 {
@@ -75,6 +80,19 @@ export class SignalRService {
         return this.notifications;
     }
 
+    public runStateListener(){
+        this.hubConnection.on('progressState', (state: NotificationDTO)=>{
+            console.log(state);
+            if(state.type==NotificationType.projectRun){
+                this.runState=false;
+            }
+            if(state.type==NotificationType.projectBuild){
+                this.notification=state;
+                this.buildState=false;
+            }
+        });
+    }
+
     public addConnectionIdListener(): void{
         this.hubConnection.on('sendConnectionId', (connectionId, userId) => {
             if (userId === this.userId) {
@@ -98,6 +116,7 @@ export class SignalRService {
         this.hubConnection.off('transferchartdata');
         this.hubConnection.off('transferRunResult');
         this.hubConnection.off('sendConnectionId');
+        this.hubConnection.off('progressState');
     }
 
     public deleteConnectionIdListener()
