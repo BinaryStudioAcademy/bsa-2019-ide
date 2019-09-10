@@ -3,7 +3,7 @@ import { LeavePageDialogService } from './../../../services/leave-page-dialog.se
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
-import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, OnChanges, ChangeDetectorRef, AfterContentInit } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, OnChanges, ChangeDetectorRef, AfterContentInit, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
@@ -28,7 +28,7 @@ import { BuildService } from 'src/app/services/build.service';
 import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
-import { filter, throwIfEmpty, tap, takeUntil } from 'rxjs/operators';
+import { filter, throwIfEmpty, tap, takeUntil, delay, distinctUntilChanged } from 'rxjs/operators';
 import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
 import { AccessModifier } from 'src/app/models/Enums/accessModifier';
 import { ConfirmationService } from 'primeng/api';
@@ -64,7 +64,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     public iOpenFile: FileUpdateDTO[] = [];
     public inputItems: string[];
     public connectionId: string;
-    public isInputTerminalOpen=false;
+    public isInputTerminalOpen = false;
+    public isSaveButtonDisabled;
+    public isSaveAllButtonDisabled;
 
     private routeSub: Subscription;
     private authorId: number;
@@ -84,7 +86,15 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     @ViewChild(FileBrowserSectionComponent, { static: false })
     private fileBrowser: FileBrowserSectionComponent;
-    
+
+    @HostListener('window:beforeunload', ['$event'])
+    beforeunloadHandler(event) {
+        if(!this.isSaveAllButtonDisabled){
+            event.preventDefault();
+            event.returnValue = '';
+        }
+
+    }
 
     constructor(
         private route: ActivatedRoute,
@@ -101,7 +111,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         private cdr: ChangeDetectorRef,
         private signalRService: SignalRService,
         private errorHandlerService: ErrorHandlerService,
-        private confirmationService: ConfirmationService, 
+        private confirmationService: ConfirmationService,
         private fileEditService: FileEditService,
         private fileSaverService: FileSaverService) {
 
@@ -139,31 +149,37 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.cdr.detectChanges();
             }
         });
+
+
+
     }
 
-    public OnChange(event: boolean){
-        if(event)
-        {
-            this.inputItems=null;
-            this.isInputTerminalOpen=false;
+    public OnChange(event: boolean) {
+        if (event) {
+            this.inputItems = null;
+            this.isInputTerminalOpen = false;
         }
     }
 
     ngOnInit() {
+        this.eventService.isNotSaveDataAllTabsObserve$.pipe(distinctUntilChanged())
+        .subscribe(x => {this.isSaveAllButtonDisabled = !x});
+        this.eventService.isNotSaveDataOneTabObserve$.subscribe(x => this.isSaveButtonDisabled = !x);
+
         this.confirmationOnLeavePage$ = Observable.create((observer: Observer<boolean>) => {
             this.confirmationService.confirm({
                 message: 'Save changes on page?',
                 accept: () => {
                     const files = this.editor.openedFiles.filter(f => f.isChanged).map(x => x.innerFile);
                     this.saveFilesRequest(files).pipe(takeUntil(this.ngUnsubscribe))
-                    .subscribe(
-                        response => {
-                            if (response.every(x => x.ok)) {
-                                this.toast.success("Files saved", 'Success', { tapToDismiss: true });
-                                this.editor.confirmSaving(files.map(f=> f.id));
-                            } else {
-                                this.toast.error("Can't save files", 'Error', { tapToDismiss: true });
-                            }
+                        .subscribe(
+                            response => {
+                                if (response.every(x => x.ok)) {
+                                    this.toast.success("Files saved", 'Success', { tapToDismiss: true });
+                                    this.editor.confirmSaving(files.map(f => f.id));
+                                } else {
+                                    this.toast.error("Can't save files", 'Error', { tapToDismiss: true });
+                                }
 
                             observer.next(true);
                         },
@@ -185,6 +201,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 filter(params => !!params['fileId']),
                 map(params => params['fileId']))
             .subscribe(fileId => this.onFileSelected(fileId));
+
 
         this.userId = this.tokenService.getUserId();
 
@@ -226,7 +243,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.fileEditService.isConnected.pipe(takeUntil(this.ngUnsubscribe)).subscribe(state => {
             this.isOpenedConnection = state;
         });
-        this.fileEditService.openedFiles.pipe(takeUntil(this.ngUnsubscribe)).subscribe(x => 
+        this.fileEditService.openedFiles.pipe(takeUntil(this.ngUnsubscribe)).subscribe(x =>
             {
                 if (x.userId !== this.userId) {
                     // console.log('its somebodyth else file');
@@ -321,7 +338,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     private loadFiles() {
         const files = this.fileSaverService.getAllOpenedFilesForProject();
-        const filesCount = files.length; 
+        const filesCount = files.length;
         this.filesCount = filesCount;
         this.openedFiles = 0;
         if (filesCount > 0)
@@ -410,9 +427,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.buildService.runProject(this.project.id, this.connectionId).subscribe(
             (resp) => {
                 this.inputItems = resp.body;
-                this.isInputTerminalOpen=true;
-                if(!this.inputItems || this.inputItems.length==0)
-                {
+                this.isInputTerminalOpen = true;
+                if (!this.inputItems || this.inputItems.length == 0) {
                     this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
                 }
             },
@@ -424,7 +440,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     }
 
     public onFileClosed(evt: { file: FileUpdateDTO, mustSave: boolean }) {
-        if(evt.mustSave){
+        if (evt.mustSave) {
             this.onFilesSave([evt.file]);
         }
     }
@@ -467,7 +483,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                         this.toast.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
                 },
-                (error) => { 
+                (error) => {
                     this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error', { tapToDismiss: true });
                 });
     }
