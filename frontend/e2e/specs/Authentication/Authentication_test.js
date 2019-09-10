@@ -65,12 +65,10 @@ describe('Online-IDE authorization', () => {
 
     xit('should not login with empty fields', () => {
        
-     
         loginActions.enterDataForLogin('', '');
         loginActions.waitEnabledCreateButton();
             
-       
-        
+               
     });
 
     xit('should not register a new account with empty fields', () => {
@@ -107,11 +105,10 @@ describe('Online-IDE authorization', () => {
 
     xit('should not recovery password with not registered email', () => {
            
-          
+         
         loginActions.recoveryPassword(credentials.notRegisteredEmail);
         validate.notificationTextIs(credentials.notificationErrorRecovery);
-        
-               
+                      
                 
     });
 
@@ -129,8 +126,7 @@ describe('Online-IDE authorization', () => {
           
         loginActions.recoveryPassword(credentials.invalidEmail);
         validate.notificationTextIs(credentials.notificationInvalidDataRecovery);
-       
-                       
+                             
                         
     });
    

@@ -12,14 +12,14 @@
                 <p-progressSpinner *ngIf="getBuildState()" [style]="{width: '18px', height: '18px', top: '6px', right: '6px'}" strokeWidth="8" ></p-progressSpinner>
             </button>
             <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onSaveButtonClick()"
-                icon="pi pi-save" iconPos="left" class="ui-button-secondary btn" label="Save" pTooltip="Save - Ctrl+S"
-                tooltipPosition="bottom" showDelay="500"></button>
-            <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onSaveAllButtonClick()"
-                icon="pi pi-save-all" iconPos="left" class="ui-button-secondary btn" label="Save All"
-                pTooltip="Save All - Ctrl+Shift+S" tooltipPosition="bottom" showDelay="500"></button>
+                icon="pi pi-save" iconPos="left" class="ui-button-secondary" label="Save" pTooltip="Save - Ctrl+S" [disabled] = "isSaveButtonDisabled"
+                tooltipPosition="bottom" showDelay="5000"></button>
+            <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onSaveAllButtonClick()" [disabled] = "isSaveAllButtonDisabled"
+                icon="pi pi-save-all" iconPos="left" class="ui-button-secondary" label="Save All"
+                pTooltip="Save All - Ctrl+Shift+S" tooltipPosition="bottom" showDelay="5000"></button>
             <button pButton type="button" *ngIf="isAuthor()" (click)="Settings()" icon="pi pi-cog" iconPos="left"
-                class="ui-button-secondary btn" label="Settings" pTooltip="Settings" tooltipPosition="bottom"
-                showDelay="500"></button>
+                class="ui-button-secondary" label="Settings" pTooltip="Settings" tooltipPosition="bottom"
+                showDelay="5000"></button>
             <span class="project-name">{{ project.name }}</span>
         </div>
     </div>
