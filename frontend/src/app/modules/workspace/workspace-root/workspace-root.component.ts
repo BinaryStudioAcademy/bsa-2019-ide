@@ -61,7 +61,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     public expandFolder = false;
     public project: ProjectInfoDTO;
     public options: EditorSettingDTO;
-    public iOpenFile: FileUpdateDTO[] = [];
     public inputItems: string[];
     public connectionId: string;
     public isInputTerminalOpen = false;
@@ -349,9 +348,11 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                         this.editor.sortTabs();
                     }
                 });
-        files.forEach(file => {
-            this.loadFile(file, false);
-        });
+        setTimeout(() => {
+            files.forEach(file => {
+                this.loadFile(file, false);
+            });
+        }, 1000); 
     }
 
     private loadFile(file: SelectedFile, onBrowserSelect: boolean = true) {
@@ -365,24 +366,16 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
                         this.editor.AddFileToOpened(fileUpdateDTO);
                         this.editor.monacoOptions.readOnly = fileUpdateDTO.isOpen;
+                        this.editor.addActiveTab(tabName, file.fileIcon, id);
 
-                        if (!fileUpdateDTO.isOpen) {
-                            this.fileIsOpen(fileUpdateDTO);
-                            this.iOpenFile.push(fileUpdateDTO);
-                            if(onBrowserSelect)
-                                this.fileBrowser.selectedItem.label = tabName;
-                        }
-                        else if (this.project.accessModifier == AccessModifier.private) {
-                            this.fileIsOpen(fileUpdateDTO);
-                            this.iOpenFile.push(fileUpdateDTO);
+                        if(onBrowserSelect) {
+                            this.fileBrowser.selectedItem.label = tabName;
+                            this.editor.code = content;
                         }
                         if (this.showFileBrowser) {
                             document.getElementById('workspace').style.width = ((this.workspaceWidth) / this.maxSize()) + '%';
                         }
-
-                        this.editor.addActiveTab(tabName, file.fileIcon, id);
                         this.findAllOccurence(file.filterString);
-                        this.editor.code = content;
                     } else {
                         this.toast.error("Can't load selected file", 'Error Message');
                     }
@@ -443,6 +436,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         if (evt.mustSave) {
             this.onFilesSave([evt.file]);
         }
+        this.fileEditService.closeFile(evt.file.id);
     }
 
     public onSaveButtonClick() {
@@ -462,16 +456,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.onFilesSave(files);
     }
 
-    public unblockAllEditingFiles() {
-        if (this.iOpenFile.length != 0) {
-            this.iOpenFile.forEach(element => {
-                element.isOpen = false;
-            })
-            this.saveFilesRequest(this.iOpenFile).pipe(takeUntil(this.ngUnsubscribe)).subscribe();
-
-            this.iOpenFile = [];
-        }
-    }
     public onFilesSave(files: FileUpdateDTO[]) {
         this.saveFilesRequest(files).pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(
@@ -486,10 +470,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 (error) => {
                     this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error', { tapToDismiss: true });
                 });
-    }
-
-    public fileIsOpen(files: FileUpdateDTO) {
-        this.workSpaceService.saveFileRequest(files).subscribe();
     }
 
     public hideSearchField() {
