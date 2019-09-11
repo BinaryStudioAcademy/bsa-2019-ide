@@ -10,150 +10,121 @@ const projectDetails = new ProjectDetailsActions();
 const ProjectDetailsObjects = require('./page/ProjectDetails_po');
 const page = new ProjectDetailsObjects();
 
-//const assert = require('chai').assert;
+
 describe('Online-IDE ProjectDetails Page', () => {
     
     beforeEach(() => {
        browser.maximizeWindow();
        browser.url(credentials.appUrl);
        Help.loginWithDefaultUser();
-      // wait.forSpinner();
-      wait.forNotificationToDisappear();
+       wait.forNotificationToDisappear();
+       wait.ofDashboardMenu();
+       validate.successnavigationToPage(credentials.dashboardUrl);
     
    });
 
    afterEach(() => {
+       Help.logOut();
        browser.reloadSession();
    });
 
 
-    xit('navigate to project details page', () => {
+    xit('should navigate to project details page', () => {
         
-        wait.ofDashboardMenu();
-        validate.successnavigationToPage(credentials.dashboardUrl);
         Help.browserClickXPath(page.tabMyProjects);
         projectDetails.clickCardMenuButton();
         Help.browserClickXPath(page.detailsButtonOnProjectCard);
-
         wait.contentOfProjectDetailPage();
         validate.navigationToPage(credentials.projectDetailsUrl);
         
-        Help.logOut();
-        
     });
+    /*it('should navigate to workspace',() => {
+        $("//div[@class='cards-area']/div[1]/app-project-card").click();
+        browser.pause();
+    });*/
 
 
     xit('should add a collaborator in project', () => {
         
-        wait.ofDashboardMenu();
-        validate.successnavigationToPage(credentials.dashboardUrl);
         Help.browserClickXPath(page.tabMyProjects);
         projectDetails.clickCardMenuButton();
         Help.browserClickXPath(page.detailsButtonOnProjectCard);
         wait.contentOfProjectDetailPage();
-        Help.addCollaborators("testUser");
-      
+        Help.addCollaborators(credentials.collaboratorNickName, "Can edit and build");
         validate.notificationTextIs(credentials.notificationSuccessAddCollaborator);
         Help.checkDetails();
-        
-        validate.verifyText($$("div.collaborator-item div")[0], "testUser");
-        validate.verifyText($("div label"), "Can edit and build");
-        Help.logOut();
-        
+        validate.verifyText(page.collaboratorItem, credentials.collaboratorNickName);
+        validate.verifyText(page.collaboratorRight, "Can edit and build");
+      
     });
     xit('should change collaborators rights', () => {
         
-        wait.ofDashboardMenu();
-        validate.successnavigationToPage(credentials.dashboardUrl);
         Help.browserClickXPath(page.tabMyProjects);
         projectDetails.clickCardMenuButton();
         Help.browserClickXPath(page.detailsButtonOnProjectCard);
-
         wait.contentOfProjectDetailPage();
-        Help.changeCollaboratorsRights(4);
-       
+        Help.changeCollaboratorsRights(credentials.collaboratorNickName, "Provide all access rights");
         validate.notificationTextIs(credentials.notificationSuccessChangeCollaboratorRight);
         Help.checkDetails();
+        validate.verifyText(page.collaboratorItem, credentials.collaboratorNickName);
+        validate.verifyText(page.collaboratorRight, "Provide all access rights");
         
-        validate.verifyText($$("div.collaborator-item div")[0], "testUser");
-        validate.verifyText($("div label"), "Provide all access rights");
-        Help.logOut();
         
     });
     xit('should delete collaborator', () => {
         
-        wait.ofDashboardMenu();
-        validate.successnavigationToPage(credentials.dashboardUrl);
         Help.browserClickXPath(page.tabMyProjects);
         projectDetails.clickCardMenuButton();
         Help.browserClickXPath(page.detailsButtonOnProjectCard);
-
         wait.contentOfProjectDetailPage();
         projectDetails.deleteCollaborator(0);
         Help.checkDetails();
-        
         validate.verifyAbsence();
-  
-        Help.logOut();
-        
+ 
     });
 
     xit('change project settings', () => {
         
        
-        wait.ofDashboardMenu();
-        validate.successnavigationToPage(credentials.dashboardUrl);
         Help.browserClickXPath(page.tabMyProjects);
         projectDetails.clickCardMenuButton();
         Help.browserClickXPath(page.detailsButtonOnProjectCard);
         wait.contentOfProjectDetailPage();
         validate.navigationToPage(credentials.projectDetailsUrl);
         projectUrl = Help.returnUrl();
-      
         browser.url(credentials.dashboardMyProjectsUrl);
         projectDetails.clickCardMenuButton();
         Help.browserClickXPath(page.settingsButtonOnProjectCard);
-
         Help.fillOutChangedDataInForm(credentials.changedProjectName, credentials.changeddescription, credentials.changedBuildsNumber, credentials.changedBuildAttempts);
         projectDetails.clickSaveProjectButton();
-        
         validate.notificationTextIs(credentials.successchangedsettingsnotification);
         wait.forNotificationToDisappear();
-
-
         browser.url(projectUrl.toString());
-
         wait.contentOfProjectDetailPage();
-
-
         validate.checkProjectDetailsData(0, "Name: "+ credentials.changedProjectName);
         validate.checkProjectDetailsData(1, "Description: "+ credentials.changeddescription);
         validate.checkProjectDetailsData(8, "Amount of saved builds: "+ credentials.changedBuildsNumber);
         validate.checkProjectDetailsData(9, "Amount of build attempts: "+ credentials.changedBuildAttempts);
-        Help.logOut();
+      
         
     });
 
     xit('should delete a project', () => {
             
-        wait.ofDashboardMenu();
-        validate.successnavigationToPage(credentials.dashboardUrl);
+
         Help.browserClickXPath(page.tabMyProjects);
         projectDetails.clickCardMenuButton();
         Help.browserClickXPath(page.detailsButtonOnProjectCard);
-      
         wait.contentOfProjectDetailPage();
         validate.navigationToPage(credentials.projectDetailsUrl);
         const projectUrl = Help.returnUrl();
         projectDetails.deleteProject();
-
         validate.notificationTextIs(credentials.notificationSuccessProjectRemoval);
         wait.forNotificationToDisappear(); 
-        
         browser.url(projectUrl.toString());
         validate.notificationTextIs(credentials.errormessage);
         wait.forNotificationToDisappear(); 
-        Help.logOut();
+    
         
     });
 

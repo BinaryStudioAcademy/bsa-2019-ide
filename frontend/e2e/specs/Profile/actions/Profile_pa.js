@@ -21,6 +21,18 @@ class ProfileActions {
         page.updateInfoButton.waitForDisplayed(5000);
         page.updateInfoButton.click();
     }
+    clickUpdateButton(){
+        page.updateButton.waitForDisplayed(5000);
+        page.updateButton.click();
+    }
+    clickSelectMonth(){
+        page.selectMonth.waitForDisplayed(5000);
+        page.selectMonth.click();
+    }
+    clickSelectYear(){
+        page.selectYear.waitForDisplayed(5000);
+        page.selectYear.click();
+    }
     clickChangePasswordButton(){
         page.changePasswordButton.waitForDisplayed(5000);
         page.changePasswordButton.click();
