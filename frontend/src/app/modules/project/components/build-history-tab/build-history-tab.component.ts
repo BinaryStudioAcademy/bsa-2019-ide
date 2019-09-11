@@ -17,6 +17,10 @@ export class BuildHistoryTabComponent implements OnInit {
 
     public getBackgroundColor(build: BuildDescriptionDTO)
     {
+        if(!build.buildFinished)
+        {
+            return "yellow";
+        }
         if(build.buildStatus==0)
         {
             return "red";

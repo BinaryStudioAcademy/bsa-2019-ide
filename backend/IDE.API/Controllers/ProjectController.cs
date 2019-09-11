@@ -61,10 +61,26 @@ namespace IDE.API.Controllers
             return Ok();
         }
 
-        [HttpGet("run/{projectId}/{connectionId}")]
-        public async Task<ActionResult> RunProjectById(int projectId, string connectionId)
+        [HttpGet("tryrun/{projectId}/{connectionId}")]
+        public async Task<ActionResult<IEnumerable<string>>> TryRunProjectById(int projectId, string connectionId)
         {
-            await _projectService.RunProject(projectId, connectionId);
+            var inputItem = await _projectService.GetInputElements(projectId) as List<string>;
+            if (inputItem.Count == 0)
+            {
+                await _projectService.RunProject(projectId, connectionId);
+                return Ok();
+            }
+            else
+            {
+                return Ok(inputItem);
+            }
+        }
+
+        [HttpGet("run/{projectId}/{connectionId}")]
+        public async Task<ActionResult> RunProjectById(int projectId, string connectionId, [FromQuery] string inputs)
+        {
+            string[] variebles = inputs.Split(", ");
+            await _projectService.RunProject(projectId, connectionId, variebles);
             return Ok();
         }
 
@@ -132,8 +148,7 @@ namespace IDE.API.Controllers
                 //await _projectStructureService.UnzipProject(projectStructure, zipFile, author, projectId);
                 await _projectStructureService.ImportProject(projectStructure.Id, zipFile, projectId.ToString(), author, false, null);
             }
-            else 
-            if (!string.IsNullOrEmpty(project.GithubUrl))
+            else  if (!string.IsNullOrEmpty(project.GithubUrl))
             {
                 IFormFile formfile = null;
 
@@ -174,6 +189,7 @@ namespace IDE.API.Controllers
 
             return Created("/project", projectId);
         }
+
 
         [HttpPut]
         public async Task<ActionResult<ProjectInfoDTO>> UpdateProject([FromBody] ProjectUpdateDTO project)

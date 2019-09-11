@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { UserDTO } from 'src/app/models/DTO/User/userDTO';
 import { SearchProjectDTO } from 'src/app/models/DTO/Project/searchProjectDTO';
 
@@ -7,6 +7,10 @@ import { SearchProjectDTO } from 'src/app/models/DTO/Project/searchProjectDTO';
     providedIn: 'root'
 })
 export class EventService {
+    public isNotSavedDataAllTabs = new BehaviorSubject(false);
+    public isNotSavedDataOneTab = new BehaviorSubject(false);
+    public isNotSaveDataAllTabsObserve$ = this.isNotSavedDataAllTabs.asObservable();
+    public isNotSaveDataOneTabObserve$ = this.isNotSavedDataOneTab.asObservable();
     private onUserChanged = new Subject<UserDTO>();
     private currProjectChangedEmitter = new Subject<SearchProjectDTO>();
     private initComponentFinishedEmitter = new Subject<string>();

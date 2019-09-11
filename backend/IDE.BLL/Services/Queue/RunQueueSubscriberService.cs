@@ -34,8 +34,6 @@ namespace IDE.BLL.Services
                 QueueName = "RunResultQueue",
                 RoutingKey = "runResponse"
             });
-
-            //_messageConsumerScopeBuild.MessageConsumer.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
         }
 
         public override async Task HandleMessageAsync(string content)
@@ -48,7 +46,7 @@ namespace IDE.BLL.Services
             {
                 Type = NotificationType.ProjectRun,
                 ProjectId = runResult.ProjectId,
-                DateTime = DateTime.Now,
+                DateTime = DateTime.UtcNow,
                 Message= $"Run project",
                 Metadata = runResult.Result,
                 Status = NotificationStatus.Message
@@ -57,9 +55,8 @@ namespace IDE.BLL.Services
             using (var scope = _serviceScopeFactory.CreateScope())
             {
                 var notificationService = scope.ServiceProvider.GetService<INotificationService>();
-                await notificationService.SendRunResultNotificationToUser(notification, runResult.ConnectionId);
+                await notificationService.SendNotificationToSpecificConnection(notification, runResult.ConnectionId);
             }
-
         }
     }
 }

@@ -37,246 +37,205 @@ class HelpClass
     generateEmail(){
         const localPart = generateRandomString(12);
         const domainPart = generateRandomString(3);
-        return email = localPart+"@"+domainPart+".com"
-
+        console.log(`${localPart}@${domainPart}.com`);
+        return `${localPart}@${domainPart}.com`;
+        
     }
-    /*clickItemInList(name) {
-        const place = $$(`//div[contains(@class, "place-item")]//h3/a[contains(., "${name}")]`);
-        if (place.length === 0) {
-            throw new Error("Element not found");
-        }
-        //place[0].scrollIntoView();
-        place[0].click();
-    }*/
-
     browserClick(elm){ return browser.execute((e) => {document.querySelector(e).click(); }, elm); }
+
+    browserClickXPath(elm){ return browser.execute((e) => {document.evaluate(e, document).iterateNext().click(); }, elm); }
 
     browserClickOnArrayElement(elm, index){return browser.execute((e, i) => {document.querySelectorAll(e)[i - 1].click();}, elm, index);}
        
     loginWithDefaultUser() {
-        browser.maximizeWindow();
-        browser.url(credentials.appUrl);
+                
         page.clickloginbtn();
+        page.waitFormContainer();
         page.enterEmail(credentials.email);
         page.enterPassword(credentials.password);
         page.clickCreateButton();
     }
     
     loginWithCustomUser(email, password) {
-        browser.maximizeWindow();
-        browser.url(credentials.appUrl);
+             
         page.clickloginbtn();
         page.enterEmail(email);
         page.enterPassword(password);
         page.clickCreateButton();
     }
-
-    registerNewAccount(name, surname, nickname, email, password) {
-
-        page.clickSignupbtn();
-     
-        browser.pause(3000);
-        page.enterFirstName(name);
-        page.enterLastName(surname);
-        page.enterNickname(nickname);
-        page.enterEmail(email);
-        page.enterPassword(password);
-        page.clickCreateButton();
+    clickInDropdownListArrowOf(ListName){
+        const el = $(`//p[contains(text(), "${ListName}")]/../p-dropdown//div[contains(@class, "ui-dropdown-trigger")]`);
+        el.click();
     }
-    recoveryPassword(email) {
-
-        page.clickloginbtn();
-     
-        browser.pause(3000);
-        page.clickRecoveryPassword();
-        page.enterEmail(email);
-        
-        page.clickCreateButton();
+    clickInDropdownListOptionOf(ListName, ListOption){
+       
+        const el = `//p[contains(text(), "${ListName}")]/../p-dropdown//span[contains(text(),"${ListOption}")]/..`;
+        const bel = $(el);
+        this.browserClickXPath(el);
+        bel.waitForExist(3000, true);
     }
+    clickInDropdownListThemaOptions(ListOption){
+       
+        const el = `li[aria-label='${ListOption}']`;
+        const bel = $(el);
+        this.browserClick(el);
+        bel.waitForExist(3000, true);
+    }
+    clickProjectFormDropdownArrowOf(ListName){
+    
+        const el = $(`//div[contains(text(), "${ListName}")]/following-sibling::div[1]//p-dropdown//div[contains(@class, "ui-dropdown-trigger")]`);
+        el.click();
+    }
+    clickProjectFormOptionOf(ListName, ListOption){
+    
+        const el = `//div[contains(text(), "${ListName}")]/following-sibling::div[1]//p-dropdown//span[contains(text(),"${ListOption}")]/..`;
+        const bel = $(el);
+        this.browserClickXPath(el);
+        bel.waitForExist(3000, true);
+    }
+    chooseColorInDropdownList(Color){
+
+        const color = `//div[contains(text(), "Project color")]/following-sibling::div[1]//p-dropdownitem//li[@aria-label="${Color}"]`;
+        const element = $(color);
+        this.browserClickXPath(color);
+        element.waitForExist(3000, true);
+    }
+    
     logOut() {
 
         browser.url(credentials.appUrl);
-        browser.pause(5000);
         page.clickLogOutButton();
-        this.browserClickOnArrayElement("a.ui-menuitem-link.ui-corner-all.ng-star-inserted", 2);
+       // this.browserClickOnArrayElement("a.ui-menuitem-link.ui-corner-all.ng-star-inserted", 2);
     }
 
-    createNewProject(ind1, ind2, ind3, ind4, ind5) {
+    fillOutDataInForm(projectName, description, buildsNumber, buildsAttempts) {
 
-        project.addButtonClick();
-        browser.pause(2000);
-        project.enterProjectName(credentials.projectName);
-        project.enterDescription(credentials.description);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 1);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", ind1);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 2);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", ind2);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 3);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", ind3);
-        project.enterBuildsNumbers(credentials.buildsNumber);
-        project.enterBuildsAttempts(credentials.buildAttempts);
-        browser.pause(2000);
-      //  this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 4);
-      // this.browserClickOnArrayElement("div.ui-helper-clearfix.ng-star-inserted", ind4);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 5);
-        this.browserClickOnArrayElement("div.ui-helper-clearfix.ng-star-inserted", ind5);
-        browser.pause(2000);
-        project.clickCreateButton();
-
-    }
-    inputDataInFormCreateProject(name, description, buildsNumber, buildAttempts, ind1, ind2, ind3, ind5) {
-
-        project.addButtonClick();
-        browser.pause(2000);
-        project.enterProjectName(name);
+        project.enterProjectName(projectName);
         project.enterDescription(description);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 1);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", ind1);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 2);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", ind2);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 3);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", ind3);
+        this.clickProjectFormDropdownArrowOf("Language");
+        this.clickProjectFormOptionOf("Language", "C#");
+        this.clickProjectFormDropdownArrowOf("Project type");
+        this.clickProjectFormOptionOf("Project type", "Console App");
+        this.clickProjectFormDropdownArrowOf("Compiler Type");
+        this.clickProjectFormOptionOf("Compiler Type", "Roslyn");
         project.enterBuildsNumbers(buildsNumber);
-        
-        project.enterBuildsAttempts(buildAttempts);
-        browser.pause(2000);
-      //  this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 4);
-      // this.browserClickOnArrayElement("div.ui-helper-clearfix.ng-star-inserted", ind4);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 5);
-        this.browserClickOnArrayElement("div.ui-helper-clearfix.ng-star-inserted", ind5);
-        $("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only").waitForEnabled(5000, true);
+        project.enterBuildsAttempts(buildsAttempts);
+        this.clickProjectFormDropdownArrowOf("Access");
+        this.clickProjectFormOptionOf("Access", "Public");
+        this.clickProjectFormDropdownArrowOf("Project color");
+        this.chooseColorInDropdownList("Red");
+      
     }
-    inputChangedDataInForm(name, description, buildsNumber, buildAttempts, ind5) {
+
+    fillOutChangedDataInForm(projectName, description, buildsNumber, buildsAttempts) {
 
 
-        project.enterProjectName(name);
+        project.enterProjectName(projectName);
         project.enterDescription(description);
         project.enterBuildsNumbers(buildsNumber);
-     
-        project.enterBuildsAttempts(buildAttempts);
-        browser.pause(2000);
-      //  this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 4);
-      // this.browserClickOnArrayElement("div.ui-helper-clearfix.ng-star-inserted", ind4);
-        browser.pause(2000);
-        this.browserClickOnArrayElement("div.ui-dropdown-trigger.ui-state-default.ui-corner-right", 2);
-        this.browserClickOnArrayElement("div.ui-helper-clearfix.ng-star-inserted", ind5);
-        project.clickCreateButton();
+        project.enterBuildsAttempts(buildsAttempts);
+        this.clickProjectFormDropdownArrowOf("Access");
+        this.clickProjectFormOptionOf("Access", "Public");
+        this.clickProjectFormDropdownArrowOf("Project color");
+        this.chooseColorInDropdownList("Red");
+      
     }
-    returnExpectedNotificationDeletionProject(){
-        
-        projectDetails.clickMyProjectTab();
-        browser.pause(3000);
-        const projectNameDeleted = dashboardObject.projectCardTitle[0].getText();
-        const expectednotification = `Project "${projectNameDeleted}" was successfully deleted`
-        return expectednotification;
-    }
-    clickProjectDetailsOnCard() {
-        browser.pause(3000);
-        this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 2);;
-        browser.pause(1000);
-        projectDetails.clickCardMenuButton();
-        browser.pause(1000);
-        this.browserClickOnArrayElement("a.ui-menuitem-link.ui-corner-all.ng-star-inserted", 2);
-    }
-    clickProjectSettingsOnCard() {
 
-        this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 2);
-        browser.pause(3000);
-        projectDetails.clickCardMenuButton();
-        browser.pause(3000);
-        this.browserClickOnArrayElement("a.ui-menuitem-link.ui-corner-all.ng-star-inserted", 3);
+    changeUserInfo(FirstName, LastName, Nick, Git, month, year, day){
+        profile.enterFirstName(FirstName);
+        profile.enterLastName(LastName);
+        profile.enterNickname(Nick);
+        profile.enterGitHub(Git)
+        this.browserClickXPath('//p-calendar/span/input');
+        profile.clickSelectMonth.click();
+        this.browserClick(`option[value='${month}']`);
+        profile.clickSelectYear.click();
+        this.browserClick(`option[value='${year}']`);
+        this.browserClickOnArrayElement("a.ui-state-default.ng-star-inserted", day);
+        profile.clickUpdateButton();
     }
-    DeleteProject() {
-        const deletebtn = $$("button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left")[2];
-        deletebtn.click();
-        const deletebtnconfirm = $$("button.undefined.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left.ng-star-inserted")[0];
-        deletebtnconfirm.click();
+    changeEditorSettings(){
+        this.browserClickOnArrayElement("li.ui-state-default.ui-corner-top.ng-star-inserted", 2);
+        profile.enterlineHeight("14");
+        profile.enterFontSize("14");
+        profile.enterTabSize("3");
+        this.clickInDropdownListArrowOf("Thema:");
+        this.clickInDropdownListThemaOptions("vs");
+        this.clickInDropdownListArrowOf("Scroll beyond last line:");
+        this.clickInDropdownListOptionOf("Scroll beyond last line:", "false");
+        this.clickInDropdownListArrowOf("Cursor style:");
+        this.clickInDropdownListOptionOf("Cursor style:", "block");
+        this.clickInDropdownListArrowOf("Line numbers:");
+        this.clickInDropdownListOptionOf("Line numbers:", "interval");
+        profile.clickSaveButton();
     }
-    returnUrl (){
+
+     returnUrl (){
         const urlPage = new URL(browser.getUrl());
         return urlPage;
     }
-    addToFavourite(index){
-        browser.pause(3000);
-        this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 2);
-        browser.pause(3000);
-        dashboard.starProject(index);
-        browser.pause(3000);
-        const projectNameToFavourite = dashboardObject.projectCardTitle[index].getText();
-        return projectNameToFavourite
-    }
+    
     navigateToFavouriteProjects() {
         this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 1);
     }
     navigateToMyProjects() {
         this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 2);
     }
-   /* openProjectWorkspace(index) {
-        browser.pause(1000);
-        this.browserClickOnArrayElement(dashboardObject.projectCardTitle, index);
-    }*/
-    addCollaborators(nickname) {
-        
-        this.browserClickOnArrayElement(detailsObject.navbarDetailsPage, 2);
-        browser.pause(2000);
-        projectDetails.enterCollaboratorName(nickname);
-        browser.pause(2000);
-        
-        this.browserClickOnArrayElement(detailsObject.listboxCollaborators, 1);
-        browser.pause(2000);
-        this.browserClick("div.ui-dropdown-trigger.ui-state-default.ui-corner-right");
-        browser.pause(2000);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", 3);
-        projectDetails.clickSaveButton();
 
-    }
-    changeCollaboratorsRights(index) {
+    addCollaborators(nickname, AccessRights) {
         
-        this.browserClickOnArrayElement(detailsObject.navbarDetailsPage, 2);
-        this.browserClick("div.ui-dropdown-trigger.ui-state-default.ui-corner-right");
-        browser.pause(2000);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", index);
-        projectDetails.clickSaveButton();
-
-    }
-    deleteCollaborator(index) {
-        
-        this.browserClickOnArrayElement(detailsObject.navbarDetailsPage, 2);
-        browser.pause(3000);
-        projectDetails.clickDeleteButton(index);
-        projectDetails.clickSaveButton();
        
+        detailsObject.collaboratorTab.click();
+        detailsObject.collaboratorTitle.waitForDisplayed(10000);
+        projectDetails.enterCollaboratorName(nickname);
+        detailsObject.collaboratorItemFromList.click();
+        this.browserClickXPath(`//div[contains(text(), "${nickname}")]/../p-dropdown//div[contains(@class, "ui-dropdown-trigger")]`)
+        detailsObject.dropdownlist.waitForDisplayed(10000);
+        this.browserClick(`li[aria-label="${AccessRights}"]`);
+        projectDetails.clickSaveButton();
 
     }
+    changeCollaboratorsRights(nickname, AccessRights) {
+        
+        detailsObject.collaboratorTab.click();
+        detailsObject.collaboratorTitle.waitForDisplayed(10000);
+        this.browserClickXPath(`//div[contains(text(), "${nickname}")]/../p-dropdown//div[contains(@class, "ui-dropdown-trigger")]`)
+        detailsObject.dropdownlist.waitForDisplayed(10000);
+        this.browserClick(`li[aria-label="${AccessRights}"]`);
+        projectDetails.clickSaveButton();
+
+    }
+
     checkDetails() {
-        this.browserClickOnArrayElement(detailsObject.navbarDetailsPage, 1);
+        detailsObject.detailsTab.click();
         browser.pause(1000);
-        this.browserClickOnArrayElement(detailsObject.navbarDetailsPage, 2);
+        detailsObject.collaboratorTab.click();
     }
-    searchProjectByTitle(text, index) {
-        dashboard.enterPtojectTitleforSearch(text);
-        browser.pause(2000);
-        this.browserClickOnArrayElement(dashboardObject.listboxProjects, index);
+    searchProjectByTitleOf(text) {
 
+        dashboard.enterPtojectTitleforSearch(text);
+        detailsObject.dropdownlist.waitForDisplayed(10000);
+        const el = '//p-autocomplete/span/input/following-sibling::div/ul/li[last()]';
+        const bel = $(el);
+        bel.waitForDisplayed(5000);
+        this.browserClickXPath(el);
+         
     }
     changePassword(currentPassword, newPassword) {
         profile.clickMyProfileButton();
         profile.clickEditProfileButton();
-        browser.pause(1000);
         this.browserClickOnArrayElement(profileObject.editingOptions, 5);
-        browser.pause(1000);
         profile.entercurrentPassword(currentPassword);
-      //  browser.pause(1000);
         profile.enterChangedPassword(newPassword);
-        browser.pause(2000);
-       // profile.clickChangeButton();
-       this.browserClickOnArrayElement("span.ui-button-text.ui-clickable", 6);
+        this.browserClickOnArrayElement("span.ui-button-text.ui-clickable", 6);
+    };
+
+    //delete or rewrite this asap
+    openFirstProject() {
+        $('/html/body/app-root/div/app-dashboard-root/div/div[1]/ul/li[2]').waitForDisplayed(2000);
+        $('/html/body/app-root/div/app-dashboard-root/div/div[1]/ul/li[2]').click()
+        $('/html/body/app-root/div/app-dashboard-root/div/app-my-projects/div/app-projects-list/div/div/div[1]/app-project-card/p-card/div').waitForDisplayed(2000);
+        $('/html/body/app-root/div/app-dashboard-root/div/app-my-projects/div/app-projects-list/div/div/div[1]/app-project-card/p-card/div').click();
     }
 }
 

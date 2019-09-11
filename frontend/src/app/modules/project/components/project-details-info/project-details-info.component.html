@@ -39,9 +39,13 @@
             <span class="highlighted">Compiler type: </span>
             <span appCompilerType [compilerType]="project.compilerType"></span>
         </p>
+        <p>
+            <span class="highlighted">Type of access: </span>
+            <span>{{accessType}}</span>
+        </p>
         <!--here will be check(if project access modifier - public)-->
-        <p *ngIf="IsPublic()">
-            <span class="highlighted">ProjectLink: </span>
+        <p *ngIf="IsPublic() && project.projectLink">
+            <span class="highlighted">Project link: </span>
             <span>{{project.projectLink}}</span>
         </p>
     </div>

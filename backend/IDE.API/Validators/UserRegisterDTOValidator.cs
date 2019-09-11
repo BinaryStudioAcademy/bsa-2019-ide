@@ -18,7 +18,7 @@ namespace IDE.API.Validators
                 .Matches("[а-яА-Яa-zA-ZіІїЇ]{2,32}").WithMessage("Last name can only contain latin\\cyrillic letters (upper\\lowercase).");
 
             RuleFor(u => u.NickName)
-                .Length(2, 32).WithMessage("User last name length should have 2-32 symbol")
+                .Length(2, 32).WithMessage("Nickname length should have 2-32 symbol")
                 .Matches("[a-zA-Z0-9]{2,32}").WithMessage("Nickname can only contain latin letters (upper\\lowercase).");
 
             RuleFor(u => u.Email)
@@ -28,7 +28,6 @@ namespace IDE.API.Validators
 
             RuleFor(u=>u.Password)
                 .Length(8, 16).WithMessage("Email length should have 8-16 symbol")
-                //.Matches("[а-яА-Яa-zA-Z0-9./,-()]{8,16}").WithMessage("Password can contain latin letters (upper\\lowercase), digits, \",\" , \", \", \"(\", \")\",\" / \",\" - \".\"");
                 .Matches("[а-яА-Яa-zA-Z0-9]{8,16}").WithMessage("Password can contain latin letters (upper\\lowercase), digits, \",\" , \", \", \"(\", \")\",\" / \",\" - \".\"");
         }
     }

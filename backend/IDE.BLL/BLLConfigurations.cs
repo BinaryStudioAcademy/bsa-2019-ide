@@ -3,16 +3,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using System.Text;
 using IDE.BLL.JWT;
 using IDE.BLL.Services;
 using IDE.BLL.Interfaces;
 using IDE.BLL.MappingProfiles;
 using System;
-using IDE.BLL.HubConfig;
 using Microsoft.Extensions.Logging;
 using IDE.BLL.Services.Queue;
+using IDE.BLL.Services.SignalR;
 
 namespace IDE.BLL
 {
@@ -25,7 +23,7 @@ namespace IDE.BLL
             services.AddScoped<AuthService>();
             services.AddScoped<UserService>();
             services.AddScoped<IEmailService>(x => new EmailService(Environment.GetEnvironmentVariable("emailApiKey"), configuration["CurrentWebAPIAddressForMail"], configuration["websiteMail"], x.GetService<ILogger<EmailService>>()));
-            services.AddScoped<INotificationService,NotificationService>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IProjectMemberSettingsService, ProjectMemberSettingsService>();
             services.AddScoped<IProjectStructureService, ProjectStructureService>();
             services.AddScoped<IProjectTemplateService, ProjectTemplateService>();
@@ -37,9 +35,12 @@ namespace IDE.BLL
             services.AddScoped<IEditorSettingService, EditorSettingService>();
 
             services.AddScoped<IGitService, GitService>();
+            services.AddSingleton<IFileEditStateService, FileEditingStateService>();
+            services.AddSingleton<ConnectionsService>();
 
             services.AddScoped<IQueueService, QueueService>();
 
+            services.AddSingleton<ConfigurationService>();
             services.AddScoped<FileService>();
             services.AddScoped<FileHistoryService>();
             services.AddScoped<ProjectStructureService>();

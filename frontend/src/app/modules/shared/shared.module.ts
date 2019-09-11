@@ -7,6 +7,7 @@ import { ProjectTypeDirective } from 'src/app/directives/projectType/project-typ
 import { LanguageDirective } from 'src/app/directives/language/language.directive';
 import { CompilerTypeDirective } from 'src/app/directives/compilerType/compiler-type.directive';
 import { ProviderDirective } from 'src/app/directives/credentials/provider.directive';
+import { LessSymbolsPipe } from './pipes/less-symbols.pipe';
 
 @NgModule({
     declarations: [
@@ -14,7 +15,8 @@ import { ProviderDirective } from 'src/app/directives/credentials/provider.direc
         ProjectTypeDirective,
         LanguageDirective,
         CompilerTypeDirective,
-        ProviderDirective
+        ProviderDirective,
+        LessSymbolsPipe
     ],
     imports: [
         CommonModule,
@@ -25,7 +27,8 @@ import { ProviderDirective } from 'src/app/directives/credentials/provider.direc
         ProjectTypeDirective,
         LanguageDirective,
         CompilerTypeDirective,
-        ProviderDirective
+        ProviderDirective,
+        LessSymbolsPipe
     ],
     providers: [
         ConfirmationService

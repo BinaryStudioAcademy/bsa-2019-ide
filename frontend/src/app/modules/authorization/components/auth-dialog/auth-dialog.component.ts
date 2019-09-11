@@ -88,7 +88,6 @@ export class AuthDialogComponent implements OnInit {
                     this.toast.success('You have successfully signed in!', `Wellcome, ${result.firstName} ${result.lastName}!`);
                     this.router.navigate(['dashboard']);
                     this.signalRService.addToGroup(this.tokenService.getUserId());
-                    console.log(this.config.data);
                     if(this.config.data.projectId)
                     {
                         this.router.navigate([`project/${this.config.data.projectId}`]);
@@ -139,6 +138,11 @@ export class AuthDialogComponent implements OnInit {
             || (this.lastName !== undefined && this.namesRegexp.test(this.lastName)
             && this.nickName !== undefined && this.nickNameRegexp.test(this.nickName)
             && this.firstName !== undefined && this.namesRegexp.test(this.firstName)));
+    }
+
+    public backToLogin(){
+        this.isRecoverPassword = false;
+        this.title = this.config.data.dialogType === DialogType.SignIn ? 'Log in your account' : 'Create your account';
     }
 
     public recoverPassword() {

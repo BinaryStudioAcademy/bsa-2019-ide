@@ -6,9 +6,12 @@
                 <input class="input-item" [value]="node.label" (focusout)="focusout(node)" 
                         (keyup.enter)="focusout(node)" (keydown)="inputKeyDown($event)" disabled>
         </ng-template>
-        <ng-template let-node  pTemplate="1">
-            <input class="input-item" type="text" [ngModel]="node.label" (focusout)="focusout(node)"
-                        (input)="setIcon(node)" (keyup.enter)="focusout(node)" (keydown)="inputKeyDown($event)" disabled>
+        <ng-template let-node pTemplate="1">
+            <div class="file-container-tree">
+                <input class="input-item" type="text" [ngModel]="node.label" (focusout)="focusout(node)"
+                            (input)="setIcon(node)" (keyup.enter)="focusout(node)" (keydown)="inputKeyDown($event)" disabled>
+                <i *ngIf="isTrue(node.data)" class="pi pi-lock" title="{{ getNickName(node.data) | lessSymbols : 20 }}" style="z-index: 1000"></i>
+            </div>
         </ng-template>
     </p-tree>
     <div *ngIf="showSearchField">
@@ -18,7 +21,7 @@
             <button pButton  type="submit" icon="pi pi-search" (click)="searchByFiles(keywordInput.value)"></button>
         </div>
         <p-tree [loading]="isSearchLoading" emptyMessage="No files found..." selectionMode="single"  [(selection)]="selectedFilteredFile" [value]="filteredFiles"
-                filterMode="strict" (onNodeSelect)="onFilteredFileSelected($event)" class="custom-tree">
+                filterMode="strict" (onNodeSelect)="onFilteredFileSelected()" class="custom-tree">
             <ng-template let-node  pTemplate="1">
                 <div [innerHTML]="node.label"></div>
             </ng-template>

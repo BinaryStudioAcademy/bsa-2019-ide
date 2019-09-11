@@ -63,7 +63,7 @@ namespace BuildServer.Services.Builders
             return buildResult;
         }
 
-        public string Run(string projectName)
+        public string Run(string projectName, params string[] inputs)
         {
             //Run go projects implementation
             throw new NotImplementedException();

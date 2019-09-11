@@ -2,102 +2,113 @@
 <h2 class="title">{{title}}</h2>
 
 <form name="authForm" #authForm="ngForm" (ngSubmit)="close()">
-  <div *ngIf="config.data.dialogType === dialogType.SignUp">
-    <div class="auth-field">
-      <label for="float-firstName-input">Your first name</label>
-      <input id="float-firstName-input" type="text" size="30" [(ngModel)]="firstName" name="authFirstName"
-        #upFirstname="ngModel" pInputText pattern="[а-яА-Яa-zA-ZіІїЇ]{2,32}" maxlength="32" minlength="2" >
-        <div *ngIf="upFirstname.invalid && (upFirstname.dirty || upFirstname.touched)" class="alert-danger">
-          <div *ngIf="upFirstname.errors.pattern">
-            First name can only contain latin\cyrillic letters (upper\lowercase).
-          </div>
-          <div *ngIf="upFirstname.errors.minlength">
-            First name mininum length is 2.
-          </div>
-          <div *ngIf="upFirstname.errors.maxlength">
-            First name maximum length is 32.
-          </div>
+    <div *ngIf="config.data.dialogType === dialogType.SignUp">
+        <div class="auth-field">
+            <label for="float-firstName-input">Your first name</label>
+            <input id="float-firstName-input" type="text" size="30" [(ngModel)]="firstName" name="authFirstName"
+                #upFirstname="ngModel" pInputText pattern="[а-яА-Яa-zA-ZіІїЇ]{2,32}" maxlength="32" minlength="2">
+            <div *ngIf="upFirstname.invalid && (upFirstname.dirty || upFirstname.touched)" class="alert-danger">
+                <div *ngIf="upFirstname.errors.pattern">
+                    First name can only contain latin\cyrillic letters (upper\lowercase).
+                </div>
+                <div *ngIf="upFirstname.errors.minlength">
+                    First name mininum length is 2.
+                </div>
+                <div *ngIf="upFirstname.errors.maxlength">
+                    First name maximum length is 32.
+                </div>
+            </div>
+        </div>
+        <div class="auth-field">
+            <label for="float-lastName-input">Your last name</label>
+            <input id="float-lastName-input" type="text" size="30" [(ngModel)]="lastName" name="authLastName"
+                #upLastname="ngModel" pInputText pattern="[а-яА-Яa-zA-ZіІїЇ]{2,32}" maxlength="32" minlength="2">
+            <div *ngIf="upLastname.invalid && (upLastname.dirty || upLastname.touched)" class="alert-danger">
+                <div *ngIf="upLastname.errors.pattern">
+                    Last name can only contain latin\cyrillic letters (upper\lowercase).
+                </div>
+                <div *ngIf="upLastname.errors.minlength">
+                    Last name mininum length is 2.
+                </div>
+                <div *ngIf="upLastname.errors.maxlength">
+                    Last name maximum length is 32.
+                </div>
+            </div>
+        </div>
+        <div class="auth-field">
+            <label for="float-nickName-input">Your nickname</label>
+            <input id="float-nickName-input" type="text" size="30" [(ngModel)]="nickName" name="authNickName"
+                #upNickName="ngModel" pInputText pattern="[a-zA-Z0-9]{2,32}" maxlength="32" minlength="2">
+            <div *ngIf="upNickName.invalid && (upNickName.dirty || upNickName.touched)" class="alert-danger">
+                <div *ngIf="upNickName.errors.pattern">
+                    Last name can only contain latin letters (upper\lowercase) and digits.
+                </div>
+                <div *ngIf="upNickName.errors.minlength">
+                    Nickname mininum length is 2.
+                </div>
+                <div *ngIf="upNickName.errors.maxlength">
+                    Nickname maximun length is 32.
+                </div>
+            </div>
         </div>
     </div>
     <div class="auth-field">
-      <label for="float-lastName-input">Your last name</label>
-      <input id="float-lastName-input" type="text" size="30" [(ngModel)]="lastName" name="authLastName"
-        #upLastname="ngModel" pInputText pattern="[а-яА-Яa-zA-ZіІїЇ]{2,32}" maxlength="32" minlength="2">
-        <div *ngIf="upLastname.invalid && (upLastname.dirty || upLastname.touched)" class="alert-danger">
-          <div *ngIf="upLastname.errors.pattern">
-            Last name can only contain latin\cyrillic letters (upper\lowercase).
-          </div>
-          <div *ngIf="upLastname.errors.minlength">
-            Last name mininum length is 2.
-          </div>
-          <div *ngIf="upLastname.errors.maxlength">
-            Last name maximum length is 32.
-          </div>
+        <label for="float-email-input">Your E-mail</label>
+        <input id="float-email-input" type="text" size="30" [(ngModel)]="email" name="email" #inEmail="ngModel"
+            pInputText required
+            pattern="[a-zA-Z0-9]{1}[-a-zA-Z0-9._]{1,33}[a-zA-Z0-9]{1}@[a-zA-Z0-9]{1,17}(-[a-zA-Z0-9]{1,17})?[.][a-zA-Z]{1,17}">
+        <div *ngIf="inEmail.invalid && (inEmail.dirty || inEmail.touched)" class="alert-danger">
+            <div *ngIf="inEmail.errors.pattern">
+                Email can only contain latin letters (upper\lowercase), digits, ".", "_", "@", ".", "-" can not be first
+                or last symbol.
+            </div>
+            <div *ngIf="inEmail.errors.required">
+                Email is required.
+            </div>
         </div>
     </div>
-    <div class="auth-field">
-      <label for="float-nickName-input">Your nickname</label>
-      <input id="float-nickName-input" type="text" size="30" [(ngModel)]="nickName" name="authNickName"
-        #upNickName="ngModel" pInputText pattern="[a-zA-Z0-9]{2,32}" maxlength="32" minlength="2">
-        <div *ngIf="upNickName.invalid && (upNickName.dirty || upNickName.touched)" class="alert-danger">
-            <div *ngIf="upNickName.errors.pattern">
-              Last name can only contain latin letters (upper\lowercase) and digits.
+    <div class="auth-field" *ngIf="!isRecoverPassword">
+        <label>Your password</label>
+        <input pPassword [(ngModel)]="password" name="password" type="password" minlength="8" #Password="ngModel"
+            maxlength="16" required pattern="[а-яА-Яa-zA-Z0-9]{8,16}" />
+        <div *ngIf="Password.invalid && (Password.dirty || Password.touched)" class="alert-danger">
+            <div *ngIf="Password.errors.pattern">
+                Password can contain latin letters (upper\lowercase), digits.
             </div>
-            <div *ngIf="upNickName.errors.minlength">
-              Last name mininum length is 2.
+            <div *ngIf="Password.errors.required">
+                Password is required.
             </div>
-            <div *ngIf="upNickName.errors.maxlength">
-              Last name maximun length is 32.
+            <div *ngIf="Password.errors.minlength">
+                Password mininum length is 8.
             </div>
-          </div>
+            <div *ngIf="Password.errors.maxlength">
+                Password maximun length is 16.
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="auth-field">
-    <label for="float-email-input">Your E-mail</label>
-    <input id="float-email-input" type="text" size="30" [(ngModel)]="email" name="email" #inEmail="ngModel" pInputText
-      required pattern="[a-zA-Z0-9]{1}[-a-zA-Z0-9._]{1,33}[a-zA-Z0-9]{1}@[a-zA-Z0-9]{1,17}[.][a-zA-Z]{1,17}">
-    <div *ngIf="inEmail.invalid && (inEmail.dirty || inEmail.touched)" class="alert-danger">
-      <div *ngIf="inEmail.errors.pattern">
-        Email can only contain latin letters (upper\lowercase), digits, ".", "_", "@", ".", "-" can not be first or last symbol.
-      </div>
-      <div *ngIf="inEmail.errors.required">
-        Email is required.
-      </div>
-    </div>
-  </div>
-  <div class="auth-field" *ngIf="!isRecoverPassword">
-    <label>Your password</label>
-    <input pPassword [(ngModel)]="password" name="password" type="password" minlength="8" #Password="ngModel" maxlength="16" required
-    pattern="[а-яА-Яa-zA-Z0-9]{8,16}"/>
-    <div *ngIf="Password.invalid && (Password.dirty || Password.touched)" class="alert-danger">
-      <div *ngIf="Password.errors.pattern">
-        Password can contain latin letters (upper\lowercase), digits.
-      </div>
-      <div *ngIf="Password.errors.required">
-        Password is required.
-      </div>
-      <div *ngIf="Password.errors.minlength">
-        Password mininum length is 8.
-      </div>
-      <div *ngIf="Password.errors.maxlength">
-        Password maximun length is 16.
-      </div>
-    </div>
-  </div>
 </form>
-<div class="native-auth-button">    
+<div class="native-auth-button">
     <div class="p-grid p-justify-center" *ngIf="isSpinner">
         <p-progressSpinner [style]="{width: '75px', height: '75px'}"></p-progressSpinner>
     </div>
-    
-    <button type="submit" pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignUp && !isSpinner"
-    (click)="signUp()" [disabled]="!isDataFull()">CREATE ACCOUNT</button>
-    
-    <button pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignIn && !isSpinner && !isRecoverPassword" (click)="signIn()"
-        [disabled]="!isDataFull()">LOG IN ACCOUNT</button>
-    <p class="auth-recover" *ngIf="config.data.dialogType === dialogType.SignIn && !isRecoverPassword"><span (click)="recoverPassword()">Forgot password?</span></p>
 
-    <button pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignIn && !isSpinner && isRecoverPassword" (click)="recoverPassword()">Recover password</button>
+    <button type="submit" pButton class="auth-btn" *ngIf="config.data.dialogType === dialogType.SignUp && !isSpinner"
+        (click)="signUp()" [disabled]="!isDataFull()">CREATE ACCOUNT</button>
+
+    <button pButton class="auth-btn"
+        *ngIf="config.data.dialogType === dialogType.SignIn && !isSpinner && !isRecoverPassword" (click)="signIn()"
+        [disabled]="!isDataFull()">LOG IN ACCOUNT</button>
+    <p class="auth-recover" *ngIf="config.data.dialogType === dialogType.SignIn && !isRecoverPassword"><span
+            (click)="recoverPassword()">Forgot password?</span></p>
+
+    <button pButton class="auth-btn"
+        *ngIf="config.data.dialogType === dialogType.SignIn && !isSpinner && isRecoverPassword"
+        (click)="recoverPassword()">
+        Recover password
+    </button>
+    <p class="auth-recover" *ngIf="config.data.dialogType === dialogType.SignIn && !isSpinner && isRecoverPassword"><span
+        (click)="backToLogin()">Back to login</span></p>
+
 </div>
 <div *ngIf="!isRecoverPassword">
     <p class="auth-or">OR</p>

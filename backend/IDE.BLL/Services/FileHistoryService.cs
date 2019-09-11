@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using IDE.BLL.ExceptionsCustom;
-using IDE.Common.DTO.File;
 using IDE.Common.ModelsDTO.DTO.File;
 using IDE.Common.ModelsDTO.Enums;
 using IDE.DAL.Entities.NoSql;
@@ -59,41 +58,39 @@ namespace IDE.BLL.Services
             return _mapper.Map<FileHistoryDTO>(fileHistory);
         }
 
-        public async Task<IEnumerable<FileShownHistoryDTO>> GetLastHistoriesForProject(int projectId)
+        public async Task<FileHistoryDiffContentDTO> GetDiffByIdAsync(string id)
+        {
+            var fileHistory = await _fileHistoryRepository.GetByIdAsync(id);
+            if (fileHistory == null)
+            {
+                _logger.LogWarning(LoggingEvents.HaveException, $"Not found file history");
+                throw new NotFoundException(nameof(FileHistory), id);
+            }
+
+            return _mapper.Map<FileHistoryDiffContentDTO>(fileHistory);
+        }
+
+        public async Task<IList<FileHistoryListDTO>> GetHistoriesForProject(int projectId)
         {
             var filesForProject = await _fileRepository.GetAllAsync(f => f.ProjectId == projectId);
 
-            var files = new List<FileShownHistoryDTO>();
+            var files = new List<FileHistoryListDTO>();
             
             foreach(var file in filesForProject)
             {
-                var fileHistory = (await _fileHistoryRepository.GetAllAsync(fh => fh.FileId == file.Id)).OrderBy(fh => fh.CreatedAt).Last();
-                var userNickName = (await _userService.GetUserById(fileHistory.CreatorId)).NickName;
-
-                files.Add(new FileShownHistoryDTO()
+                var fileHistory = (await _fileHistoryRepository.GetAllAsync(fh => fh.FileId == file.Id))
+                    .OrderByDescending(fh => fh.ChangedAt)
+                    .Select(f => _mapper.Map<FileHistoryDTO>(f))
+                    .ToList();
+                files.Add(new FileHistoryListDTO()
                 {
-                    Content = fileHistory.Content,
-                    FileName = fileHistory.Name,
-                    Id = fileHistory.Id,
-                    UpdatedAt = fileHistory.CreatedAt,
-                    CreatorNickname = userNickName
+                    Id = file.Id,
+                    FileName = file.Name,
+                    History = fileHistory
                 });
             }
 
-            return files.OrderByDescending(f => f.UpdatedAt);
-
-            //return filesForProject.Select(async (f) =>
-            //{
-            //    var fileHistory = (await _fileHistoryRepository.GetAllAsync(fh => fh.FileId == f.Id)).OrderBy(fh => fh.CreatedAt).Last();
-            //    return new FileShownHistoryDTO()
-            //    {
-            //        Content = fileHistory.Content,
-            //        FileName = fileHistory.Name,
-            //        Id = fileHistory.Id,
-            //        UpdatedAt = fileHistory.CreatedAt,
-            //        CreatorNickname = (await _userService.GetUserById(fileHistory.CreatorId)).NickName
-            //    };
-            //});
+            return files;
         }
 
         public async Task<FileHistoryDTO> CreateAsync(FileHistoryDTO item)

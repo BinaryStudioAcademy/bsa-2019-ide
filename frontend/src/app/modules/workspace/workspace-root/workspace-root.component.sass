@@ -6,61 +6,75 @@
     background-color: #f4f4f4
 .top-panel
     padding-left: 2rem
-    height:33px
+    height: 37px
     background-color: #f4f4f4
 .file-browser-content
     background-color: white
 
 .editor-content
     opacity: 0.5
-    
+
+.btn
+    display: inline-flex
+    flex-direction: row-reverse
 
 .inner-wrapper
     height: 100%
 
-.large 
+.large
     width: 100%
- 
+
 .hor-navbar button
     background-color: #c8d1de
+    margin-right: 2px
+    margin-left: 2px
+
+.hor-navbar
+    display: flex
+    justify-content: space-between
+    align-items: center
+
+.hor-buttons-group
+    display: flex
 
 .left-panel
-    width: 2rem
+    width: 2.1rem
+
+.project-name
+    margin-left: 10px
+    font-weight: 900
+    
+    
+    padding-bottom: 5px
+    padding-top: 3px
+    padding-right: 5px
+    padding-left: 5px
+    border-radius: 4px
+
+.draggableLine
+    width: 3px
+    height: 100%
+    border-left: 3px double black
+    cursor: col-resize
+
+.browser
+    width: 30%
+
+.workspace
+    width: calc(70% - 3px)
 
 
-// *****below styles are for resizable blocks****
+::ng-deep .ui-button-icon-left.ui-clickable.pi.pi-save-all
+    &:before
+        content: "\e95b"
+        position: relative
+        top: -8px
+        left: 1px
 
-// mwlResizable 
-//     box-sizing: border-box
-
-// .resize-rect 
-//     position: relative
-//     display: flex
-//     width: 100px
-//     .resize-handle-top,
-//     .resize-handle-bottom 
-//         position: absolute
-//         height: 5px
-//         cursor: row-resize
-//         width: 100%
-//         background-color: #eee
-//     .resize-handle-left,
-//     .resize-handle-right 
-//         position: absolute
-//         height: 100%
-//         cursor: col-resize
-//         width: 5px
-//         background-color: #eee
-//     .resize-handle-top 
-//         top: 0
-//     .resize-handle-bottom 
-//         bottom: 0
-//     .resize-handle-left 
-//         left: 0
-//     .resize-handle-right 
-//         right: 0
-
-
-
-
-     
+        font-size: 0.7em
+    &::after
+        content: "\e95b"
+        position: absolute
+        left: -3px
+        top: 3px
+        font-size: 0.7em

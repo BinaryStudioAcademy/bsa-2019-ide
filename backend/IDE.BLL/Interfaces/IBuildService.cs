@@ -11,7 +11,7 @@ namespace IDE.BLL.Interfaces
     {
         Task BuildProject(int projectId, int userId, ProjectLanguageType languageType);
         Task<IEnumerable<BuildDescriptionDTO>> GetBuildsByProjectId(int userId);
-        Task RunProject(int projectId, string userIdentifier);
-        Task<BuildDTO> CreateFinishBuildArtifacts(BuildResultDTO result);
+        Task RunProject(int projectId, string userIdentifier, params string[] inputs);
+        Task<BuildDTO> CreateFinishBuildResult(BuildResultDTO result);
     }
 }

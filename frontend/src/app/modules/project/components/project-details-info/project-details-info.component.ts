@@ -48,7 +48,6 @@ export class ProjectDetailsInfoComponent implements OnInit {
         this.projectService.exportProject(this.project.id)
             .subscribe(
             (result) => {
-                console.log(result);
                 const blob = new Blob([result.body], {
                     type: 'application/zip'
                 });
@@ -57,7 +56,7 @@ export class ProjectDetailsInfoComponent implements OnInit {
             },
             (error) => {
                  this.toastService.error('Error: can not download', 'Error Message', {tapToDismiss: true});
-                 console.log(error);
+                 console.log('error', error);
             });
     }
     remove(event: boolean) {
@@ -77,5 +76,11 @@ export class ProjectDetailsInfoComponent implements OnInit {
     }
     public showSettings() {
         this.projectSettingsService.show(ProjectType.Update, this.project.id);
+    }
+
+    get accessType() {
+        if (this.project.accessModifier === AccessModifier.private)
+            return 'private';
+        return 'public';
     }
 }

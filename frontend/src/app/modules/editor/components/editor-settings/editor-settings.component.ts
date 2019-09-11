@@ -20,19 +20,18 @@ export class EditorSettingsComponent implements OnInit {
 
     @Input() user: UserDetailsDTO;
     project: ProjectInfoDTO;
-    public editorOptions: EditorSettingDTO =
-        {
-            lineNumbers: "on",
-            roundedSelection: false,
-            scrollBeyondLastLine: false,
-            readOnly: false,
-            fontSize: 20,
-            tabSize: 5,
-            cursorStyle: "line",
-            lineHeight: 20,
-            theme: "vs",
-            language:""
-        };
+    public editorOptions: EditorSettingDTO = {
+        lineNumbers: "on",
+        roundedSelection: false,
+        scrollBeyondLastLine: false,
+        readOnly: false,
+        fontSize: 20,
+        tabSize: 5,
+        cursorStyle: "line",
+        lineHeight: 20,
+        theme: "vs",
+        language:""
+    };
     public startEditorOptions: EditorSettingDTO;
     public editorSettingsForm: FormGroup;
     public themes: SelectItem[];
@@ -145,7 +144,6 @@ export class EditorSettingsComponent implements OnInit {
     }
 
     public InitializeEditorSettings(): void {
-        console.log(this.settings);
         if (!this.settings) {
             this.user.editorSettings = this.editorOptions;
             this.settings = this.editorOptions;

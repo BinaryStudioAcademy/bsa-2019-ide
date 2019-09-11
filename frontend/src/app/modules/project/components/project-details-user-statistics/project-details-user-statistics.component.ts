@@ -27,12 +27,9 @@ export class ProjectDetailsUserStatisticsComponent implements OnInit {
 
     public OpenUserDetailedPage(Id: number) {
         console.log(Id);
-        
     }
 
     ngOnInit() {
-       
-
         this.projService.getAuthorOfProjectStatistics(this.project).subscribe(res => {
             const { id, name, updatedFiles, createdFiles, totalFilesNum } = res;
             this.totalFilesNum = totalFilesNum;
@@ -51,11 +48,9 @@ export class ProjectDetailsUserStatisticsComponent implements OnInit {
         });
         this.cols = [
             { field: 'userName', header: 'User name' },
-            {field: 'isAuthor', header: 'Project Role'},
+            { field: 'isAuthor', header: 'Project Role'},
             { field: 'updatedFiles', header: 'Updated files' },
-            { field: 'createdFiles', header: 'Created files' },
-
+            { field: 'createdFiles', header: 'Created files' }
         ];
-        
     }
 }

@@ -3,47 +3,59 @@ import * as signalR from "@aspnet/signalr";
 import { NotificationDTO } from 'src/app/models/DTO/Common/notificationDTO';
 import { environment } from 'src/environments/environment';
 import { NotificationService } from '../notification.service/notification.service';
+import { TokenService } from '../token.service/token.service';
+import { NotificationType } from 'src/app/models/Enums/notificationType';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SignalRService {
 
-    constructor(private notificationService: NotificationService) { }
-
     public notifications: NotificationDTO[] = [];
+    public runState: boolean = true;
+    public buildState: boolean = true;
+    public notification: NotificationDTO;
 
     private hubConnection: signalR.HubConnection;
     private connectionId: string;
     private userId: number;
 
+    constructor(
+        private notificationService: NotificationService,
+        private tokenService: TokenService
+    ) { }
+
     public startConnection = (isAuth: boolean, userId: number) => {
         this.userId = userId;
+
         this.hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl(`${environment.apiUrl}notification`)
+            .withUrl(`${environment.apiUrl}notification`, {
+                skipNegotiation: true,
+                transport: signalR.HttpTransportType.WebSockets,
+                accessTokenFactory: () => this.tokenService.getAccessToken()
+            })
             .build();
 
         this.hubConnection
             .start()
             .then(() => {
                 this.addConnectionIdListener();
+                this.runStateListener();
                 console.log('SignalR Connection started');
-                if (isAuth)
-                {
+                if (isAuth) {
                     this.addToGroup(userId);
                     this.join(userId);
                 }
             })
-            .catch(err => console.log('Error while starting connection: ' + err))
+            .catch((error) => console.log('Error while starting connection: ' + error))
     }
 
     public getNotifications(): NotificationDTO[] {
         return this.notifications;
     }
 
-    public crearData()
-    {
-        this.notifications=[];
+    public clearData() {
+        this.notifications = [];
     }
 
     public addToGroup(userId: number): void {
@@ -58,18 +70,27 @@ export class SignalRService {
 
     public addTransferChartDataListener(): NotificationDTO[] {
         this.hubConnection.on('transferchartdata', (notification) => {
-            this.notifications.push(notification);
+            this.notifications.unshift(notification);
+        });
+        this.hubConnection.on('transferRunResult', (notification) => {
+            this.notifications.unshift(notification);
         });
         return this.notifications;
-    }   
+    }
 
-    public addProjectRunResultDataListener(): void {
-        this.hubConnection.on('transferRunResult', (notification) => {
-            this.notifications.push(notification);
+    public runStateListener(): void {
+        this.hubConnection.on('progressState', (state: NotificationDTO) => {
+            if (state.type == NotificationType.projectRun) {
+                this.runState = false;
+            }
+            if (state.type == NotificationType.projectBuild) {
+                this.notification = state;
+                this.buildState = false;
+            }
         });
-    }  
+    }
 
-    public addConnectionIdListener(): void{
+    public addConnectionIdListener(): void {
         this.hubConnection.on('sendConnectionId', (connectionId, userId) => {
             if (userId === this.userId) {
                 this.connectionId = connectionId;
@@ -81,24 +102,19 @@ export class SignalRService {
         return this.connectionId;
     }
 
-    public markNotificationAsRead(notificationId: number): void
-    {
+    public markNotificationAsRead(notificationId: number): void {
         this.hubConnection.invoke("MarkAsRead", notificationId)
             .catch((error) => console.log(error));
-    }    
+    }
 
-    public deleteTransferChartDataListener()
-    {
+    public deleteDataListeners() {
         this.hubConnection.off('transferchartdata');
+        this.hubConnection.off('transferRunResult');
         this.hubConnection.off('sendConnectionId');
+        this.hubConnection.off('progressState');
     }
 
-    public deleteConnectionIdListener()
-    {
+    public deleteConnectionIdListener() {
         this.hubConnection.off('sendConnectionId');
     }
-
-    public deleteProjectRunDataListener(): void {
-        this.hubConnection.off('projectRunResult');
-    }  
 }

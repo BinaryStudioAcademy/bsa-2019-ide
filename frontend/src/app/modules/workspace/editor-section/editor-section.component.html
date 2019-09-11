@@ -1,3 +1,5 @@
+
+<p-confirmDialog></p-confirmDialog>
 <div class="tab-menu-wrapper">
     <p-tabMenu [model]="tabs" [activeItem]="activeItem">
         <ng-template pTemplate="item" let-item let-i="index">
@@ -15,5 +17,5 @@
 </div>
 <i *ngIf="openedFiles.length === 0" class="editor-backgound pi pi-users"></i>
 <ngx-monaco-editor #monacoEditor *ngIf="openedFiles.length > 0 && monacoOptions" class="my-code-editor" [options]="monacoOptions" [(ngModel)]="code"
-    (ngModelChange)="onChange($event)">
+    (ngModelChange)="onChange($event)" [ngStyle]="{'height': getProjectColor()}">
 </ngx-monaco-editor>

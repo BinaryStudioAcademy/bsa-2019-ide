@@ -1,4 +1,4 @@
-<p-card routerLink="/workspace/{{project.id}}" subheader="{{project.creator}}">
+<p-card routerLink="/workspace/{{project.id}}" subheader="{{ project.creator | lessSymbols: 21 }}">
     <p-header>
         <div class="header" [ngStyle]="{ 'background-color': project.color }">
             <div class="title-body">
@@ -19,6 +19,11 @@
         </div>
     </p-header>
     <div>
+        <p>
+            <span class="highlighted">Access type:</span> {{accessType}}
+            <i *ngIf="project.isPublic" class="pi pi-lock-open access-type"></i>
+            <i *ngIf="!project.isPublic" class="pi pi-lock access-type"></i>
+        </p>
         <p>
             <span class="highlighted">Created:</span> {{project.created | date:'d MMMM yyyy'}}
         </p>

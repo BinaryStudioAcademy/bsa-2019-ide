@@ -1,6 +1,6 @@
 import { MenuItem, TreeNode } from 'primeng/primeng';
 import { FileBrowserService } from './../../../services/file-browser.service';
-import { Component, OnInit, Output, EventEmitter, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { TreeNodeType } from "../../../models/Enums/treeNodeType"
 import { ActivatedRoute } from '@angular/router';
 import { FileService } from 'src/app/services/file.service/file.service';
@@ -14,15 +14,13 @@ import { Extension } from '../model/extension';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import filesExtensions from '../../../assets/file-extensions.json';
 import defaultExtensions from '../../../assets/newFilesDefaultExtensions.json';
-import { FileUpdateDTO } from 'src/app/models/DTO/File/fileUpdateDTO';
-import { delay, throwIfEmpty } from 'rxjs/operators';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { FileRenameDTO } from '../../../models/DTO/File/fileRenameDTO';
-import {ProgressBarModule} from 'primeng/progressbar';
 import { saveAs } from 'file-saver';
 import { SearchFileService } from 'src/app/services/search-file.service/search-file.service';
 import { FileSearchResultDTO } from 'src/app/models/DTO/File/fileSearchResultDTO';
 import { Observable } from 'rxjs';
+import { FileEditService } from 'src/app/services/file-edit.service/file-edit.service';
 
 export interface SelectedFile {
     fileId: string;
@@ -38,7 +36,7 @@ export interface SelectedFile {
 export class FileBrowserSectionComponent implements OnInit {
     
     @Input() project: ProjectInfoDTO;
-    @Input() showSearchField:boolean;
+    @Input() showSearchField: boolean;
     @Output() fileSelected = new EventEmitter<SelectedFile>();
     @Output() renameFile = new EventEmitter<FileRenameDTO>();
     @Input() events: Observable<void>;
@@ -55,7 +53,6 @@ export class FileBrowserSectionComponent implements OnInit {
     public selectedFilteredFile: TreeNode;
     public isSearchLoading: boolean = false;
 
-
     private lastSelectedElement: any;
     private extensions: Extension[];
     private defaultExtension: string;
@@ -64,7 +61,6 @@ export class FileBrowserSectionComponent implements OnInit {
     private lastActionFolderCreated: boolean = false;
     private lastCreatedNode: TreeNode;
     private eventsSubscription: any;
-    private currentInputPos: 0;
     private fileNameRegex: RegExp;
 
     constructor(private projectStructureService: FileBrowserService,
@@ -75,8 +71,9 @@ export class FileBrowserSectionComponent implements OnInit {
                 private toast: ToastrService,
                 private hotkeys: HotkeyService,
                 private fileBrowserService: FileBrowserService,
-                private projectService: ProjectService) {
-        this.hotkeys.addShortcut({keys: 'shift.e'})
+                private projectService: ProjectService,
+                private filesEditService: FileEditService) {
+        this.hotkeys.addShortcut({keys: 'control.e'})
         .subscribe(()=>{
           this.expand();
         });
@@ -93,6 +90,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 this.files.push(this.projectStructureFormaterService.toTreeView(response.body));
                 this.setTreeIcons(this.files[0]);
                 this.files[0].expanded = true;
+                this.filesEditService.getProjectFiles(this.projectId); 
             },
             (error) => {
                 console.log(error);
@@ -107,7 +105,7 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'delete', icon: 'pi pi-fw pi-trash', command: () => this.delete(this.selectedItem) },
             { label: 'info', icon: 'pi pi-fw pi-info', command: () => this.openInfoWindow(this.selectedItem)},
             { label: 'rename', icon: 'pi pi-fw pi-refresh', command: () => this.rename(this.selectedItem)},
-            { label: 'download', icon: 'pi pi-download', command: (event) => this.download(this.selectedItem) },
+            { label: 'download', icon: 'pi pi-download', command: () => this.download(this.selectedItem) },
             { label: 'import', icon: 'pi pi-upload', command: ()=> this.openImportWindow(this.selectedItem)}
         ];
 
@@ -142,6 +140,31 @@ export class FileBrowserSectionComponent implements OnInit {
         )
     }
 
+    public changeFileState(fileId: string, state: boolean, nickName: string) {
+        this.changeFilesState(fileId, state, nickName, this.files);
+    }
+
+    private changeFilesState(fileId: string, state: boolean, nickName: string, tree: TreeNode[]) { // then refreshing the page, this method get undefined values
+        tree.forEach(f => {
+            if(f.type === TreeNodeType.file.toString()) {
+                if (f.key === fileId) {
+                    f.data = { state: state, nickName: nickName };
+                    return;
+                }
+            } else {
+                this.changeFilesState(fileId, state, nickName, f.children);
+            }
+        });
+    }
+
+    public isTrue(data?: any) {
+        return data !== undefined && data !== null && data.state;
+    }
+
+    public getNickName(data?: any) {
+        return data !== null ? data.nickName : "";
+    }
+
     private downloadFolder(node: TreeNode){
         if (!node.children || node.children.length == 0)
         {
@@ -150,7 +173,6 @@ export class FileBrowserSectionComponent implements OnInit {
         }
         this.projectService.exportFolder(this.project.id, node.key).subscribe(
         (result) => {    
-            console.log(result);
             const blob = new Blob([result.body], {
                 type: 'application/zip'
             });
@@ -164,7 +186,6 @@ export class FileBrowserSectionComponent implements OnInit {
     }
     
     private download(node: TreeNode){
-        console.log(this.files);
         if (node.type == TreeNodeType.file.toString()){            
             this.downloadFile(node);
         }
@@ -222,6 +243,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 type : element.type === TreeNodeType.folder.toString() ?
                     TreeNodeType.folder : TreeNodeType.file,
                 nestedFiles : [],
+                isOpened: false,
                 size: 0
             };
             file.nestedFiles = this.getFileStructure(element.children);
@@ -240,9 +262,7 @@ export class FileBrowserSectionComponent implements OnInit {
         };
 
         this.projectStructureService.updateProjectStructure(this.projectId, projectStructured).subscribe(
-            (response) => {
-
-            },
+            () => { },
             (error) => {
                 console.log(error);
             }
@@ -398,7 +418,7 @@ export class FileBrowserSectionComponent implements OnInit {
             return;
         }
         const fileRename: FileRenameDTO = { name: node.label, id: node.key };
-        this.fileService.updateFileName(fileRename).subscribe((response) => {
+        this.fileService.updateFileName(fileRename).subscribe(() => {
             this.toast.success(`Successfully renamed to "${newName}"`, "Success Message", { tapToDismiss: true })
             this.updateProjectStructure();
             this.renameFile.emit(fileRename);
@@ -486,7 +506,6 @@ export class FileBrowserSectionComponent implements OnInit {
         this.isSearchLoading = true;
         this.searchFileService.find(query, this.projectId).subscribe(
             (response) => {
-                console.log(response.body);
                 this.fileSearchResults = response.body;
                 let id : number = 1;
                 this.filteredFiles = [];
@@ -503,10 +522,10 @@ export class FileBrowserSectionComponent implements OnInit {
                     };
                     newNode.children = [];
                     newNode.expanded = true;
-                    if (file.hightlights && file.hightlights.content)
+                    if (file.hightlights && file.hightlights.length)
                     {
 
-                        file.hightlights.content.forEach(highlight => { 
+                        file.hightlights.forEach(highlight => { 
                             const newChildNode : TreeNode = {
                                 type: TreeNodeType.file.toString(),
                                 label: highlight,
@@ -520,7 +539,6 @@ export class FileBrowserSectionComponent implements OnInit {
                     this.setTreeIcons(newNode);
                     this.filteredFiles.push(newNode);
                 })
-                console.log(this.filteredFiles);
                 this.isSearchLoading = false;
             },
             (error) => {
@@ -536,7 +554,7 @@ export class FileBrowserSectionComponent implements OnInit {
         this.filteredFiles = null;
     }
 
-    public onFilteredFileSelected(event){
+    public onFilteredFileSelected(){
         const selectedItem = this.selectedFilteredFile.parent === undefined ? 
             this.selectedFilteredFile :
             this.selectedFilteredFile.parent;
@@ -546,7 +564,6 @@ export class FileBrowserSectionComponent implements OnInit {
             fileIcon: selectedItem.icon,
             filterString: this.searchField
         };
-        console.log(selectedFile);
         this.fileSelected.emit(selectedFile);
     }
 
@@ -578,7 +595,7 @@ export class FileBrowserSectionComponent implements OnInit {
             const selectedFile: SelectedFile = {fileId: nodeSelected.key, fileIcon: nodeSelected.icon};
             this.fileSelected.emit(selectedFile);
         }
-    }
+    }   
 
     nodeCompare(a : TreeNode, b : TreeNode) : number {
         if (+a.type < (+b.type)){

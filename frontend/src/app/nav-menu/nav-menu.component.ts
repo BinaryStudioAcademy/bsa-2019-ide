@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ɵConsole } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { AuthDialogService } from '../services/auth-dialog.service/auth-dialog.service';
 import { DialogType } from '../modules/authorization/models/auth-dialog-type';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, tap } from 'rxjs/operators';
 import { ProjectService } from '../services/project.service/project.service';
 import { TokenService } from '../services/token.service/token.service';
 import { SearchProjectDTO } from '../models/DTO/Project/searchProjectDTO'
@@ -25,7 +25,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
     authUserItems: MenuItem[];
     unAuthUserItems: MenuItem[];
 
-    public userName: string;
+    public userNickName: string;
     public userAvatar: string;
     public project: SearchProjectDTO;
     public currProject: SearchProjectDTO;
@@ -73,10 +73,11 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         ];
 
         this.tokenService.isAuthenticatedEvent$
-            .pipe(takeUntil(this.unsubscribe$))
+            .pipe(takeUntil(this.unsubscribe$), tap(isAuth => { if (isAuth) this.userNickName = this.tokenService.getUser().nickName; }))
             .subscribe((auth) => {
+
                 this.isAuthorized = auth;
-                if (this.isAuthorized && this.userId) {
+                if (this.isAuthorized) {
                     this.getUser();
                     this.data = this.signalRService.addTransferChartDataListener();
                     this.loadNotifications(this.userId);
@@ -92,7 +93,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.items = [
             {
                 label: 'Log out', icon: 'pi pi-sign-out', command: () => {
-                    this.LogOut();
+                    this.logOut();
                 }
             }
         ];
@@ -105,32 +106,46 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.router.navigate([`/workspace/${notification.projectId}`]);
     }
 
+    public hideNotificationPanel() {
+        this.showNotification = false;
+        this.deleteNotificationPanel();
+    }
+
     public loadNotifications(userId: number): void {
         this.notificationService.getUserNotifications(userId)
             .subscribe(
                 (resp) => {
-                    this.notReadNotification = resp.body;
+                    this.notReadNotification = resp.body.sort(function (a, b) {
+                        if (a.dateTime > b.dateTime) {
+                            return -1;
+                        }
+                        if (a.dateTime < b.dateTime) {
+                            return 1;
+                        }
+                        return 0;
+                    });
                 }
             );
     }
 
     public showNotificationPanel() {
         this.showNotification = !this.showNotification;
+        this.deleteNotificationPanel();
+    }
+
+    public deleteNotificationPanel() {
         const dataForDelete = this.data;
         if (!this.showNotification) {
-            this.signalRService.crearData();
-            this.signalRService.deleteTransferChartDataListener();
+            this.signalRService.clearData();
+            this.signalRService.deleteDataListeners();
             this.data = this.signalRService.addTransferChartDataListener();
             dataForDelete.forEach(element => {
-                if (element.type != 1) {
+                if (element.type != NotificationType.projectRun) {
                     this.signalRService.markNotificationAsRead(element.id);
                 }
             });
             this.notReadNotification.forEach(element => {
-                console.log(element);
-                if (element.type != 1) {
-                    this.signalRService.markNotificationAsRead(element.id);
-                }
+                this.signalRService.markNotificationAsRead(element.id);
             })
             this.notReadNotification = [];
         }
@@ -211,11 +226,11 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.authDialogService.openAuthDialog(type);
     }
 
-    public LogOut() {
+    public logOut() {
         this.tokenService.logout();
         this.isAuthorized = undefined;
-        this.signalRService.crearData();
-        this.signalRService.deleteTransferChartDataListener();
+        this.signalRService.clearData();
+        this.signalRService.deleteDataListeners();
     }
 
     public getAvatarAndName(): void {
@@ -228,7 +243,7 @@ export class NavMenuComponent implements OnInit, OnDestroy {
                     this.userAvatar = resp.body.url;
 
                 this.userId = resp.body.id;
-                this.userName = resp.body.firstName;
+                this.userNickName = resp.body.nickName;
             },
                 error => {
                     console.log(error);

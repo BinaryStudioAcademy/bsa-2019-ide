@@ -25,7 +25,8 @@ export class UserDetailsDialogService {
                 'overflow-y': 'auto',
                 'max-height': '90vh'
             },
-            showHeader: false
+            showHeader: false,
+            closeOnEscape: true
         })
     }
 }
