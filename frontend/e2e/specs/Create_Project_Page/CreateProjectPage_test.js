@@ -16,31 +16,28 @@ describe('Online-IDE creation project', () => {
        browser.url(credentials.appUrl);
        browser.pause(5000);
        Help.loginWithDefaultUser();
-       //wait.forSpinner();
+       wait.forNotificationToDisappear();
     
    });
 
    afterEach(() => {
+       Help.logOut();
        browser.reloadSession();
    });
 
-    xit('should create a new project with valid data', () => {
+    it('should create a new project with valid data', () => {
        
         project.addButtonClick();
         project.waitFormOfProjectCreation();
         Help.fillOutDataInForm(credentials.projectName, credentials.description, credentials.buildsNumber, credentials.buildAttempts);
         project.clickCreateButton();
-     
         validate.notificationTextIs(credentials.notificationProjectCreateSuccess);
         wait.forNotificationToDisappear(); 
-        
         wait.contentOfProjectDetailPage();
-       
         validate.navigationToPage(credentials.projectDetailsUrl);
-        
         validate.checkProjectDetailsData(0, `Name: ${credentials.projectName}`); 
         
-        Help.logOut();
+        
        
     });
    xit('should not create a new project with too short name', () => {
@@ -49,7 +46,7 @@ describe('Online-IDE creation project', () => {
         project.waitFormOfProjectCreation();
         Help.fillOutDataInForm("1", credentials.description, credentials.buildsNumber, credentials.buildAttempts);
         project.waitEnableSaveButton();
-        Help.logOut();
+        
      
     });
     xit('should not create a new project with too long name', () => {
@@ -59,7 +56,7 @@ describe('Online-IDE creation project', () => {
         project.waitFormOfProjectCreation();
         Help.fillOutDataInForm("this name is too long to be use for our purpose", credentials.description, credentials.buildsNumber, credentials.buildAttempts);
         project.waitEnableSaveButton();
-        Help.logOut();
+        
      
     });
    xit('should not create a new project with invalid saved builds number', () => {
@@ -68,7 +65,7 @@ describe('Online-IDE creation project', () => {
         project.waitFormOfProjectCreation();
         Help.fillOutDataInForm(credentials.projectName, credentials.description, "12", credentials.buildAttempts);
         project.waitEnableSaveButton();
-        Help.logOut();
+        
      
     });
     xit('should not create a new project with invalid builds attempts number', () => {
@@ -78,7 +75,7 @@ describe('Online-IDE creation project', () => {
         project.waitFormOfProjectCreation();
         Help.fillOutDataInForm(credentials.projectName, credentials.description, credentials.buildsNumber, "77");
         project.waitEnableSaveButton();
-        Help.logOut();
+        
      
     });
           

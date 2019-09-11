@@ -141,6 +141,35 @@ class HelpClass
       
     }
 
+    changeUserInfo(FirstName, LastName, Nick, Git, month, year, day){
+        profile.enterFirstName(FirstName);
+        profile.enterLastName(LastName);
+        profile.enterNickname(Nick);
+        profile.enterGitHub(Git)
+        this.browserClickXPath('//p-calendar/span/input');
+        profile.clickSelectMonth.click();
+        this.browserClick(`option[value='${month}']`);
+        profile.clickSelectYear.click();
+        this.browserClick(`option[value='${year}']`);
+        this.browserClickOnArrayElement("a.ui-state-default.ng-star-inserted", day);
+        profile.clickUpdateButton();
+    }
+    changeEditorSettings(){
+        this.browserClickOnArrayElement("li.ui-state-default.ui-corner-top.ng-star-inserted", 2);
+        profile.enterlineHeight("14");
+        profile.enterFontSize("14");
+        profile.enterTabSize("3");
+        this.clickInDropdownListArrowOf("Thema:");
+        this.clickInDropdownListThemaOptions("vs");
+        this.clickInDropdownListArrowOf("Scroll beyond last line:");
+        this.clickInDropdownListOptionOf("Scroll beyond last line:", "false");
+        this.clickInDropdownListArrowOf("Cursor style:");
+        this.clickInDropdownListOptionOf("Cursor style:", "block");
+        this.clickInDropdownListArrowOf("Line numbers:");
+        this.clickInDropdownListOptionOf("Line numbers:", "interval");
+        profile.clickSaveButton();
+    }
+
      returnUrl (){
         const urlPage = new URL(browser.getUrl());
         return urlPage;
@@ -153,66 +182,52 @@ class HelpClass
         this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 2);
     }
 
-    addCollaborators(nickname) {
+    addCollaborators(nickname, AccessRights) {
         
        
-        $('//span[contains(text(),"Collaborators")]/..').click();
-
-        $('//h2[contains(text(),"Search and add new collaborators:")]').waitForDisplayed(10000);
+        detailsObject.collaboratorTab.click();
+        detailsObject.collaboratorTitle.waitForDisplayed(10000);
         projectDetails.enterCollaboratorName(nickname);
-
-       $(`//span[contains(text(),'${nickname}')]/..`).click();
-       
-        this.browserClick("div.ui-dropdown-trigger.ui-state-default.ui-corner-right");
-       
-       $("div.ng-trigger.ng-trigger-overlayAnimation").waitForDisplayed(10000);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", 3);
+        detailsObject.collaboratorItemFromList.click();
+        this.browserClickXPath(`//div[contains(text(), "${nickname}")]/../p-dropdown//div[contains(@class, "ui-dropdown-trigger")]`)
+        detailsObject.dropdownlist.waitForDisplayed(10000);
+        this.browserClick(`li[aria-label="${AccessRights}"]`);
         projectDetails.clickSaveButton();
 
     }
-    changeCollaboratorsRights(index) {
+    changeCollaboratorsRights(nickname, AccessRights) {
         
-        $('//span[contains(text(),"Collaborators")]/..').click();
-        $('//h2[contains(text(),"Search and add new collaborators:")]').waitForDisplayed(10000);
-        this.browserClick("div.ui-dropdown-trigger.ui-state-default.ui-corner-right");
-      
-      $("div.ng-trigger.ng-trigger-overlayAnimation").waitForDisplayed(10000);
-        this.browserClickOnArrayElement("li.ui-dropdown-item.ui-corner-all", index);
+        detailsObject.collaboratorTab.click();
+        detailsObject.collaboratorTitle.waitForDisplayed(10000);
+        this.browserClickXPath(`//div[contains(text(), "${nickname}")]/../p-dropdown//div[contains(@class, "ui-dropdown-trigger")]`)
+        detailsObject.dropdownlist.waitForDisplayed(10000);
+        this.browserClick(`li[aria-label="${AccessRights}"]`);
         projectDetails.clickSaveButton();
 
     }
 
     checkDetails() {
-        $('//span[contains(text(),"Details")]/..').click();
+        detailsObject.detailsTab.click();
         browser.pause(1000);
-        $('//span[contains(text(),"Collaborators")]/..').click();
+        detailsObject.collaboratorTab.click();
     }
     searchProjectByTitleOf(text) {
 
         dashboard.enterPtojectTitleforSearch(text);
-
-        const dropdownlist = $("div.ng-trigger.ng-trigger-overlayAnimation");
-        dropdownlist.waitForDisplayed(5000);
+        detailsObject.dropdownlist.waitForDisplayed(10000);
         const el = '//p-autocomplete/span/input/following-sibling::div/ul/li[last()]';
         const bel = $(el);
         bel.waitForDisplayed(5000);
         this.browserClickXPath(el);
-  
-
-       
+         
     }
     changePassword(currentPassword, newPassword) {
         profile.clickMyProfileButton();
         profile.clickEditProfileButton();
-      //  browser.pause(1000);
         this.browserClickOnArrayElement(profileObject.editingOptions, 5);
-      //  browser.pause(1000);
         profile.entercurrentPassword(currentPassword);
-      //  browser.pause(1000);
         profile.enterChangedPassword(newPassword);
-     //   browser.pause(2000);
-       // profile.clickChangeButton();
-       this.browserClickOnArrayElement("span.ui-button-text.ui-clickable", 6);
+        this.browserClickOnArrayElement("span.ui-button-text.ui-clickable", 6);
     };
 
     //delete or rewrite this asap
