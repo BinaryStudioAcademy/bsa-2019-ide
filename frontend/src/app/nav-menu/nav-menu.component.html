@@ -40,10 +40,9 @@
 
                 <span class="avatar" [ngStyle]="{'content': 'url(' + userAvatar + ')'}"></span>
                 <div class="ui-inputgroup">
-                    <button pButton type="button" class="profile-btn" icon="pi" (click)="goToUserDetails()" label="{{ userNickName | lessSymbols : 10 }}"></button>
-                    <button pButton type="button" icon='pi pi-sign-out' (click)="logOut()" title="Logout" class="ui-button-secondary"></button>
+                    <button pButton type="button" class="common-btn profile-btn" icon="pi" (click)="goToUserDetails()" label="{{ userNickName | lessSymbols : 10 }}"></button>
+                    <button pButton type="button" icon='pi pi-sign-out' (click)="logOut()" title="Logout" class="common-btn"></button>
                 </div>
-
                 <p-overlayPanel #notifications (onHide)="hideNotificationPanel()" class="notification">
                     <div class="notification-panel-content">
                         <div *ngIf="data.length!=0">
@@ -66,8 +65,8 @@
 
             </div>
             <div *ngIf="!isAuthorized">
-                <button class="login-btn" pButton (click)="openAuthDialog(dialogType.SignIn)" label="Login"></button>
-                <button class="signup-btn" pButton (click)="openAuthDialog(dialogType.SignUp)" label="SignUp"></button>
+                <button class="login-btn common-btn" pButton (click)="openAuthDialog(dialogType.SignIn)" label="Login"></button>
+                <button class="signup-btn common-btn" pButton (click)="openAuthDialog(dialogType.SignUp)" label="SignUp"></button>
             </div>
         </div>
 
