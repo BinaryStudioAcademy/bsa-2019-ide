@@ -5,13 +5,15 @@ import { CommentCardComponent } from './components/comment-card/comment-card.com
 import { ProjectCardComponent } from './components/project-card/project-card.component';
 import { SharedModule } from '../shared/shared.module';
 import { PrettySizePipe } from './pipes/pretty-size.pipe';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
   declarations: [
       LandingRootComponent,
       CommentCardComponent,
       ProjectCardComponent,
-      PrettySizePipe
+      PrettySizePipe,
+      FooterComponent
     ],
   imports: [
     CommonModule,
