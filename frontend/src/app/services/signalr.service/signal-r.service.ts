@@ -4,22 +4,26 @@ import { NotificationDTO } from 'src/app/models/DTO/Common/notificationDTO';
 import { environment } from 'src/environments/environment';
 import { NotificationService } from '../notification.service/notification.service';
 import { TokenService } from '../token.service/token.service';
+import { NotificationType } from 'src/app/models/Enums/notificationType';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SignalRService {
 
-    constructor(
-        private notificationService: NotificationService,
-        private tokenService: TokenService
-    ) { }
-
     public notifications: NotificationDTO[] = [];
+    public runState: boolean = true;
+    public buildState: boolean = true;
+    public notification: NotificationDTO;
 
     private hubConnection: signalR.HubConnection;
     private connectionId: string;
     private userId: number;
+
+    constructor(
+        private notificationService: NotificationService,
+        private tokenService: TokenService
+    ) { }
 
     public startConnection = (isAuth: boolean, userId: number) => {
         this.userId = userId;
@@ -36,9 +40,9 @@ export class SignalRService {
             .start()
             .then(() => {
                 this.addConnectionIdListener();
+                this.runStateListener();
                 console.log('SignalR Connection started');
-                if (isAuth)
-                {
+                if (isAuth) {
                     this.addToGroup(userId);
                     this.join(userId);
                 }
@@ -50,9 +54,8 @@ export class SignalRService {
         return this.notifications;
     }
 
-    public clearData()
-    {
-        this.notifications=[];
+    public clearData() {
+        this.notifications = [];
     }
 
     public addToGroup(userId: number): void {
@@ -75,7 +78,19 @@ export class SignalRService {
         return this.notifications;
     }
 
-    public addConnectionIdListener(): void{
+    public runStateListener(): void {
+        this.hubConnection.on('progressState', (state: NotificationDTO) => {
+            if (state.type == NotificationType.projectRun) {
+                this.runState = false;
+            }
+            if (state.type == NotificationType.projectBuild) {
+                this.notification = state;
+                this.buildState = false;
+            }
+        });
+    }
+
+    public addConnectionIdListener(): void {
         this.hubConnection.on('sendConnectionId', (connectionId, userId) => {
             if (userId === this.userId) {
                 this.connectionId = connectionId;
@@ -87,21 +102,19 @@ export class SignalRService {
         return this.connectionId;
     }
 
-    public markNotificationAsRead(notificationId: number): void
-    {
+    public markNotificationAsRead(notificationId: number): void {
         this.hubConnection.invoke("MarkAsRead", notificationId)
             .catch((error) => console.log(error));
     }
 
-    public deleteDataListeners()
-    {
+    public deleteDataListeners() {
         this.hubConnection.off('transferchartdata');
         this.hubConnection.off('transferRunResult');
         this.hubConnection.off('sendConnectionId');
+        this.hubConnection.off('progressState');
     }
 
-    public deleteConnectionIdListener()
-    {
+    public deleteConnectionIdListener() {
         this.hubConnection.off('sendConnectionId');
     }
 }

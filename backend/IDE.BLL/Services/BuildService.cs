@@ -51,7 +51,7 @@ namespace IDE.BLL.Services
         {
             var archive = await _projectStructureService.CreateProjectZipFile(projectId);
             var uri = await _blobRepo.UploadProjectArchiveAsync(archive, $"project_{projectId}");
-            var build = await CreateStartBuildArtifacts(projectId, userId);
+            var build = await CreateStartBuildResult(projectId, userId);
             var message = new ProjectForBuildDTO()
             {
                 ProjectId = projectId,
@@ -64,7 +64,7 @@ namespace IDE.BLL.Services
             _queueService.SendBuildMessage(strMessage);
         }
 
-        public async Task<Build> CreateStartBuildArtifacts(int projectId,int userId)
+        public async Task<Build> CreateStartBuildResult(int projectId,int userId)
         {
             var buildDTO = new BuildDTO();
 
@@ -96,7 +96,7 @@ namespace IDE.BLL.Services
             return build;
         }
 
-        public async Task<BuildDTO> CreateFinishBuildArtifacts(BuildResultDTO result)
+        public async Task<BuildDTO> CreateFinishBuildResult(BuildResultDTO result)
         {
             var build = await _context.Builds
                 .FirstOrDefaultAsync(item => item.Id == result.BuildId);
@@ -122,6 +122,7 @@ namespace IDE.BLL.Services
                 .Where(item => item.ProjectId == projectId)
                 .Include(item => item.Project)
                 .Include(item => item.User)
+                .OrderByDescending(item=>item.BuildStarted)
                 .Select(item => _mapper.Map<BuildDescriptionDTO>(item))
                 .ToListAsync();
 
