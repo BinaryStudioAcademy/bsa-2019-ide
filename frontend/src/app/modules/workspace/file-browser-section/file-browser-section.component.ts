@@ -301,7 +301,12 @@ export class FileBrowserSectionComponent implements OnInit {
         this.appendNewNode(node, this.lastCreatedNode);
 
         setTimeout(() => {
-            let element = document.getElementsByClassName('ui-state-highlight').item(0).children.item(0).children.item(0).children.item(0) as HTMLInputElement;
+            let element = document.getElementsByClassName('ui-state-highlight').item(0).children.item(0).children.item(0) as HTMLInputElement;
+            if(element.children.length > 0) {
+                element = element.children.item(0) as HTMLInputElement;
+            } else {
+                element = element as HTMLInputElement;
+            }
             this.lastSelectedElement = element;
             this.rename(this.selectedItem);
         }, 1);
@@ -318,7 +323,13 @@ export class FileBrowserSectionComponent implements OnInit {
         this.appendNewNode(node, this.lastCreatedNode);
 
         setTimeout(() => {
-            var element = document.getElementsByClassName('ui-state-highlight').item(0).children.item(0).children.item(0) as HTMLInputElement;
+            console.log(document.getElementsByClassName('ui-state-highlight'));
+            var element = document.getElementsByClassName('ui-state-highlight').item(0).children.item(0);
+            if(element.children.length > 0) {
+                element = element.children.item(0) as HTMLInputElement;
+            } else {
+                element = element as HTMLInputElement;
+            }
             this.lastSelectedElement = element;
             this.rename(this.selectedItem);
         }, 1);
