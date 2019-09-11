@@ -5,6 +5,7 @@ import { HttpResponse } from '@angular/common/http';
 import { FileDTO } from 'src/app/models/DTO/File/fileDTO';
 import { FileCreateDTO } from 'src/app/models/DTO/File/fileCreateDTO';
 import { FileRenameDTO } from '../../models/DTO/File/fileRenameDTO';
+import { FilesRestrictionsDTO } from 'src/app/models/DTO/File/filesRestrictionsDTO';
 
 @Injectable({
     providedIn: 'root'
@@ -28,6 +29,10 @@ export class FileService {
 
     public getFileById(id: string): Observable<HttpResponse<FileDTO>> {
         return this.httpClient.getRequest(this.address + '/' + id);
+    }
+    
+    public getRestrictions(): Observable<HttpResponse<FilesRestrictionsDTO>> {
+        return this.httpClient.getRequest(this.address + '/restrictions');
     }
 
     public updateFileName(file: FileRenameDTO): Observable<HttpResponse<any>> {
