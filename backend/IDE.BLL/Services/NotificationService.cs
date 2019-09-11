@@ -62,6 +62,10 @@ namespace IDE.BLL.Services
             await _hubContext.Clients.Client(connectionId)
                 .SendAsync("transferRunResult", notification)
                 .ConfigureAwait(false);
+
+            await _hubContext.Clients.Client(connectionId)
+                    .SendAsync("progressState", notification)
+                    .ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<NotificationDTO>> GetNotificationByUserId(int userId)
@@ -110,6 +114,10 @@ namespace IDE.BLL.Services
 
             await _hubContext.Clients.User(user.Id.ToString())
                     .SendAsync("transferchartdata", notificationToSend)
+                    .ConfigureAwait(false);
+
+            await _hubContext.Clients.User(user.Id.ToString())
+                    .SendAsync("progressState", notificationToSend)
                     .ConfigureAwait(false);
         }
     }

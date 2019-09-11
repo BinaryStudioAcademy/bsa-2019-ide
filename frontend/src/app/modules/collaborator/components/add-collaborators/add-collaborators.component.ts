@@ -47,11 +47,11 @@ export class AddCollaboratorsComponent implements OnInit {
         private signalRService: SignalRService) { }
 
     public ngOnInit(): void {
-        this.userId=this.tokenService.getUserId();
+        this.userId = this.tokenService.getUserId();
         this.projectService.getAuthorId(this.projectId)
             .subscribe(
-                (resp)=>{
-                    this.authorId=resp.body;
+                (resp) => {
+                    this.authorId = resp.body;
                 }
             );
         this.projectService.getProjectCollaborators(this.projectId)
@@ -74,11 +74,10 @@ export class AddCollaboratorsComponent implements OnInit {
         }
     }
 
-    public wasInStartList(deleteItem: DeleteCollaboratorRightDTO): boolean{
+    public wasInStartList(deleteItem: DeleteCollaboratorRightDTO): boolean {
         let deletedItemWasEarlier = false
         this.startCollaborators.forEach(element => {
-            if (deleteItem.id==element.id)
-            {
+            if (deleteItem.id == element.id) {
                 deletedItemWasEarlier = true;
             }
         });
@@ -117,24 +116,26 @@ export class AddCollaboratorsComponent implements OnInit {
                     access: item.access,
                     userId: item.id
                 }
-                this.rightService.setUsersRigths(update)
-                    .subscribe(
-                        (resp) => {
-                            this.deleteCollaborators = [];
-                            this.startCollaborators = [];
-                            this.UpdateNewCollaborators();
-                            if (!this.isCollaboratorsSaved) {
-                                this.toastService.success('New collaborators access have successfully saved!');
+                const colaborator=this.startCollaborators.find(value => value.id == update.userId);
+                if (!colaborator || colaborator.access!=update.access) {
+                    this.rightService.setUsersRigths(update)
+                        .subscribe(
+                            (resp) => {
+                                console.log(update);
+                                this.deleteCollaborators = [];
+                                this.startCollaborators = [];
+                                this.UpdateNewCollaborators();
+                                this.toastService.success(`New ${item.nickName} access have successfully saved!`);
+                                this.isCollaboratorsSaved = true;
+                                this.isCollaboratorChange = true;
+                            },
+                            (error) => {
+                                this.isCollaboratorsSaved = true;
+                                this.toastService.error('Can\'t save new collaborators access', 'Error Message');
                             }
-                            this.isCollaboratorsSaved = true;
-                            this.isCollaboratorChange = true;
-                        },
-                        (error) => {
-                            this.isCollaboratorsSaved = true;
-                            this.toastService.error('Can\'t save new collaborators access', 'Error Message');
-                        }
-                    );
-                });
+                        );
+                }
+            });
         } else {
             this.isCollaboratorsSaved = true;
             this.startCollaborators = [];
@@ -208,8 +209,8 @@ export class AddCollaboratorsComponent implements OnInit {
         return filtered;
     }
 
-    public isAuthor(): boolean{
-        return this.userId==this.authorId;
+    public isAuthor(): boolean {
+        return this.userId == this.authorId;
     }
 
     private IsSelected(collaborator: UserNicknameDTO): boolean {

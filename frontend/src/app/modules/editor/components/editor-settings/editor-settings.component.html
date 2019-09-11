@@ -5,15 +5,15 @@
     <form class="edittor-setting-content" [formGroup]="editorSettingsForm">
         <div class="editor-details-property">
             <p class="property-name">Theme:</p>
-            <p-dropdown [options]="themes" formControlName="theme"></p-dropdown>
+            <p-dropdown class="dropdown" [options]="themes" formControlName="theme"></p-dropdown>
         </div>
         <div class="editor-details-property">
             <p class="property-name">Scroll beyond last line:</p>
-            <p-dropdown [options]="scrolls" formControlName="scrollBeyondLastLine"></p-dropdown>
+            <p-dropdown class="dropdown" [options]="scrolls" formControlName="scrollBeyondLastLine"></p-dropdown>
         </div>
         <div class="editor-details-property">
             <p class="property-name">Cursor style:</p>
-            <p-dropdown [options]="cursorStyles" formControlName="cursorStyle"></p-dropdown>
+            <p-dropdown class="dropdown" [options]="cursorStyles" formControlName="cursorStyle"></p-dropdown>
         </div>
         <div class="editor-details-property">
             <p class="property-name">Line height:</p>
@@ -21,7 +21,7 @@
         </div>
         <div class="editor-details-property">
             <p class="property-name">Line numbers:</p>
-            <p-dropdown [options]="lineNumbers" formControlName="lineNumbers"></p-dropdown>
+            <p-dropdown class="dropdown" [options]="lineNumbers" formControlName="lineNumbers"></p-dropdown>
         </div>
         <div class="editor-details-property">
             <p class="property-name">Font size:</p>

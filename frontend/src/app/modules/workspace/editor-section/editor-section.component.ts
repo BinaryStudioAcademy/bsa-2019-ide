@@ -6,6 +6,8 @@ import { EditorSettingDTO } from '../../../models/DTO/Common/editorSettingDTO'
 import editorTabsThemes from '../../../assets/editor-tabs-themes.json';
 import { EventService } from 'src/app/services/event.service/event.service';
 import { MonacoEditorComponent } from '@materia-ui/ngx-monaco-editor';
+import { GitService } from 'src/app/services/git.service/git.service';
+import { ToastrService } from 'ngx-toastr';
 import { FileEditService } from 'src/app/services/file-edit.service/file-edit.service';
 import { FileSaverService } from 'src/app/services/workspace-file-saver.service/file-saver.service';
 import { Subject } from 'rxjs';
@@ -264,6 +266,7 @@ export class EditorSectionComponent implements OnInit {
         for(let i = 0; i < this.tabs.length; i++) {
             if (this.tabs[i].id === activeTabId) {
                 this.activeItem = this.tabs[i];
+                this.code = this.openedFiles[i].innerFile.content;
             }
         }
         this.fileSaverService.unlockSelections();

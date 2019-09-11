@@ -1,0 +1,130 @@
+<span class="modal-close-btn" (click)="close()">&times;</span>
+
+<div class="ui-g ui-fluid">
+    <div class="ui-g-12">
+        <div class="title">{{ title }}</div>
+    </div>
+</div>
+
+<div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded">
+    <p-progressSpinner></p-progressSpinner>
+</div>
+
+<div *ngIf="!isPull() && !isPush && !isCommit && !isPageLoaded" class="error">
+    <p>Can't load data</p>
+</div>
+
+<div class="ui-g" *ngIf="isPageLoaded">
+    <div class="ui-g-12">
+        <form class="gitForm" [formGroup]="gitForm" (ngSubmit)="onSubmit()">
+
+            <!-- Commit -->
+            <div *ngIf="isCommit()" class="label">Commit message</div>
+            <div *ngIf="isCommit()" class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="ui-inputgroup">
+                        <input type="text" pInputText formControlName="message" placeholder="Enter commit message">
+                    </div>
+                </div>
+            </div>
+            <div class="invalid" *ngIf="isCommit() && gitForm.get('message').invalid && gitForm.get('message').dirty">Commit message required</div>
+            
+            <!-- Pull -->
+            <div *ngIf="isPull()" class="label">Select branch</div>
+            <div *ngIf="isPull()" class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <p-dropdown [options]="branches" placeholder="Select branch" formControlName="pullBranch">
+                    </p-dropdown>
+                </div>
+            </div>
+
+            <!-- Push -->
+            <div *ngIf="isPush()" class="label">Select branch</div>
+            <div *ngIf="isPush()" class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <p-dropdown [options]="branches" placeholder="Select branch" formControlName="pushBranch">
+                    </p-dropdown>
+                </div>
+            </div>
+
+            <!-- Git Login -->
+            <div *ngIf="isAddCredentials()" class="label">Git Login</div>
+            <div *ngIf="isAddCredentials()" class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="ui-inputgroup">
+                        <input type="text" pInputText pKeyFilter="alphanum" formControlName="login" placeholder="Enter git login">
+                    </div>
+                </div>
+            </div>
+            <div class="invalid" *ngIf="isAddCredentials() && gitForm.get('login').invalid && gitForm.get('login').dirty">git login required</div>
+
+            <!-- Project url -->
+            <div *ngIf="isAddCredentials()" class="label">Git url</div>
+            <div *ngIf="isAddCredentials()" class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="ui-inputgroup">
+                        <input type="text" placeholder="Enter git url" pInputText formControlName="url">
+                    </div>
+                </div>
+            </div>
+            <div class="invalid" *ngIf="isAddCredentials() && gitForm.get('url').invalid && gitForm.get('url').dirty">
+                git url required
+            </div>
+
+
+            <!-- Project  password -->
+            <div *ngIf="isAddCredentials()" class="label">Password</div>
+            <div *ngIf="isAddCredentials()" class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="ui-inputgroup">
+                        <input  type="password" [feedback]="false" pPassword name="password" placeholder="Enter github password" formControlName="password" minlength="8"  maxlength="16" required
+                            pattern="[а-яА-Яa-zA-Z0-9]{8,16}"/>
+                            <div class="invalid" *ngIf="isAddCredentials() && gitForm.get('password').invalid && (gitForm.get('password').dirty || gitForm.get('password').touched)">
+                                <div *ngIf="gitForm.get('password').errors.pattern">
+                                    Password can contain latin letters (upper\lowercase), digits.
+                                </div>
+                                <div *ngIf="gitForm.get('password').errors.required">
+                                    Password is required.
+                                </div>
+                                <div *ngIf="gitForm.get('password').errors.minlength">
+                                    Password mininum length is 8.
+                                </div>
+                                <div *ngIf="gitForm.get('password').errors.maxlength">
+                                    Password maximun length is 16.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Git Provider -->
+            <div *ngIf="isAddCredentials()" class="label">Git provider</div>
+            <div *ngIf="isAddCredentials()" class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="">
+                        <p-dropdown [options]="providers" placeholder="Select git provider"
+                            formControlName="provider"></p-dropdown>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <button *ngIf="isPull() && hasDetailsSaveResponse" type="submit" [disabled]="!gitForm.valid" pButton
+                        label="Pull"></button>
+                    <button *ngIf="isPush() && hasDetailsSaveResponse" type="submit" [disabled]="!gitForm.valid" pButton
+                        label="Push"></button>
+                    <button *ngIf="isCommit() && hasDetailsSaveResponse" type="submit" [disabled]="!gitForm.valid" pButton
+                        label="Commit"></button>
+                    <button *ngIf="isAddCredentials() && hasDetailsSaveResponse" type="submit" [disabled]="!gitForm.valid" pButton
+                        label="Add"></button>
+                    <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
+                        <p-progressSpinner></p-progressSpinner>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>

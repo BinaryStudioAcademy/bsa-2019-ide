@@ -30,6 +30,7 @@ import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 import { filter, throwIfEmpty, tap, takeUntil, delay, distinctUntilChanged } from 'rxjs/operators';
 import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
+import { GitService } from 'src/app/services/git.service/git.service';
 import { AccessModifier } from 'src/app/models/Enums/accessModifier';
 import { ConfirmationService } from 'primeng/api';
 import { FileEditService } from 'src/app/services/file-edit.service/file-edit.service';
@@ -61,12 +62,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     public expandFolder = false;
     public project: ProjectInfoDTO;
     public options: EditorSettingDTO;
-    public iOpenFile: FileUpdateDTO[] = [];
     public inputItems: string[];
     public connectionId: string;
     public isInputTerminalOpen = false;
     public isSaveButtonDisabled;
     public isSaveAllButtonDisabled;
+    public runState = false;
+    public buildState = false;
 
     private routeSub: Subscription;
     private authorId: number;
@@ -88,7 +90,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     @HostListener('window:beforeunload', ['$event'])
     beforeunloadHandler(event) {
-        if(!this.isSaveAllButtonDisabled){
+        if (!this.isSaveAllButtonDisabled) {
             event.preventDefault();
             event.returnValue = '';
         }
@@ -127,12 +129,12 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.onRun();
             });
 
-            //Save file Ctrl+S
+        //Save file Ctrl+S
         this.hotkeys.addShortcut({ keys: 'control.s' })
             .subscribe(() => {
                 this.onSaveButtonClick();
             });
-            //Save All Ctrl+Shift+S
+        //Save All Ctrl+Shift+S
         this.hotkeys.addShortcut({ keys: 'control.shift.s' })
             .subscribe(() => {
                 this.onSaveButtonClick();
@@ -143,7 +145,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
         this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe(params => {
             if (!!params['query']) {
-                this.fileBrowser.curSearch = params['query'];
+                this.fileBrowser.searchField = params['query'];
                 this.showSearchField = true;
                 this.cdr.detectChanges();
             }
@@ -152,14 +154,30 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     public OnChange(event: boolean) {
         if (event) {
+            this.signalRService.runState=true;
             this.inputItems = null;
+            this.runState = true;
             this.isInputTerminalOpen = false;
         }
     }
 
+    public getRunState() {
+        if (this.runState) {
+            this.runState = this.signalRService.runState;
+        }
+        return this.runState;
+    }
+
+    public getBuildState() {
+        if (this.buildState && this.signalRService.notification && this.signalRService.notification.projectId == this.projectId) {
+            this.buildState = this.signalRService.buildState;
+        }
+        return this.buildState;
+    }
+
     ngOnInit() {
         this.eventService.isNotSaveDataAllTabsObserve$.pipe(distinctUntilChanged())
-        .subscribe(x => {this.isSaveAllButtonDisabled = !x});
+            .subscribe(x => { this.isSaveAllButtonDisabled = !x });
         this.eventService.isNotSaveDataOneTabObserve$.subscribe(x => this.isSaveButtonDisabled = !x);
 
         this.confirmationOnLeavePage$ = Observable.create((observer: Observer<boolean>) => {
@@ -177,10 +195,10 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                                     this.toast.error("Can't save files", 'Error', { tapToDismiss: true });
                                 }
 
-                            observer.next(true);
-                        },
-                        error => { this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error', { tapToDismiss: true }); observer.next(true); }
-                    )
+                                observer.next(true);
+                            },
+                            error => { this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error', { tapToDismiss: true }); observer.next(true); }
+                        )
                 },
                 reject: () => {
                     observer.next(true);
@@ -239,24 +257,23 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.fileEditService.isConnected.pipe(takeUntil(this.ngUnsubscribe)).subscribe(state => {
             this.isOpenedConnection = state;
         });
-        this.fileEditService.openedFiles.pipe(takeUntil(this.ngUnsubscribe)).subscribe(x =>
-            {
-                if (x.userId !== this.userId) {
-                    // console.log('its somebodyth else file');
-                    this.fileBrowser.changeFileState(x.fileId, x.isOpen, x.nickName);
-                    this.editor.changeFileState(x.fileId, true);
-                    if (!x.isOpen && this.editor.contains(x.fileId)) {
-                        this.fileEditService.openFile(x.fileId, this.project.id);
-                    }
-                } else if(x.userId === this.userId && this.editor.contains(x.fileId)) {
-                    // console.log("it's my own file");
-                    this.editor.changeFileState(x.fileId, false);
-                    this.workSpaceService.getFileById(x.fileId).subscribe(resp => {
-                        this.editor.updateFile({content: resp.body.content, id: resp.body.id, name: null, folder: null, isOpen: false, updater: null, language: null});
-                    })
-                    this.editor.changeReadOnlyState(false);
+        this.fileEditService.openedFiles.pipe(takeUntil(this.ngUnsubscribe)).subscribe(x => {
+            if (x.userId !== this.userId) {
+                // console.log('its somebodyth else file');
+                this.fileBrowser.changeFileState(x.fileId, x.isOpen, x.nickName);
+                this.editor.changeFileState(x.fileId, true);
+                if (!x.isOpen && this.editor.contains(x.fileId)) {
+                    this.fileEditService.openFile(x.fileId, this.project.id);
                 }
-            });
+            } else if (x.userId === this.userId && this.editor.contains(x.fileId)) {
+                // console.log("it's my own file");
+                this.editor.changeFileState(x.fileId, false);
+                this.workSpaceService.getFileById(x.fileId).subscribe(resp => {
+                    this.editor.updateFile({ content: resp.body.content, id: resp.body.id, name: null, folder: null, isOpen: false, updater: null, language: null });
+                })
+                this.editor.changeReadOnlyState(false);
+            }
+        });
     }
 
     private findAllOccurence(substring?: string) {
@@ -339,15 +356,17 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.openedFiles = 0;
         if (filesCount > 0)
             this.sortTabs.subscribe(() => {
-                    this.openedFiles++;
-                    if(this.openedFiles === this.filesCount) {
-                        this.sortTabs.complete();
-                        this.editor.sortTabs();
-                    }
-                });
-        files.forEach(file => {
-            this.loadFile(file, false);
-        });
+                this.openedFiles++;
+                if (this.openedFiles === this.filesCount) {
+                    this.sortTabs.complete();
+                    this.editor.sortTabs();
+                }
+            });
+        setTimeout(() => {
+            files.forEach(file => {
+                this.loadFile(file, false);
+            });
+        }, 1000);
     }
 
     private loadFile(file: SelectedFile, onBrowserSelect: boolean = true) {
@@ -361,24 +380,16 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
                         this.editor.AddFileToOpened(fileUpdateDTO);
                         this.editor.monacoOptions.readOnly = fileUpdateDTO.isOpen;
+                        this.editor.addActiveTab(tabName, file.fileIcon, id);
 
-                        if (!fileUpdateDTO.isOpen) {
-                            this.fileIsOpen(fileUpdateDTO);
-                            this.iOpenFile.push(fileUpdateDTO);
-                            if(onBrowserSelect)
-                                this.fileBrowser.selectedItem.label = tabName;
-                        }
-                        else if (this.project.accessModifier == AccessModifier.private) {
-                            this.fileIsOpen(fileUpdateDTO);
-                            this.iOpenFile.push(fileUpdateDTO);
+                        if (onBrowserSelect) {
+                            this.fileBrowser.selectedItem.label = tabName;
+                            this.editor.code = content;
                         }
                         if (this.showFileBrowser) {
                             document.getElementById('workspace').style.width = ((this.workspaceWidth) / this.maxSize()) + '%';
                         }
-
-                        this.editor.addActiveTab(tabName, file.fileIcon, id);
                         this.findAllOccurence(file.filterString);
-                        this.editor.code = content;
                     } else {
                         this.toast.error("Can't load selected file", 'Error Message');
                     }
@@ -399,6 +410,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     public onBuild() {
         this.buildService.buildProject(this.project.id).pipe(takeUntil(this.ngUnsubscribe)).subscribe(
             (response) => {
+                this.signalRService.notification = null;
+                this.buildState = true;
+                this.signalRService.buildState=true;
                 this.toast.info('Build was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {
@@ -425,6 +439,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.inputItems = resp.body;
                 this.isInputTerminalOpen = true;
                 if (!this.inputItems || this.inputItems.length == 0) {
+                    this.signalRService.runState=true;
+                    this.runState=true;
                     this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
                 }
             },
@@ -439,6 +455,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         if (evt.mustSave) {
             this.onFilesSave([evt.file]);
         }
+        this.fileEditService.closeFile(evt.file.id);
     }
 
     public onSaveButtonClick() {
@@ -458,23 +475,13 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.onFilesSave(files);
     }
 
-    public unblockAllEditingFiles() {
-        if (this.iOpenFile.length != 0) {
-            this.iOpenFile.forEach(element => {
-                element.isOpen = false;
-            })
-            this.saveFilesRequest(this.iOpenFile).pipe(takeUntil(this.ngUnsubscribe)).subscribe();
-
-            this.iOpenFile = [];
-        }
-    }
     public onFilesSave(files: FileUpdateDTO[]) {
         this.saveFilesRequest(files).pipe(takeUntil(this.ngUnsubscribe))
             .subscribe(
                 (success) => {
                     if (success.every(x => x.ok)) {
                         this.toast.success("Files saved", 'Success', { tapToDismiss: true });
-                        this.editor.confirmSaving(files.map(f=> f.id));
+                        this.editor.confirmSaving(files.map(f => f.id));
                     } else {
                         this.toast.error("Can't save files", 'Error', { tapToDismiss: true });
                     }
@@ -482,10 +489,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 (error) => {
                     this.toast.error(this.errorHandlerService.getExceptionMessage(error), 'Error', { tapToDismiss: true });
                 });
-    }
-
-    public fileIsOpen(files: FileUpdateDTO) {
-        this.workSpaceService.saveFileRequest(files).subscribe();
     }
 
     public hideSearchField() {
