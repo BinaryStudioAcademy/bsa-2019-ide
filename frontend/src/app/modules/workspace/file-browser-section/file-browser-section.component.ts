@@ -40,7 +40,7 @@ export class FileBrowserSectionComponent implements OnInit {
     @Output() fileSelected = new EventEmitter<SelectedFile>();
     @Output() renameFile = new EventEmitter<FileRenameDTO>();
     @Input() events: Observable<void>;
-    public curSearch;
+    
     items: MenuItem[];
     public files: TreeNode[];
     public selectedItem: TreeNode;
