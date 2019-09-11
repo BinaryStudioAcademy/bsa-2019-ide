@@ -27,6 +27,14 @@ namespace IDE.API.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
+        [HttpGet("restrictions")]
+        public ActionResult<FilesRestrictionsDTO> GetFilesRestrictions()
+        {
+            _logger.LogInformation(LoggingEvents.ListItems, $"Get files restrictions");
+            return Ok(_fileService.GetRestrictions());
+        }
+
         [HttpGet("forProject/{projectId}")]
         public async Task<ActionResult<ICollection<FileDTO>>> GetAllForProjectAsync(int projectId)
         {

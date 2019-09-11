@@ -32,6 +32,16 @@
                 <img src="http://www.illuminationworksllc.com/wp-content/uploads/2017/04/ProjectManagement-1.jpg" width="80%">
             </div>
         </div>
+        <div class="ui-g-12 statistics" *ngIf="filesRestrictions">
+            <div class="ui-g-6 text-block-center">
+                <img src="https://cdn1.iconfinder.com/data/icons/project-management-8/500/project-512.png" width="40%" class="img-center">
+                <p>Up to <span class="highlighted">{{filesRestrictions.maxFilesInProject}}</span> files per project</p>
+            </div>
+            <div class="ui-g-6 text-block-center">        
+                <img src="https://cdn0.iconfinder.com/data/icons/octicons/1024/file-text-512.png" height="120%" class="img-center">
+                <p>Up to <span class="highlighted">{{filesRestrictions.maxFileSymbolsCount | prettySize}}</span> size per file</p>
+            </div>
+        </div>
         <div class="ui-g-12 statistics" *ngIf="!noInfo">
             <div class="ui-g-6 text-block-center">
                 <img src="https://cdn3.iconfinder.com/data/icons/engineering-vector-line-2/128/53-512.png" width="30%" class="img-center">
