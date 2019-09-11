@@ -147,9 +147,9 @@ class HelpClass
         profile.enterNickname(Nick);
         profile.enterGitHub(Git)
         this.browserClickXPath('//p-calendar/span/input');
-        profile.clickSelectMonth.click();
+        profile.clickSelectMonth();
         this.browserClick(`option[value='${month}']`);
-        profile.clickSelectYear.click();
+        profile.clickSelectYear();
         this.browserClick(`option[value='${year}']`);
         this.browserClickOnArrayElement("a.ui-state-default.ng-star-inserted", day);
         profile.clickUpdateButton();
@@ -188,7 +188,7 @@ class HelpClass
         detailsObject.collaboratorTab.click();
         detailsObject.collaboratorTitle.waitForDisplayed(10000);
         projectDetails.enterCollaboratorName(nickname);
-        detailsObject.collaboratorItemFromList.click();
+        $(`//span[contains(text(),'${nickname}')]/..`).click();
         this.browserClickXPath(`//div[contains(text(), "${nickname}")]/../p-dropdown//div[contains(@class, "ui-dropdown-trigger")]`)
         detailsObject.dropdownlist.waitForDisplayed(10000);
         this.browserClick(`li[aria-label="${AccessRights}"]`);

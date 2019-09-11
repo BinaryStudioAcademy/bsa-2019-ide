@@ -4,6 +4,7 @@ const Assert = require('../../helpers/validators');
 const Wait = require('../../helpers/waiters');
 const validate = new Assert();
 const wait = new Wait();
+const assert = require('chai').assert;
 
 const DashboardActions = require('./actions/Dashboard_pa');
 const dashboard = new DashboardActions();
@@ -58,14 +59,43 @@ describe('Online-IDE Dashboard', () => {
     });
     xit('should search project by title in all projects', () => {
         
-        Help.searchProjectByTitleOf("test");
-        Help.browserClickOnArrayElement("ul.ui-autocomplete-items.ui-autocomplete-list.ui-widget-content.ui-widget.ui-corner-all.ui-helper-reset li", 1);    
-        validate.navigationToPage(credentials.projectDetailsUrl);
-        validate.checkProjectDetailsData(0, `Name: ${credentials.projectName}`);
+        const projectTitle = 'polyglot';
+        dashboard.enterPtojectTitleforSearch(projectTitle);
+        $("div.ng-trigger.ng-trigger-overlayAnimation").waitForDisplayed(10000);
+        Help.browserClickXPath("//span[contains(text(), 'in All projects')]");
+        const actualmessage = $("div.content-wrapper p").getText();
+        const expectedmessage = `Global search results for query "${projectTitle}":`;
+        assert.equal(expectedmessage, actualmessage);
+        const ProjectItem = $$("div.result-project");
+                   
+        const title = [];
+        const result = [];
+        for (var i=0; i < ProjectItem.length; i++) {
+            title[i] = ProjectItem[i].getText();
+            result[i] = title[i].indexOf(projectTitle) !==-1;
+            assert.equal(true, result[i]);
+            
+        }
+
         
         
     });
+    xit('should not find project by title in all projects', () => {
+        
+        const projectTitle = "publicproject";
+        dashboard.enterPtojectTitleforSearch(projectTitle);
+        $("div.ng-trigger.ng-trigger-overlayAnimation").waitForDisplayed(10000);
+        Help.browserClickXPath("//span[contains(text(), 'in All projects')]");
+        const actualmessage = $("div.content-wrapper p").getText();
+        const expectedmessage = `Global search results for query "${projectTitle}":`;
+        assert.equal(expectedmessage, actualmessage);
+        assert.equal(false, $$("div.result-project").length !== 0);
+        
 
+        
+        
+        
+    });
 
    
 });
