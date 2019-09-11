@@ -50,7 +50,8 @@ export class ProjectWindowComponent implements OnInit {
     private projectType: ProjectType;
     private projectId: number;
     private githubPattern = /^https:\/\/github.com\/\w[\d,\w,-]+\/\w[\d,\w,-\-\.]+$/i;
-    private languageList: string[];
+    
+    private domParser = new DOMParser();
 
     constructor(private ref: DynamicDialogRef,
         private config: DynamicDialogConfig,
@@ -65,7 +66,7 @@ export class ProjectWindowComponent implements OnInit {
         private req: HttpClient) { }
 
     ngOnInit(): void {
-        this.languageList = [];
+        
         this.projectType = this.config.data.projectType;
         this.title = this.projectType === ProjectType.Create ? 'Create project' : 'Edit project';
 
@@ -341,25 +342,56 @@ export class ProjectWindowComponent implements OnInit {
         const controlName = val.getAttribute('formControlName')
 
         if (this.projectForm.get(controlName).valid) {
-            const gitUrl = this.projectForm.get(controlName).value;
+            const gitUrl:string = this.projectForm.get(controlName).value;
 
             this.req.get(`https://cors-anywhere.herokuapp.com/${gitUrl}`, { observe: "response", responseType: 'text' })
                 .subscribe(response => {
                     if (response.ok) {
-                        const langList = this.getLanguageList(response.body);
-                        this.languageList = langList;
+                        const domdoc =  this.parseHtmlString(response.body);
+                        const langList = this.getLanguageList(domdoc);
+                        const desc = this.getDescription(domdoc).trim();
+                        let projName = gitUrl.match(/[^/]+$/)[0];
+                        projName = projName.replace(/\-/g,"");
+                        const projColorIndex = Math.floor(Math.random() * Math.floor(this.colors.length));
+                        const projColor = this.colors[projColorIndex].value
+                        
+
                         const langToChoose = this.languages.map(x => x.label.toLowerCase());
-                        if (langToChoose.includes(this.languageList[0].toLowerCase())) {
-                            console.log(this.languageList[0].toLowerCase());
+                        if (langToChoose.includes(langList[0].toLowerCase())) {
+                            console.log(langList[0].toLowerCase());
                             this.projectForm.patchValue(
                                 {
                                     'language': this.languages.
                                                         find(x =>
-                                                             x.label.toLowerCase() == this.languageList[0].toLowerCase()
+                                                             x.label.toLowerCase() == langList[0].toLowerCase()
                                                              )
-                                                             .value
+                                                             .value,
+                                    'access': 0,
+                                    'description': desc,
+                                    'name': projName,
+                                    'countOfBuildAttempts': 5,
+                                    'countOfSavedBuilds': 5,
+                                    'compilerType': 0,
+                                    'projectType':0,
+                                    'color': projColor
+
                                 }
                             );
+                        }else{
+                            this.projectForm.patchValue(
+                                {
+                                    
+                                    'access': 0,
+                                    'description': desc,
+                                    'name': projName,
+                                    'countOfBuildAttempts': 5,
+                                    'countOfSavedBuilds': 5,
+                                    
+                                    'color': projColor
+
+                                }
+                            );
+
                         };
                         console.log(langList)
 
@@ -371,15 +403,24 @@ export class ProjectWindowComponent implements OnInit {
                     error => console.log(error))
         }
     }
-    
-    private getLanguageList(rawHtml: string): string[] {
-        const domparser = new DOMParser();
-        const domdoc = domparser.parseFromString(rawHtml, 'text/html');
+
+    private parseHtmlString(rawHtml: string): Document{
+       return this.domParser.parseFromString(rawHtml, 'text/html');
+    }
+
+    private getLanguageList(domdoc: Document): string[] {
         const htmlLangList = domdoc.querySelectorAll(".repository-lang-stats-numbers .lang");
         if (htmlLangList.length == 0) {
             return [];
         }
         const langList = [].slice.call(htmlLangList);
         return langList.map(x => (x as HTMLElement).innerText)
+    }
+    private getDescription(domdoc: Document){
+        const descriptionContainer = domdoc.querySelectorAll("[itemprop='about']");
+        if(descriptionContainer.length == 0){
+            return "No Description";
+        }
+        return (descriptionContainer[0] as HTMLElement).innerText;
     }
 }

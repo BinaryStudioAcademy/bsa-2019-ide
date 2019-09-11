@@ -151,7 +151,7 @@
                            <span style="width:100%;"> Add github url</span>
                         </span>
                         <span pInplaceContent>
-                            <input type="text" placeholder="Github url" pInputText formControlName="githuburl" (focusout)="onFocusoutGitInput($event.target)">
+                            <input type="text" placeholder="Github url" pInputText formControlName="githuburl" (blur)="onFocusoutGitInput($event.target)" (keyup.enter)="onFocusoutGitInput($event.target)">
                         </span>
                         
                     </p-inplace>
