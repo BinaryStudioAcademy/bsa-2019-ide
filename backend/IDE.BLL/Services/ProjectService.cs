@@ -266,6 +266,7 @@ namespace IDE.BLL.Services
             var project = await _context.Projects
                 .Include(x => x.Author)
                 .Include(i => i.EditorProjectSettings)
+                .Include(g => g.GitCredential)
                 .SingleOrDefaultAsync(p => p.Id == projectId);
 
             return _mapper.Map<ProjectInfoDTO>(project);

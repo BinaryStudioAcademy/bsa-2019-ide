@@ -61,7 +61,20 @@ namespace Storage
             await blob.DownloadToStreamAsync(memStream);
             memStream.Seek(0, SeekOrigin.Begin);
             return memStream;
+        }
 
+        public async Task<MemoryStream> DownloadFileAsyncByFullUrl(string fileUri, string containerName)
+        {
+            var blobContainer = await _connectionFactory.GetBlobContainer(containerName).ConfigureAwait(false);
+            //var uri = new Uri(fileUri);
+            //uri.Segments[URL_PARTS_COUNT].TrimEnd('/')
+            var blob = blobContainer.GetBlobReference(fileUri);
+
+            var memStream = new MemoryStream();
+
+            await blob.DownloadToStreamAsync(memStream);
+            memStream.Seek(0, SeekOrigin.Begin);
+            return memStream;
         }
 
         public async Task<IEnumerable<Uri>> ListAsync(int projectId)
@@ -86,6 +99,12 @@ namespace Storage
         public async Task<Uri> UploadProjectArchiveAsync(byte[] fileToUpload, string destinationFileNameSufix = "uploaded_project")
         {
             var blobContainer = await _connectionFactory.GetProjectZipsBlobContainer();
+            return await UploadAsync(fileToUpload, blobContainer, destinationFileNameSufix);
+        }
+
+        public async Task<Uri> UploadGitArchiveAsync(byte[] fileToUpload, string destinationFileNameSufix)
+        {
+            var blobContainer = await _connectionFactory.GetGitZipsBlobContainer();
             return await UploadAsync(fileToUpload, blobContainer, destinationFileNameSufix);
         }
 
@@ -114,7 +133,16 @@ namespace Storage
 
         private async Task<Uri> UploadAsync(byte[] fileToUpload, CloudBlobContainer blobContainer, string destinationFileNameSufix)
         {
-            var blobName = $"{DateTime.Now.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss")}_{destinationFileNameSufix}.zip";
+            string blobName;
+
+            if(destinationFileNameSufix != "uploaded_project" && destinationFileNameSufix != "uploaded_artifact")
+            {
+                blobName = $"{destinationFileNameSufix}.zip";
+            }
+            else
+            {
+                blobName = $"{DateTime.Now.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss")}_{destinationFileNameSufix}.zip";
+            }
             var blob = blobContainer.GetBlockBlobReference(blobName);
             blob.Properties.ContentType = "application/zip";
             await blob.UploadFromByteArrayAsync(fileToUpload, 0, fileToUpload.Length).ConfigureAwait(false);

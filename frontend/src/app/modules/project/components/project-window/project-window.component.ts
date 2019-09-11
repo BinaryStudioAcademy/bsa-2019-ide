@@ -49,6 +49,7 @@ export class ProjectWindowComponent implements OnInit {
     private projectUpdateStartState: ProjectUpdateDTO;
     private projectType: ProjectType;
     private projectId: number;
+
     private githubPattern = /^https:\/\/github.com\/\w[\d,\w,-]+\/\w[\d,\w,-\-\.]+$/i;
     
     private domParser = new DOMParser();

@@ -28,6 +28,11 @@ namespace Storage
             return await GetBlobContainer("ProjectsArchiveContainer").ConfigureAwait(false);
         }
 
+        public async Task<CloudBlobContainer> GetGitZipsBlobContainer()
+        {
+            return await GetBlobContainer("GitContainer").ConfigureAwait(false);
+        }
+
         public async Task<CloudBlobContainer> GetBlobContainer(string containerNameKey)
         {
             if (_blobContainer != null)
