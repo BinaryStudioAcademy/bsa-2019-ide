@@ -30,6 +30,7 @@ import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 import { filter, throwIfEmpty, tap, takeUntil, delay, distinctUntilChanged } from 'rxjs/operators';
 import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
+import { GitService } from 'src/app/services/git.service/git.service';
 import { AccessModifier } from 'src/app/models/Enums/accessModifier';
 import { ConfirmationService } from 'primeng/api';
 import { FileEditService } from 'src/app/services/file-edit.service/file-edit.service';

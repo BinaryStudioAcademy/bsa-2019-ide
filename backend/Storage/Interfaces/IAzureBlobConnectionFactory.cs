@@ -7,6 +7,7 @@ namespace Storage.Interfaces
     {
         Task<CloudBlobContainer> GetArtifactsBlobContainer();
         Task<CloudBlobContainer> GetProjectZipsBlobContainer();
+        Task<CloudBlobContainer> GetGitZipsBlobContainer();
         Task<CloudBlobContainer> GetBlobContainer(string containerNameKey);
     }
 }

@@ -175,6 +175,190 @@ namespace IDE.BLL.Services
             }
         }
 
+        public async Task UnzipGitFileAsync(MemoryStream memoryStream, string pathToFile, string fileName)
+        {
+            //tempFolder + "\\ProjectFolder\\.git.zip"
+            using (FileStream fs = new FileStream(pathToFile + "\\" + fileName, FileMode.OpenOrCreate))
+            {
+                await memoryStream.CopyToAsync(fs);
+                await fs.FlushAsync();
+                memoryStream.Close();
+            }
+
+            UnzipProject(pathToFile + "\\" + fileName, pathToFile);
+            File.Delete(pathToFile + "\\" + fileName);
+        }
+
+        public void ZipGitFileAsync(string pathToFile, string projectId)
+        {
+            //ZipFile.CreateFromDirectory(pathToFile, pathToFile+".zip");
+            using (var zip = new Ionic.Zip.ZipFile())
+            {
+                zip.AddDirectory(pathToFile + "\\ProjectFolder\\.git", ".git");
+                zip.Save(pathToFile+$"\\ProjectFolder\\g{projectId}.zip");
+            }
+        }
+
+        public async Task ProjectStructureForGit(string projectStructureId, string tempFolder)
+        {
+            var projectStructure = _mapper.Map<ProjectStructureDTO>(await _projectStructureRepository.GetByIdAsync(projectStructureId));
+
+            if (!Directory.Exists(tempFolder))
+            {
+                Directory.CreateDirectory(tempFolder);
+            }
+
+            try
+            {
+                var fileStructure = await GetFolderNode(Convert.ToInt32(projectStructureId), "").ConfigureAwait(false);
+
+                var filesId = GetListOfFilesId(fileStructure);
+
+                var allFileInFileStructure = await _fileService.GetRangeByListOfIdAsync(filesId);
+
+                await SaveFilesOnDisk(fileStructure, allFileInFileStructure, Path.Combine(tempFolder, "ProjectFolder")).ConfigureAwait(false);
+            }
+            catch (Exception exception)
+            {
+                if (Directory.Exists(tempFolder))
+                {
+                    Directory.Delete(tempFolder, true);
+                }
+                _logger.LogWarning(exception, exception.Message);
+                throw exception;
+            }
+        }
+
+        public async Task UpdateProjectStructureFromTempFolder(string projectStructureId, string tempFolder, int userId, bool isClone)
+        {
+            var projectStructure = _mapper.Map<ProjectStructureDTO>(await _projectStructureRepository.GetByIdAsync(projectStructureId));
+            var rootFileStructure = projectStructure.NestedFiles.SingleOrDefault();
+
+            await GetFilesRecursiveForGit(tempFolder, rootFileStructure, userId, Convert.ToInt32(projectStructureId), isClone);
+
+            var projectStructureDto = _mapper.Map<ProjectStructure>(projectStructure);
+
+            await _projectStructureRepository.UpdateAsync(projectStructureDto);
+        }
+
+        public async Task RemoveFilesBeforeCloneAsync(int projectId)
+        {
+            var projectStructure = _mapper.Map<ProjectStructureDTO>(await _projectStructureRepository.GetByIdAsync(projectId.ToString()));
+
+            projectStructure.NestedFiles.SingleOrDefault().NestedFiles.Clear();
+
+            var projectStructureDto = _mapper.Map<ProjectStructure>(projectStructure);
+            await _projectStructureRepository.UpdateAsync(projectStructureDto);
+        }
+
+        private async Task GetFilesRecursiveForGit(string sourseDir, FileStructureDTO fileStructureRoot, int userId, int projectId, bool isClone)
+        {
+            try
+            {   
+                foreach (string directory in Directory.GetDirectories(sourseDir))
+                {
+                    var dirName = directory.Substring(directory.LastIndexOf('\\') + 1);
+
+                    var tempDir = fileStructureRoot.NestedFiles.SingleOrDefault(n => n.Name == dirName);
+
+                    //get temp libgit2sharp`s folder
+                    string ff = "nothing";
+
+                    if (isClone)
+                    {
+                        ff = Directory.GetDirectories(sourseDir)
+                            .SingleOrDefault(d => d.Contains("_git2_"))
+                            .Substring(directory.LastIndexOf('\\') + 1);
+                    }                    
+
+                    //Add directory to projectStructure 
+                    if (tempDir == null && dirName != ".git" && dirName != ff)
+                    {
+                        var nestedFileStructure = new FileStructureDTO()
+                        {
+                            Type = TreeNodeType.Folder,
+                            Name = dirName,
+                            Id = Guid.NewGuid().ToString()
+                        };
+
+                        fileStructureRoot.NestedFiles.Add(nestedFileStructure);
+                        await GetFilesRecursiveForGit(directory, nestedFileStructure, userId, projectId, isClone);
+                    }
+                }
+                foreach (var file in Directory.GetFiles(sourseDir))
+                {
+                    var fileName = file.Substring(file.LastIndexOf('\\') + 1);
+                    var dirName = sourseDir.Substring(sourseDir.LastIndexOf('\\') + 1);
+
+                    Debug.WriteLine(dirName);
+
+                    var tempFile = fileStructureRoot.NestedFiles.SingleOrDefault(n => n.Name == fileName);
+
+                    if (tempFile == null && dirName != ".git")
+                    {
+                        var fileCreateDto = new FileCreateDTO();
+                        fileCreateDto.Folder = dirName;
+                        fileCreateDto.Name = fileName;
+                        fileCreateDto.ProjectId = projectId;
+                        fileCreateDto.Content = await GetFileContent(file);
+
+                        var fileCreated = await _fileService.CreateAsync(fileCreateDto, userId);
+                        var nestedFileStructure = new FileStructureDTO()
+                        {
+                            Type = TreeNodeType.File,
+                            Name = fileName,
+                            Id = fileCreated.Id,
+                            Size = Encoding.Unicode.GetByteCount(fileCreated.Content)
+                        };
+                        fileStructureRoot.NestedFiles.Add(nestedFileStructure);
+
+                    }
+                    else if (tempFile != null && dirName != ".git")
+                    {
+                        var targetFile = await _fileService.GetByIdAsync(tempFile.Id);
+
+                        targetFile.Content = await GetFileContent(file);
+                        targetFile.UpdatedAt = DateTime.Now;
+                        targetFile.UpdaterId = userId;
+
+                        await _fileService.UpdateAsync(_mapper.Map<FileUpdateDTO>(targetFile), userId);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
+        public void DeleteTempFolder(string path)
+        {
+            try
+            {
+                File.SetAttributes(path, FileAttributes.Normal);
+
+                string[] files = Directory.GetFiles(path);
+                string[] directories = Directory.GetDirectories(path);
+
+                foreach (var file in files)
+                {
+                    File.SetAttributes(file, FileAttributes.Normal);
+                    File.Delete(file);
+                }
+                foreach (var directory in directories)
+                {
+                    DeleteTempFolder(directory);
+                }
+
+                Directory.Delete(path, false);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            
+        }
+
         private async Task GetFilesRecursive(string sourseDir, FileStructureDTO fileStructureRoot, int userId, int projectId)
         {
             try
