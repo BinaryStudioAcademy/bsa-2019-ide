@@ -154,6 +154,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     public OnChange(event: boolean) {
         if (event) {
+            this.signalRService.runState=true;
             this.inputItems = null;
             this.runState = true;
             this.isInputTerminalOpen = false;
@@ -411,6 +412,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             (response) => {
                 this.signalRService.notification = null;
                 this.buildState = true;
+                this.signalRService.buildState=true;
                 this.toast.info('Build was started', 'Info Message', { tapToDismiss: true });
             },
             (error) => {
@@ -437,6 +439,8 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
                 this.inputItems = resp.body;
                 this.isInputTerminalOpen = true;
                 if (!this.inputItems || this.inputItems.length == 0) {
+                    this.signalRService.runState=true;
+                    this.runState=true;
                     this.toast.info('Run was started', 'Info Message', { tapToDismiss: true });
                 }
             },
