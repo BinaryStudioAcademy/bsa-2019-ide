@@ -497,7 +497,7 @@ export class FileBrowserSectionComponent implements OnInit {
             this.deleteFiles(child)
         }
     }
-    /*
+    
     public searchByFiles(query) {
         query = query.trim();
         if (query.length === 0){
@@ -547,7 +547,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 this.isSearchLoading = false;
             }
         );
-    }*/
+    }
 
     public onSearchFieldClear(){
         this.searchField = '';
