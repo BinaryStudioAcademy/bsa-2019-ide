@@ -146,7 +146,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
         this.route.queryParams.pipe(takeUntil(this.ngUnsubscribe)).subscribe(params => {
             if (!!params['query']) {
-                this.fileBrowser.curSearch = params['query'];
+                this.fileBrowser.searchField = params['query'];
                 this.showSearchField = true;
                 this.cdr.detectChanges();
             }
