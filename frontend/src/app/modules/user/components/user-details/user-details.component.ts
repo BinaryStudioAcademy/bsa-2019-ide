@@ -21,7 +21,7 @@ export class UserDetailsComponent implements OnInit {
   user : UserDetailsDTO;
   image : ImageUploadBase64DTO;
   isImageExpended: boolean = false;
-  isAuthor: boolean = false;
+  isUserPage: boolean = false;
   actions: MenuItem[];
   public showEditorSettings=false;
 
@@ -49,7 +49,7 @@ export class UserDetailsComponent implements OnInit {
 
       this.userService.getUserInformationById(id).subscribe(response =>{
         this.user = response.body;
-        this.isAuthor = id == this.tokenService.getUserId()? true : false;
+        this.isUserPage= id == this.tokenService.getUserId()? true : false;
 
         if (!this.user.url){
             this.user.url = './assets/img/user-default-avatar.png';

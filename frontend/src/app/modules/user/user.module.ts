@@ -14,9 +14,7 @@ import { InputTextModule, KeyFilterModule, AccordionModule } from 'primeng/prime
 import { DynamicDialogModule } from 'primeng/components/dynamicdialog/dynamicdialog';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { PasswordModule } from 'primeng/password';
-import { UserPrCardComponent } from './components/user-pr-card/user-pr-card.component';
 import { CardModule } from 'primeng/card';
-import { UserProjListComponent } from './components/user-proj-list/user-proj-list.component'; 
 import { EditorModule } from '../editor/editor.module';
 import { TabViewModule } from 'primeng/primeng';
 import { CalendarModule } from 'primeng/calendar';
@@ -24,6 +22,7 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ProgressBarModule} from 'primeng/progressbar';
 import { ProgressSpinnerModule}  from 'primeng/progressspinner';
 import { SharedModule } from '../shared/shared.module';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
     declarations: [
@@ -31,9 +30,7 @@ import { SharedModule } from '../shared/shared.module';
         UserDetailsComponent, 
         UserSettingsComponent, 
         EmailVerificationComponent,
-        UserDialogWindowComponent,
-        UserPrCardComponent,
-        UserProjListComponent
+        UserDialogWindowComponent
     ],
     imports: [
         CommonModule,
@@ -57,7 +54,8 @@ import { SharedModule } from '../shared/shared.module';
         CalendarModule,
         ConfirmDialogModule,
         ProgressSpinnerModule,
-        SharedModule
+        SharedModule,
+        TableModule
     ],
     entryComponents: [
         UserDialogWindowComponent
