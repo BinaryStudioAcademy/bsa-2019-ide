@@ -9,7 +9,8 @@ import { ButtonModule } from 'primeng/button';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DialogModule } from 'primeng/dialog';
 import { SlideMenuModule } from 'primeng/slidemenu';
-import { KeyFilterModule, InputTextModule } from 'primeng/primeng';
+import { KeyFilterModule, InputTextModule, PasswordModule } from 'primeng/primeng';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -21,11 +22,13 @@ import { KeyFilterModule, InputTextModule } from 'primeng/primeng';
     MenuModule,
     ButtonModule,
     InputTextModule,
+    PasswordModule,
     KeyFilterModule,
     DialogModule,
     SlideMenuModule,
     ReactiveFormsModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    SharedModule
   ],
   exports: [
     GitWindowComponent,

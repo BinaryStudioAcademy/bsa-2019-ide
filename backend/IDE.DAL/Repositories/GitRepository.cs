@@ -11,34 +11,14 @@ namespace IDE.DAL.Repositories
 {
     public class GitRepository : IGitRepository
     {
-        //fetch -> pull, add -> commit, push
-        //private readonly string _repoSource;
-        //private readonly UsernamePasswordCredentials _credentials;
-        //private readonly DirectoryInfo _localFolder;
-
-        //public GitRepository(string username, string password, string gitRepoUrl, string localFolder)
-        //{
-        //    var folder = new DirectoryInfo(localFolder);
-
-        //    if (!folder.Exists)
-        //    {
-        //        throw new Exception(string.Format("Source folder '{0}' does not exist.", _localFolder));
-        //    }
-
-        //    _localFolder = folder;
-
-        //    _credentials = new UsernamePasswordCredentials
-        //    {
-        //        Username = username,
-        //        Password = password
-        //    };
-
-        //    _repoSource = gitRepoUrl;
-        //}
-
         public void InitRepository(string path)
         {
             Repository.Init(path);
+        }
+
+        public void CloneRepository(string url, string path)
+        {
+            Repository.Clone(url, path);
         }
 
         public void AddToGitRepository(string path)
@@ -55,6 +35,22 @@ namespace IDE.DAL.Repositories
             {
                 repo.Index.Add(fileName);
                 repo.Index.Write();
+            }
+        }
+
+        public void StashUntracked(string path)
+        {
+            using (var repo = new Repository(path))
+            {
+
+                var t = repo.RetrieveStatus().Where(s => 
+                (s.State & FileStatus.ModifiedInWorkdir) != 0 ||
+                (s.State & FileStatus.DeletedFromWorkdir) != 0).ToList();
+
+                foreach (var item in t)
+                {
+                    repo.Index.Remove(item.FilePath);
+                }
             }
         }
 
@@ -104,25 +100,6 @@ namespace IDE.DAL.Repositories
             {
                 Console.WriteLine("Exception:RepoActions:PushChanges " + e.Message);
             }
-
-            /*
-            using (var repo = new Repository(_localFolder.FullName))
-            {
-                var remote = repo.Network.Remotes.FirstOrDefault(r => r.Name == remoteName);
-                if (remote == null)
-                {
-                    repo.Network.Remotes.Add(remoteName, _repoSource);
-                    remote = repo.Network.Remotes.FirstOrDefault(r => r.Name == remoteName);
-                }
-
-                var options = new PushOptions
-                {
-                    CredentialsProvider = (url, usernameFromUrl, types) => _credentials
-                };
-
-                repo.Network.Push(remote, branchName, options);
-            }
-            */
         }
 
         public string FetchAll(string path, string username, string password)
@@ -149,37 +126,13 @@ namespace IDE.DAL.Repositories
             return logMessage;
         }
 
-        //public string CheckoutBranch(string branchName)
-        //{
-        //    using (var repo = new Repository(_repoSource))
-        //    {
-        //        var trackingBranch = repo.Branches[branchName];
-
-        //        if (trackingBranch.IsRemote)
-        //        {
-        //            branchName = branchName.Replace("origin/", string.Empty);
-
-        //            var branch = repo.CreateBranch(branchName, trackingBranch.Tip);
-        //            repo.Branches.Update(branch, b => b.TrackedBranch = trackingBranch.CanonicalName);
-        //            Commands.Checkout(repo, branch, new CheckoutOptions { CheckoutModifiers = CheckoutModifiers.Force });
-        //        }
-        //        else
-        //        {
-        //            Commands.Checkout(repo, trackingBranch, new CheckoutOptions { CheckoutModifiers = CheckoutModifiers.Force });
-        //        }
-
-        //        return branchName;
-        //    }
-        //}
-
-        //string remoteName, string localBranchName, string remoteBranchName
         public void Pull(string path, string branchMane, string authorName, string authorEmail)
         {
             using (var repo = new Repository(path))
             {
                 var trackingBranch = repo.Branches[$"remotes/origin/{branchMane}"];
 
-                if (trackingBranch.IsRemote) // even though I dont want to set tracking branch like this
+                if (trackingBranch.IsRemote)
                 {
                     var branch = repo.Head;
                     repo.Branches.Update(branch, b => b.TrackedBranch = trackingBranch.CanonicalName);

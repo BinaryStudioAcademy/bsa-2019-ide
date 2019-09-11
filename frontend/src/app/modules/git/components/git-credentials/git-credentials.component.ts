@@ -36,4 +36,8 @@ export class GitCredentialsComponent implements OnInit {
     isCredentials(): boolean{
         return this.project.gitCredential !== null;
     }
+
+    addCredentials(){
+        this.gitDialogService.show(this.project.id.toString(), CommandType.Add);
+    }
 }

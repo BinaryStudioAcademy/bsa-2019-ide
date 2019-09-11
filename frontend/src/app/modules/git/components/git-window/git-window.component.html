@@ -47,6 +47,67 @@
                 </div>
             </div>
 
+            <!-- Git Login -->
+            <div *ngIf="isAddCredentials()" class="label">Git Login</div>
+            <div *ngIf="isAddCredentials()" class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="ui-inputgroup">
+                        <input type="text" pInputText pKeyFilter="alphanum" formControlName="login" placeholder="Enter git login">
+                    </div>
+                </div>
+            </div>
+            <div class="invalid" *ngIf="isAddCredentials() && gitForm.get('login').invalid && gitForm.get('login').dirty">git login required</div>
+
+            <!-- Project url -->
+            <div *ngIf="isAddCredentials()" class="label">Git url</div>
+            <div *ngIf="isAddCredentials()" class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="ui-inputgroup">
+                        <input type="text" placeholder="Enter git url" pInputText formControlName="url">
+                    </div>
+                </div>
+            </div>
+            <div class="invalid" *ngIf="isAddCredentials() && gitForm.get('url').invalid && gitForm.get('url').dirty">
+                git url required
+            </div>
+
+
+            <!-- Project  password -->
+            <div *ngIf="isAddCredentials()" class="label">Password</div>
+            <div *ngIf="isAddCredentials()" class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="ui-inputgroup">
+                        <input  type="password" [feedback]="false" pPassword name="password" placeholder="Enter github password" formControlName="password" minlength="8"  maxlength="16" required
+                            pattern="[а-яА-Яa-zA-Z0-9]{8,16}"/>
+                            <div class="invalid" *ngIf="isAddCredentials() && gitForm.get('password').invalid && (gitForm.get('password').dirty || gitForm.get('password').touched)">
+                                <div *ngIf="gitForm.get('password').errors.pattern">
+                                    Password can contain latin letters (upper\lowercase), digits.
+                                </div>
+                                <div *ngIf="gitForm.get('password').errors.required">
+                                    Password is required.
+                                </div>
+                                <div *ngIf="gitForm.get('password').errors.minlength">
+                                    Password mininum length is 8.
+                                </div>
+                                <div *ngIf="gitForm.get('password').errors.maxlength">
+                                    Password maximun length is 16.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Git Provider -->
+            <div *ngIf="isAddCredentials()" class="label">Git provider</div>
+            <div *ngIf="isAddCredentials()" class="ui-g ui-fluid">
+                <div class="ui-g-12">
+                    <div class="">
+                        <p-dropdown [options]="providers" placeholder="Select git provider"
+                            formControlName="provider"></p-dropdown>
+                    </div>
+                </div>
+            </div>
+
             <!-- Submit -->
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12">
@@ -56,6 +117,8 @@
                         label="Push"></button>
                     <button *ngIf="isCommit() && hasDetailsSaveResponse" type="submit" [disabled]="!gitForm.valid" pButton
                         label="Commit"></button>
+                    <button *ngIf="isAddCredentials() && hasDetailsSaveResponse" type="submit" [disabled]="!gitForm.valid" pButton
+                        label="Add"></button>
                     <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
                         <p-progressSpinner></p-progressSpinner>
                     </div>

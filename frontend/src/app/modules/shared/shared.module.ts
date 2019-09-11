@@ -6,13 +6,15 @@ import { ConfirmationService } from 'primeng/api';
 import { ProjectTypeDirective } from 'src/app/directives/projectType/project-type.directive';
 import { LanguageDirective } from 'src/app/directives/language/language.directive';
 import { CompilerTypeDirective } from 'src/app/directives/compilerType/compiler-type.directive';
+import { ProviderDirective } from 'src/app/directives/credentials/provider.directive';
 
 @NgModule({
     declarations: [
         ConfirmationDialogComponent,
         ProjectTypeDirective,
         LanguageDirective,
-        CompilerTypeDirective
+        CompilerTypeDirective,
+        ProviderDirective
     ],
     imports: [
         CommonModule,
@@ -22,7 +24,8 @@ import { CompilerTypeDirective } from 'src/app/directives/compilerType/compiler-
         ConfirmationDialogComponent,
         ProjectTypeDirective,
         LanguageDirective,
-        CompilerTypeDirective
+        CompilerTypeDirective,
+        ProviderDirective
     ],
     providers: [
         ConfirmationService

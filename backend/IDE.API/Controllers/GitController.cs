@@ -19,16 +19,6 @@ namespace IDE.API.Controllers
             _gitService = gitService;
         }
 
-        //[HttpGet("clone")]
-        //public async Task<ActionResult> Clone()
-        //{
-        //    var userId = this.GetUserIdFromToken();
-
-        //    await _gitService.Clone(userId);
-
-        //    return Ok();
-        //}
-
         [HttpPost("pull")]
         public async Task<ActionResult> PullOrigin([FromBody] GitBranchDTO gitBranchDTO)
         {
@@ -57,6 +47,16 @@ namespace IDE.API.Controllers
             await _gitService.PushAsync(gitBranchDTO.ProjectId, gitBranchDTO.Branch, userId);
 
             return Ok();
+        }
+
+        [HttpPost("credentials")]
+        public async Task<ActionResult> AddCredentials([FromBody] GitCredentialsDTO gitCredentialsDTO)
+        {
+            var userId = this.GetUserIdFromToken();
+
+            var credentialsId = await _gitService.AddGitCredentialsToProject(gitCredentialsDTO, userId);
+
+            return Created("git/credentials", credentialsId);
         }
     }
 }

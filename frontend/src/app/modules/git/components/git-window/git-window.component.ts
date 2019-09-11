@@ -6,6 +6,7 @@ import { GitService } from 'src/app/services/git.service/git.service';
 import { ToastrService } from 'ngx-toastr';
 import { GitMessageDTO } from 'src/app/models/DTO/Git/gitMessageDTO';
 import { GitBranchDTO } from 'src/app/models/DTO/Git/gitBranchDTO';
+import { GitCredentialsDTO } from 'src/app/models/DTO/Git/gitCredentialsDTO';
 
 @Component({
   selector: 'app-git-window',
@@ -17,6 +18,8 @@ export class GitWindowComponent implements OnInit {
     public title:string;
     public projectId: string;
     public branches: any;
+    public providers: any;
+
     public gitForm: FormGroup;
     
     public isPageLoaded: boolean = false;
@@ -24,6 +27,7 @@ export class GitWindowComponent implements OnInit {
 
     public gitMess: GitMessageDTO;
     public gitBr: GitBranchDTO;
+    public gitAdd: GitCredentialsDTO;
 
     private commandType: CommandType;
 
@@ -40,6 +44,11 @@ export class GitWindowComponent implements OnInit {
         this.branches = [
             {label:'master', value:'master'}
         ];
+
+        this.providers = [
+            {label:'Github', value: 0}
+        ];
+
         this.isPageLoaded = true;
 
         switch(this.config.data.commandType){
@@ -64,6 +73,16 @@ export class GitWindowComponent implements OnInit {
                     message: ['', Validators.required]});
                 break;
             }
+            case 3:{
+                this.title = "Add credentials";
+                this.gitForm = this.fb.group({
+                    projectId: ['', [Validators.required]],
+                    url: ['', [Validators.required]],
+                    login: ['', [Validators.required]],
+                    provider: ['', [Validators.required]],
+                    password: ['', [Validators.required]]
+                })
+            }
         }
 
         this.Initialize();
@@ -79,6 +98,10 @@ export class GitWindowComponent implements OnInit {
 
     public isPush(){
         return this.commandType == CommandType.Push;
+    }
+
+    public isAddCredentials(){
+        return this.commandType == CommandType.Add;
     }
 
     public onSubmit() {
@@ -98,6 +121,7 @@ export class GitWindowComponent implements OnInit {
                     this.close();
             }, error =>{
                 this.toastrService.error('error');
+                this.hasDetailsSaveResponse = true;
                 console.log(error);
             })
         }
@@ -109,12 +133,13 @@ export class GitWindowComponent implements OnInit {
             }
 
             this.gitService.push(this.gitBr)
-            .subscribe(res =>{
-                this.hasDetailsSaveResponse = true;
-                this.toastrService.success('push');
-                this.close();
+                .subscribe(res =>{
+                    this.hasDetailsSaveResponse = true;
+                    this.toastrService.success('push');
+                    this.close();
             }, error =>{
                 this.toastrService.error('error');
+                this.hasDetailsSaveResponse = true;
                 console.log(error);
             })
         }
@@ -132,8 +157,30 @@ export class GitWindowComponent implements OnInit {
                     this.close();
             }, error =>{
                 this.toastrService.error('error');
+                this.hasDetailsSaveResponse = true;
                 console.log(error);
             })
+        }
+        else if(this.isAddCredentials()){
+
+            this.gitAdd = {    
+                projectId: this.gitForm.get('projectId').value,
+                url: this.gitForm.get('url').value,
+                login: this.gitForm.get('login').value,
+                provider: this.gitForm.get('provider').value,
+                password: this.gitForm.get('password').value
+            }
+
+            this.gitService.addCredentials(this.gitAdd)
+            .subscribe(res =>{
+                this.hasDetailsSaveResponse = true;
+                this.toastrService.success('credentials');
+                this.close();
+        }, error =>{
+            this.toastrService.error('error');
+            this.hasDetailsSaveResponse = true;
+            console.log(error);
+        })
         }
     }
 
