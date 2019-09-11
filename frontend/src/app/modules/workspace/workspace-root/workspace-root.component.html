@@ -12,7 +12,7 @@
                 tooltipPosition="bottom" showDelay="500" [disabled]="getRunState()">
                 <p-progressSpinner *ngIf=getRunState() [style]="{width: '18px', height: '18px', top: '6px', right: '6px'}" strokeWidth="8" ></p-progressSpinner>
             </button>
-            <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="pi pi-inbox" iconPos="left"
+            <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="fa fa-simplybuilt" iconPos="left"
                 class="ui-button-secondary btn" label="Build" (click)="onBuild()" pTooltip="Build - Ctrl+B"
                 tooltipPosition="bottom" showDelay="500" [disabled]="getBuildState()">
                 <p-progressSpinner *ngIf="getBuildState()" [style]="{width: '18px', height: '18px', top: '6px', right: '6px'}" strokeWidth="8" ></p-progressSpinner>
@@ -30,21 +30,20 @@
 <div class="wks-wrapper p-grid p-nogutter">
     <div class="left-panel p-col-fixed">
         <div class="buttons-top">
-            <button pButton type="button" icon="pi pi-clone" pTooltip="Hide or show project structure"
+            <button pButton type="button" icon="fa fa-copy" pTooltip="Hide or show project structure"
                 tooltipPosition="right" showDelay="100" class="ui-button-secondary" (click)="hideFileBrowser()"></button>
             <button pButton type="button" icon="pi pi-search" class="ui-button-secondary" pTooltip="Search in project"
                 tooltipPosition="right" showDelay="100" (click)="hideSearchField()"></button>
         </div>
         <div class="buttons-bottom">
             <button pButton type="button" *ngIf="isAuthor()" (click)="Settings()" icon="pi pi-cog" iconPos="left"
-                class="ui-button-secondary" pTooltip="Settings" tooltipPosition="bottom"
-                showDelay="5000"></button>
+                class="ui-button-secondary" pTooltip="Editor settings" tooltipPosition="bottom"></button>
         </div>
     </div>
     <div class="p-col" *ngIf="isOpenedConnection">
         <div class="inner-wrapper p-grid p-nogutter" id="container" (mouseover)="draggableUp($event)"
             (mousemove)="draggableMove($event)" (mouseup)="draggableUp($event)">
-            <div *ngIf="project" [hidden]="!showFileBrowser" id="browser"
+            <div *ngIf="project" [hidden]="!showFileBrowser && !showSearchField" id="browser"
                 class="file-browser-content p-align-stretch browser">
                 <app-file-browser-section (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
                     [showSearchField]="showSearchField" [project]="project">

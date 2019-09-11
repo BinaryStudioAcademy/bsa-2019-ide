@@ -290,6 +290,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             (resp) => {
                 if (resp) {
                     this.options = resp as EditorSettingDTO;
+                    this.toast.info('To apply changes, please refresh your page');
+
+                    window.location.reload();
                 }
             }
         );
@@ -489,6 +492,18 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     public hideSearchField() {
         this.showSearchField = !this.showSearchField;
+        if (!this.showFileBrowser && this.showSearchField) {
+            this.showFileBrowser = true;
+        }
+        if (!this.showSearchField) {
+            this.showFileBrowser = false;
+        }
+        if (!this.showSearchField) {
+            this.workspaceWidth = document.getElementById('workspace').offsetWidth;
+            document.getElementById('workspace').style.width = '100%';
+        } else {
+            document.getElementById('workspace').style.width = ((this.workspaceWidth - 1) / this.maxSize() * 100) + '%';
+        }
     }
 
     public hideFileBrowser() {
