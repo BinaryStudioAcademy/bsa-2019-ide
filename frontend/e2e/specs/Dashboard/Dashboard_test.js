@@ -51,7 +51,7 @@ describe('Online-IDE Dashboard', () => {
     });
 
 
-    it('should search project by title in all projects', () => {
+    xit('should search project by title in all projects', () => {
         
         
         wait.ofDashboardMenu();

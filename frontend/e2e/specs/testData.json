@@ -1,6 +1,7 @@
 {
     "appUrl": "http://bsa-ide.azurewebsites.net",
     "email": "test129@test.com",
+    "secondEmail": "kek04@example.com",
     "notRegisteredEmail": "qqqqqqqqqq@fff.ggg",
     "invalidEmail": "1111111111166",
     "password":"11111111",
@@ -25,6 +26,8 @@
     "notificationSuccessChangeCollaboratorRight": "New collaborators access have successfully saved!",
     "notificationSuccessDeleteCollaborator": "New collaborators access have successfully saved!",
     "notificationSuccessProjectRemoval": "Project \"changedProject\" was successfully deleted",
+    "buildNotification": "Build was started",
+    "editorMessage": "Cannot edit in read-only editor",
     "projectName": "testproject",
     "description": "test test test",
     "buildsNumber": "5",
@@ -42,8 +45,9 @@
     "successchangedsettingsnotification": "New details have successfully saved!",
     "expectedmessageonFavourite": "You don't have any favourite projects... Yet!)",
     "changedCode": "aaa",
-    "expectedCodeChanges": "usaaaing System;",
-    "expectedHistory": "usaaaing"
+    "expectedCodeChanges": "aleaaart(",
+    "expectedHistory": "usaaaing",
+    "expectedDeletedCode": "using"
     
     
 }

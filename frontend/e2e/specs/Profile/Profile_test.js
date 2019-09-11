@@ -77,7 +77,7 @@ describe('Online-IDE User profile', () => {
        
                
     });
-    it('change users editor settings', () => {
+    xit('change users editor settings', () => {
 
         
         validate.successnavigationToPage(credentials.dashboardUrl);
