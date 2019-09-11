@@ -43,7 +43,7 @@
             <div *ngIf="project" [hidden]="!showFileBrowser" id="browser"
                 class="file-browser-content p-align-stretch browser">
                 <app-file-browser-section (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
-                    [showSearchField]="showSearchField" [events]="eventsSubject.asObservable()" [project]="project">
+                    [showSearchField]="showSearchField" [project]="project">
                 </app-file-browser-section>
             </div>
             <div *ngIf="showFileBrowser" class="draggableLine" (mousedown)="draggableDown($event)"

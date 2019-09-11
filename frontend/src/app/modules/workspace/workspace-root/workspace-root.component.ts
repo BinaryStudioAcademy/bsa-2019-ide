@@ -78,7 +78,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     private ngUnsubscribe: Subject<void> = new Subject<void>();
 
-    public eventsSubject: Subject<void> = new Subject<void>();
     public isOpenedConnection: boolean = null;
 
     @ViewChild(EditorSectionComponent, { static: false })
@@ -511,14 +510,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     public editProjectSettings() {
         this.projectEditService.show(ProjectType.Update, this.projectId);
-    }
-
-    public expand() {
-        this.eventsSubject.next();
-    }
-
-    public refresh() {
-        this.fileBrowser.ngOnInit();
     }
 
     public saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
