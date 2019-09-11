@@ -5,11 +5,13 @@ import { AuthDialogService } from 'src/app/services/auth-dialog.service/auth-dia
 import { DialogType } from 'src/app/modules/authorization/models/auth-dialog-type';
 import { UserComment } from '../../model/userComment';
 import { LikedProjectDTO } from 'src/app/models/DTO/Project/likedProjectDTO';
+import { FileService } from 'src/app/services/file.service/file.service';
+import { FilesRestrictionsDTO } from 'src/app/models/DTO/File/filesRestrictionsDTO';
 
 @Component({
-  selector: 'app-landing-root',
-  templateUrl: './landing-root.component.html',
-  styleUrls: ['./landing-root.component.sass']
+    selector: 'app-landing-root',
+    templateUrl: './landing-root.component.html',
+    styleUrls: ['./landing-root.component.sass']
 })
 export class LandingRootComponent implements OnInit {
     private MAX_DESCRIPTION_LENGTH = 197;
@@ -17,12 +19,17 @@ export class LandingRootComponent implements OnInit {
     likedProjects: LikedProjectDTO[];
     smthWrong = true;
     noInfo = true;
+
     constructor(private infoService: InfoService,
-                private authDialogService: AuthDialogService) { }
+        private authDialogService: AuthDialogService,
+        private fileService: FileService) { }
+
     active: number;
     websiteInfo: WebSiteInfo;
     comments: UserComment[];
-    
+
+    public filesRestrictions: FilesRestrictionsDTO;
+
     ngOnInit() {
         this.menuItems = [
             { name: 'C#', url: 'https://static2.tgstat.com/public/images/channels/_0/cd/cdeed628be15b12e5f376ed6432d0dfb.jpg' },
@@ -51,23 +58,28 @@ export class LandingRootComponent implements OnInit {
 
         this.infoService.getMostLikedProjects()
             .subscribe(data => {
-                    this.likedProjects = this.makeDescriptionShorter(data.body);
-                    this.smthWrong = false;
-                    this.active = 1;
-                }, error => this.smthWrong = true);
+                this.likedProjects = this.makeDescriptionShorter(data.body);
+                this.smthWrong = false;
+                this.active = 1;
+            }, error => this.smthWrong = true);
         this.infoService.getWebSiteStats()
             .subscribe(data => {
                 this.websiteInfo = data.body;
                 this.noInfo = false;
             }, error => this.noInfo = true);
+
+        this.fileService.getRestrictions()
+            .subscribe(response => {
+                console.log(response.body);
+                this.filesRestrictions = response.body;
+            })
     }
 
     public Authorize() {
         this.authDialogService.openAuthDialog(DialogType.SignUp);
     }
 
-    public OnProjectCardClick(project: LikedProjectDTO)
-    {
+    public OnProjectCardClick(project: LikedProjectDTO) {
         this.authDialogService.openAuthDialog(DialogType.SignIn, project.projectId);
     }
 

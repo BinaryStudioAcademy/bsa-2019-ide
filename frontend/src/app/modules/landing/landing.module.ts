@@ -4,12 +4,14 @@ import { LandingRootComponent } from './components/landing-root/landing-root.com
 import { CommentCardComponent } from './components/comment-card/comment-card.component';
 import { ProjectCardComponent } from './components/project-card/project-card.component';
 import { SharedModule } from '../shared/shared.module';
+import { PrettySizePipe } from './pipes/pretty-size.pipe';
 
 @NgModule({
   declarations: [
       LandingRootComponent,
       CommentCardComponent,
-      ProjectCardComponent
+      ProjectCardComponent,
+      PrettySizePipe
     ],
   imports: [
     CommonModule,
