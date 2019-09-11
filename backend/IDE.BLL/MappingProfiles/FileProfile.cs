@@ -14,6 +14,7 @@ namespace IDE.BLL.MappingProfiles
             CreateMap<FileCreateDTO, File>();
             CreateMap<FileUpdateDTO, File>();
             CreateMap<File, FileSearch>();
+            CreateMap<FileDTO, FileUpdateDTO>();
         }
     }
 }

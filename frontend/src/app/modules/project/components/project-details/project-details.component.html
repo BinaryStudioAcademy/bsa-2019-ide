@@ -33,7 +33,7 @@
             </ng-template>
         </p-tabPanel>
         <p-tabPanel header="Git Credentials" leftIcon="pi pi-sitemap">
-            Here will be git url <address></address>
+            <app-git-credentials [project]="project"></app-git-credentials>
         </p-tabPanel>
         <p-tabPanel header="History of changes" leftIcon="pi pi-list">
             <ng-template pTemplate="content">

@@ -31,6 +31,7 @@ import { SizeInfoPipe } from './pipes/size-info.pipe';
 import { UserBuildHistoryComponent } from './components/user-build-history/user-build-history.component';
 import { BuildHistoryTabComponent } from './components/build-history-tab/build-history-tab.component';
 import { InplaceModule } from 'primeng/primeng';
+import { GitModule } from '../git/git.module';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { InplaceModule } from 'primeng/primeng';
     CollaboratorModule,
     FileUploadModule,
     AccordionModule,
-    InplaceModule
+    InplaceModule,
+    GitModule
   ],
   entryComponents: [
     ProjectWindowComponent
