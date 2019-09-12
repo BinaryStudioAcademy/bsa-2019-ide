@@ -165,11 +165,17 @@ namespace IDE.BLL.Services
         public async Task<ICollection<ProjectUserPageDTO>> GetProjectsByUserId(int userId)
         {
             var projects = _context.Projects
-               .Where(pr => pr.AuthorId == userId);
+               .Where(pr => pr.AuthorId == userId && pr.AccessModifier!=AccessModifier.Private)
+               .Select(x => new ProjectUserPageDTO
+               {
+                   Id = x.Id,
+                   Name = x.Name,
+                   Description = x.Description
+               });
 
             var collection = await projects.ToListAsync();
 
-            return _mapper.Map<ICollection<ProjectUserPageDTO>>(collection);
+            return collection;
         }
 
         public async Task<ICollection<ProjectUserPageDTO>> GetAssignedProjectsByUserId(int userId)
@@ -177,7 +183,13 @@ namespace IDE.BLL.Services
             var projects = _context.ProjectMembers
               .Where(pr => pr.UserId == userId)
               .Include(x => x.Project)
-              .Select(x => x.Project);
+              .Select(x => new ProjectUserPageDTO
+              {
+                  Id=x.Project.Id,
+                  Name=x.Project.Name,
+                  Description=x.Project.Description,
+                  UserAccess = x.UserAccess
+              });
 
             var collection = await projects.ToListAsync();
 

@@ -21,9 +21,10 @@ export class UserDetailsComponent implements OnInit {
   user : UserDetailsDTO;
   image : ImageUploadBase64DTO;
   isImageExpended: boolean = false;
-  isAuthor: boolean = false;
+  public isOwnPage: boolean;
   actions: MenuItem[];
   public showEditorSettings=false;
+  public isDefaultImage:boolean=false;
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
@@ -48,11 +49,13 @@ export class UserDetailsComponent implements OnInit {
       let id = this.activateRoute.snapshot.params['id'];
 
       this.userService.getUserInformationById(id).subscribe(response =>{
+        this.isOwnPage= id == this.tokenService.getUserId()? true : false;
         this.user = response.body;
-        this.isAuthor = id == this.tokenService.getUserId()? true : false;
 
         if (!this.user.url){
+
             this.user.url = './assets/img/user-default-avatar.png';
+            this.isDefaultImage=true;
         }
 
         if(this.user.birthday.toString()=='0001-01-01T00:00:00')
