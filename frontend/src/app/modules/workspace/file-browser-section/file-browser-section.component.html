@@ -1,5 +1,17 @@
 <div class="tree-wrapper">
     <p-progressBar *ngIf="!showSearchField && (!files || files.length == 0)" mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+    <div class="menu-items">
+        <div *ngIf="files && files.length > 0" class="buttons">
+            <button pButton type="button" icon="pi pi-file" pTooltip="Create file" tooltipPosition="bottom"
+                showDelay="100" class="ui-button-secondary" (click)="createFile(files[0])"></button>
+            <button pButton type="button" icon="pi pi-folder" pTooltip="Create folder" tooltipPosition="bottom"
+                showDelay="100" class="ui-button-secondary" (click)="createFolder(files[0])"></button>
+            <button pButton type="button" icon="pi pi-refresh" pTooltip="Refresh file section" tooltipPosition="bottom"
+                showDelay="100" class="ui-button-secondary" (click)="refresh()"></button>
+            <button pButton type="button" icon="fa fa-angle-double-up" pTooltip="Collapse all" tooltipPosition="bottom"
+                showDelay="100" class="ui-button-secondary" (click)="collapse()"></button>
+        </div>
+    </div>
     <p-tree *ngIf="files && files.length > 0 && !showSearchField" class="custom-tree" selectionMode="single" [value]="files" [(selection)]="selectedItem" 
             [contextMenu]="contextMenu" (onNodeSelect)="nodeSelect($event)" (onNodeContextMenuSelect)="nodeContextMenuSelect($event)">
         <ng-template let-node pTemplate="0">
