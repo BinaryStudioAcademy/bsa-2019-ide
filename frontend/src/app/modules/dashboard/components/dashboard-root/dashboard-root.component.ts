@@ -1,9 +1,5 @@
-
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProjectWindowComponent } from 'src/app/modules/project/components/project-window/project-window.component';
-import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
-import { ProjectType } from 'src/app/modules/project/models/project-type';
 import { EventService } from 'src/app/services/event.service/event.service';
 
 @Component({
@@ -16,13 +12,12 @@ export class DashboardRootComponent implements OnInit {
     public isActive: number;
 
     constructor(private router: Router,
-                private projectDialogService: ProjectDialogService,
-                private eventService: EventService) { }
+        private eventService: EventService) { }
 
     ngOnInit() {
         this.items = [
-            ['Favourite projects', '/dashboard'],
-            ['My projects', '/dashboard/myProjects'],
+            ['Favourite projects', '/dashboard/favouriteProjects'],
+            ['My projects', '/dashboard'],
             ['Assigned projects', '/dashboard/assignedProjects']
         ];
         this.isActive = this.items.findIndex(x => x[1] === this.router.url);
@@ -34,7 +29,4 @@ export class DashboardRootComponent implements OnInit {
         this.router.navigate([this.items[i][1]]);
     }
 
-    public createProject() {
-        this.projectDialogService.show(ProjectType.Create);
-    }
 }
