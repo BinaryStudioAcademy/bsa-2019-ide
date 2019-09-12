@@ -48,12 +48,12 @@
                     (click)="userPasswordUpdate()"></button>
             </div>
         </div>
-        <div class="right-part">
+        <div *ngIf="isOwnPage!=underfined" class="right-part">
             <p-tabView>
-                <p-tabPanel *ngIf="isOwnPage" class="tab-item" header="Editor settings">
+                <p-tabPanel *ngIf="isOwnPage" class="tab-item" header="Editor settings" [selected]="true">
                     <app-editor-settings [user]="user"></app-editor-settings>
                 </p-tabPanel>
-                <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="Author`s projects">
+                <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="Author`s projects" [selected]="true">
                     <app-user-projects [userId]="user.id" [isOwnProject]="true"></app-user-projects>
                 </p-tabPanel>
                 <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="Assigned projects">

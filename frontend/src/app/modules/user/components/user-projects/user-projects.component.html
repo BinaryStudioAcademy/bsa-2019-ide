@@ -3,12 +3,12 @@
         <tr>
             <th class="name no-border">Name</th>
             <th class="no-border">Description</th>
-            <th class="no-border" *ngIf="!isOwnProject">Access</th>
+            <th class="no-border static-width" *ngIf="!isOwnProject">Access</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-project>
         <tr>
-            <td class="project-name no-border" (click)="goToProjectDetails(project)">{{project.name}}</td>
+            <td class="no-border" (click)="goToProjectDetails(project)"><p class="project-name">{{project.name}}</p></td>
             <td class="no-border">{{project.description}}</td>
             <td class="no-border" *ngIf="!isOwnProject">{{getUserAccess(project.userAccess)}}</td>
         </tr>

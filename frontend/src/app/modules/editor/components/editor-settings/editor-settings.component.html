@@ -1,6 +1,6 @@
 <div [ngClass]="{ 'container' : !IsWorkspace }">
 <div class="editor-settings-content">
-    <div class="header">
+    <div>
         <span *ngIf="IsWorkspace" class="modal-close-btn" (click)="close()">&times;</span>
         <h2 *ngIf="IsWorkspace" class="title"> Editor settings</h2>        
     </div>
