@@ -9,4 +9,5 @@ export interface BuildDescriptionDTO {
     buildStatus: BuildStatus;
     projectName: string;
     userName: string;
+    uriForArtifactsDownload: string;
 }

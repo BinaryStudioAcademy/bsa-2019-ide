@@ -111,10 +111,10 @@ export class SignalRService {
         this.hubConnection.off('transferchartdata');
         this.hubConnection.off('transferRunResult');
         this.hubConnection.off('sendConnectionId');
-        this.hubConnection.off('progressState');
     }
 
     public deleteConnectionIdListener() {
         this.hubConnection.off('sendConnectionId');
+        this.hubConnection.off('progressState');
     }
 }

@@ -5,22 +5,38 @@
     background: #94d0ff
     color: white
     height: 96vh
-    position: relative
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: flex-end
+
 .name
     color: #000000
+    width: 70%
+    text-align: center
+
+.header .header-logo
+    display: block
+    background: url("../../../../../assets/img/logo.png")
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat 
+    width: 70%
+    height: 70%
 
 .header-container
     display: block
     margin: auto
     margin-top: 30px
-    position: absolute
-    top: 0
-    bottom: 0
-    left: 0
-    right: 0
-    width: 50%
-    height: 100%
     text-align: center
+
+.first-block, .second-block
+    display: flex
+    justify-content: space-between
+    align-items: center
+
+.block-image
+    width: 30wh
 
 .first-block, .statistics
     color: #6E6D6D
@@ -82,6 +98,12 @@
 .text-block-categories
     margin-top: 0
 
+.text-block-categories li
+    font-size: 16px
+
+.heart
+    font-size: 14px
+
 .image-container
     position: relative
 
@@ -112,7 +134,13 @@ h3
 .line
     margin-top: 20px
     width: 100%
-    border-bottom: 1px solid #6E6D6D
+    border-bottom: 1px solid #94d0ff
+
+.color-black
+    color: black
+
+.stats-image
+    padding: 25%
 
 .p-col
     text-align: center
