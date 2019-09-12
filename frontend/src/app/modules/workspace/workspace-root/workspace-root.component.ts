@@ -3,7 +3,7 @@ import { LeavePageDialogService } from './../../../services/leave-page-dialog.se
 import { FileUpdateDTO } from './../../../models/DTO/File/fileUpdateDTO';
 import { WorkspaceService } from './../../../services/workspace.service';
 
-import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, OnChanges, ChangeDetectorRef, AfterContentInit, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, OnChanges, ChangeDetectorRef, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { EditorSectionComponent } from '../editor-section/editor-section.component';
@@ -12,7 +12,6 @@ import { switchMap } from 'rxjs/internal/operators/switchMap';
 import { map } from 'rxjs/internal/operators/map';
 
 import { HttpResponse } from '@angular/common/http';
-import { FileService } from 'src/app/services/file.service/file.service';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { ProjectInfoDTO } from 'src/app/models/DTO/Project/projectInfoDTO';
 import { TokenService } from 'src/app/services/token.service/token.service';
@@ -28,15 +27,11 @@ import { BuildService } from 'src/app/services/build.service';
 import { Language } from 'src/app/models/Enums/language';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
-import { filter, throwIfEmpty, tap, takeUntil, delay, distinctUntilChanged } from 'rxjs/operators';
+import { filter, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
-import { GitService } from 'src/app/services/git.service/git.service';
-import { AccessModifier } from 'src/app/models/Enums/accessModifier';
 import { ConfirmationService } from 'primeng/api';
 import { FileEditService } from 'src/app/services/file-edit.service/file-edit.service';
-import { TerminalService } from 'primeng/components/terminal/terminalservice';
 import { FileSaverService } from 'src/app/services/workspace-file-saver.service/file-saver.service';
-import { TouchSequence } from 'selenium-webdriver';
 
 
 @Component({
@@ -80,7 +75,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     private ngUnsubscribe: Subject<void> = new Subject<void>();
 
-    public eventsSubject: Subject<void> = new Subject<void>();
     public isOpenedConnection: boolean = null;
 
     @ViewChild(EditorSectionComponent, { static: false })
@@ -102,7 +96,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         private route: ActivatedRoute,
         private toast: ToastrService,
         private workSpaceService: WorkspaceService,
-        private saveOnExit: LeavePageDialogService,
         private rightService: RightsService,
         private projectService: ProjectService,
         private projectEditService: ProjectDialogService,
@@ -262,7 +255,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             if (x.userId !== this.userId) {
                 // console.log('its somebodyth else file');
                 this.fileBrowser.changeFileState(x.fileId, x.isOpen, x.nickName);
-                this.editor.changeFileState(x.fileId, true);
+                if (!x.isOpen && this.editor.contains(x.fileId)) {
+                    this.editor.changeFileState(x.fileId, true);
+                }
                 if (!x.isOpen && this.editor.contains(x.fileId)) {
                     this.fileEditService.openFile(x.fileId, this.project.id);
                 }
@@ -295,6 +290,9 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
             (resp) => {
                 if (resp) {
                     this.options = resp as EditorSettingDTO;
+                    this.toast.info('To apply changes, please refresh your page');
+
+                    window.location.reload();
                 }
             }
         );
@@ -410,7 +408,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     public onBuild() {
         this.buildService.buildProject(this.project.id).pipe(takeUntil(this.ngUnsubscribe)).subscribe(
-            (response) => {
+            () => {
                 this.signalRService.notification = null;
                 this.buildState = true;
                 this.signalRService.buildState=true;
@@ -494,6 +492,18 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     public hideSearchField() {
         this.showSearchField = !this.showSearchField;
+        if (!this.showFileBrowser && this.showSearchField) {
+            this.showFileBrowser = true;
+        }
+        if (!this.showSearchField) {
+            this.showFileBrowser = false;
+        }
+        if (!this.showSearchField) {
+            this.workspaceWidth = document.getElementById('workspace').offsetWidth;
+            document.getElementById('workspace').style.width = '100%';
+        } else {
+            document.getElementById('workspace').style.width = ((this.workspaceWidth - 1) / this.maxSize() * 100) + '%';
+        }
     }
 
     public hideFileBrowser() {
@@ -514,14 +524,6 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
 
     public editProjectSettings() {
         this.projectEditService.show(ProjectType.Update, this.projectId);
-    }
-
-    public expand() {
-        this.eventsSubject.next();
-    }
-
-    public refresh() {
-        this.fileBrowser.ngOnInit();
     }
 
     public saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {
