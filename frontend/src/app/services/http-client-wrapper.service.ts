@@ -15,7 +15,9 @@ export class HttpClientWrapperService {
     public getHeader(key: string) {
         return this.headers[key];
     }
-
+    public getHeaders(){
+        return this.headers.keys();
+    }
     public setHeader(key: string, value: string) {
         this.headers.set(key, value);
     }

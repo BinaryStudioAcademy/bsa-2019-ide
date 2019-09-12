@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ɵConsole } from '@angular/core';
+import { Component, OnInit, OnDestroy, ɵConsole, ViewEncapsulation } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { AuthDialogService } from '../services/auth-dialog.service/auth-dialog.service';
 import { DialogType } from '../modules/authorization/models/auth-dialog-type';
@@ -13,13 +13,13 @@ import { NotificationDTO } from '../models/DTO/Common/notificationDTO';
 import { NotificationService } from '../services/notification.service/notification.service';
 import { UserService } from '../services/user.service/user.service';
 import { EventService } from '../services/event.service/event.service';
-import { NotificationStatus } from '../models/Enums/notificationStatus';
 import { NotificationType } from '../models/Enums/notificationType';
 
 @Component({
     selector: 'app-nav-menu',
     templateUrl: './nav-menu.component.html',
-    styleUrls: ['./nav-menu.component.sass']
+    styleUrls: ['./nav-menu.component.sass'],
+    encapsulation: ViewEncapsulation.None
 })
 export class NavMenuComponent implements OnInit, OnDestroy {
     authUserItems: MenuItem[];
@@ -55,7 +55,8 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         this.signalRService.startConnection(this.isAuthorized, this.userId);
         this.authUserItems = [
             {
-                label: 'Home',
+                label: '',
+                styleClass: 'logo',
                 command: () => {
                     if (!this.router.url.startsWith('/dashboard')) {
                         this.router.navigate(['/dashboard'])
@@ -65,7 +66,8 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         ];
         this.unAuthUserItems = [
             {
-                label: 'Home',
+                label: '',
+                styleClass: 'logo',
                 command: (event: any) => {
                     this.openAuthDialog(this.dialogType.SignIn);
                 }

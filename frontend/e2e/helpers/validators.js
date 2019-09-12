@@ -80,14 +80,13 @@ class CustomValidates {
 
     verifyEditedFile(expectedChanges) {
         workspace.openFirstfile();
-        workPage.editorField.waitForDisplayed(10000);
-        assert.equal(workPage.editorField.getText(), expectedChanges);
+        workPage.firtsWordInEditor.waitForDisplayed(10000);
+        assert.equal(workPage.firtsWordInEditor.getText(), expectedChanges);
     };
 
-    verifyProjectHistory(expectedChanges) {
-        const historyText = $('//*[@id="ui-accordiontab-0-content"]/div').getText();
-        const firstWord = historyText.split(' ', 1);
-        assert.equal(firstWord, expectedChanges);
+    verifyProjectHistory() {
+        workPage.firstHistoryRecord.waitForDisplayed(10000);
+        assert.equal(workPage.firstHistoryRecord.isDisplayed(), true);
     };
     SuccessUploadAvatar(){
         const defaultAvatar = $('img[src="./assets/img/user-default-avatar.png"]');
@@ -102,7 +101,14 @@ class CustomValidates {
         browser.refresh();
 
         assert.equal(defaultAvatar.isDisplayed(), true); 
-    }
+    };
+
+    verifyEditorMessage(expectedText) {
+        assert.equal(workspace.getMessageText(), expectedText);
+    };
+
+    
+
 }
 
 module.exports = CustomValidates;

@@ -2,9 +2,9 @@
     <div>
         <div class="header">
             <div>
-                {{project.projectName}} 
+                {{project.projectName | lessSymbols : getLikesSymbolsByWidth()}} 
             </div> 
-            <div>
+            <div class="likes">
                 {{project.likesCount}}<span class="heart">&#x2764;</span>
             </div>
         </div>

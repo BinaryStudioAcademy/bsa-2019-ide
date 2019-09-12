@@ -39,13 +39,11 @@ export class FileBrowserSectionComponent implements OnInit {
     @Input() showSearchField: boolean;
     @Output() fileSelected = new EventEmitter<SelectedFile>();
     @Output() renameFile = new EventEmitter<FileRenameDTO>();
-    @Input() events: Observable<void>;
-    public curSearch;
+
     items: MenuItem[];
     public files: TreeNode[];
     public selectedItem: TreeNode;
     public projectId: number;
-    public expandFolder = true;
     public fileSearchResults: FileSearchResultDTO[]
 
     public filteredFiles: TreeNode[];
@@ -60,7 +58,6 @@ export class FileBrowserSectionComponent implements OnInit {
     private lastActionFileCreated: boolean = false;
     private lastActionFolderCreated: boolean = false;
     private lastCreatedNode: TreeNode;
-    private eventsSubscription: any;
     private fileNameRegex: RegExp;
 
     constructor(private projectStructureService: FileBrowserService,
@@ -75,7 +72,7 @@ export class FileBrowserSectionComponent implements OnInit {
                 private filesEditService: FileEditService) {
         this.hotkeys.addShortcut({keys: 'control.e'})
         .subscribe(()=>{
-          this.expand();
+          this.collapse();
         });
         this.projectId = activateRoute.snapshot.params['id'];
     }
@@ -108,20 +105,16 @@ export class FileBrowserSectionComponent implements OnInit {
             { label: 'download', icon: 'pi pi-download', command: () => this.download(this.selectedItem) },
             { label: 'import', icon: 'pi pi-upload', command: ()=> this.openImportWindow(this.selectedItem)}
         ];
-
-        this.eventsSubscription = this.events.subscribe(() => this.expand());
-        
-    }
-
-    ngOnDestroy() {
-        this.eventsSubscription.unsubscribe()
     }
     
-    private expand() {
-        this.expandFolder = !this.expandFolder;
+    public collapse() {
         this.files.forEach( node => {
-            this.expandRecursive(node, this.expandFolder);
+            this.collapseRecursive(node);
         } );
+    }
+
+    public refresh() {
+        this.ngOnInit();
     }
     
     private downloadFile(node: TreeNode){
@@ -285,7 +278,7 @@ export class FileBrowserSectionComponent implements OnInit {
         event.stopPropagation();
     }
 
-    private createFile(node: TreeNode) {
+    public createFile(node: TreeNode) {
         if(this.lastActionFileCreated || this.lastActionFolderCreated) {
             return;
         }
@@ -296,18 +289,30 @@ export class FileBrowserSectionComponent implements OnInit {
         this.lastActionFileCreated = true;
         this.lastCreatedNode = this.projectStructureFormaterService.makeFileNode(`file${this.defaultExtension}`, '1')
         this.lastCreatedNode.type = TreeNodeType.file.toString();
+        if (node.type === TreeNodeType.file.toString()) {
+            this.lastCreatedNode.parent = node.parent;
+        } else {
+            this.lastCreatedNode.parent = node;
+            node.expanded = true;
+        }
+        console.log(this.lastCreatedNode.parent)
         this.lastCreatedNode.parent = node;
         this.lastCreatedNode.icon = this.getExtensionImage(this.defaultExtension);
         this.appendNewNode(node, this.lastCreatedNode);
 
         setTimeout(() => {
-            var element = document.getElementsByClassName('ui-state-highlight').item(0).children.item(0).children.item(0) as HTMLInputElement;
+            let element = document.getElementsByClassName('ui-state-highlight').item(0).children.item(0).children.item(0) as HTMLInputElement;
+            if(element.children.length > 0) {
+                element = element.children.item(0) as HTMLInputElement;
+            } else {
+                element = element as HTMLInputElement;
+            }
             this.lastSelectedElement = element;
             this.rename(this.selectedItem);
         }, 1);
     }
 
-    private createFolder(node: TreeNode) {
+    public createFolder(node: TreeNode) {
         if(this.lastActionFileCreated || this.lastActionFolderCreated) {
             return;
         }
@@ -318,7 +323,13 @@ export class FileBrowserSectionComponent implements OnInit {
         this.appendNewNode(node, this.lastCreatedNode);
 
         setTimeout(() => {
-            var element = document.getElementsByClassName('ui-state-highlight').item(0).children.item(0).children.item(0) as HTMLInputElement;
+            console.log(document.getElementsByClassName('ui-state-highlight'));
+            var element = document.getElementsByClassName('ui-state-highlight').item(0).children.item(0);
+            if(element.children.length > 0) {
+                element = element.children.item(0) as HTMLInputElement;
+            } else {
+                element = element as HTMLInputElement;
+            }
             this.lastSelectedElement = element;
             this.rename(this.selectedItem);
         }, 1);
@@ -379,7 +390,7 @@ export class FileBrowserSectionComponent implements OnInit {
         }
     }
 
-    public focusout(node: TreeNode){
+    public focusout(node: TreeNode) {
         if (this.lastSelectedElement.disabled) {
             return;
         }
@@ -497,7 +508,7 @@ export class FileBrowserSectionComponent implements OnInit {
             this.deleteFiles(child)
         }
     }
-
+    
     public searchByFiles(query) {
         query = query.trim();
         if (query.length === 0){
@@ -567,11 +578,11 @@ export class FileBrowserSectionComponent implements OnInit {
         this.fileSelected.emit(selectedFile);
     }
 
-    private expandRecursive(node:TreeNode, isExpand:boolean){
-        node.expanded = isExpand;
+    private collapseRecursive(node:TreeNode){
+        node.expanded = false;
         if(node.children){
             node.children.forEach( childNode => {
-                this.expandRecursive(childNode, isExpand);
+                this.collapseRecursive(childNode);
             } );
         }
     }

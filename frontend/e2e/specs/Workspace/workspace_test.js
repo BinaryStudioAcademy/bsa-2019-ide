@@ -18,7 +18,7 @@ describe('Online-IDE workspace', () => {
         browser.url(credentials.appUrl);
         Help.loginWithDefaultUser();
         wait.forSpinner();
-        Help.openFirstProject();
+        Help.openMyFirstProject();
 
     });
  
@@ -27,35 +27,47 @@ describe('Online-IDE workspace', () => {
     });
 
 
-    xit('should edit file', () => {
+    it('should edit file', () => {
 
         workspace.openFirstfile();
         workspace.editOpenedFile(credentials.changedCode);
-        browser.pause(5000);
         workspace.saveChanges();
         browser.refresh();
         validate.verifyEditedFile(credentials.expectedCodeChanges);
-
+        workspace.deleteChanges();
+        workspace.saveChanges();
     });
 
-    xit('should open project history', () => {
+    it('should open project history', () => {
 
         workspace.openProjectDetails();
         workspace.openProjectHistory();
         workspace.openFirstFileHIstory();
-        validate.verifyProjectHistory(credentials.expectedHistory);
+        validate.verifyProjectHistory();
 
-
-        //add deleting 'aaa' from code
     });
 
-    xit('should build project', () => {
+    it('should build project', () => {
 
+        wait.forNotificationToDisappear();
         workspace.buildProject();
+        validate.notificationTextIs(credentials.buildNotification)
         wait.forNotificationToDisappear();
         workspace.openProjectDetails();
         workspace.openBuildResults();
-        //something must happened
+        //something must happened (still nothing)
+
+    });
+
+    it('should not edit by second user in parallel editing', () => {
+
+        workspace.openFirstfile();
+        workspace.editOpenedFile(credentials.changedCode);
+        Help.secondWindowLogin();
+        Help.openAssignedFirstProject();
+        workspace.openFirstfile();
+        workspace.editBigComment(credentials.changedCode);
+        validate.verifyEditorMessage(credentials.editorMessage);
 
     });
 

@@ -6,7 +6,9 @@ import { ConfirmationService } from 'primeng/api';
 import { ProjectTypeDirective } from 'src/app/directives/projectType/project-type.directive';
 import { LanguageDirective } from 'src/app/directives/language/language.directive';
 import { CompilerTypeDirective } from 'src/app/directives/compilerType/compiler-type.directive';
+import { ProviderDirective } from 'src/app/directives/credentials/provider.directive';
 import { LessSymbolsPipe } from './pipes/less-symbols.pipe';
+import { FooterComponent } from './footer/footer.component';
 
 @NgModule({
     declarations: [
@@ -14,7 +16,9 @@ import { LessSymbolsPipe } from './pipes/less-symbols.pipe';
         ProjectTypeDirective,
         LanguageDirective,
         CompilerTypeDirective,
-        LessSymbolsPipe
+        ProviderDirective,
+        LessSymbolsPipe,
+        FooterComponent
     ],
     imports: [
         CommonModule,
@@ -25,7 +29,9 @@ import { LessSymbolsPipe } from './pipes/less-symbols.pipe';
         ProjectTypeDirective,
         LanguageDirective,
         CompilerTypeDirective,
-        LessSymbolsPipe
+        ProviderDirective,
+        LessSymbolsPipe,
+        FooterComponent
     ],
     providers: [
         ConfirmationService

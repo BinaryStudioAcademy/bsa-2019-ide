@@ -53,6 +53,16 @@ namespace IDE.BLL.Services
             _maxFileSize = configuration.MaxFileSize;
         }
 
+        public FilesRestrictionsDTO GetRestrictions()
+        {
+            var filesRestrictions = new FilesRestrictionsDTO()
+            {
+                MaxFilesInProject = _maxFilesInProjectCount,
+                MaxFileSymbolsCount = _maxFileSize
+            };
+            return filesRestrictions;
+        }
+
         public async Task<ICollection<FileDTO>> GetAllForProjectAsync(int projectId)
         {
             var filesForProject = await _fileRepository.GetAllAsync(f => f.ProjectId == projectId);
