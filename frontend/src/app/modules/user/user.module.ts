@@ -23,6 +23,7 @@ import {ProgressBarModule} from 'primeng/progressbar';
 import { ProgressSpinnerModule}  from 'primeng/progressspinner';
 import { SharedModule } from '../shared/shared.module';
 import { TableModule } from 'primeng/table';
+import { UserProjectsComponent } from './components/user-projects/user-projects.component';
 
 @NgModule({
     declarations: [
@@ -30,7 +31,8 @@ import { TableModule } from 'primeng/table';
         UserDetailsComponent, 
         UserSettingsComponent, 
         EmailVerificationComponent,
-        UserDialogWindowComponent
+        UserDialogWindowComponent,
+        UserProjectsComponent
     ],
     imports: [
         CommonModule,

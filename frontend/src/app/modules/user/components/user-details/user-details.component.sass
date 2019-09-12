@@ -19,6 +19,7 @@
     cursor: pointer 
     object-fit: cover
     max-width: 60%
+    height: 90%
 
 .image-btn
     padding-top: 1px
@@ -76,9 +77,15 @@
 
 p
     margin: 1%
-    display: flex
+    display: grid
     align-items: baseline
     margin-left: 25%
+    grid-template-columns: 30% 70%
+    grid-gap: 2%
+
+::ng-deep body .ui-tabview .ui-tabview-panels .ui-tabview-panel
+    height: 73vh
+    overflow-y: auto
 
 .tname
     font-size:30px  
@@ -113,7 +120,7 @@ p
 
 .tab-item
     width: 100%
-
+    overflow: hidden
 
 .modal-close-btn 
     color: #aaa

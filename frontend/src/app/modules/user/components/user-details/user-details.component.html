@@ -5,10 +5,9 @@
         <div class="left-part">
             <div class="user-info-avatar">
                 <button class="ui-button-secondary image-btn" pButton icon='pi pi-cloud-upload'
-                     (click)="userPhotoUpdate()"></button>
+                    (click)="userPhotoUpdate()"></button>
                 <img class="p-col-align-center avatar" alt="avatar" (click)="expandImage(user.url)" src="{{user.url}}">
-                <button class="ui-button-secondary image-btn" pButton icon='pi pi-trash'
-                    (click)="confirm()"></button>
+                <button class="ui-button-secondary image-btn" pButton icon='pi pi-trash' (click)="confirm()"></button>
             </div>
             <div class="user-profile-information">
                 <p class="tname p-col-align-center">{{user.firstName}} {{user.lastName}}</p>
@@ -48,16 +47,14 @@
         </div>
         <div class="right-part">
             <p-tabView>
-                <p-tabPanel *ngIf="isUserPage" class="tab-item" header="My projects">
-                    <p-table></p-table>
-                    <!-- <app-user-proj-list [userId]="user.id"></app-user-proj-list> -->
-                </p-tabPanel>
-                <p-tabPanel *ngIf="isUserPage" class="tab-item" header="Assigned projects">
-                    <p-table></p-table>
-                    <!-- <app-user-proj-list [userId]="user.id"></app-user-proj-list> -->
-                </p-tabPanel>
-                <p-tabPanel  class="tab-item" header="Editor settings">
+                <p-tabPanel class="tab-item" header="Editor settings">
                     <app-editor-settings [user]="user"></app-editor-settings>
+                </p-tabPanel>
+                <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="My projects">
+                    <app-user-projects [userId]="user.id" [isOwnProject]="true"></app-user-projects>
+                </p-tabPanel>
+                <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="Assigned projects">
+                    <app-user-projects [userId]="user.id" [isOwnProject]="false"></app-user-projects>
                 </p-tabPanel>
             </p-tabView>
         </div>
