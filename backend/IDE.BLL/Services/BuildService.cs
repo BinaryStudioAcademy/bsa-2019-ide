@@ -105,6 +105,7 @@ namespace IDE.BLL.Services
             {
                 build.BuildStatus = BuildStatus.Successfull;
                 build.BuildMessage = string.IsNullOrWhiteSpace(result.Message) ? "Build finished successfully" : result.Message;
+                build.UriForArtifactsDownload = result.UriForArtifactsDownload.ToString();
             }
             else
             {
