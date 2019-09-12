@@ -9,6 +9,7 @@ export interface BuildDTO {
     buildStarted: Date;
     buildFinished?: Date;
     buildStatus: BuildStatus;
+    uriForArtifactsDownload: string;
     projectId: number;
     project: ProjectDTO;
     userId: number;
