@@ -63,8 +63,8 @@
 </p-dialog>
 
 <p-dialog [(visible)]="isChangeAvatar" [showHeader]="false" appendTo="body" [closable]=false [modal]="true"
-    [responsive]="true" [contentStyle]="{'max-height':'600px', 'width':'500px', 'overflow-y':'visible'}"
-    [positionTop]="10">
+    [responsive]="true" [contentStyle]="{'max-height':'calc(100vh - 40px)', 'width':'500px', 'overflow-y':'visible'}"
+    [positionTop]="20">
 
     <span class="modal-close-btn" (click)="close()">&times;</span>
 
