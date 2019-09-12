@@ -33,7 +33,8 @@ import { UserAccessDirective } from 'src/app/directives/userAccess/user-access.d
         CompilerTypeDirective,
         ProviderDirective,
         LessSymbolsPipe,
-        FooterComponent
+        FooterComponent,
+        UserAccessDirective
     ],
     providers: [
         ConfirmationService
