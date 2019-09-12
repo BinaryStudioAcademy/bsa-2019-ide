@@ -174,7 +174,7 @@ namespace IDE.API.Controllers
                 }
 
                 var projectStructure = await _projectStructureService.CreateEmptyAsync(projectId, project.Name);
-                await _projectStructureService.ImportProject(projectStructure.Id, formfile, projectId.ToString(), author, false, null);
+                await _projectStructureService.ImportProject(projectStructure.Id, formfile, projectId.ToString(), author, false, null, true);
             }
             //else if (formfile != null)
             //{
