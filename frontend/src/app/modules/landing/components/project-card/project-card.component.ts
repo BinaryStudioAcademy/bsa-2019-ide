@@ -14,8 +14,6 @@ export class ProjectCardComponent implements OnInit {
     }
     public getLikesSymbolsByWidth() {
         const width = document.body.offsetWidth;
-        console.log(width);
-        console.log(width >= 1000)
         if (width >= 1920)
             return 24;
         if (width >= 1500)

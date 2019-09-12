@@ -13,5 +13,6 @@ namespace IDE.Common.ModelsDTO.DTO.Common
         public BuildStatus BuildStatus { get; set; }
         public string ProjectName { get; set; }
         public string UserName { get; set; }
+        public string UriForArtifactsDownload { get; set; }
     }
 }

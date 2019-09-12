@@ -1,17 +1,15 @@
 <div class="container">
     <div class="ui-g">
         <div class="ui-g-12 header">
-            <div class="header-container">
-                <img src="../../../../../assets/img/logo.png" height="80%">
-                <h2 class="name">It was designed to collaborate developers and make writing code for then easier and
-                    more available everywhere</h2>
-            </div>
+            <div class="header-logo"></div>
+            <h2 class="name">It was designed to collaborate developers and make writing code for then easier and
+                more available everywhere</h2>
         </div>
-        <div class="ui-g-12 first-block">
-            <div class="ui-g-5 center">
-                <img src="https://patimes.org/wp-content/uploads/2015/04/Vaz-collaboration1.jpg" width="80%">
+        <div class="first-block">
+            <div class="center block-image">
+                <img src="https://patimes.org/wp-content/uploads/2015/04/Vaz-collaboration1.jpg" width="100%">
             </div>
-            <div class="ui-g-7 text-block">
+            <div class="text-block">
                 <!--Change text))-->
                 <h2>Collaborate with other people</h2>
                 <p>Using our platform you can independently or together with your friends develop your product. Our ide
@@ -19,8 +17,8 @@
                     access of your collaborator to your project and add or delete collaborators when you want it.</p>
             </div>
         </div>
-        <div class="ui-g-12 second-block">
-            <div class="ui-g-7 text-block">
+        <div class="second-block">
+            <div class="text-block color-black">
                 <!--Change text))-->
                 <h2>Write your code everywhere</h2>
                 <p>After creating a project, it will be available for you, wherever you won't be. For it you need just
@@ -31,34 +29,36 @@
                     <li>And wish to code <span class="heart">&#x2764;</span></li>
                 </ul>
             </div>
-            <div class="ui-g-5 center">
-                <img src="http://www.illuminationworksllc.com/wp-content/uploads/2017/04/ProjectManagement-1.jpg"
-                    width="80%">
+            <div class="center block-image">
+                <img src="../../../../../assets/img/second-block-image.png"
+                    width="100%">
             </div>
         </div>
         <div class="ui-g-12 statistics" *ngIf="filesRestrictions">
             <div class="ui-g-6 text-block-center">
-                <img src="https://cdn1.iconfinder.com/data/icons/project-management-8/500/project-512.png" width="40%"
-                    class="img-center">
+                <div class="stats-image" style="background: url(https://cdn1.iconfinder.com/data/icons/project-management-8/500/project-512.png);
+                    background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
                 <p>Up to <span class="highlighted">{{filesRestrictions.maxFilesInProject}}</span> files per project</p>
             </div>
             <div class="ui-g-6 text-block-center">
-                <img src="https://cdn0.iconfinder.com/data/icons/octicons/1024/file-text-512.png" height="120%"
-                    class="img-center">
+                <div class="stats-image" style="background: url(https://cdn0.iconfinder.com/data/icons/octicons/1024/file-text-512.png);
+                    background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
                 <p>Up to <span class="highlighted">{{filesRestrictions.maxFileSymbolsCount | prettySize}}</span> size
                     per file</p>
             </div>
         </div>
         <div class="ui-g-12 statistics" *ngIf="!noInfo">
             <div class="ui-g-6 text-block-center">
-                <img src="https://cdn3.iconfinder.com/data/icons/engineering-vector-line-2/128/53-512.png" width="30%"
-                    class="img-center">
+                <div class="stats-image" style="background: url(https://cdn3.iconfinder.com/data/icons/engineering-vector-line-2/128/53-512.png);
+                    background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
                 <p>Right now we have more than <span class="highlighted">{{websiteInfo.projectsCount}}</span> projects,
                     which amount increases every day</p>
             </div>
             <div class="ui-g-6 text-block-center">
-                <img src="https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1374533/910/607/m1/fpnw/wm0/03-1user-.jpg?1466145560&s=a087bdf4e16ce4c463929bb636d9af6a"
-                    width="45%" class="img-center">
+                <div class="stats-image" style="background: url(https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1374533/910/607/m1/fpnw/wm0/03-1user-.jpg?1466145560&s=a087bdf4e16ce4c463929bb636d9af6a);
+                    background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
+                <!-- <img src="https://cmkt-image-prd.global.ssl.fastly.net/0.1.0/ps/1374533/910/607/m1/fpnw/wm0/03-1user-.jpg?1466145560&s=a087bdf4e16ce4c463929bb636d9af6a"
+                    width="45%" class="img-center"> -->
                 <p>Our community join about <span class="highlighted">{{websiteInfo.usersCount}}</span> different users,
                     and, maybe, your friends also join us. They invite up to <span
                         class="highlighted">{{websiteInfo.collaboratorsCount}}</span> collaborators to work with</p>
@@ -66,13 +66,13 @@
         </div>
         <div class="ui-g-12 statistics" *ngIf="!noInfo">
             <div class="ui-g-6 text-block-center">
-                <img src="https://cdn3.iconfinder.com/data/icons/construction-105/34/16-512.png" width="25%"
-                    class="img-center">
+                <div class="stats-image" style="background: url(https://cdn3.iconfinder.com/data/icons/construction-105/34/16-512.png);
+                    background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
                 <p>Our projects was build <span class="highlighted">{{websiteInfo.buildCount}}</span> times</p>
             </div>
             <div class="ui-g-6 text-block-center">
-                <img src="https://icon-library.net/images/text-file-icon/text-file-icon-18.jpg" width="25%"
-                    class="img-center">
+                <div class="stats-image" style="background: url(https://icon-library.net/images/text-file-icon/text-file-icon-18.jpg);
+                    background-size: contain; background-position: center; background-repeat: no-repeat;"></div>
                 <p>This projects has more than <span class="highlighted">{{websiteInfo.filesCount}}</span> files on
                     different languages, such as C#, JS, TS, GO, HTML, XML and other</p>
             </div>

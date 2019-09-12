@@ -50,7 +50,7 @@ namespace IDE.DAL.Repositories
         
         public async Task<long> GetItemsCount()
         {
-            return await _items.EstimatedDocumentCountAsync();
+            return 100; //await _items.EstimatedDocumentCountAsync();
         }
 
         private string GetItemsCollectionName()

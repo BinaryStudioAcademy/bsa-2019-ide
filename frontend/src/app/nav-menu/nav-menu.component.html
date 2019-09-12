@@ -4,7 +4,7 @@
             <div *ngIf="isAuthorized" class="authorized-right-part">
                 <p-autoComplete class="auto-complete" [(ngModel)]="project" [suggestions]="filterProhects"
                     (completeMethod)="filterProject($event)" field="name" [size]="30" placeholder="Search"
-                    [minLength]="1" (onSelect)="checkProject(project)">
+                    [minLength]="1" (onSelect)="checkProject(project)" (keydown.Enter)="checkProject(filterProhects[0])">
                     <ng-template let-proj pTemplate="item">
                         <div class="ui-helper-clearfix" [ngSwitch]="proj.id">
                             <svg *ngIf="proj.id == -1 || proj.id == -3" height="16" width="16" title="Search"
