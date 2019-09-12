@@ -117,12 +117,20 @@
     margin: 5px
     align-items: stretch
 
-.file-search-keyword
+.input-box
     flex-grow: 1
-    padding-left: 5px
     border: 1px solid black
+    border-right: none
     border-radius: 5px 0 0 5px
     width: 60%
+    display: flex
+
+.input-box input
+    min-width: 50px
+    flex-grow: 1
+    border: none
+    outline: none
+    margin-left: 5px
 
 .file-search-submit
     border: none
@@ -155,3 +163,18 @@
 
 .ui-button-secondary
     font-size: 10px
+
+.clear-button
+    font-size: 10px
+    padding: 0 4.29px
+    color: grey
+    background: none
+    border: none
+
+.clear-button:hover,
+.clear-button:enabled:hover
+    background: none
+    color: black
+
+.search
+    border-radius: 0 5px 5px 0

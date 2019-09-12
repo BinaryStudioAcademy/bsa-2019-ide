@@ -25,14 +25,14 @@ export class WorkspaceService {
                 project: project,
                 type: "workspace"
             },
-            width: '500px',
+            width: '410px',
             style: {
                 'box-shadow': '0 0 3px 0 #000',
             },
             contentStyle: {
                 'border-radius': '3px',
                 'overflow-y': 'auto',
-                'max-height': '90vh'
+                'max-height': '90vh',
             },
             showHeader: false,
             closeOnEscape: true

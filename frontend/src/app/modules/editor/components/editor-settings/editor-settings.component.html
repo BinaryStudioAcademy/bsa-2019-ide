@@ -1,7 +1,9 @@
 <div [ngClass]="{ 'container' : !IsWorkspace }">
 <div class="editor-settings-content">
-    <span *ngIf="IsWorkspace" class="modal-close-btn" (click)="close()">&times;</span>
-    <h2 *ngIf="IsWorkspace" class="title"> Editor settings</h2>
+    <div class="header">
+        <span *ngIf="IsWorkspace" class="modal-close-btn" (click)="close()">&times;</span>
+        <h2 *ngIf="IsWorkspace" class="title"> Editor settings</h2>        
+    </div>
     <form class="edittor-setting-content" [formGroup]="editorSettingsForm">
         <div class="editor-details-property">
             <p class="property-name">Theme:</p>
@@ -31,16 +33,14 @@
             <p class="property-name">Tab size:</p>
             <input class="editor-input" type="text" formControlName="tabSize">
         </div>
-        <div class="ui-g ui-fluid">
-            <div class="ui-g-12">
-                <button *ngIf="hasDetailsSaveResponse" (click)="onSubmit(false)" class="settings-btn"
-                    [disabled]="!editorSettingsForm.valid || IsSettingsNotChange()" pButton label="Save"></button>
-                <button *ngIf="hasDetailsSaveResponse && IsWorkspace" (click)="onSubmit(true)" class="settings-btn"
-                    [disabled]="!editorSettingsForm.valid || IsSettingsNotChange()" pButton
-                    label="Save to all projects"></button>
-                <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
-                    <p-progressSpinner></p-progressSpinner>
-                </div>
+        <div class="ui-g ui-fluid buttons">
+            <button *ngIf="hasDetailsSaveResponse" (click)="onSubmit(false)" class="settings-btn"
+                [disabled]="!editorSettingsForm.valid || IsSettingsNotChange()" pButton label="Apply"></button>
+            <button *ngIf="hasDetailsSaveResponse && IsWorkspace" (click)="onSubmit(true)" class="settings-btn"
+                [disabled]="!editorSettingsForm.valid || IsSettingsNotChange()" pButton
+                label="Apply to all projects"></button>
+            <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
+                <p-progressSpinner></p-progressSpinner>
             </div>
         </div>
     </form>
