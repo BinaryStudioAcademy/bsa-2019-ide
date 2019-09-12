@@ -70,7 +70,7 @@ describe('Online-IDE User profile', () => {
                
     });
 
-    xit('should upload avatar', () => {
+    it('should upload avatar', () => {
         
         profile.clickMyProfileButton();
         wait.forUserInfoPanel();
@@ -83,7 +83,7 @@ describe('Online-IDE User profile', () => {
             
                
     });
-    xit('should delete avatar', () => {
+    it('should delete avatar', () => {
         
         profile.clickMyProfileButton();
         wait.forUserInfoPanel();

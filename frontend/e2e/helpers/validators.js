@@ -91,16 +91,13 @@ class CustomValidates {
     };
     SuccessUploadAvatar(){
         const defaultAvatar = $('img[src="./assets/img/user-default-avatar.png"]');
-
         browser.refresh();
-
         assert.equal(defaultAvatar.isDisplayed(), false); 
     }
     SuccessDeleteAvatar(){
         const defaultAvatar = $('img[src="./assets/img/user-default-avatar.png"]');
-
         browser.refresh();
-
+        browser.pause(5000);
         assert.equal(defaultAvatar.isDisplayed(), true); 
     }
 }

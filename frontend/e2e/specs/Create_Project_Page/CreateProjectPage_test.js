@@ -25,7 +25,7 @@ describe('Online-IDE creation project', () => {
        browser.reloadSession();
    });
 
-    it('should create a new project with valid data', () => {
+    xit('should create a new project with valid data', () => {
        
         project.addButtonClick();
         project.waitFormOfProjectCreation();
