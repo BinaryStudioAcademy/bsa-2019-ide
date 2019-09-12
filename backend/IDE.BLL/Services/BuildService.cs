@@ -96,11 +96,11 @@ namespace IDE.BLL.Services
             return build;
         }
 
-        public async Task<BuildDTO> CreateFinishBuildResult(BuildResultDTO result)
+        public async Task<BuildDTO> CreateFinishBuildResult(BuildResultDTO result, DateTime finished)
         {
             var build = await _context.Builds
                 .FirstOrDefaultAsync(item => item.Id == result.BuildId);
-            build.BuildFinished = DateTime.Now;
+            build.BuildFinished = finished;
             if(result.WasBuildSucceeded)
             {
                 build.BuildStatus = BuildStatus.Successfull;
