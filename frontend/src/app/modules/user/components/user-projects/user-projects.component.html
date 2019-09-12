@@ -10,7 +10,7 @@
         <tr>
             <td class="project-name no-border" (click)="goToProjectDetails(project)">{{project.name}}</td>
             <td class="no-border">{{project.description}}</td>
-            <td class="no-border" *ngIf="!isOwnProject">{{project.userAccess}}</td>
+            <td class="no-border" *ngIf="!isOwnProject">{{getUserAccess(project.userAccess)}}</td>
         </tr>
     </ng-template>
 </p-table>

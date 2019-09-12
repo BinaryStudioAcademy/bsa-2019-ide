@@ -24,6 +24,7 @@ import { ProgressSpinnerModule}  from 'primeng/progressspinner';
 import { SharedModule } from '../shared/shared.module';
 import { TableModule } from 'primeng/table';
 import { UserProjectsComponent } from './components/user-projects/user-projects.component';
+import{ SharedModule as MySharedModule} from './../../modules/shared/shared.module'
 
 @NgModule({
     declarations: [
@@ -57,7 +58,8 @@ import { UserProjectsComponent } from './components/user-projects/user-projects.
         ConfirmDialogModule,
         ProgressSpinnerModule,
         SharedModule,
-        TableModule
+        TableModule,
+        MySharedModule
     ],
     entryComponents: [
         UserDialogWindowComponent

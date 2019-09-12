@@ -9,6 +9,7 @@ import { CompilerTypeDirective } from 'src/app/directives/compilerType/compiler-
 import { ProviderDirective } from 'src/app/directives/credentials/provider.directive';
 import { LessSymbolsPipe } from './pipes/less-symbols.pipe';
 import { FooterComponent } from './footer/footer.component';
+import { UserAccessDirective } from 'src/app/directives/userAccess/user-access.directive';
 
 @NgModule({
     declarations: [
@@ -18,7 +19,8 @@ import { FooterComponent } from './footer/footer.component';
         CompilerTypeDirective,
         ProviderDirective,
         LessSymbolsPipe,
-        FooterComponent
+        FooterComponent,
+        UserAccessDirective
     ],
     imports: [
         CommonModule,

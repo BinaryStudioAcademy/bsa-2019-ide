@@ -21,9 +21,10 @@ export class UserDetailsComponent implements OnInit {
   user : UserDetailsDTO;
   image : ImageUploadBase64DTO;
   isImageExpended: boolean = false;
-  public isOwnPage: boolean = false;
+  public isOwnPage: boolean;
   actions: MenuItem[];
   public showEditorSettings=false;
+  public isDefaultImage:boolean=false;
 
   imageChangedEvent: any = '';
   croppedImage: any = '';
@@ -52,7 +53,9 @@ export class UserDetailsComponent implements OnInit {
         this.user = response.body;
 
         if (!this.user.url){
+
             this.user.url = './assets/img/user-default-avatar.png';
+            this.isDefaultImage=true;
         }
 
         if(this.user.birthday.toString()=='0001-01-01T00:00:00')
