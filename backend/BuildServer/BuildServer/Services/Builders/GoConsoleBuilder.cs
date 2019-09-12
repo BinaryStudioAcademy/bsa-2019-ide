@@ -2,102 +2,29 @@
 using BuildServer.Interfaces;
 using BuildServer.OperationsResults;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace BuildServer.Services.Builders
 {
-    public class GoConsoleBuilder : IBuilder
+    public class GoConsoleBuilder : Abstract.Builder<GoConsoleBuilder>, IBuilder
     {
-        private string _buildDirectory;
-        ProcessKiller _processKiller;
-
-        public GoConsoleBuilder(IConfiguration configuration, ProcessKiller processKiller)
+        private readonly string _buildDirectory;
+        public GoConsoleBuilder(IConfiguration configuration, ProcessKiller processKiller, ILogger<GoConsoleBuilder> logger)
+        : base(configuration, processKiller, logger)
         {
             _buildDirectory = configuration.GetSection("BuildDirectory").Value;
-            _processKiller = processKiller;
         }
 
         public BuildResult Build(string projectName)
         {
-            var commandToBuild = $"/c (cd {_buildDirectory}\\{projectName} && go build)";
-            var outputMessage = "";
-
-            try
-            {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = @"cmd",
-                        Arguments = commandToBuild,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        CreateNoWindow = true
-                    }
-                };
-
-                process.Start();
-
-                while (!process.StandardOutput.EndOfStream)
-                {
-                    var line = process.StandardOutput.ReadLine();
-                    outputMessage += line + "\n";
-                }
-
-                process.WaitForExit();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            BuildResult buildResult = new BuildResult()
-            {
-                IsSuccess = outputMessage.Length == 0,
-                Message = outputMessage
-            };
-
-            return buildResult;
+            var commandToBuild = $"/c go build {_buildDirectory}\\{projectName}";
+            return BuildInternal(commandToBuild);
         }
 
         public string Run(string projectName, params string[] inputs)
         {
-            //Run go projects implementation
-            throw new NotImplementedException();
-            var commandToBuild = $"/c (cd {_buildDirectory}\\{projectName} && {projectName}.exe)";
-            var outputMessage = "";
-
-            try
-            {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = @"cmd",
-                        Arguments = commandToBuild,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        CreateNoWindow = true
-                    }
-                };
-
-                process.Start();
-
-                while (!process.StandardOutput.EndOfStream)
-                {
-                    var line = process.StandardOutput.ReadLine();
-                    outputMessage += line + "\n";
-                }
-
-                process.WaitForExit();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            var runCommand = $"/c go run {_buildDirectory}\\{projectName}\\main.go";
+            return RunInternal(runCommand, inputs);
         }
     }
 }

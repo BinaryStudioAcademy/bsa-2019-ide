@@ -2,9 +2,6 @@
 using BuildServer.OperationsResults;
 using BuildServer.Services.Builders;
 using RabbitMQ.Shared.ModelsDTO.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BuildServer.Services
 {

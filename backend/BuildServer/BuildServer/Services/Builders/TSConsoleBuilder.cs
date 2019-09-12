@@ -2,102 +2,30 @@
 using BuildServer.Interfaces;
 using BuildServer.OperationsResults;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 
 namespace BuildServer.Services.Builders
 {
-    public class TSConsoleBuilder : IBuilder
+    public class TSConsoleBuilder : Abstract.Builder<TSConsoleBuilder>, IBuilder
     {
-        private string _buildDirectory;
-        ProcessKiller _processKiller;
-
-        public TSConsoleBuilder(IConfiguration configuration, ProcessKiller processKiller)
+        private readonly string _buildDirectory;
+        public TSConsoleBuilder(IConfiguration configuration, ProcessKiller processKiller, ILogger<TSConsoleBuilder> logger)
+        : base(configuration, processKiller, logger)
         {
             _buildDirectory = configuration.GetSection("BuildDirectory").Value;
-            _processKiller = processKiller;
         }
 
         public BuildResult Build(string projectName)
         {
-            var commandToBuild = $"/c (cd {_buildDirectory}\\{projectName} && tsc main.ts)";
-            var outputMessage = "";
-
-            try
-            {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = @"cmd",
-                        Arguments = commandToBuild,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        CreateNoWindow = true
-                    }
-                };
-
-                process.Start();
-
-                while (!process.StandardOutput.EndOfStream)
-                {
-                    var line = process.StandardOutput.ReadLine();
-                    outputMessage += line + "\n";
-                }
-
-                process.WaitForExit();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
-            BuildResult buildResult = new BuildResult()
-            {
-                IsSuccess = outputMessage.Length == 0,
-                Message = outputMessage
-            };
-
-            return buildResult;
+            var commandToBuild = $"/c tsc {_buildDirectory}\\{projectName}\\main.ts";
+            return BuildInternal(commandToBuild);
         }
 
         public string Run(string projectName, params string[] inputs)
         {
             //Run ts projects implementation
             throw new NotImplementedException();
-            var commandToBuild = $"/c (cd {_buildDirectory}\\{projectName} && node {projectName}.js)";
-            var outputMessage = "";
-
-            try
-            {
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = @"cmd",
-                        Arguments = commandToBuild,
-                        UseShellExecute = false,
-                        RedirectStandardOutput = true,
-                        CreateNoWindow = true
-                    }
-                };
-
-                process.Start();
-
-                while (!process.StandardOutput.EndOfStream)
-                {
-                    var line = process.StandardOutput.ReadLine();
-                    outputMessage += line + "\n";
-                }
-
-                process.WaitForExit();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
         }
     }
 }
