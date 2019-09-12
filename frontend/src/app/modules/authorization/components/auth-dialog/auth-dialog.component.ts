@@ -77,6 +77,7 @@ export class AuthDialogComponent implements OnInit {
     public ngOnDestroy() {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();
+        document.onkeydown = null;
     }
 
     public close() {
