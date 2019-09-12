@@ -176,10 +176,15 @@ class HelpClass
     }
     
     navigateToFavouriteProjects() {
-        this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 1);
+        this.browserClickOnArrayElement(dashboardObject.projectTabsDashboard, 1);
     }
+
     navigateToMyProjects() {
-        this.browserClickOnArrayElement(dashboardObject.projectTabsDashbpord, 2);
+        this.browserClickOnArrayElement(dashboardObject.projectTabsDashboard, 2);
+    }
+
+    navigateToAssignedProjects() {
+        this.browserClickOnArrayElement(dashboardObject.projectTabsDashboard, 3);
     }
 
     addCollaborators(nickname, AccessRights) {
@@ -230,13 +235,30 @@ class HelpClass
         this.browserClickOnArrayElement("span.ui-button-text.ui-clickable", 6);
     };
 
-    //delete or rewrite this asap
-    openFirstProject() {
-        $('/html/body/app-root/div/app-dashboard-root/div/div[1]/ul/li[2]').waitForDisplayed(2000);
-        $('/html/body/app-root/div/app-dashboard-root/div/div[1]/ul/li[2]').click()
-        $('/html/body/app-root/div/app-dashboard-root/div/app-my-projects/div/app-projects-list/div/div/div[1]/app-project-card/p-card/div').waitForDisplayed(2000);
-        $('/html/body/app-root/div/app-dashboard-root/div/app-my-projects/div/app-projects-list/div/div/div[1]/app-project-card/p-card/div').click();
+    openMyFirstProject() {
+        dashboardObject.tabMyProjects.waitForDisplayed(2000);
+        dashboardObject.tabMyProjects.click();
+        dashboardObject.firstProjectCard.waitForDisplayed(10000);
+        dashboardObject.firstProjectCard.click();
+    };
+
+    openAssignedFirstProject() {
+        dashboardObject.tabAssignedProject.waitForDisplayed(2000);
+        dashboardObject.tabAssignedProject.click();
+        dashboardObject.firstProjectCard.waitForDisplayed(10000);
+        dashboardObject.firstProjectCard.click();
+
+    };
+
+    secondWindowLogin() {
+        browser.newWindow('https://bsa-ide.azurewebsites.net/', 'second acc');
+        page.clickloginbtn();
+        page.waitFormContainer();
+        page.enterEmail(credentials.secondEmail);
+        page.enterPassword(credentials.password);
+        page.clickCreateButton();
     }
+
 }
 
 module.exports = new HelpClass();
