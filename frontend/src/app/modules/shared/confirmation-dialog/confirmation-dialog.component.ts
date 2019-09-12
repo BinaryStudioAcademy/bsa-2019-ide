@@ -10,6 +10,7 @@ export class ConfirmationDialogComponent implements OnInit {
     @Input() buttonName: string;
     @Input() header: string;
     @Input() message: string;
+    @Input() showButton: boolean = true;
     @Output() IsConfirmed = new EventEmitter<boolean>();
 
     constructor(private confirmationService: ConfirmationService) {}

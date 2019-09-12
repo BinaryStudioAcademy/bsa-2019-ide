@@ -12,18 +12,18 @@ const dashboardRoutes: Routes = [
         component: DashboardRootComponent,
         children:
         [
-        {
-            path: 'assignedProjects',
-            component: AssignedProjectsComponent
-        },
-        {
-            component: FavouriteProjectsComponent,
-            path: ''
-        },
-        {
-            component: MyProjectsComponent,
-            path: 'myProjects'
-        }
+            {
+                component: MyProjectsComponent,
+                path: ''
+            },
+            {
+                component: AssignedProjectsComponent,
+                path: 'assignedProjects'
+            },
+            {
+                component: FavouriteProjectsComponent,
+                path: 'favouriteProjects'
+            }
         ],
         canActivate: [LoginGuard]
     }
