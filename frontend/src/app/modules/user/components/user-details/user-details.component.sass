@@ -13,7 +13,7 @@
     display: flex
     justify-content: center
 
-.panel .avatar
+.panel .user-page-avatar
     border-radius: 50%
     cursor: pointer 
     object-fit: cover
@@ -32,7 +32,8 @@
 .image-action-btn
     position: absolute
     margin-top: 165px
-    margin-right: 10px
+    margin-right: 15px
+    z-index: 1001
 
 .user-info-avatar:hover .image-btn
     display: inline-block
@@ -89,8 +90,11 @@ p
     grid-gap: 2%
 
 ::ng-deep body .ui-tabview .ui-tabview-panels .tab-item .ui-tabview-panel
-    height: 73vh
+    height: 70vh
     overflow-y: auto
+
+::ng-deep .editBtn .ui-button-icon-left
+    left: 1.2em
     
 
 .tname

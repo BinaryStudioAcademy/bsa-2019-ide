@@ -4,11 +4,11 @@
     <div *ngIf="user" class="panel p-grid p-dir-col">
         <div class="left-part">
             <div class="user-info-avatar">
-                <img class="p-col-align-center avatar" alt="avatar" (click)="expandImage(user.url)" src="{{user.url}}">
+                <img class="p-col-align-center user-page-avatar" alt="avatar" (click)="expandImage(user.url)" src="{{user.url}}">
                 <span class="image-action-btn">
-                    <button class="ui-button-secondary image-btn" pButton icon='pi pi-cloud-upload'
+                    <button *ngIf="isOwnPage" class="ui-button-secondary image-btn" pButton icon='pi pi-pencil'
                         (click)="userPhotoUpdate()"></button>
-                    <button class="ui-button-secondary image-btn second" pButton icon='pi pi-trash'
+                    <button *ngIf="isOwnPage && !isDefaultImage" class="ui-button-secondary image-btn second" pButton icon='pi pi-trash'
                         (click)="confirm()"></button>
                 </span>
             </div>
@@ -50,7 +50,7 @@
         </div>
         <div class="right-part">
             <p-tabView>
-                <p-tabPanel class="tab-item" header="Editor settings">
+                <p-tabPanel *ngIf="isOwnPage" class="tab-item" header="Editor settings">
                     <app-editor-settings [user]="user"></app-editor-settings>
                 </p-tabPanel>
                 <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="Author`s projects">
