@@ -48,7 +48,7 @@ namespace BuildServer.Services
             });
 
             _messageConsumerScopeRun = messageConsumerScopeFactory.Connect(new MessageScopeSettings
-           {
+            {
                 ExchangeName = "IdeExchangeRun",
                 ExchangeType = ExchangeType.Direct,
                 QueueName = "SendRunRequestQueue",
@@ -78,21 +78,27 @@ namespace BuildServer.Services
             Console.WriteLine($"{projectName} = =========  {projectForBuild.TimeStamp}");
             Console.WriteLine($"language ==> {projectForBuild.Language.ToString()}");
             Console.ForegroundColor = ConsoleColor.White;
-
-            var buildResult = _worker.Build(projectForBuild.UriForProjectDownload, projectName, projectForBuild.Language, out var artifactArchiveUri);
-
-            var resultDTO = new BuildResultDTO()
+            try
             {
-                ProjectId = projectForBuild.ProjectId,
-                WasBuildSucceeded = buildResult.IsSuccess,
-                UriForArtifactsDownload = artifactArchiveUri,
-                Message = buildResult.Message,
-                BuildId = projectForBuild.BuildId
-            };
+                var buildResult = _worker.Build(projectForBuild.UriForProjectDownload, projectName, projectForBuild.Language, out var artifactArchiveUri);
 
-            var jsonMessage = JsonConvert.SerializeObject(resultDTO);
+                var resultDTO = new BuildResultDTO()
+                {
+                    ProjectId = projectForBuild.ProjectId,
+                    WasBuildSucceeded = buildResult.IsSuccess,
+                    UriForArtifactsDownload = artifactArchiveUri,
+                    Message = buildResult.Message,
+                    BuildId = projectForBuild.BuildId
+                };
+
+                var jsonMessage = JsonConvert.SerializeObject(resultDTO);
+                SendBuildMessage(jsonMessage);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Build error");
+            }
             _messageConsumerScopeBuild.MessageConsumer.SetAcknowledge(evn.DeliveryTag, true);
-            SendBuildMessage(jsonMessage);
         }
 
         private void MessageConsumer_RunReceived(object sender, BasicDeliverEventArgs evn)
@@ -107,18 +113,26 @@ namespace BuildServer.Services
             Console.WriteLine($"{projectName} = =========  {projectForRun.TimeStamp}");
             Console.ForegroundColor = ConsoleColor.White;
 
-            var runningResult = _worker.Run(projectForRun.UriForProjectDownload, projectName, projectForRun.Inputs);
-            
-            var runResult = new RunResultDTO()
+            try
             {
-                ProjectId = projectForRun.ProjectId,
-                Result = runningResult,
-                ConnectionId = projectForRun.ConnectionId
-            };
+                var runningResult = _worker.Run(projectForRun.UriForProjectDownload, projectName, projectForRun.Inputs);
 
-            var jsonMessage = JsonConvert.SerializeObject(runResult);
+                var runResult = new RunResultDTO()
+                {
+                    ProjectId = projectForRun.ProjectId,
+                    Result = runningResult,
+                    ConnectionId = projectForRun.ConnectionId
+                };
+
+                var jsonMessage = JsonConvert.SerializeObject(runResult);
+                SendRunMessage(jsonMessage);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Run error");
+            }
+
             _messageConsumerScopeRun.MessageConsumer.SetAcknowledge(evn.DeliveryTag, true);
-            SendRunMessage(jsonMessage);
         }
 
         public bool SendBuildMessage(string value)

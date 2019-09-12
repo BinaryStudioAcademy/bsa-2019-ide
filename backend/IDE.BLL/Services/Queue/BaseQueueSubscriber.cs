@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Shared.Interfaces;
+using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,7 +46,14 @@ namespace IDE.BLL.Services.Queue
                 var content = Encoding.UTF8.GetString(ea.Body);
                 _logger.LogInformation("Event received");
                 // handle the received message  
-                await HandleMessageAsync(content);
+                try
+                {
+                    await HandleMessageAsync(content);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "Event error");
+                }
                 _messageConsumerScopeBuild.MessageConsumer.SetAcknowledge(ea.DeliveryTag, true);
             };
 
