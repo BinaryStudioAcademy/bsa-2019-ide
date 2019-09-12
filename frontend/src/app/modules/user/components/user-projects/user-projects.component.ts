@@ -4,6 +4,7 @@ import { ProjectService } from 'src/app/services/project.service/project.service
 import { ProjectDescriptionDTO } from 'src/app/models/DTO/Project/projectDescriptionDTO';
 import { ProjectUserPageDTO } from 'src/app/models/DTO/Project/projectUserPageDTO';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-projects',
@@ -20,7 +21,8 @@ export class UserProjectsComponent implements OnInit {
 
   constructor(
       private projectService: ProjectService,
-      private toastService: ToastrService
+      private toastService: ToastrService,
+      private router: Router
   ) { }
 
   ngOnInit() {
@@ -47,6 +49,10 @@ export class UserProjectsComponent implements OnInit {
             }
         );
     }
+  }
+
+  public goToProjectDetails(project: ProjectUserPageDTO){
+      this.router.navigate([`project/${project.id}`]);
   }
 
 }

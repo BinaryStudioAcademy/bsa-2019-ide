@@ -4,10 +4,13 @@
     <div *ngIf="user" class="panel p-grid p-dir-col">
         <div class="left-part">
             <div class="user-info-avatar">
-                <button class="ui-button-secondary image-btn" pButton icon='pi pi-cloud-upload'
-                    (click)="userPhotoUpdate()"></button>
                 <img class="p-col-align-center avatar" alt="avatar" (click)="expandImage(user.url)" src="{{user.url}}">
-                <button class="ui-button-secondary image-btn" pButton icon='pi pi-trash' (click)="confirm()"></button>
+                <span class="image-action-btn">
+                    <button class="ui-button-secondary image-btn" pButton icon='pi pi-cloud-upload'
+                        (click)="userPhotoUpdate()"></button>
+                    <button class="ui-button-secondary image-btn second" pButton icon='pi pi-trash'
+                        (click)="confirm()"></button>
+                </span>
             </div>
             <div class="user-profile-information">
                 <p class="tname p-col-align-center">{{user.firstName}} {{user.lastName}}</p>
@@ -38,7 +41,7 @@
                     </p>
                 </div>
             </div>
-            <div *ngIf='isUserPage' class="user-profile-btn">
+            <div *ngIf='isOwnPage' class="user-profile-btn">
                 <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-refresh' label="Update Info"
                     (click)="userInfoUpdate()"></button>
                 <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-key' label='Change password'
@@ -50,7 +53,7 @@
                 <p-tabPanel class="tab-item" header="Editor settings">
                     <app-editor-settings [user]="user"></app-editor-settings>
                 </p-tabPanel>
-                <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="My projects">
+                <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="Author`s projects">
                     <app-user-projects [userId]="user.id" [isOwnProject]="true"></app-user-projects>
                 </p-tabPanel>
                 <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="Assigned projects">
@@ -86,8 +89,8 @@
             (loadImageFailed)="loadImageFailed()" [style.display]="showCropper ? null : 'none'" [alignImage]="'center'">
         </image-cropper>
     </div>
-    <p-button [style]="{'padding-top':'20px'}" label="Update" (onClick)="UpdateProfilePhoto($event)"
-        *ngIf="!hasDetailsSaveResponse && selected"></p-button>
+    <p-button [style]="{'padding-top':'20px'}" label="Update"
+        (onClick)="UpdateProfilePhoto($event)" *ngIf="!hasDetailsSaveResponse && selected"></p-button>
     <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="hasDetailsSaveResponse && selected">
         <p-progressSpinner [style]="{width: '40px', height: '40px'}" strokeWidth="5"></p-progressSpinner>
     </div>

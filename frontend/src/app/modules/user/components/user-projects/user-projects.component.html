@@ -1,16 +1,16 @@
-<p-table [value]="projects">
+<p-table [value]="projects" class="project-list">
     <ng-template pTemplate="header">
         <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th *ngIf="!isOwnProject">Access</th>
+            <th class="name no-border">Name</th>
+            <th class="no-border">Description</th>
+            <th class="no-border" *ngIf="!isOwnProject">Access</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-project>
         <tr>
-            <td>{{project.name}}</td>
-            <td>{{project.description}}</td>
-            <td *ngIf="!isOwnProject">{{project.userAccess}}</td>
+            <td class="project-name no-border" (click)="goToProjectDetails(project)">{{project.name}}</td>
+            <td class="no-border">{{project.description}}</td>
+            <td class="no-border" *ngIf="!isOwnProject">{{project.userAccess}}</td>
         </tr>
     </ng-template>
 </p-table>

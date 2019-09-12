@@ -1,6 +1,24 @@
 ::ng-deep .ui-table table
     table-layout: auto
 
-::hg-deep body .ui-tabview .ui-tabview-panels .ui-tabview-pane
-    height: 70vh
+::hg-deep  .ui-tabview .ui-tabview-panels .ui-tabview-pane
     overflow: hidden 
+
+.name
+    width: 150px
+    overflow: hidden
+
+.project-name:hover,
+.project-name:focus
+    text-decoration: underline
+    cursor: pointer
+
+.no-border
+    border-color: white !important
+
+.user-project-table
+    display: flex
+
+.project-list
+    height: 73vh
+    overflow-y: auto

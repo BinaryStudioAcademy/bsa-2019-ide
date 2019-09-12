@@ -4,7 +4,6 @@
     margin-bottom: 5px
     background-color: #FFFFFF
     padding-top: 30px
-    box-shadow: 0 0 15px 0 rgba(0,0,0,0.2)
     overflow-y: hidden !important
     height: 88vh
     max-width: 1200px
@@ -18,17 +17,25 @@
     border-radius: 50%
     cursor: pointer 
     object-fit: cover
-    max-width: 60%
-    height: 90%
+    width: 200px
+    height: 200px
 
 .image-btn
     padding-top: 1px
     height: 35px
-    margin-top: auto
+    margin-top: auto    
     display: none
 
+.second
+    margin-left: 80px
+
+.image-action-btn
+    position: absolute
+    margin-top: 165px
+    margin-right: 10px
+
 .user-info-avatar:hover .image-btn
-    display: block
+    display: inline-block
 
 .user-description
     display: flex
@@ -52,8 +59,6 @@
     margin-right: 0
     margin-left: 0
 
-::ng-deep body .ui-tabview .ui-tabview-panels
-    height: 75vh
 
 .property-name
     box-sizing: border-box
@@ -83,9 +88,10 @@ p
     grid-template-columns: 30% 70%
     grid-gap: 2%
 
-::ng-deep body .ui-tabview .ui-tabview-panels .ui-tabview-panel
+::ng-deep body .ui-tabview .ui-tabview-panels .tab-item .ui-tabview-panel
     height: 73vh
     overflow-y: auto
+    
 
 .tname
     font-size:30px  
