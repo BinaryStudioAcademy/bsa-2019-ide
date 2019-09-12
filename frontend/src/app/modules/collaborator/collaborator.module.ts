@@ -8,14 +8,12 @@ import { ButtonModule } from 'primeng/button';
 import { AddCollaboratorsListComponent } from './components/add-collaborators-list/add-collaborators-list.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { ProjectWindowComponent } from '../project/components/project-window/project-window.component';
-import { UserAccessDirective } from 'src/app/directives/userAccess/user-access.directive';
 import { SharedModule as MySharedModule } from 'src/app/modules/shared/shared.module'
 
 @NgModule({
     declarations: [
         AddCollaboratorsComponent,
-        AddCollaboratorsListComponent,
-        UserAccessDirective
+        AddCollaboratorsListComponent
     ],
     imports: [
         CommonModule,

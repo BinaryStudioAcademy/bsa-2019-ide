@@ -1,0 +1,34 @@
+::ng-deep .ui-table table
+    table-layout: auto
+
+::hg-deep  .ui-tabview .ui-tabview-panels .ui-tabview-pane
+    overflow: hidden 
+
+::ng-deep body .ui-table .ui-table-thead > tr > th
+    background-color: #C0C0C0
+
+.name
+    width: 150px
+
+.static-width
+    min-width: 100px
+    
+.project-name
+    white-space: nowrap
+    overflow: hidden
+    width: 150px
+
+.project-name:hover,
+.project-name:focus
+    text-decoration: underline
+    cursor: pointer
+
+.no-border
+    border-color: white !important
+
+.user-project-table
+    display: flex
+
+.project-list
+    height: 73vh
+    overflow-y: auto
