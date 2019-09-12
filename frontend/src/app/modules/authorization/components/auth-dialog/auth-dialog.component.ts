@@ -63,6 +63,14 @@ export class AuthDialogComponent implements OnInit {
 
     public ngOnInit() {
         this.title = this.config.data.dialogType === DialogType.SignIn ? 'Log in your account' : 'Create your account';
+
+        document.onkeydown = (event) => {
+            if(this.config.data.dialogType === DialogType.SignIn && event.key == 'Enter') {
+                if (this.isDataFull()) {
+                    this.signIn();
+                }
+            }
+        }
     }
 
 
@@ -74,7 +82,6 @@ export class AuthDialogComponent implements OnInit {
     public close() {
         this.ref.close();
     }
-
 
     public signIn() {
         this.isSpinner = true;

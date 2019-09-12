@@ -29,7 +29,7 @@
     <div *ngIf="showSearchField">
         <div class="file-search">
             <div class="input-box">
-                <input type="text" [(ngModel)]="searchField" class="file-search-keyword" placeholder="Search..." #keywordInput>
+                <input type="text" [(ngModel)]="searchField" class="file-search-keyword" placeholder="Search..." #keywordInput (keydown.Enter)="searchByFiles(keywordInput.value)">
                 <button pButton class="clear-button" icon="pi pi-times" (click)="onSearchFieldClear()" pTooltip="Clear field and search results" tooltipPosition="bottom"></button>                    
             </div>
             <button class="search" pButton type="submit" icon="pi pi-search" (click)="searchByFiles(keywordInput.value)"></button>
