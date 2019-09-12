@@ -278,7 +278,7 @@ export class FileBrowserSectionComponent implements OnInit {
         event.stopPropagation();
     }
 
-    private createFile(node: TreeNode) {
+    public createFile(node: TreeNode) {
         if(this.lastActionFileCreated || this.lastActionFolderCreated) {
             return;
         }
@@ -312,7 +312,7 @@ export class FileBrowserSectionComponent implements OnInit {
         }, 1);
     }
 
-    private createFolder(node: TreeNode) {
+    public createFolder(node: TreeNode) {
         if(this.lastActionFileCreated || this.lastActionFolderCreated) {
             return;
         }
