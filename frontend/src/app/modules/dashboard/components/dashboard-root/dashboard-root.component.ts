@@ -16,9 +16,9 @@ export class DashboardRootComponent implements OnInit {
 
     ngOnInit() {
         this.items = [
-            ['Favourite projects', '/dashboard/favouriteProjects'],
             ['My projects', '/dashboard'],
-            ['Assigned projects', '/dashboard/assignedProjects']
+            ['Assigned projects', '/dashboard/assignedProjects'],
+            ['Favourite projects', '/dashboard/favouriteProjects']
         ];
         this.isActive = this.items.findIndex(x => x[1] === this.router.url);
         this.eventService.currProjectSwitch(null);

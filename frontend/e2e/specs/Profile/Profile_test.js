@@ -55,7 +55,9 @@ describe('Online-IDE User profile', () => {
                
                
     });
+
     xit('should change user`s editor settings', () => {
+
 
         profile.clickMyProfileButton();
         profile.waitPanelOfProjectEditorSettings();
