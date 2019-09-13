@@ -24,4 +24,5 @@ export interface ProjectInfoDTO {
     authorName: string;
     gitCredential: GitCredentialDTO;
     color: string;
+    amountOfMembers: number;
 }
