@@ -1,4 +1,4 @@
-<h2 style="text-align: center">Users statistics</h2>
+<h2 class="title">Users statistic</h2>
 <p-table [columns]="cols" [value]="usersData">
   <ng-template pTemplate="header" let-columns>
     <tr>
@@ -14,10 +14,10 @@
             {{ rowData[col.field] | lessSymbols : 18 }}
         </ng-container>
         <ng-container *ngSwitchCase="'isAuthor'">
-          {{ rowData[col.field] ? 'Author' : 'Collaborator'}}
+            {{ rowData[col.field] ? 'Author' : 'Collaborator'}}
         </ng-container>
         <ng-container *ngSwitchDefault>
-          {{ rowData[col.field]}}
+            {{ rowData[col.field]}}
         </ng-container>
       </td>
     </tr>
