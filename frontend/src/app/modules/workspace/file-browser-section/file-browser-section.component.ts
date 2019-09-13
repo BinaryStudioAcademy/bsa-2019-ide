@@ -287,21 +287,23 @@ export class FileBrowserSectionComponent implements OnInit {
             this.defaultExtension = defaultExtensions.find(x => x.language === lang).extension;
         }
         this.lastActionFileCreated = true;
-        this.lastCreatedNode = this.projectStructureFormaterService.makeFileNode(`file${this.defaultExtension}`, '1')
+        const key=this.projectStructureFormaterService.newGuid();
+        this.lastCreatedNode = this.projectStructureFormaterService.makeFileNode(`file${this.defaultExtension}`, key)
         this.lastCreatedNode.type = TreeNodeType.file.toString();
+        
         if (node.type === TreeNodeType.file.toString()) {
             this.lastCreatedNode.parent = node.parent;
         } else {
             this.lastCreatedNode.parent = node;
             node.expanded = true;
         }
-        console.log(this.lastCreatedNode.parent)
-        this.lastCreatedNode.parent = node;
+        //this.lastCreatedNode.parent = node;
         this.lastCreatedNode.icon = this.getExtensionImage(this.defaultExtension);
         this.appendNewNode(node, this.lastCreatedNode);
 
         setTimeout(() => {
             let element = document.getElementsByClassName('ui-state-highlight').item(0).children.item(0).children.item(0) as HTMLInputElement;
+            
             if(element.children.length > 0) {
                 element = element.children.item(0) as HTMLInputElement;
             } else {
@@ -317,13 +319,13 @@ export class FileBrowserSectionComponent implements OnInit {
             return;
         }
         this.lastActionFolderCreated = true;
-        this.lastCreatedNode = this.projectStructureFormaterService.makeFolderNode(`New folder`, '1')
+        const key=this.projectStructureFormaterService.newGuid();
+        this.lastCreatedNode = this.projectStructureFormaterService.makeFolderNode(`New folder`,key)
         this.lastCreatedNode.type = TreeNodeType.folder.toString();
         this.lastCreatedNode.parent = node;
         this.appendNewNode(node, this.lastCreatedNode);
 
         setTimeout(() => {
-            console.log(document.getElementsByClassName('ui-state-highlight'));
             var element = document.getElementsByClassName('ui-state-highlight').item(0).children.item(0);
             if(element.children.length > 0) {
                 element = element.children.item(0) as HTMLInputElement;
