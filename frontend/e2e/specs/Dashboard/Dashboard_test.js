@@ -47,7 +47,6 @@ describe('Online-IDE Dashboard', () => {
 
 
     xit('should search project by title in user`s projects', () => {
-        
         validate.successnavigationToPage(credentials.dashboardUrl);
         Help.searchProjectByTitleOf("13");
         wait.contentOfProjectDetailPage();
@@ -57,15 +56,10 @@ describe('Online-IDE Dashboard', () => {
         
     });
     xit('should search project by title in all projects', () => {
-        
         Help.searchProjectByTitleOf("test");
         Help.browserClickOnArrayElement("ul.ui-autocomplete-items.ui-autocomplete-list.ui-widget-content.ui-widget.ui-corner-all.ui-helper-reset li", 1);    
         validate.navigationToPage(credentials.projectDetailsUrl);
-        validate.checkProjectDetailsData(0, `Name: ${credentials.projectName}`);
-        
-        
+        validate.checkProjectDetailsData(0, `Name: ${credentials.projectName}`);      
     });
-
-
    
 });

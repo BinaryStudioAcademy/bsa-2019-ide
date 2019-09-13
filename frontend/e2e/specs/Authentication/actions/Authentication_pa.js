@@ -4,7 +4,7 @@ const page = new LoginPage();
 class LoginActions {
 
     clickloginbtn(){
-        page.loginbtn.waitForDisplayed(2000);
+        page.loginbtn.waitForDisplayed(10000);
         page.loginbtn.click();
     }
     clickSignupbtn() {

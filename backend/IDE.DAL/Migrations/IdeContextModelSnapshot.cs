@@ -35,6 +35,8 @@ namespace IDE.DAL.Migrations
 
                     b.Property<int>("ProjectId");
 
+                    b.Property<string>("UriForArtifactsDownload");
+
                     b.Property<int?>("UserId");
 
                     b.HasKey("Id");

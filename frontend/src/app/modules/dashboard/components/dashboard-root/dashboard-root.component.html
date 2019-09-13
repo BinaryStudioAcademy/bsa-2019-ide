@@ -1,5 +1,3 @@
-<!-- <p-menu [model]="items"></p-menu> -->
-
 <div class="container">
   <div class="menu">
     <ul>
@@ -11,6 +9,7 @@
     <button icon="pi pi-plus" pButton type="button" class="ui-button-raised" (click)="showDialog()"></button>
   </div>
   <router-outlet></router-outlet>
+  <app-footer class="ui-g-12 footer"></app-footer>
 </div>
 <p-dialog  header="Create Project" [(visible)]="display" [modal]="true" [responsive]="true" [draggable]="true" [resizable] ="true" [focusTrap]="false"
   [style]="{width: '80%', minWidth: '300px'}" class="create-modal-container" [minY] = "0">
@@ -19,7 +18,7 @@
       <app-project-window (backEvent)="onBackEvent()" (fileSelectedEvent)="onfileArchiveSelected()" [typeOfCreation]="typeOfProjectCreation" ></app-project-window>
   </div>
   <div class="create-modal-tile-menu" *ngIf="!isHiddenTileMenu" >
-    
+
     <div class="tile-item1" (click)="onTileClick(0)" >
       <fa-icon icon='folder-plus'></fa-icon>
       <p>new</p>
@@ -35,7 +34,5 @@
       <p>from git hub</p>
     </div>
   </div>
-  
+
 </p-dialog>
-
-

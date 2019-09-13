@@ -16,5 +16,6 @@ namespace IDE.DAL.Entities
 
         public int? UserId { get; set; }
         public User User { get; set; }
+        public string UriForArtifactsDownload { get; set; }
     }
 }

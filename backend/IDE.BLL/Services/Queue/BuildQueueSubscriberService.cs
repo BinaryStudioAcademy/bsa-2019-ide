@@ -62,7 +62,7 @@ namespace IDE.BLL.Services.Queue
                 var notificationService = scope.ServiceProvider.GetService<INotificationService>();
                 var buildService = scope.ServiceProvider.GetService<IBuildService>();
                 await notificationService.SendNotificationToProjectParticipants(buildResult.ProjectId, notification);
-                await buildService.CreateFinishBuildResult(buildResult);
+                await buildService.CreateFinishBuildResult(buildResult, notification.DateTime);
             }
         }
     }

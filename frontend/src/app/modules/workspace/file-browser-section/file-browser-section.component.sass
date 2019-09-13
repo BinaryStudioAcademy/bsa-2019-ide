@@ -64,6 +64,8 @@
 
 ::ng-deep body .ui-tree
     border: none
+    padding: 0 7px
+    
 
 ::ng-deep body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content
     overflow-x: hidden !important
@@ -73,6 +75,17 @@
 ::ng-deep body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content .ui-treenode-icon.fa.fa-folder-open,
 ::ng-deep body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content .ui-treenode-icon.fa.fa-folder
     color: #EECA66
+
+
+::ng-deep body .ui-tree > .ui-tree-container > .ng-star-inserted > .ui-treenode > .ui-treenode-content .ui-treenode-label.ui-state-highlight
+    background: white
+::ng-deep body .ui-tree > .ui-tree-container > .ng-star-inserted > .ui-treenode > .ui-treenode-content .ui-treenode-label.ui-state-highlight .input-item
+    color: black
+    font-weight: 0
+
+::ng-deep body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content .ui-treenode-label.ui-state-highlight .input-item
+    color: white
+    font-weight: 400
 
 .tree-wrapper
     height: auto
@@ -104,12 +117,20 @@
     margin: 5px
     align-items: stretch
 
-.file-search-keyword
+.input-box
     flex-grow: 1
-    padding-left: 5px
     border: 1px solid black
+    border-right: none
     border-radius: 5px 0 0 5px
     width: 60%
+    display: flex
+
+.input-box input
+    min-width: 50px
+    flex-grow: 1
+    border: none
+    outline: none
+    margin-left: 5px
 
 .file-search-submit
     border: none
@@ -122,3 +143,38 @@
     display: flex
     justify-content: space-between
     width: 100%
+
+.menu-items
+    position: relative
+
+.buttons
+    position: absolute
+    background: #f4f4f4
+    box-shadow: 0 0 10px 3px white
+    width: 94.5px
+    top: 6px
+    right: 10px
+    opacity: 0
+    padding: 1.5px 0
+    transition: opacity 0.5s linear
+
+.tree-wrapper:hover .buttons
+    opacity: 1
+
+.ui-button-secondary
+    font-size: 10px
+
+.clear-button
+    font-size: 10px
+    padding: 0 4.29px
+    color: grey
+    background: none
+    border: none
+
+.clear-button:hover,
+.clear-button:enabled:hover
+    background: none
+    color: black
+
+.search
+    border-radius: 0 5px 5px 0

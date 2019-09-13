@@ -13,7 +13,6 @@ import { ProjectModule } from './modules/project/project.module';
 import { UserModule } from './modules/user/user.module';
 import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
-import { MenubarModule } from 'primeng/menubar';
 import { ButtonModule } from 'primeng/button';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
@@ -68,7 +67,6 @@ import { NotificationComponent } from './notification/notification.component';
         UserModule,
         WorkspaceModule,
         AppRoutingModule,
-        MenubarModule,
         ButtonModule,
         SharedModule,
         HttpClientModule,

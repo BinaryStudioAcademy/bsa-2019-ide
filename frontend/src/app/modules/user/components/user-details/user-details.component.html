@@ -1,61 +1,64 @@
 <p-progressBar *ngIf="!user" mode="indeterminate" [style]="{'height': '4px'}"></p-progressBar>
 
-<div class="p-grid p-justify-around p-align-start">
-    <div *ngIf="user" class="user-description panel p-col-10 p-md-8 p-lg-4 p-grid p-dir-col">   
-        <div class="avatar">
-            <img class="p-col-align-center avatar" alt="avatar" (click)="expandImage(user.url)" src="{{user.url}}">
-            <p class="tname p-col-align-center">{{user.firstName}} {{user.lastName}}</p>
-        </div>
-        <div class="info">
-            <p>
-                <span class="property-name">Nickname: </span>
-                <span class="property-value">{{user.nickName | lessSymbols: 20}}</span>
-            </p>
-            <p>
-                <span class="property-name">Email: </span>
-                <span class="property-value">{{user.email}}</span>
-            </p>
-            <p *ngIf="user.gitHubUrl">
-                <span class="property-name">Github URL: </span>
-                <span class="property-value">
-                    <a href="{{user.gitHubUrl}}" target="_blank">github</a>
+<div class="container">
+    <div *ngIf="user" class="panel p-grid p-dir-col">
+        <div class="left-part">
+            <div class="user-info-avatar">
+                <img class="p-col-align-center user-page-avatar" alt="avatar" (click)="expandImage(user.url)" src="{{user.url}}">
+                <span class="image-action-btn">
+                    <button *ngIf="isOwnPage" class="ui-button-secondary image-btn" pButton icon='pi pi-pencil'
+                        (click)="userPhotoUpdate()"></button>
+                    <button *ngIf="isOwnPage && !isDefaultImage" class="ui-button-secondary image-btn second" pButton icon='pi pi-trash'
+                        (click)="confirm()"></button>
                 </span>
-            </p>
-            <p *ngIf="user.birthday">
-                <span class="property-name">Birthday: </span>
-                <span class="property-value">{{user.birthday | date:'mediumDate'}}</span>
-            </p>
-            <p>
-                <span class="property-name">Registred At: </span>
-                <span class="property-value">{{user.registeredAt | date:'MMM d, y'}}</span>
-            </p>
-        </div>
-        <div class="buttons-group">
-            <div *ngIf='isAuthor' class="p-grid p-justify-around user-profile-btn">
-                <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-cloud-upload' label="Change Image"
-                    (click)="userPhotoUpdate()"></button>
-                <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-trash' label="Delete Image"
-                    (click)="confirm()"></button>
+                <p class="tname p-col-align-center">{{user.firstName}} {{user.lastName}}</p>
+            </div>
+            <div class="user-profile-information">
+                <div class="user-info">
+                    <p>
+                        <span class="property-name">Nickname: </span>
+                        <span class="property-value">{{user.nickName | lessSymbols: 20}}</span>
+                    </p>
+                    <p>
+                        <span class="property-name">Email: </span>
+                        <span class="property-value">{{user.email}}</span>
+                    </p>
+                    <p *ngIf="user.gitHubUrl">
+                        <span class="property-name">Github URL: </span>
+                        <span class="property-value">{{user.gitHubUrl}}"</span>
+                    </p>
+                    <p *ngIf="user.birthday">
+                        <span class="property-name">Birthday: </span>
+                        <span class="property-value">{{user.birthday | date:'mediumDate'}}</span>
+                    </p>
+                    <p>
+                        <span class="property-name">Registred At: </span>
+                        <span class="property-value">{{user.registeredAt | date:'MMM d, y'}}</span>
+                    </p>
+                </div>
+            </div>
+            <div *ngIf='isOwnPage' class="user-profile-btn">
                 <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-refresh' label="Update Info"
                     (click)="userInfoUpdate()"></button>
                 <button class="p-col-5 ui-button-secondary editBtn" pButton icon='pi pi-key' label='Change password'
                     (click)="userPasswordUpdate()"></button>
             </div>
         </div>
-    </div>
-
-    <div *ngIf="user" class="panel p-col-10 p-md-8 p-lg-7  p-dir-col">
-        <p-tabView>
-            <p-tabPanel header="Projects">
-                <app-user-proj-list [userId]="user.id"></app-user-proj-list>
-            </p-tabPanel>
-            <p-tabPanel *ngIf='isAuthor' header="Editor settings">
-                <app-editor-settings [user]="user"></app-editor-settings>
-            </p-tabPanel>
-        </p-tabView>
+        <div class="right-part">
+            <p-tabView>
+                <p-tabPanel *ngIf="isOwnPage" class="tab-item" header="Editor settings" [selected]="true">
+                    <app-editor-settings [user]="user"></app-editor-settings>
+                </p-tabPanel>
+                <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="Author's projects" [selected]="true">
+                    <app-user-projects [userId]="user.id" [isOwnProject]="true"></app-user-projects>
+                </p-tabPanel>
+                <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="Assigned projects">
+                    <app-user-projects [userId]="user.id" [isOwnProject]="false"></app-user-projects>
+                </p-tabPanel>
+            </p-tabView>
+        </div>
     </div>
 </div>
-
 <p-dialog *ngIf="user" [(visible)]="isImageExpended" [style]="{'box-shadow': 'none'}" [showHeader]="false"
     [draggable]="false" [modal]="true" [dismissableMask]="true"
     [contentStyle]="{'overflow':'visible', 'padding': '0', 'border': 'none', 'background': 'none', 'align-content': 'center', 'display': 'flex'}">
@@ -63,8 +66,8 @@
 </p-dialog>
 
 <p-dialog [(visible)]="isChangeAvatar" [showHeader]="false" appendTo="body" [closable]=false [modal]="true"
-    [responsive]="true" [contentStyle]="{'max-height':'600px', 'width':'500px', 'overflow-y':'visible'}"
-    [positionTop]="10">
+    [responsive]="true" [contentStyle]="{'max-height':'calc(100vh - 40px)', 'width':'500px', 'overflow-y':'visible'}"
+    [positionTop]="20">
 
     <span class="modal-close-btn" (click)="close()">&times;</span>
 
@@ -82,8 +85,8 @@
             (loadImageFailed)="loadImageFailed()" [style.display]="showCropper ? null : 'none'" [alignImage]="'center'">
         </image-cropper>
     </div>
-    <p-button [style]="{'padding-top':'20px'}" label="Update" (onClick)="UpdateProfilePhoto($event)"
-        *ngIf="!hasDetailsSaveResponse && selected"></p-button>
+    <p-button [style]="{'padding-top':'20px'}" label="Update"
+        (onClick)="UpdateProfilePhoto($event)" *ngIf="!hasDetailsSaveResponse && selected"></p-button>
     <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="hasDetailsSaveResponse && selected">
         <p-progressSpinner [style]="{width: '40px', height: '40px'}" strokeWidth="5"></p-progressSpinner>
     </div>

@@ -8,6 +8,8 @@ import { LanguageDirective } from 'src/app/directives/language/language.directiv
 import { CompilerTypeDirective } from 'src/app/directives/compilerType/compiler-type.directive';
 import { ProviderDirective } from 'src/app/directives/credentials/provider.directive';
 import { LessSymbolsPipe } from './pipes/less-symbols.pipe';
+import { FooterComponent } from './footer/footer.component';
+import { UserAccessDirective } from 'src/app/directives/userAccess/user-access.directive';
 
 @NgModule({
     declarations: [
@@ -16,7 +18,9 @@ import { LessSymbolsPipe } from './pipes/less-symbols.pipe';
         LanguageDirective,
         CompilerTypeDirective,
         ProviderDirective,
-        LessSymbolsPipe
+        LessSymbolsPipe,
+        FooterComponent,
+        UserAccessDirective
     ],
     imports: [
         CommonModule,
@@ -28,7 +32,9 @@ import { LessSymbolsPipe } from './pipes/less-symbols.pipe';
         LanguageDirective,
         CompilerTypeDirective,
         ProviderDirective,
-        LessSymbolsPipe
+        LessSymbolsPipe,
+        FooterComponent,
+        UserAccessDirective
     ],
     providers: [
         ConfirmationService

@@ -15,7 +15,63 @@
         </ng-template>
     </p-tabMenu>
 </div>
-<i *ngIf="openedFiles.length === 0" class="editor-backgound pi pi-users"></i>
+<div class="help" *ngIf="!(openedFiles.length > 0 && monacoOptions)">
+    <div class="help-blocks">
+        <div class="logoWorkspace">
+        </div>
+        <div class="block">
+            <p class="block-header">Save</p>
+            <div class="block-buttons-group">
+                <div class="button-holder">Ctrl</div>
+                <div class="plus">+</div>
+                <div class="button-holder">S</div>
+            </div>
+        </div>
+
+        <div class="block">
+            <p class="block-header">Save all</p>
+            <div class="block-buttons-group">
+                <div class="button-holder">Ctrl</div>
+                <div class="plus">+</div>
+                <div class="button-holder">Shift</div>
+                <div class="plus">+</div>
+                <div class="button-holder">S</div>
+            </div>
+        </div>
+
+        <div class="block">
+            <p class="block-header">Build</p>
+            <div class="block-buttons-group">
+                <div class="button-holder">Ctrl</div>
+                <div class="plus">+</div>
+                <div class="button-holder">B</div>
+            </div>
+        </div>
+
+        <div class="block">
+            <p class="block-header">Run</p>
+            <div class="block-buttons-group">
+                <div class="button-holder">Ctrl</div>
+                <div class="plus">+</div>
+                <div class="button-holder">R</div>
+            </div>
+        </div>
+        <div class="block">
+            <p class="block-header">Hide filebrowser</p>
+            <div class="block-buttons-group">
+                <div class="button-holder">Ctrl</div>
+                <div class="plus">+</div>
+                <div class="button-holder">H</div>
+            </div>
+        </div>
+        <div class="block">
+            <p class="block-header">Command palette</p>
+            <div class="block-buttons-group">
+                <div class="button-holder">F1</div>
+            </div>
+        </div>
+    </div>
+</div>
 <ngx-monaco-editor #monacoEditor *ngIf="openedFiles.length > 0 && monacoOptions" class="my-code-editor" [options]="monacoOptions" [(ngModel)]="code"
-    (ngModelChange)="onChange($event)" [ngStyle]="{'height': getProjectColor()}">
+    (ngModelChange)="onChange($event)">
 </ngx-monaco-editor>

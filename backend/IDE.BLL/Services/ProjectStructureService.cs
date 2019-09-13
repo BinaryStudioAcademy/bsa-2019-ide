@@ -112,7 +112,7 @@ namespace IDE.BLL.Services
             return await GetByIdAsync(createdProjectStructure.Id);
         }
 
-        public async Task ImportProject(string projectStructureId, IFormFile file, string fileStructureId, int userId, bool partial, string nodeids)
+        public async Task ImportProject(string projectStructureId, IFormFile file, string fileStructureId, int userId, bool partial, string nodeids, bool loadFromGit = false)
         {
             string tempFolder = Path.Combine(Directory.GetCurrentDirectory(), "..\\Temp", Guid.NewGuid().ToString());
             var filesFolder = Path.Combine(tempFolder, file.FileName.Substring(0, file.FileName.LastIndexOf('.')));
@@ -155,6 +155,10 @@ namespace IDE.BLL.Services
                     var pathToProject = UnzipProject(fullPathToFile, filesFolder);
 
                     await GetFilesRecursive(filesFolder, rootFileStructure, userId, Convert.ToInt32(projectStructureId)).ConfigureAwait(false);
+                    if (loadFromGit)
+                    {
+                        rootFileStructure.NestedFiles = rootFileStructure.NestedFiles.ToArray()[0].NestedFiles;
+                    }
                     var projectStructureDto = _mapper.Map<ProjectStructureDTO>(projectStructure);
                     await UpdateAsync(projectStructureDto);
                 }

@@ -1,16 +1,9 @@
-.login-btn
-    margin-right: 5px
-.rigth-nav-menu
-    display: flex
-    flex-direction: row
 ::ng-deep body .ui-inputtext.ui-autocomplete-input
     margin-right: 10px
-::ng-deep .ui-menu
-    width: 100%
-::ng-deep .menu-wrapper .ui-autocomplete .ui-autocomplete-panel
-    min-width: 97%
+
 .right-part
-    margin-right: 10px
+    margin-right: 6px
+
 .authorized-right-part
     display: flex
 
@@ -22,11 +15,12 @@
     display: flex
     justify-content: flex-end
 
-.bell-wrapper
+.right-part .authorized-right-part .bell-wrapper
     background-color: white !important
     border: none !important
+    margin-left: 10px !important
 
-::ng-deep .pi.pi-bell
+.pi.pi-bell
     font-size: 1.5rem        
 
 .overlayPanel
@@ -63,19 +57,47 @@
 ::ng-deep .ui-overlaypanel-content
     padding: 5px
 
-.common-btn,
-.common-btn:focus
+.menu-wrapper
+    position: fixed
+    top: 0
+    width: 100%
+
+.menu-wrapper .right-part .common-btn,
+.menu-wrapper .right-part .common-btn:focus
     border: none
     background: #94d0ff
     color: #000000
-    box-shadow: none !important
-    outline-width: 0 !important
+    box-shadow: none
+    outline-width: 0
 
-.common-btn:hover
-    background: #34a6ff
+
+.menu-wrapper .right-part .common-btn:hover
+    background: #34a6ff !important
 
 .profile-btn,
 .profile-btn:focus,
 .profile-btn:hover
     width: 125px
     border-right: 1px solid #FFFFFF !important
+
+.right-part .login-btn
+    margin-right: 5px
+
+.logo
+    display: inline-block
+    width: 50px
+    height: 30px
+    cursor: pointer
+    background: url(../../assets/img/logo-128.png)
+    background-size: contain
+    background-position: center
+    margin-left: 20px
+    background-repeat: no-repeat
+
+.menu-wrapper
+    width: 100% !important
+    display: flex !important
+    justify-content: space-between !important
+    padding-top: 6px
+    padding-bottom: 6px
+    border-bottom: 2px solid #E5E5E5

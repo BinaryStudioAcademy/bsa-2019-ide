@@ -12,4 +12,17 @@ export class ProjectCardComponent implements OnInit {
 
     ngOnInit() {
     }
+    public getLikesSymbolsByWidth() {
+        const width = document.body.offsetWidth;
+        if (width >= 1920)
+            return 24;
+        if (width >= 1500)
+            return 18;
+        if (width >= 1250)
+            return 14;
+        if (width >= 1000)
+            return 12;
+        else 
+            return 8;
+    }
 }

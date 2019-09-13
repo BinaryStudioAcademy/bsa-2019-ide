@@ -50,7 +50,8 @@ export class EditorSectionComponent implements OnInit {
     constructor(
         private eventService: EventService,
         private confirmationService: ConfirmationService,
-        private fileSaverService: FileSaverService) { }
+        private fileSaverService: FileSaverService,
+        private fileEditService: FileEditService) { }
 
     ngAfterViewInit() {
         this.eventService.componentAfterInit("EditorSectionComponent");
@@ -159,6 +160,7 @@ export class EditorSectionComponent implements OnInit {
         this.code = this.openedFiles[index].innerFile.content;
         this.activeItem = this.tabs[index];
         this.fileSaverService.setSelected(this.activeItem.id);
+        this.fileEditService.closeFile(this.activeItem.id);
     }
 
     public onTabSelect(evt, index) {
