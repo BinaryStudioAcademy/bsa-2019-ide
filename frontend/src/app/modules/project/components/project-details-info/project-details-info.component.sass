@@ -23,6 +23,8 @@ p
 .highlighted
     font-weight: bold
     font-size:13pt
+    color:#888
+
 
 button
     margin-right: 10px
@@ -30,19 +32,31 @@ button
     padding-right: 15px
 
 .card
-    padding: 1px 0 15px 15px
-    margin-bottom: 5px
+    padding: 15px
+    // margin-bottom: -5px
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12)
     -moz-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12)
     -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 2px 1px -1px rgba(0, 0, 0, 0.12)
     border-radius: 3px
 
-.card h2
-    font-weight: bold
-    margin: 0.5em 0
+// .card h2
+//     font-weight: bold
+//     margin: 0.5em 0
 .proj-info-button-wrapper
     margin-top: 10px
 ::ng-deep .export-button .ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-icon-left
     margin-right: 0
 .empty
     flex:1
+
+.proj-info-button-wrapper
+    display: flex
+    justify-content: space-between
+
+.proj-info-button-wrapper button
+    width: 100px
+    height: 32px
+
+.title
+    text-align: center
+    margin: 0

@@ -1,18 +1,19 @@
 <div class="top-panel p-grid p-nogutter">
-    <div class="p-col-12">
-        <button pButton routerLink="/workspace/{{project.id}}" type="button" iconPos="left" icon="pi pi-arrow-left"
-            class="ui-button-raised back-btn" label="Go to workspace">
+    <div class="hor-navbar p-col-12" [ngStyle]="{'background-color': project.color}">
+        <button pButton type="button" class="ui-button-secondary btn" label="Go to workspace" routerLink="/workspace/{{project.id}}">
         </button>
+        <div class="project-name">{{project.name}}</div>
     </div>
 </div>
-<div class="project-tab-menu-wrapper">
+
+<div class="container  project-tab-menu-wrapper">
     <p-tabView orientation="left">
         <p-tabPanel header="Details" leftIcon="pi pi-info-circle">
             <app-project-details-info [project]="project"></app-project-details-info>
         </p-tabPanel>
         <p-tabPanel header="Collaborators" leftIcon="pi pi-comment" class="collaborator">
             <ng-template pTemplate="content">
-                <div class="project-description">
+                <div class="project-description add-collaborators">
                     <div class="card">
                         <app-add-collaborators [projectId]="projectId"></app-add-collaborators>
                     </div>
@@ -21,15 +22,19 @@
         </p-tabPanel>
         <p-tabPanel header="Build results" leftIcon="pi pi-eye">
             <ng-template pTemplate="content">
-                <app-user-build-history [projectId]="projectId" class="builds-tab"></app-user-build-history>
+                <div class="card">
+                    <app-user-build-history [projectId]="projectId" class="builds-tab"></app-user-build-history>
+                </div>
             </ng-template>
         </p-tabPanel>
-        <p-tabPanel header="Artifacts" leftIcon="pi pi-cloud-download">
+        <!-- <p-tabPanel header="Artifacts" leftIcon="pi pi-cloud-download">
             Here will be artifacts(list of zip builds)
-        </p-tabPanel>
+        </p-tabPanel> -->
         <p-tabPanel header="User statistics" leftIcon="pi pi-chart-bar">
             <ng-template pTemplate="content">
-                <app-project-details-user-statistics [project]="project"></app-project-details-user-statistics>
+                <div class="card">
+                    <app-project-details-user-statistics [project]="project"></app-project-details-user-statistics>
+                </div>
             </ng-template>
         </p-tabPanel>
         <p-tabPanel header="Git Credentials" leftIcon="pi pi-sitemap">
@@ -37,7 +42,9 @@
         </p-tabPanel>
         <p-tabPanel header="History of changes" leftIcon="pi pi-list">
             <ng-template pTemplate="content">
-                <app-history-changes [projectId]="project.id"></app-history-changes>
+                <div class="card">
+                    <app-history-changes [projectId]="project.id"></app-history-changes>
+                </div>
             </ng-template>
         </p-tabPanel>
     </p-tabView>

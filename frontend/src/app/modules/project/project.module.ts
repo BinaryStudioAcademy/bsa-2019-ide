@@ -30,7 +30,7 @@ import { HistorySearchPipe } from './pipes/history-search.pipe';
 import { SizeInfoPipe } from './pipes/size-info.pipe';
 import { UserBuildHistoryComponent } from './components/user-build-history/user-build-history.component';
 import { BuildHistoryTabComponent } from './components/build-history-tab/build-history-tab.component';
-import { InplaceModule } from 'primeng/primeng';
+import { InplaceModule, DialogModule } from 'primeng/primeng';
 import { GitModule } from '../git/git.module';
 
 @NgModule({
@@ -39,7 +39,7 @@ import { GitModule } from '../git/git.module';
     ProjectDetailsComponent,
     ProjectDetailsInfoComponent,
     ProjectDetailsUserStatisticsComponent,
-    ProjectWindowComponent,
+    //ProjectWindowComponent,
     HistoryChangesComponent,
     HistorySearchPipe,
     SizeInfoPipe,
@@ -66,7 +66,8 @@ import { GitModule } from '../git/git.module';
     FileUploadModule,
     AccordionModule,
     InplaceModule,
-    GitModule
+    GitModule,
+    DialogModule
   ],
   entryComponents: [
     ProjectWindowComponent

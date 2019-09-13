@@ -1,4 +1,4 @@
-<p-card>
+<div>
     <div class="build-card" [ngStyle]="{'border-left-color': getBackgroundColor(build)}">
         <div *ngIf="build.buildMessage" class="build-message">
             <span class="property-name">Build message:</span>
@@ -18,5 +18,9 @@
                 <span> {{build.buildFinished | date: 'MMM d, y \'at\' HH:mm:ss'}} </span>
             </div>
         </div>
+        <div class="user-name">
+            <span class="property-name">Artifacts: </span>
+            <span> <a href="{{build.uriForArtifactsDownload}}">download</a> </span>
+        </div>
     </div>
-</p-card>
+</div>
