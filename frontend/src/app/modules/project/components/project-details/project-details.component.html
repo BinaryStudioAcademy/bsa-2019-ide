@@ -40,7 +40,9 @@
         </p-tabPanel>
         <p-tabPanel header="History of changes" leftIcon="pi pi-list">
             <ng-template pTemplate="content">
-                <app-history-changes [projectId]="project.id"></app-history-changes>
+                <div class="card">
+                    <app-history-changes [projectId]="project.id"></app-history-changes>
+                </div>
             </ng-template>
         </p-tabPanel>
     </p-tabView>
