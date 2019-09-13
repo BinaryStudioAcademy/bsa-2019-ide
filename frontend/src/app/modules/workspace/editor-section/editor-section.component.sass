@@ -7,6 +7,22 @@
 ::ng-deep .ui-tabmenu .ui-tabmenu-nav a
     padding: 0
 
+::ng-deep .tab-menu-wrapper
+    height: 23px
+
+::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem.ui-state-active
+    height: 24px
+    z-index: 10
+
+::ng-deep body .ui-tabmenu .ui-tabmenu-nav
+    height: 24px
+    box-sizing: border-box
+    border: none
+    border-bottom: 1px solid #cacaca
+
+::ng-deep body .ui-tabmenu .ui-tabmenu-nav li
+    height: 23px
+
 ::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem,
 ::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem:not(.ui-state-active):not(.ui-state-disabled):hover
     border: none

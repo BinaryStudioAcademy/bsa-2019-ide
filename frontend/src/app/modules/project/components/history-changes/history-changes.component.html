@@ -1,8 +1,8 @@
-<h2>History of changes</h2>
-<div class="ui-g-12">
+<h2 class="title">History of changes</h2>
+<div class="search">
     <input type="text" [(ngModel)]="personNickname" autocomplete="off" placeholder="Enter user nickname or file name" name="searchHistory">
 </div>
-<div class="ui-g-12">
+<div class="history-content">
     <div class="card">     
         <p-accordion *ngIf="fileChangesList" [multiple]="true">
             <!-- <p-accordionTab *ngFor="let history of fileChangesList | historySearch : personNickname"> -->
