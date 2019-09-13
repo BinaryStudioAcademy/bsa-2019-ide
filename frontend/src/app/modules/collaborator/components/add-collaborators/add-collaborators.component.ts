@@ -167,6 +167,11 @@ export class AddCollaboratorsComponent implements OnInit {
     }
 
     public addCollaborator(newCollaboratorsNickname: UserNicknameDTO): void {
+        if(newCollaboratorsNickname.nickName.includes("We couldn’t find any user nickname matching")) {
+            this.collaborator = null;        
+            return;
+        }
+
         const newCollaborators: CollaboratorDTO =
         {
             access: 0,
@@ -202,7 +207,7 @@ export class AddCollaboratorsComponent implements OnInit {
         if (filtered.length === 0) {
             const notFound: UserNicknameDTO = {
                 id: 0,
-                nickName: "We couldn’t find any user nickname matching " + query
+                nickName: `We couldn’t find any user nickname matching "${query}"`
             }
             filtered.push(notFound);
         }

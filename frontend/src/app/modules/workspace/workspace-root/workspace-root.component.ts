@@ -436,6 +436,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
         this.buildService.runProject(this.project.id, this.connectionId).subscribe(
             (resp) => {
                 this.inputItems = resp.body;
+                this.signalRService.runState=true;
                 this.isInputTerminalOpen = true;
                 if (!this.inputItems || this.inputItems.length == 0) {
                     this.signalRService.runState=true;

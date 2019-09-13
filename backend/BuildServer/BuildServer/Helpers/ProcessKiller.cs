@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Threading;
 
 namespace BuildServer.Helpers
@@ -10,16 +8,17 @@ namespace BuildServer.Helpers
     public class ProcessKiller
     {
         private readonly int delayInSeconds;
+        private Timer _timer;
+
         public ProcessKiller(IConfiguration configuration)
         {
             delayInSeconds = int.Parse(configuration.GetSection("delayInSeconds").Value);
         }
-        Timer KillProc;
+
         public void KillProcess(Process process)
         {
             TimerCallback killTimer = new TimerCallback(Kill);
-
-            KillProc = new Timer(killTimer, process, delayInSeconds * 1000, -1);
+            _timer = new Timer(killTimer, process, delayInSeconds * 1000, -1);
         }
 
         private void Kill(object process)
@@ -27,10 +26,10 @@ namespace BuildServer.Helpers
             var p = process as Process;
             try
             {
-                var time = p.StartTime;
                 if (!p.HasExited)
                 {
                     p.Kill();
+                    _timer.Dispose();
                     Console.WriteLine("Process was killed");
                 }
             }

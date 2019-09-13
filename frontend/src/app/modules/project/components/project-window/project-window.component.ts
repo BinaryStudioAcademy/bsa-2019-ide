@@ -1,6 +1,6 @@
 import { map } from 'rxjs/internal/operators/map';
 import { HttpClientWrapperService } from './../../../../services/http-client-wrapper.service';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { ToastrService } from 'ngx-toastr';
@@ -21,6 +21,14 @@ import { ProjDialogDataService } from 'src/app/services/proj-dialog-data.service
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 import { TokenService } from 'src/app/services/token.service/token.service';
 import { AccessModifier } from 'src/app/models/Enums/accessModifier';
+import { FileUpload } from 'primeng/primeng';
+
+
+export enum ProjectCreationType {
+    CreateNew = 0,
+    CreateFromArchive = 1,
+    CreateFromGitHub = 2
+}
 
 @Component({
     selector: 'app-project-window',
@@ -29,14 +37,18 @@ import { AccessModifier } from 'src/app/models/Enums/accessModifier';
 })
 export class ProjectWindowComponent implements OnInit {
     @ViewChild("uploadElement", { static: false })
-    uploadElement: ElementRef | any;
-
+    uploadElement: FileUpload;
+    @Input() public typeOfCreation: ProjectCreationType;
+    @Output() public backEvent = new EventEmitter();
+    @Output() public fileSelectedEvent = new EventEmitter();
+    public isNextFromGithub = false;
     public title: string;
     public languages: { label: string, value: number }[];
     public projectTypes: any;
     public compilerTypes: any;
     public colors: { label: string, value: string }[];
     public access: any;
+    public isSpinnerLoadInofFromGit;
     public projectForm: FormGroup;
     public isFileSelected: boolean = false;
 
@@ -51,8 +63,10 @@ export class ProjectWindowComponent implements OnInit {
     private projectId: number;
 
     private githubPattern = /^https:\/\/github.com\/\w[\d,\w,-]+\/\w[\d,\w,-\-\.]+$/i;
-    
+
     private domParser = new DOMParser();
+    public isInsideModalWindow = false;
+
 
     constructor(private ref: DynamicDialogRef,
         private config: DynamicDialogConfig,
@@ -67,11 +81,13 @@ export class ProjectWindowComponent implements OnInit {
         private req: HttpClient) { }
 
     ngOnInit(): void {
-        
-        this.projectType = this.config.data.projectType;
+        this.isSpinnerLoadInofFromGit = false;
+        this.isInsideModalWindow = this.config.data === undefined
+        this.projectType = this.isInsideModalWindow ? ProjectType.Create : this.config.data.projectType;
         this.title = this.projectType === ProjectType.Create ? 'Create project' : 'Edit project';
 
         this.colors = [
+            { label: '', value: null },
             { label: 'Red', value: '#ff0000' },
             { label: 'Black', value: '#000000' },
             { label: 'Blue', value: '#0000ff' },
@@ -85,6 +101,7 @@ export class ProjectWindowComponent implements OnInit {
         ]
 
         this.languages = [
+            { label: '', value: null },
             { label: 'C#', value: 0 },
             { label: 'TypeScript', value: 1 },
             { label: 'JavaScript', value: 2 },
@@ -92,6 +109,7 @@ export class ProjectWindowComponent implements OnInit {
         ];
 
         this.access = [
+            { label: '', value: null },
             { label: 'Public', value: 0 },
             { label: 'Private', value: 1 }
         ];
@@ -110,7 +128,7 @@ export class ProjectWindowComponent implements OnInit {
                 color: ['', Validators.required],
                 githuburl: ['', Validators.pattern(this.githubPattern)]
             });
-            this.projectForm.get('access').setValue(0);
+            this.projectForm.get('countOfBuildAttempts').setValue(5);
         } else {
             this.projectForm = this.fb.group({
                 name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(32), Validators.pattern(/^[A-Z0-9]+$/i)]],
@@ -141,9 +159,12 @@ export class ProjectWindowComponent implements OnInit {
     public resetSelection() {
         this.uploadElement.clear();
         this.isFileSelected = false;
+
     }
     public selectHandler() {
         this.isFileSelected = true;
+        this.fileSelectedEvent.next();
+        this.projectForm.get('name').setValue(this.uploadElement.files[0].name.split('.')[0]);
     }
 
     public projectItemIsNotChange(): boolean {
@@ -164,6 +185,7 @@ export class ProjectWindowComponent implements OnInit {
     }
 
     public onSubmit() {
+        this.isNextFromGithub = false
         this.hasDetailsSaveResponse = false;
 
         if (this.isCreateForm()) {
@@ -222,6 +244,10 @@ export class ProjectWindowComponent implements OnInit {
             creator: project.authorName,
             favourite: true,
             title: project.name,
+            description: project.description,
+            language: project.language,
+            projectType: project.projectType,
+            amountOfMembers: project.amountOfMembers,
             isPublic: project.accessModifier == AccessModifier.public
         }
     }
@@ -230,10 +256,12 @@ export class ProjectWindowComponent implements OnInit {
         switch (e) {
             case 0: {
                 this.compilerTypes = [
+                    { label: '', value: null },
                     { label: 'CoreCLR', value: 0 },
                     { label: 'Roslyn', value: 1 }
                 ];
                 this.projectTypes = [
+                    { label: '', value: null },
                     { label: 'Console App', value: 0 },
                     { label: 'Web App', value: 1 },
                     { label: 'Library', value: 2 }
@@ -242,27 +270,33 @@ export class ProjectWindowComponent implements OnInit {
             }
             case 1: {
                 this.compilerTypes = [
+                    { label: '', value: null },
                     { label: 'V8', value: 2 }
                 ];
                 this.projectTypes = [
+                    { label: '', value: null },
                     { label: 'Console App', value: 0 },
                 ];
                 break;
             }
             case 2: {
                 this.compilerTypes = [
+                    { label: '', value: null },
                     { label: 'V8', value: 2 }
                 ];
                 this.projectTypes = [
+                    { label: '', value: null },
                     { label: 'Console App', value: 0 },
                 ];
                 break;
             }
             case 3: {
                 this.compilerTypes = [
+                    { label: '', value: null },
                     { label: 'Gc', value: 3 }
                 ];
                 this.projectTypes = [
+                    { label: '', value: null },
                     { label: 'Console App', value: 0 },
                 ];
                 break;
@@ -338,75 +372,131 @@ export class ProjectWindowComponent implements OnInit {
             githubUrl: !!this.projectForm.get('githuburl') ? this.projectForm.get('githuburl').value : null
         }
     }
+    oninfoclick(evt) {
+        let proj = {
+            name: this.projectForm.get('name').value,
+            description: this.projectForm.get('description').value,
+            access: this.projectForm.get('access').value,
+            color: this.projectForm.get('color').value,
+            compilerType: this.projectForm.get('compilerType').value,
+            countOfBuildAttempts: this.projectForm.get('countOfBuildAttempts').value,
+            countOfSaveBuilds: this.projectForm.get('countOfSavedBuilds').value,
+            language: this.projectForm.get('language').value,
+            projectType: this.projectForm.get('projectType').value,
+            githubUrl: !!this.projectForm.get('githuburl') ? this.projectForm.get('githuburl').value : null
+        }
+        console.log(proj);
+    }
+    public resetFormFields() {
+        this.projectForm.get('name').setValue('');
+        this.projectForm.get('description').setValue('');
+        this.projectForm.get('access').setValue('');
+        this.projectForm.get('color').setValue('');
+        this.projectForm.get('compilerType').setValue('');
+        this.projectForm.get('language').setValue('');
+        this.projectForm.get('projectType').setValue('');
+        this.projectForm.get('githuburl').setValue('');
+    }
+    // onlang(evt){
+    // let a = document.querySelectorAll(".ng-trigger.ng-trigger-overlayAnimation.ng-tns-c11-4.ui-dropdown-panel.ui-widget.ui-widget-content.ui-corner-all.ui-shadow.ng-star-inserted");
 
-    public onFocusoutGitInput(val: HTMLInputElement) {
-        const controlName = val.getAttribute('formControlName')
+    // let b = a[0] as HTMLElement
+    // console.log(a);
+    // b.style.top = '-200px';
+    // }
+    public onccc() {
 
-        if (this.projectForm.get(controlName).valid) {
-            const gitUrl:string = this.projectForm.get(controlName).value;
+        let a = document.querySelectorAll("input[type='file']");
+        (a[0] as HTMLInputElement).click();
+        console.log(a);
+    }
+    public onContinueFromGithub() {
+        this.isSpinnerLoadInofFromGit = true;
+
+        this.onFocusoutGitInput();
+        //this.isNextFromGithub = true;
+
+    }
+    onBackToMenu() {
+        if (this.isFileSelected) {
+            this.resetSelection();
+        }
+        this.backEvent.next();
+        this.isNextFromGithub = false;
+
+    }
+
+    public onFocusoutGitInput() {
+
+
+        if (this.projectForm.get('githuburl').valid) {
+            const gitUrl: string = this.projectForm.get('githuburl').value;
 
             this.req.get(`https://cors-anywhere.herokuapp.com/${gitUrl}`, { observe: "response", responseType: 'text' })
                 .subscribe(response => {
                     if (response.ok) {
-                        const domdoc =  this.parseHtmlString(response.body);
+                        const domdoc = this.parseHtmlString(response.body);
                         const langList = this.getLanguageList(domdoc);
                         const desc = this.getDescription(domdoc).trim();
                         let projName = gitUrl.match(/[^/]+$/)[0];
-                        projName = projName.replace(/\-/g,"");
-                        const projColorIndex = Math.floor(Math.random() * Math.floor(this.colors.length));
+                        projName = projName.replace(/\-/g, "");
+                        const projColorIndex = Math.floor(Math.random() * Math.floor(this.colors.length - 1)) + 1;
                         const projColor = this.colors[projColorIndex].value
-                        
 
-                        const langToChoose = this.languages.map(x => x.label.toLowerCase());
-                        if (langToChoose.includes(langList[0].toLowerCase())) {
+
+                        const langToChoose = this.languages.filter(l => l != null).map(x => x.label.toLowerCase());
+                        if (langList.length != 0 && langToChoose.includes(langList[0].toLowerCase())) {
                             console.log(langList[0].toLowerCase());
                             this.projectForm.patchValue(
                                 {
-                                    'language': this.languages.
-                                                        find(x =>
-                                                             x.label.toLowerCase() == langList[0].toLowerCase()
-                                                             )
-                                                             .value,
+                                    'language': this.languages.filter(l => l != null)
+                                        .find(x =>
+                                            x.label.toLowerCase() == langList[0].toLowerCase()
+                                        )
+                                        .value,
                                     'access': 0,
                                     'description': desc,
                                     'name': projName,
                                     'countOfBuildAttempts': 5,
                                     'countOfSavedBuilds': 5,
                                     'compilerType': 0,
-                                    'projectType':0,
+                                    'projectType': 0,
                                     'color': projColor
 
                                 }
                             );
-                        }else{
+                        } else {
                             this.projectForm.patchValue(
                                 {
-                                    
+
                                     'access': 0,
                                     'description': desc,
                                     'name': projName,
                                     'countOfBuildAttempts': 5,
                                     'countOfSavedBuilds': 5,
-                                    
+
                                     'color': projColor
 
                                 }
                             );
 
                         };
-                        console.log(langList)
+                        this.isNextFromGithub = true;
+                        this.isSpinnerLoadInofFromGit = false;
 
                     } else {
-                        console.log(response.status)
+                        console.log(response.status);
+                        this.isNextFromGithub = true;
                     }
 
                 },
-                    error => console.log(error))
+                    error => { console.log(error); this.isNextFromGithub = true; this.isSpinnerLoadInofFromGit = false; }
+                )
         }
     }
 
-    private parseHtmlString(rawHtml: string): Document{
-       return this.domParser.parseFromString(rawHtml, 'text/html');
+    private parseHtmlString(rawHtml: string): Document {
+        return this.domParser.parseFromString(rawHtml, 'text/html');
     }
 
     private getLanguageList(domdoc: Document): string[] {
@@ -417,11 +507,13 @@ export class ProjectWindowComponent implements OnInit {
         const langList = [].slice.call(htmlLangList);
         return langList.map(x => (x as HTMLElement).innerText)
     }
-    private getDescription(domdoc: Document){
+    private getDescription(domdoc: Document) {
         const descriptionContainer = domdoc.querySelectorAll("[itemprop='about']");
-        if(descriptionContainer.length == 0){
+        if (descriptionContainer.length == 0) {
             return "No Description";
         }
         return (descriptionContainer[0] as HTMLElement).innerText;
     }
+
+
 }

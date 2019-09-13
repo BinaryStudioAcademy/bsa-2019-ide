@@ -1,17 +1,13 @@
-
-<div *ngIf=isAuthor()>
-    <h2>Search and add new collaborators:</h2>
+<h2 class="collaborators-title">Collaborators:</h2>
+<div class="collaborators-wrp" *ngIf=isAuthor()>
     <div class="ui-g ui-fluid">
         <div class="ui-g-12">
             <p-autoComplete class="collaborator-auto-complete" [(ngModel)]="collaborator"
                 [suggestions]="filterCollaborators" (completeMethod)="filterCollarator($event)" field="nickName"
-                [size]="30" placeholder="User nickname..." [minLength]="1" (onSelect)="addCollaborator(collaborator)">
+                [size]="30" placeholder="Add user by nickname" [minLength]="1" (onSelect)="addCollaborator(collaborator)">
             </p-autoComplete>
         </div>
     </div>
-</div>
-<div *ngIf=!isAuthor()>
-    <h2>Collaborators:</h2>
 </div>
 
 <div *ngIf="newCollaborators && newCollaborators.length < 1">This project has no collaborators yet.</div>

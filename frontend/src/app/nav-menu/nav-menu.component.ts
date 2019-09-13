@@ -219,6 +219,10 @@ export class NavMenuComponent implements OnInit, OnDestroy {
         }
     }
 
+    public onLogoClick(){
+        this.getMenuItems()[0].command();
+    }
+
     public ngOnDestroy() {
         this.unsubscribe$.next();
         this.unsubscribe$.complete();

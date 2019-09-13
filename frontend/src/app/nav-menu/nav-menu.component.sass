@@ -1,28 +1,28 @@
 ::ng-deep body .ui-inputtext.ui-autocomplete-input
     margin-right: 10px
-::ng-deep .ui-menu
-    width: 100%
-::ng-deep .menu-wrapper .ui-autocomplete .ui-autocomplete-panel
-    min-width: 97%
+
 .right-part
-    margin-right: 2px
+    margin-right: 6px
+
 .authorized-right-part
     display: flex
 
 .notification-panel-content
     max-height: 300px
     overflow-y: auto
+    z-index: 100
 
-.notification 
+.notification
     display: flex
     justify-content: flex-end
 
-.bell-wrapper
+.right-part .authorized-right-part .bell-wrapper
     background-color: white !important
     border: none !important
+    margin-left: 10px !important
 
-::ng-deep .pi.pi-bell
-    font-size: 1.5rem        
+.pi.pi-bell
+    font-size: 1.5rem
 
 .overlayPanel
     display: none
@@ -58,6 +58,12 @@
 ::ng-deep .ui-overlaypanel-content
     padding: 5px
 
+.menu-wrapper
+    position: fixed
+    top: 0
+    width: 100%
+    background: #fff
+
 .menu-wrapper .right-part .common-btn,
 .menu-wrapper .right-part .common-btn:focus
     border: none
@@ -80,12 +86,21 @@
     margin-right: 5px
 
 .logo
+    display: inline-block
     width: 50px
-    height: 37px
+    height: 30px
+    cursor: pointer
     background: url(../../assets/img/logo-128.png)
     background-size: contain
     background-position: center
-    margin-left: 30px
+    margin-left: 20px
     background-repeat: no-repeat
-    margin-bottom: -2px
-    margin-top: 1px
+
+.menu-wrapper
+    width: 100% !important
+    display: flex !important
+    justify-content: space-between !important
+    padding-top: 6px
+    padding-bottom: 6px
+    border-bottom: 2px solid #E5E5E5
+    z-index: 90

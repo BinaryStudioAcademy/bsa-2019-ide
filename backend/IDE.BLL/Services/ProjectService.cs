@@ -141,7 +141,8 @@ namespace IDE.BLL.Services
                 .Where(pr => pr.UserId == userId)
                 .Include(x => x.Project)
                 .Select(x => x.Project)
-                .Include(x => x.Author);
+                .Include(x => x.Author)
+                .Include(x => x.ProjectMembers);
 
             var collection = await projects.ToListAsync();
 
@@ -201,7 +202,8 @@ namespace IDE.BLL.Services
             //Maybe it can be a bit easier
             var projects = _context.Projects
                 .Where(pr => pr.AuthorId == userId)
-                .Include(x => x.Author);
+                .Include(x => x.Author)
+               .Include(x => x.ProjectMembers);
 
             var collection = await projects.ToListAsync();
 
@@ -215,7 +217,8 @@ namespace IDE.BLL.Services
                .Where(pr => pr.UserId == userId)
                .Include(x => x.Project)
                .Select(x => x.Project)
-               .Include(x => x.Author);
+               .Include(x => x.Author)
+               .Include(x => x.ProjectMembers);
 
 
             var collection = await projects.ToListAsync();

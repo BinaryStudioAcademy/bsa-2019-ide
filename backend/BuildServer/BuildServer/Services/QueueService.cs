@@ -1,7 +1,6 @@
 ﻿using BuildServer.Interfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using NLog;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Shared.Interfaces;

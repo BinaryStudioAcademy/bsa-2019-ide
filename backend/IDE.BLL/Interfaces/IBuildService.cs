@@ -4,6 +4,7 @@ using RabbitMQ.Shared.ModelsDTO.Enums;
 using RabbitMQ.Shared.ModelsDTO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace IDE.BLL.Interfaces
 {
@@ -12,6 +13,6 @@ namespace IDE.BLL.Interfaces
         Task BuildProject(int projectId, int userId, ProjectLanguageType languageType);
         Task<IEnumerable<BuildDescriptionDTO>> GetBuildsByProjectId(int userId);
         Task RunProject(int projectId, string userIdentifier, params string[] inputs);
-        Task<BuildDTO> CreateFinishBuildResult(BuildResultDTO result);
+        Task<BuildDTO> CreateFinishBuildResult(BuildResultDTO result, DateTime finished);
     }
 }

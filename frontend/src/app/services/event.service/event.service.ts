@@ -7,6 +7,9 @@ import { SearchProjectDTO } from 'src/app/models/DTO/Project/searchProjectDTO';
     providedIn: 'root'
 })
 export class EventService {
+    public createProjectModal = new Subject<boolean>();
+    public onCreateProjectModal$ = this.createProjectModal.asObservable();
+    
     public isNotSavedDataAllTabs = new BehaviorSubject(false);
     public isNotSavedDataOneTab = new BehaviorSubject(false);
     public isNotSaveDataAllTabsObserve$ = this.isNotSavedDataAllTabs.asObservable();
@@ -14,7 +17,7 @@ export class EventService {
     private onUserChanged = new Subject<UserDTO>();
     private currProjectChangedEmitter = new Subject<SearchProjectDTO>();
     private initComponentFinishedEmitter = new Subject<string>();
-
+    
     public userChangedEvent$: Observable<UserDTO> = this.onUserChanged.asObservable();
     public currProjectChanged$: Observable<SearchProjectDTO> = this.currProjectChangedEmitter.asObservable();
     public initComponentFinished$: Observable<string> = this.initComponentFinishedEmitter.asObservable();
