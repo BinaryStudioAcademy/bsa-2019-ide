@@ -11,7 +11,7 @@ namespace BuildServer.Services.Builders
     {
         private readonly string _buildDirectory;
         public TSConsoleBuilder(IConfiguration configuration, ProcessKiller processKiller, ILogger<TSConsoleBuilder> logger)
-        : base(configuration, processKiller, logger)
+        : base(processKiller, logger)
         {
             _buildDirectory = configuration.GetSection("BuildDirectory").Value;
         }

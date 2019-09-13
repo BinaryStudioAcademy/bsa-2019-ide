@@ -1,18 +1,18 @@
 ﻿using BuildServer.Helpers;
 using BuildServer.OperationsResults;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
+using System.Text;
 
 namespace BuildServer.Services.Builders.Abstract
 {
     public abstract class Builder<T>
     {
         private readonly ILogger<T> _logger;
-        private ProcessKiller _processKiller;
+        private readonly ProcessKiller _processKiller;
 
-        public Builder(IConfiguration configuration, ProcessKiller processKiller, ILogger<T> logger)
+        protected Builder(ProcessKiller processKiller, ILogger<T> logger)
         {
             _processKiller = processKiller;
             _logger = logger;
@@ -40,12 +40,14 @@ namespace BuildServer.Services.Builders.Abstract
                 _processKiller.KillProcess(process);
                 process.Start();
 
+                var stringBuilder = new StringBuilder();
+
                 while (!process.StandardOutput.EndOfStream)
                 {
-                    var line = process.StandardOutput.ReadLine();
-                    outputMessage += line + "\n";
+                    stringBuilder.Append($"{process.StandardOutput.ReadLine()}\n");
                 }
 
+                outputMessage = stringBuilder.ToString();
                 process.WaitForExit();
             }
             catch (Exception e)
@@ -58,7 +60,7 @@ namespace BuildServer.Services.Builders.Abstract
                 process.Dispose();
             }
 
-            var buildResult = new BuildResult()
+            var buildResult = new BuildResult
             {
                 IsSuccess = outputMessage.ToLower().Contains("Build succeeded".ToLower()),
                 Message = outputMessage
@@ -73,7 +75,7 @@ namespace BuildServer.Services.Builders.Abstract
 
             using (Process p = new Process())
             {
-                p.StartInfo = new ProcessStartInfo()
+                p.StartInfo = new ProcessStartInfo
                 {
                     FileName = "cmd",
                     Arguments = runCommand,
@@ -98,23 +100,20 @@ namespace BuildServer.Services.Builders.Abstract
 
                 writer.Dispose();
 
-                var output = "";
-                var line = "";
-
+                var stringBuilder = new StringBuilder();
                 while (!p.StandardOutput.EndOfStream)
                 {
-                    line = p.StandardOutput.ReadLine();
-                    output += line + '\n';
+                    stringBuilder.Append($"{p.StandardOutput.ReadLine()}\n");
                 }
 
                 if (!p.StandardError.EndOfStream)
                 {
-                    output += p.StandardError.ReadToEnd();
+                    stringBuilder.Append(p.StandardError.ReadToEnd());
                 }
 
                 p.WaitForExit();
 
-                return output;
+                return stringBuilder.ToString();
             }
         }
     }

@@ -10,7 +10,7 @@ namespace BuildServer.Services.Builders
     {
         private readonly string _buildDirectory;
         public GoConsoleBuilder(IConfiguration configuration, ProcessKiller processKiller, ILogger<GoConsoleBuilder> logger)
-        : base(configuration, processKiller, logger)
+        : base(processKiller, logger)
         {
             _buildDirectory = configuration.GetSection("BuildDirectory").Value;
         }
