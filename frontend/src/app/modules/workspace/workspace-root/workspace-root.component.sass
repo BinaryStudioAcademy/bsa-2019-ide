@@ -68,7 +68,11 @@
 
 .workspace
     width: calc(75% - 3px)
+    display: flex
+    flex-direction: column
 
+app-editor-section
+    flex-grow: 1
 
 ::ng-deep .ui-button-icon-left.ui-clickable.pi.pi-save-all
     &:before

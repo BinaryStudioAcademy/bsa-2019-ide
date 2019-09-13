@@ -9,7 +9,6 @@ import { ProjectType } from 'src/app/modules/project/models/project-type';
     styleUrls: ['./projects-list.component.sass']
 })
 export class ProjectsListComponent implements OnInit {
-    @Input() header: string;
     @Input() projects: ProjectDescriptionDTO[];
     currentMenu: any;
 
