@@ -79,6 +79,7 @@ import { NotificationComponent } from './notification/notification.component';
         GeneralModule,
         TreeModule,
         MonacoEditorModule,
+        
         JwtModule.forRoot({
             config: {
                 tokenGetter: TokenGetter,
@@ -107,4 +108,6 @@ import { NotificationComponent } from './notification/notification.component';
     ],
     bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { 
+    
+}
