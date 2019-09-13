@@ -1,13 +1,15 @@
+import { Subject } from 'rxjs';
 import { ProjectDialogService } from './../../../../services/proj-dialog.service/project-dialog.service';
 import { ProjectCreationType, ProjectWindowComponent } from './../../../project/components/project-window/project-window.component';
 
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { EventService } from 'src/app/services/event.service/event.service';
 import { faSquare, faFolderPlus, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faStackOverflow, faGithub, faMedium } from '@fortawesome/free-brands-svg-icons';
 import { ProjectType } from 'src/app/modules/project/models/project-type';
+import { takeUntil } from 'rxjs/operators';
 
 
 
@@ -16,12 +18,16 @@ import { ProjectType } from 'src/app/modules/project/models/project-type';
     templateUrl: './dashboard-root.component.html',
     styleUrls: ['./dashboard-root.component.sass']
 })
-export class DashboardRootComponent implements OnInit {
+export class DashboardRootComponent implements OnInit, OnDestroy {
+    ngOnDestroy(): void {
+        this.unsubscription.next();
+        this.unsubscription.complete();
+    }
 
     public typeOfProjectCreation: ProjectCreationType
     @ViewChild(ProjectWindowComponent, { static: false })
     private createForm: ProjectWindowComponent;
-
+    private unsubscription = new Subject();
     public isHiddenTileMenu;
     items: string[][];
     public isActive: number;
@@ -35,6 +41,12 @@ export class DashboardRootComponent implements OnInit {
                 }
 
     ngOnInit() {
+        this.eventService.onCreateProjectModal$.pipe(takeUntil(this.unsubscription))
+        .subscribe(x => {
+            if(x){
+                this.showDialog();
+            }
+        })
         this.isHiddenTileMenu = false;
         this.items = [
             ['My projects', '/dashboard'],
@@ -44,6 +56,7 @@ export class DashboardRootComponent implements OnInit {
         this.isActive = this.items.findIndex(x => x[1] === this.router.url);
         this.eventService.currProjectSwitch(null);
     }
+    
 
     redirect(i: number) {
         this.isActive = i;
