@@ -73,7 +73,7 @@ export class DashboardRootComponent implements OnInit, OnDestroy {
 		this.isHiddenTileMenu = false;
 	}
 
-	onTileClick(evt: ProjectCreationType.CreateFromArchive) {
+	onTileClick(evt: ProjectCreationType) {
 		this.typeOfProjectCreation = evt;
 		if (this.typeOfProjectCreation == ProjectCreationType.CreateFromArchive) {
 			let a = document.querySelectorAll("input[type='file']");
