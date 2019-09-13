@@ -4,23 +4,24 @@ import { Router } from '@angular/router';
 import * as auth0 from 'auth0-js';
 
 import { environment } from '../../../environments/environment';
+import { Observable } from 'rxjs';
 
 (window as any).global = window;
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService{
+export class AuthService {
   // Create Auth0 web auth instance
 
   auth0 = new auth0.WebAuth({
-        clientID: environment.auth.clientID,
-        domain: environment.auth.domain,
-        responseType: 'token',
-        redirectUri: environment.auth.auth0RedirectUri,
-        //sso: false,
-        audience: environment.auth.audience,
-      });
+    clientID: environment.auth.clientID,
+    domain: environment.auth.domain,
+    responseType: 'token',
+    redirectUri: environment.auth.auth0RedirectUri,
+    //sso: false,
+    audience: environment.auth.audience,
+  });
 
   // Store authentication data
   expiresAt: number;
@@ -37,18 +38,17 @@ export class AuthService{
   }
 
   // Looks for result of authentication in URL hash; result is processed in parseHash.
-  public handleLoginCallback(): void {
-    this.auth0.parseHash((err, authResult) => {
+  public handleLoginCallback(): Observable<any> {
+    return Observable.create(observer => this.auth0.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken) {
         window.location.hash = '';
-        this.getUserInfo(authResult);
+        this.getUserInfo(authResult).subscribe(x => observer.next(x));
         localStorage.setItem('token', authResult.accessToken);
       } else if (err) {
         console.log(`Error: ${err.error}`);
         console.log('er');
       }
-      this.router.navigate(['/']); // Redirect the user after the session is set up.
-    });
+    }));
   }
 
   getAccessToken() {
@@ -60,13 +60,14 @@ export class AuthService{
   }
 
   // Use access token to retrieve user's profile and set session
-  getUserInfo(authResult) {
-    this.auth0.client.userInfo(authResult.accessToken, (err, profile) => {
+  getUserInfo(authResult): Observable<any> {
+    return Observable.create(observer => this.auth0.client.userInfo(authResult.accessToken, (err, profile) => {
       if (profile) {
         this.setSession(authResult, profile);
         console.log(profile);
+        observer.next(profile)
       }
-    });
+    }));
   }
 
   // Save authentication data and update login status subject

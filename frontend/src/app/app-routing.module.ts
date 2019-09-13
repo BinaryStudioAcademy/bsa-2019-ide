@@ -6,8 +6,8 @@ import { CallbackComponent } from './callback/callback.component';
 
 const appRoutes: Routes = [
     { path: '', component: LandingRootComponent, canActivate: [LandingPageGuard] },
-    { path: '**', redirectTo: '', pathMatch: 'full' },
-    { path: 'callback', component: CallbackComponent}
+    { path: 'callback', component: CallbackComponent},
+    { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 
 @NgModule({
