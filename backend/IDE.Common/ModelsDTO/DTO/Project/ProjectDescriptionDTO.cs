@@ -7,6 +7,9 @@ namespace IDE.Common.DTO.Project
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public string Description { get; set; }
+        public Language Language { get; set; }
+        public ProjectType ProjectType { get; set; }
         public string Creator { get; set; }
         public int CreatorId { get; set; }
         public DateTime Created { get; set; }
@@ -15,5 +18,6 @@ namespace IDE.Common.DTO.Project
         public DateTime? LastBuild { get; set; }
         public string Color { get; set; }
         public bool IsPublic {get; set; }
+        public int AmountOfMembers { get; set; }
     }
 }

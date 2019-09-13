@@ -244,6 +244,10 @@ export class ProjectWindowComponent implements OnInit {
             creator: project.authorName,
             favourite: true,
             title: project.name,
+            description: project.description,
+            language: project.language,
+            projectType: project.projectType,
+            amountOfMembers: project.amountOfMembers,
             isPublic: project.accessModifier == AccessModifier.public
         }
     }
