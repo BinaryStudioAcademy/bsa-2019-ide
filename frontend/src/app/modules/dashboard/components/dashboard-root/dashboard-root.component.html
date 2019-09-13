@@ -5,7 +5,7 @@
       </li>
     </ul>
   </div>
-  
+
   <router-outlet></router-outlet>
   <app-footer class="ui-g-12 footer"></app-footer>
 </div>
@@ -17,17 +17,17 @@
   </div>
   <div class="create-modal-tile-menu" *ngIf="!isHiddenTileMenu" >
 
-    <div class="tile-item1" (click)="onTileClick(0)" >
+    <div class="tile-item1" (click)="onTileClick(ProjectCreationType.CreateNew)" >
       <fa-icon icon='folder-plus'></fa-icon>
       <p>new</p>
     </div>
 
-    <div class="tile-item2" (click)="onTileClick(1)">
+    <div class="tile-item2" (click)="onTileClick(ProjectCreationType.CreateFromArchive)">
       <fa-icon icon='file-archive'></fa-icon>
       <p>from archive</p>
     </div>
 
-    <div class="tile-item3" (click)="onTileClick(2)">
+    <div class="tile-item3" (click)="onTileClick(ProjectCreationType.CreateFromGitHub)">
         <fa-icon [icon]="['fab', 'github']"></fa-icon>
       <p>from git hub</p>
     </div>

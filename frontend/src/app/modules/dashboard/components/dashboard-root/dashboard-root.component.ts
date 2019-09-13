@@ -14,85 +14,85 @@ import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
-    selector: 'app-dashboard-root',
-    templateUrl: './dashboard-root.component.html',
-    styleUrls: ['./dashboard-root.component.sass']
+	selector: 'app-dashboard-root',
+	templateUrl: './dashboard-root.component.html',
+	styleUrls: ['./dashboard-root.component.sass']
 })
 export class DashboardRootComponent implements OnInit, OnDestroy {
-    ngOnDestroy(): void {
-        this.unsubscription.next();
-        this.unsubscription.complete();
-    }
 
-    public typeOfProjectCreation: ProjectCreationType
-    @ViewChild(ProjectWindowComponent, { static: false })
-    private createForm: ProjectWindowComponent;
-    private unsubscription = new Subject();
-    public isHiddenTileMenu;
-    items: string[][];
-    public isActive: number;
-    display: boolean = false;
+	ProjectCreationType = ProjectCreationType;
+	public typeOfProjectCreation: ProjectCreationType
+	@ViewChild(ProjectWindowComponent, { static: false })
+	private createForm: ProjectWindowComponent;
+	private unsubscription = new Subject();
+	public isHiddenTileMenu;
+	items: string[][];
+	public isActive: number;
+	display: boolean = false;
 
-    constructor(private router: Router,
-                private projectDialogService: ProjectDialogService,
-                private eventService: EventService,
-                ) {
+	constructor(private router: Router,
+		private projectDialogService: ProjectDialogService,
+		private eventService: EventService,
+	) {
 
-                }
+	}
 
-    ngOnInit() {
-        this.eventService.onCreateProjectModal$.pipe(takeUntil(this.unsubscription))
-        .subscribe(x => {
-            if(x){
-                this.showDialog();
-            }
-        })
-        this.isHiddenTileMenu = false;
-        this.items = [
-            ['My projects', '/dashboard'],
-            ['Assigned projects', '/dashboard/assignedProjects'],
-            ['Favourite projects', '/dashboard/favouriteProjects']
-        ];
-        this.isActive = this.items.findIndex(x => x[1] === this.router.url);
-        this.eventService.currProjectSwitch(null);
-    }
-    
+	ngOnInit() {
+		this.eventService.onCreateProjectModal$.pipe(takeUntil(this.unsubscription))
+			.subscribe(x => {
+				if (x) {
+					this.showDialog();
+				}
+			})
+		this.isHiddenTileMenu = false;
+		this.items = [
+			['My projects', '/dashboard'],
+			['Assigned projects', '/dashboard/assignedProjects'],
+			['Favourite projects', '/dashboard/favouriteProjects']
+		];
+		this.isActive = this.items.findIndex(x => x[1] === this.router.url);
+		this.eventService.currProjectSwitch(null);
+	}
 
-    redirect(i: number) {
-        this.isActive = i;
-        this.router.navigate([this.items[i][1]]);
-    }
+	ngOnDestroy(): void {
+		this.unsubscription.next();
+		this.unsubscription.complete();
+	}
 
-    public createProject() {
-        this.projectDialogService.show(ProjectType.Create);
-    }
+	redirect(i: number) {
+		this.isActive = i;
+		this.router.navigate([this.items[i][1]]);
+	}
 
-    showDialog() {
-        this.display = true;
-        this.isHiddenTileMenu = false;
-    }
+	public createProject() {
+		this.projectDialogService.show(ProjectType.Create);
+	}
 
-    onTileClick(evt:number){
-        this.typeOfProjectCreation = evt;
-        if(this.typeOfProjectCreation == ProjectCreationType.CreateFromArchive){
-            let a = document.querySelectorAll("input[type='file']");
-            console.log(a);
-            (a[0] as HTMLInputElement).click();
+	showDialog() {
+		this.display = true;
+		this.isHiddenTileMenu = false;
+	}
 
-        }else{
+	onTileClick(evt: ProjectCreationType.CreateFromArchive) {
+		this.typeOfProjectCreation = evt;
+		if (this.typeOfProjectCreation == ProjectCreationType.CreateFromArchive) {
+			let a = document.querySelectorAll("input[type='file']");
+			console.log(a);
+			(a[0] as HTMLInputElement).click();
 
-            this.isHiddenTileMenu = true;
-            this.createForm.isNextFromGithub = false;
-            this.createForm.resetFormFields();
-        }
+		} else {
+			this.isHiddenTileMenu = true;
+			this.createForm.isNextFromGithub = false;
+			this.createForm.resetFormFields();
+		}
+	}
 
+	onBackEvent() {
+		this.isHiddenTileMenu = false;
+	}
 
-    }
-    onBackEvent(){
-        this.isHiddenTileMenu = false;
-    }
-    public onfileArchiveSelected(){
-        this.isHiddenTileMenu = true;
-    }
+	public onfileArchiveSelected() {
+		this.isHiddenTileMenu = true;
+	}
 
 }
