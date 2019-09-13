@@ -65,7 +65,7 @@ export class ProjectWindowComponent implements OnInit {
     private githubPattern = /^https:\/\/github.com\/\w[\d,\w,-]+\/\w[\d,\w,-\-\.]+$/i;
 
     private domParser = new DOMParser();
-    private isInsideModalWindow = false;
+    public isInsideModalWindow = false;
 
 
     constructor(private ref: DynamicDialogRef,
