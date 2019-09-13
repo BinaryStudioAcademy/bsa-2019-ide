@@ -14,6 +14,7 @@ import { FavouriteProjectsComponent } from './components/favourite-projects/favo
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { SharedModule } from '../shared/shared.module';
 import { DialogModule } from 'primeng/dialog';
+import { ProjectUpdateComponent } from 'src/app/modules/project/components/project-update/project-update.component';
 import { ProjectWindowComponent } from '../project/components/project-window/project-window.component';
 import { ProgressSpinnerModule, DropdownModule, FileUploadModule, InplaceModule, InputTextModule, InputTextareaModule } from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -33,8 +34,8 @@ import { BrowserModule } from '@angular/platform-browser';
         MyProjectsComponent,
         AssignedProjectsComponent,
         FavouriteProjectsComponent,
-        ProjectWindowComponent
-
+        ProjectWindowComponent,
+        ProjectUpdateComponent
     ],
     imports: [
         CommonModule,

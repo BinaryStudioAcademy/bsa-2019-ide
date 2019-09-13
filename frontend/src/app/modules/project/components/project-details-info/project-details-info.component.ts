@@ -75,7 +75,7 @@ export class ProjectDetailsInfoComponent implements OnInit {
         }
     }
     public showSettings() {
-        this.projectSettingsService.show(ProjectType.Update, this.project.id);
+        this.projectSettingsService.showEditDialog(this.project.id);
     }
 
     get accessType() {

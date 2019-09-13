@@ -32,6 +32,7 @@ import { UserBuildHistoryComponent } from './components/user-build-history/user-
 import { BuildHistoryTabComponent } from './components/build-history-tab/build-history-tab.component';
 import { InplaceModule, DialogModule } from 'primeng/primeng';
 import { GitModule } from '../git/git.module';
+import { ProjectUpdateComponent } from './components/project-update/project-update.component';
 
 @NgModule({
   declarations: [
@@ -39,12 +40,11 @@ import { GitModule } from '../git/git.module';
     ProjectDetailsComponent,
     ProjectDetailsInfoComponent,
     ProjectDetailsUserStatisticsComponent,
-    //ProjectWindowComponent,
     HistoryChangesComponent,
     HistorySearchPipe,
     SizeInfoPipe,
     UserBuildHistoryComponent,
-    BuildHistoryTabComponent
+    BuildHistoryTabComponent,
   ],
   imports: [
     FormsModule,
@@ -70,7 +70,8 @@ import { GitModule } from '../git/git.module';
     DialogModule
   ],
   entryComponents: [
-    ProjectWindowComponent
+    ProjectWindowComponent,
+    ProjectUpdateComponent
   ],
   providers:[
     AddCollaboratorsComponent,
