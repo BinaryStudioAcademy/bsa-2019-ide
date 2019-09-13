@@ -25,12 +25,14 @@
                 <app-user-build-history [projectId]="projectId" class="builds-tab"></app-user-build-history>
             </ng-template>
         </p-tabPanel>
-        <p-tabPanel header="Artifacts" leftIcon="pi pi-cloud-download">
+        <!-- <p-tabPanel header="Artifacts" leftIcon="pi pi-cloud-download">
             Here will be artifacts(list of zip builds)
-        </p-tabPanel>
+        </p-tabPanel> -->
         <p-tabPanel header="User statistics" leftIcon="pi pi-chart-bar">
             <ng-template pTemplate="content">
-                <app-project-details-user-statistics [project]="project"></app-project-details-user-statistics>
+                <div class="card">
+                    <app-project-details-user-statistics [project]="project"></app-project-details-user-statistics>
+                </div>
             </ng-template>
         </p-tabPanel>
         <p-tabPanel header="Git Credentials" leftIcon="pi pi-sitemap">

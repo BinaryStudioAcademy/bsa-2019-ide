@@ -1,6 +1,6 @@
+<h2 class="collaborators-title">Collaborators:</h2>
 <div class="collaborators-wrp" *ngIf=isAuthor()>
-    <h2 class="collaborators-title">Collaborators:</h2>
-    <div *ngIf=isAuthor() class="ui-g ui-fluid">
+    <div class="ui-g ui-fluid">
         <div class="ui-g-12">
             <p-autoComplete class="collaborator-auto-complete" [(ngModel)]="collaborator"
                 [suggestions]="filterCollaborators" (completeMethod)="filterCollarator($event)" field="nickName"
