@@ -1,17 +1,16 @@
 .panel
-    margin: auto
-    margin-top: 30px
+    margin-top: 15px
     margin-bottom: 5px
     background-color: #FFFFFF
     padding-top: 30px
     overflow-y: hidden !important
     height: 85vh
     max-width: 1200px
-    width: 70%
 
 .user-info-avatar
     display: flex
     justify-content: center
+    flex-direction: column
 
 .panel .user-page-avatar
     border-radius: 50%
@@ -31,8 +30,9 @@
 
 .image-action-btn
     position: absolute
-    margin-top: 165px
-    margin-right: 15px
+    margin-top: 50px
+    margin-left: 160px
+    //margin-right: px
     z-index: 1001
 
 .user-info-avatar:hover .image-btn
@@ -42,15 +42,17 @@
     display: flex
     align-items: center
 
+    
+
 .info
     width: 50%
 
 .right-part
-    width: 50%
+    width: 60%
     height: 85vh
 
 .left-part
-    width: 50%
+    width: 40%
     height: 75vh
     display: flex
     flex-direction: column
@@ -81,12 +83,14 @@
     margin: 5px 0px 5px 0px
     display: block
 
+::ng-deep body .container .panel .ui-tabview .ui-tabview-panels
+    padding: 10px
+
 p
-    margin: 1%
+    margin: 2%
     display: grid
     align-items: baseline
-    margin-left: 25%
-    grid-template-columns: 30% 70%
+    grid-template-columns: 150px 1fr
     grid-gap: 2%
 
 ::ng-deep body .ui-tabview .ui-tabview-panels .tab-item .ui-tabview-panel
@@ -102,7 +106,8 @@ p
     font-weight: bold 
     display: table
     margin: auto
-    margin-bottom: 4%
+    margin-top: 10px
+    margin-bottom: 20px
 
 .user-info
     display: block
@@ -157,8 +162,30 @@ h2
     margin: auto
     margin-top: 10px
     padding-top: 1px
+    width: 200px
     height: 35px
     color: black
 
 .buttons-group
     margin-bottom: 20px
+
+@media (min-width: 768px)
+    .container
+        width: 750px
+        margin: 0 auto
+
+
+@media (min-width: 992px)
+    .container
+        width: 970px
+        margin: 0 auto
+
+@media (min-width: 992px)
+    .panel .user-page-avatar
+        width: 150px
+        height: 150px
+
+@media (min-width: 1200px)
+    .container
+        width: 1170px
+        margin: 0 auto
