@@ -9,21 +9,12 @@ namespace BuildServer.Helpers
             if (!File.Exists(path))
             {
                 File.Create(path).Dispose();
-
-                using (TextWriter tw = new StreamWriter(path))
-                {
-                    tw.Write(data);
-                }
-
             }
-            else if (File.Exists(path))
+
+            using (TextWriter tw = new StreamWriter(path))
             {
-                using (TextWriter tw = new StreamWriter(path))
-                {
-                    tw.Write(data);
-                }
+                tw.Write(data);
             }
         }
     }
-
 }

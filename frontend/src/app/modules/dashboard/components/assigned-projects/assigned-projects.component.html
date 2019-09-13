@@ -1,6 +1,1 @@
-<div class="container" *ngIf="projects && projects.length">
-    <app-projects-list [projects]="projects" header="Projects, assigned to me"></app-projects-list>
-</div>
-<div *ngIf="projects && !projects.length">
-    <p class="no-projects">No projects assigned to you... Yet!)</p>
-</div>
+<app-projects-list [projects]="projects"></app-projects-list>

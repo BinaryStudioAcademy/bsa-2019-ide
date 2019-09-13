@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { ProjectDescriptionDTO } from '../../../../models/DTO/Project/projectDescriptionDTO';
 import { ProjectService } from 'src/app/services/project.service/project.service';
 import { Router } from '@angular/router';
 import { TokenService } from 'src/app/services/token.service/token.service';
@@ -9,6 +8,8 @@ import { ProjectType } from 'src/app/modules/project/models/project-type';
 import { takeUntil, filter } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ProjDialogDataService } from 'src/app/services/proj-dialog-data.service/proj-dialog-data.service';
+import { ProjectDescriptionDTO } from 'src/app/models/DTO/Project/projectDescriptionDTO';
+import { DatePipe } from '@angular/common'
 
 @Component({
     selector: 'app-project-card',
@@ -29,7 +30,8 @@ export class ProjectCardComponent implements OnInit {
         private tokenService: TokenService,
         private router: Router,
         private projectEditDialog: ProjectDialogService,
-        private projectData: ProjDialogDataService) { }
+        private projectData: ProjDialogDataService,
+        public datepipe: DatePipe) { }
 
     ngOnInit() {
         this.currentUserId = this.tokenService.getUserId();
@@ -118,6 +120,62 @@ export class ProjectCardComponent implements OnInit {
     }
 
     get accessType() {
+        this.project.created
         return this.project.isPublic ? 'public' : 'private';
+    }
+    get membersInfo() {
+        const info : string = `Contains ${this.project.amountOfMembers} member`;
+        if (this.project.amountOfMembers > 1) {
+            return `${info}s`;
+        }
+        return info;
+    }
+    get lastBuildInfo() {
+        if (this.project.lastBuild) {
+            return 'Last build ' + this.datepipe.transform(this.project.lastBuild, 'medium');
+        } else {
+            return 'Wasn\'t builded yet';
+        }
+    }
+    get projectLanguage() {
+        switch(this.project.language) { 
+            case 0: { 
+               return 'C#';
+            } 
+            case 1: { 
+                return 'TS';
+            }
+            case 2: { 
+                return 'JS';
+            } 
+            case 3: { 
+                return 'Go';
+            } 
+            default: { 
+               return ''; 
+            } 
+         } 
+    }
+
+    get projectType() {
+        switch(this.project.projectType) { 
+            case 0: { 
+               return 'Console App';
+            } 
+            case 1: { 
+                return 'Web App';
+            }
+            case 3: { 
+                return 'Library';
+            }
+            default: { 
+               return ''; 
+            } 
+         } 
+    }
+    
+    //Do not delete it!!!
+    public emptyFunction(event: Event){
+        event.stopPropagation();
     }
 }

@@ -29,6 +29,23 @@
     width:60%
     text-align: left
 
+.info .ellipsis
+    text-overflow: ellipsis
+    white-space: nowrap
+    overflow: hidden
+    margin-top: 10px
+    color: #8897BA
+
+.info p.description
+    display: block
+    height: 80px
+    font-size: 18px
+    color: #000
+    line-height: 19px
+    overflow: hidden
+    text-align: justify
+
+
 .highlighted
     font-weight: bold
 
@@ -36,7 +53,7 @@ p
     color:#888
 
 
-p-card .pi
+p-card .pi  
     display: inline-block
     cursor: pointer
     font-size: 2em
@@ -60,7 +77,7 @@ p-card .pi
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)
 
 .ui-card .pi:hover
-    color: orange
+    color: #34a6ff
 
 .title-ellipsis
     overflow: hidden
@@ -71,11 +88,9 @@ p-card .pi
     display: inline-block
     overflow: hidden
 
+p-card
+    width: 300px
+    height: 300px
+
 p-card:focus 
     outline: none
-
-.ui-card .pi.access-type
-    font-size: 1.5em
-
-.ui-card .pi.access-type:hover
-    color: #888

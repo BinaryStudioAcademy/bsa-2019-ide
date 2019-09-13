@@ -1,5 +1,5 @@
 .container
-    margin: 20px 2%
+    margin: 20px 65px
     padding-bottom: 35px
 
 .footer
@@ -12,21 +12,113 @@
 
 .menu
     display: block
-    position: relative
-    width: 470px
-    top: -49px
-    height: 24px
-    margin-right: 430px
+    position: fixed
+    width: 430px
+    top: 0px
+    height: 35px
+    z-index: 100
+
+.menu ul
+    display: flex
+    justify-content: space-between
+    padding: 0
 
 ul li
     display: block
     float: left
-    margin: 0 10px
-    height: 24px
-    padding: 0 5px
+    margin: 0
+    height: 30px
+    padding: 0
     cursor: pointer
 
 li.active
-    border-bottom: 1.5px solid #17C0D3
-    color: #17C0D3
+    border-bottom: 1.5px solid #34a6ff
+    color: #34a6ff
     cursor: default
+    padding-bottom: 10px
+::ng-deep .create-modal-container .ui-dialog-titlebar.ui-widget-header.ui-helper-clearfix.ui-corner-top.ng-star-inserted
+    padding: 15px 15px 5px 15px
+    font-size: 20px
+    font-weight: normal
+    text-align: center
+    color: #116fbf
+    border: 0
+    background-color: #fff
+::ng-deep .create-modal-container .pi-times:before
+    font-size: 20px
+::ng-deep .create-modal-container
+    & .ui-dialog-content.ui-widget-content
+        border: 0
+
+.create-modal-tile-menu
+
+    display: grid
+    grid-gap: 15px
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr))
+    grid-template-rows: 100px
+    justify-content: center
+    align-items: center
+    justify-items: center
+
+.tile-item1
+    width: 100%
+    height: 100%
+    background-color: #d1d1d1
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: flex-end
+    &:hover
+        border: 1px solid #d1d1d1
+        cursor: pointer
+    & fa-icon
+        font-size: 3em
+        color: #495057
+    & p
+        text-align: center
+        padding: 0 5px 5px 5px
+        color: #495057
+
+
+
+.tile-item2
+    width: 100%
+    height: 100%
+    background-color: #d1d1d1
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: flex-end
+    &:hover
+        border: 1px solid #d1d1d1
+        cursor: pointer
+    & fa-icon
+
+        font-size: 3em
+        color: #495057
+    & p
+        text-align: center
+        padding: 0 5px 5px 5px
+        color: #495057
+        white-space: nowrap
+
+
+.tile-item3
+    width: 100%
+    height: 100%
+    background-color: #d1d1d1
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: flex-end
+    &:hover
+        border: 1px solid #d1d1d1
+        cursor: pointer
+    & fa-icon
+        font-size: 3em
+        color: #495057
+    & p
+        text-align: center
+        padding: 0 5px 5px 5px
+        color: #495057
+        white-space: nowrap

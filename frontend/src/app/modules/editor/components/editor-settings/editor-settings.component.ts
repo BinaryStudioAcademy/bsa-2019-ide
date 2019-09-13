@@ -109,6 +109,7 @@ export class EditorSettingsComponent implements OnInit {
             this.hasDetailsSaveResponse = false;
             this.getValuesForEditorSettingsUpdate();
             if (!event) {
+                console.log('send first')
                 this.editorSettingsService.UpdateEditorSettings(this.settingsUpdate)
                     .subscribe(
                         (resp) => {
@@ -125,6 +126,7 @@ export class EditorSettingsComponent implements OnInit {
                     );
             }
             else{
+                console.log('send second')
                 const userId=this.tokenService.getUserId();
                 this.editorSettingsService.UpdateAllUserProjectEditorSettings(this.settingsUpdate,userId)
                     .subscribe(

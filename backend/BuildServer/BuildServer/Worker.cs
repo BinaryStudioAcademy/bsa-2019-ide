@@ -11,10 +11,7 @@ namespace BuildServer
         private readonly IFileArchiver _fileArchiver;
         private readonly IAzureService _azureService;
 
-        public Worker(
-            IProjectBuilder builder,
-            IFileArchiver fileArchiver,
-            IAzureService azureService)
+        public Worker(IProjectBuilder builder, IFileArchiver fileArchiver, IAzureService azureService)
         {
             _builder = builder;
             _fileArchiver = fileArchiver;
@@ -82,7 +79,7 @@ namespace BuildServer
 
             Console.WriteLine("Removing temporrary files...");
             _fileArchiver.RemoveTemporaryFiles(projectName);
-            
+
             Console.WriteLine("program output:");
             Console.WriteLine(executeResult);
 

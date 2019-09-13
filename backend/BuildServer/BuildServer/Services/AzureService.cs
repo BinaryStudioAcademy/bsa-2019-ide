@@ -14,8 +14,7 @@ namespace BuildServer.Services
         private readonly string _inputDirectory;
         private readonly IBlobRepository _blobRepository;
 
-        public AzureService(IConfiguration configuration,
-                            IBlobRepository blobRepository, ILogger<AzureService> logger)
+        public AzureService(IConfiguration configuration, IBlobRepository blobRepository, ILogger<AzureService> logger)
         {
             _blobRepository = blobRepository;
             _outputDirectory = configuration.GetSection("OutputDirectory").Value;
