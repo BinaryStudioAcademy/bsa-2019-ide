@@ -1,10 +1,14 @@
-<p-card routerLink="/workspace/{{project.id}}" subheader="{{ project.creator | lessSymbols: 21 }}">
+<p-card routerLink="/workspace/{{project.id}}">
     <p-header>
         <div class="header" [ngStyle]="{ 'background-color': project.color }">
             <div class="title-body">
-              <h2 class="title-ellipsis">{{project.title}}</h2>
+                <h2 class="title-ellipsis">{{project.title}}</h2>
             </div>
             <div class="header-buttons">
+                <div (click)="emptyFunction($event)">
+                    <i *ngIf="!project.isPublic" title="Private project" class="pi pi-lock"></i>
+                </div>
+
                 <div class="star" (click)="favourite($event)">
                     <i class="pi pi-star-o" *ngIf="!project.favourite"></i>
                     <i class="pi pi-star" *ngIf="project.favourite"></i>
@@ -12,26 +16,27 @@
                 <div class="menu-icon">
                     <p-contextMenu #menu [model]="contextMenu" appendTo="body"></p-contextMenu>
 
-                    <i class="pi pi-ellipsis-v menu-ellipsis"
-                    (contextmenu)="openCm($event, menu)" (click)="openCm($event, menu)" (keyup.enter)="openCm($event, menu)"></i>
+                    <i class="pi pi-ellipsis-v menu-ellipsis" (contextmenu)="openCm($event, menu)"
+                        (click)="openCm($event, menu)" (keyup.enter)="openCm($event, menu)"></i>
                 </div>
             </div>
         </div>
     </p-header>
-    <div>
-        <p>
-            <span class="highlighted">Access type:</span> {{accessType}}
-            <i *ngIf="project.isPublic" class="pi pi-lock-open access-type"></i>
-            <i *ngIf="!project.isPublic" class="pi pi-lock access-type"></i>
+    <div class="info">
+        <p class="description">
+            {{project.description | lessSymbols : 110}}
         </p>
-        <p>
-            <span class="highlighted">Created:</span> {{project.created | date:'d MMMM yyyy'}}
+        <p class="ellipsis">
+            {{projectLanguage}} {{projectType}} project
         </p>
-        <p *ngIf="project.lastBuild" [ngClass]="{
-                                        'success':project.buildStatus === 1,
-                                        'failed':project.buildStatus === 0
-                                    }">
-            <span class="highlighted" >Last build:</span> {{lastTimeBuild()}}
+        <p class="ellipsis">
+            Created by <span class="highlighted">{{project.creator}}</span> {{project.created | date}}
+        </p>
+        <p class="ellipsis">
+            {{lastBuildInfo}}
+        </p>
+        <p class="ellipsis">
+            {{membersInfo}}
         </p>
     </div>
 </p-card>

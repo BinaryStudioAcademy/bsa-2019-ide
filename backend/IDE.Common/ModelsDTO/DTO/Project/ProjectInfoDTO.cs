@@ -23,6 +23,6 @@ namespace IDE.Common.DTO.Project
         public string AuthorName { get; set; }
         public GitCredentialDTO GitCredential { get; set; }
         public string Color { get; set; }
-
+        public int AmountOfMembers { get; set; }
     }
 }

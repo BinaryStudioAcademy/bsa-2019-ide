@@ -18,6 +18,7 @@ import { ProjectWindowComponent } from '../project/components/project-window/pro
 import { ProgressSpinnerModule, DropdownModule, FileUploadModule, InplaceModule, InputTextModule, InputTextareaModule } from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { DatePipe } from '@angular/common'
 
 import { faSquare, faCheckSquare, faFolderPlus, faFileArchive } from '@fortawesome/free-solid-svg-icons';
 import { faCoffee } from '@fortawesome/free-solid-svg-icons';
@@ -55,7 +56,8 @@ import { BrowserModule } from '@angular/platform-browser';
         InputTextareaModule,
         FontAwesomeModule,
         BrowserModule
-    ]
+    ],
+    providers: [DatePipe]
 })
 export class DashboardModule {
     constructor(library: FaIconLibrary) {

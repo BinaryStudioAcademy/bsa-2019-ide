@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ProjectDescriptionDTO } from '../../../../models/DTO/Project/projectDescriptionDTO';
 import { ProjectDialogService } from 'src/app/services/proj-dialog.service/project-dialog.service';
 import { ProjectType } from 'src/app/modules/project/models/project-type';
+import { ProjectDescriptionDTO } from 'src/app/models/DTO/Project/projectDescriptionDTO';
 
 @Component({
     selector: 'app-projects-list',
