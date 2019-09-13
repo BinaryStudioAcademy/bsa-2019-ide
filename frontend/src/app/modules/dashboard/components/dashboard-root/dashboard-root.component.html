@@ -1,10 +1,38 @@
 <div class="container">
-    <div class="menu">
-        <ul>
-            <li *ngFor="let item of items; let i = index" (click)="redirect(i)" [class.active]="isActive === i">
-                {{item[0]}}</li>
-        </ul>
-    </div>
-    <router-outlet></router-outlet>
-    <app-footer class="ui-g-12 footer"></app-footer>
+  <div class="menu">
+    <ul>
+      <li *ngFor="let item of items; let i = index" (click)="redirect(i)" [class.active]="isActive === i">{{item[0]}}
+      </li>
+    </ul>
+  </div>
+  <div class="secondMenu">
+    <button icon="pi pi-plus" pButton type="button" class="ui-button-raised" (click)="showDialog()"></button>
+  </div>
+  <router-outlet></router-outlet>
+  <app-footer class="ui-g-12 footer"></app-footer>
 </div>
+<p-dialog  header="Create Project" [(visible)]="display" [modal]="true" [responsive]="true" [draggable]="true" [resizable] ="true" [focusTrap]="false"
+  [style]="{width: '80%', minWidth: '300px'}" class="create-modal-container" [minY] = "0">
+  <div class="dialog-wrapper" [hidden]="!isHiddenTileMenu">
+
+      <app-project-window (backEvent)="onBackEvent()" (fileSelectedEvent)="onfileArchiveSelected()" [typeOfCreation]="typeOfProjectCreation" ></app-project-window>
+  </div>
+  <div class="create-modal-tile-menu" *ngIf="!isHiddenTileMenu" >
+
+    <div class="tile-item1" (click)="onTileClick(0)" >
+      <fa-icon icon='folder-plus'></fa-icon>
+      <p>new</p>
+    </div>
+
+    <div class="tile-item2" (click)="onTileClick(1)">
+      <fa-icon icon='file-archive'></fa-icon>
+      <p>from archive</p>
+    </div>
+
+    <div class="tile-item3" (click)="onTileClick(2)">
+        <fa-icon [icon]="['fab', 'github']"></fa-icon>
+      <p>from git hub</p>
+    </div>
+  </div>
+
+</p-dialog>
