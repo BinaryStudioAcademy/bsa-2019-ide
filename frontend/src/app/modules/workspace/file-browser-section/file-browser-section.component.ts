@@ -602,6 +602,7 @@ export class FileBrowserSectionComponent implements OnInit {
     }
 
     nodeSelect(evt: any) {
+        this.cacheElement(evt);
         const nodeSelected: TreeNode = evt.node;
         if (nodeSelected.type === TreeNodeType.file.toString()) {
             const selectedFile: SelectedFile = {fileId: nodeSelected.key, fileIcon: nodeSelected.icon};
