@@ -18,7 +18,7 @@ export class AuthService {
     clientID: environment.auth.clientID,
     domain: environment.auth.domain,
     responseType: 'token',
-    redirectUri: environment.auth.auth0RedirectUri,
+    redirectUri: window.location.href + environment.auth.auth0RedirectUri,
     //sso: false,
     audience: environment.auth.audience,
   });
@@ -83,7 +83,7 @@ export class AuthService {
   // Application settings for Allowed Logout URLs
   public logout(): void {
     this.auth0.logout({
-      returnTo: environment.auth.auth0ReturnTo,
+      returnTo: window.location.href,
       clientID: environment.auth.clientID
     });
   }
