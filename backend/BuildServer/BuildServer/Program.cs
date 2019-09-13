@@ -20,37 +20,38 @@ namespace BuildServer
         public static void Main(string[] args)
         {
             var logger = LogManager.GetCurrentClassLogger();
-             try
+            try
             {
-            IConfiguration configuration;
+                IConfiguration configuration;
 
-            configuration = new ConfigurationBuilder()
-                .SetBasePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location))
-                .AddJsonFile($"appsettings.json", true, true)
-                .AddJsonFile($"appsettings.development.json", true, true)
-                .Build();
-               LogManager.Configuration = new NLogLoggingConfiguration(configuration.GetSection("NLog"));
-            //setup our DI
+                configuration = new ConfigurationBuilder()
+                    .SetBasePath(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location))
+                    .AddJsonFile($"appsettings.json", true, true)
+                    .AddJsonFile($"appsettings.development.json", true, true)
+                    .Build();
+                LogManager.Configuration = new NLogLoggingConfiguration(configuration.GetSection("NLog"));
 
-            var serviceProvider = BuildDi(configuration);
+                //setup our DI
+                var serviceProvider = BuildDi(configuration);
 
-            // This line need for creating instance of QueueService
-            var queueService = serviceProvider.GetService<IQueueService>();
+                // This line need for creating instance of QueueService
+                var queueService = serviceProvider.GetService<IQueueService>();
 
-            var outputDirectory = configuration.GetSection("OutputDirectory").Value;
-            var buildDirectory = configuration.GetSection("BuildDirectory").Value;
-            var inputDirectory = configuration.GetSection("InputDirectory").Value;
-            Directory.CreateDirectory(outputDirectory);
-            Directory.CreateDirectory(buildDirectory);
-            Directory.CreateDirectory(inputDirectory);
+                var outputDirectory = configuration.GetSection("OutputDirectory").Value;
+                var buildDirectory = configuration.GetSection("BuildDirectory").Value;
+                var inputDirectory = configuration.GetSection("InputDirectory").Value;
+                Directory.CreateDirectory(outputDirectory);
+                Directory.CreateDirectory(buildDirectory);
+                Directory.CreateDirectory(inputDirectory);
 
-            Console.WriteLine("HelloWorld");
+                Console.WriteLine("HelloWorld");
 
-            while (true) { }
+                while (true) { }
 
             }
             catch (Exception ex)
-            { // NLog: catch any exception and log it.
+            {
+                // NLog: catch any exception and log it.
                 logger.Error(ex, "Stopped program because of exception");
                 throw;
             }
@@ -70,8 +71,9 @@ namespace BuildServer
         {
             RabbitMQConfigurations.ConfigureServices(services, config);
             StorageConfigurations.ConfigureServices(services, config);
+
             return services
-                        .AddSingleton<IConfiguration>(config)
+                        .AddSingleton(config)
 
                         .AddTransient<IFileArchiver, FileArchiver>()
                         .Configure<FileArchiver>(config)
