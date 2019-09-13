@@ -1,5 +1,4 @@
-<div class="cardContainer" *ngIf="header">
-    <!-- <h2 *ngIf="projects && projects !== undefined" >{{header}}:</h2> -->
+<div class="cardContainer">
     <div class="cards-area">
         <div *ngFor="let project of projects">
             <app-project-card [project]="project" (showMenu)="hideAllMenus($event)"></app-project-card>
