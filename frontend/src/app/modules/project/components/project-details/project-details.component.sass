@@ -48,7 +48,8 @@
 
 .card
     padding: 15px
-
+    max-height: calc(100vh - 150px)
+    overflow-y: auto
 
 @media (min-width: 768px) 
     .container
@@ -64,4 +65,18 @@
     .container
         width: 1170px
         margin: 0 auto
+
+::-webkit-scrollbar
+    width: 5px
+
+::-webkit-scrollbar-track
+    background-color: #ebebeb
+    -webkit-border-radius: 10px
+    border-radius: 10px
+
+
+::-webkit-scrollbar-thumb
+    -webkit-border-radius: 10px
+    border-radius: 10px
+    background: #6d6d6d 
 

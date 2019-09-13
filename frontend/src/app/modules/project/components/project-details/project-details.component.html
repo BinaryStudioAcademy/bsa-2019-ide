@@ -22,7 +22,9 @@
         </p-tabPanel>
         <p-tabPanel header="Build results" leftIcon="pi pi-eye">
             <ng-template pTemplate="content">
-                <app-user-build-history [projectId]="projectId" class="builds-tab"></app-user-build-history>
+                <div class="card">
+                    <app-user-build-history [projectId]="projectId" class="builds-tab"></app-user-build-history>
+                </div>
             </ng-template>
         </p-tabPanel>
         <!-- <p-tabPanel header="Artifacts" leftIcon="pi pi-cloud-download">

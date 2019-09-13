@@ -2,7 +2,7 @@
 <div class="search">
     <input type="text" [(ngModel)]="personNickname" autocomplete="off" placeholder="Enter user nickname or file name" name="searchHistory">
 </div>
-<div class="">
+<div class="history-content">
     <div class="card">     
         <p-accordion *ngIf="fileChangesList" [multiple]="true">
             <!-- <p-accordionTab *ngFor="let history of fileChangesList | historySearch : personNickname"> -->
