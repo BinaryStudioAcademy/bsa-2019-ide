@@ -16,7 +16,7 @@ import { SharedModule } from '../shared/shared.module';
 import { DialogModule } from 'primeng/dialog';
 import { ProjectUpdateComponent } from 'src/app/modules/project/components/project-update/project-update.component';
 import { ProjectWindowComponent } from '../project/components/project-window/project-window.component';
-import { ProgressSpinnerModule, DropdownModule, FileUploadModule, InplaceModule, InputTextModule, InputTextareaModule } from 'primeng/primeng';
+import { ProgressSpinnerModule, DropdownModule, FileUploadModule, InplaceModule, InputTextModule, InputTextareaModule, ProgressBarModule } from 'primeng/primeng';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { DatePipe } from '@angular/common'
@@ -56,7 +56,8 @@ import { BrowserModule } from '@angular/platform-browser';
         InputTextModule,
         InputTextareaModule,
         FontAwesomeModule,
-        BrowserModule
+        BrowserModule,
+        ProgressBarModule
     ],
     providers: [DatePipe]
 })
