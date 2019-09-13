@@ -12,7 +12,7 @@
                 showDelay="100" class="ui-button-secondary" (click)="collapse()"></button>
         </div>
     </div>
-    <p-tree *ngIf="files && files.length > 0 && !showSearchField" class="custom-tree" selectionMode="single" [(selection)]="selectedItem"  [value]="files" 
+    <p-tree *ngIf="files && files.length > 0 && !showSearchField" class="custom-tree file-browser-tree" selectionMode="single" [(selection)]="selectedItem"  [value]="files" 
             [contextMenu]="contextMenu" (onNodeSelect)="nodeSelect($event)" (onNodeContextMenuSelect)="nodeContextMenuSelect($event)">
         <ng-template let-node pTemplate="0">
                 <input class="input-item" [value]="node.label" (focusout)="focusout(node)" 
