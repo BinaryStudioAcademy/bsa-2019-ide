@@ -33,6 +33,7 @@ export class WorkspaceService {
                 'border-radius': '3px',
                 'overflow-y': 'auto',
                 'max-height': '90vh',
+                'min-width': '500px'
             },
             showHeader: false,
             closeOnEscape: true
