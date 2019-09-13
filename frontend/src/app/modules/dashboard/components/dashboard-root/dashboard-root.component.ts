@@ -1,4 +1,5 @@
-import { ProjectCreationType } from './../../../project/components/project-window/project-window.component';
+import { ProjectDialogService } from './../../../../services/proj-dialog.service/project-dialog.service';
+import { ProjectCreationType, ProjectWindowComponent } from './../../../project/components/project-window/project-window.component';
 
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
@@ -6,6 +7,8 @@ import { EventService } from 'src/app/services/event.service/event.service';
 import { faSquare, faFolderPlus, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faStackOverflow, faGithub, faMedium } from '@fortawesome/free-brands-svg-icons';
+import { ProjectType } from 'src/app/modules/project/models/project-type';
+
 
 
 @Component({
