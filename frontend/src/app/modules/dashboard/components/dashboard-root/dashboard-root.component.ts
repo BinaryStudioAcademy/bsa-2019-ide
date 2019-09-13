@@ -56,6 +56,7 @@ export class DashboardRootComponent implements OnInit {
 
     showDialog() {
         this.display = true;
+        this.isHiddenTileMenu = false;
     }
 
     onTileClick(evt:number){
@@ -68,6 +69,8 @@ export class DashboardRootComponent implements OnInit {
         }else{
 
             this.isHiddenTileMenu = true;
+            this.createForm.isNextFromGithub = false;
+            this.createForm.resetFormFields();
         }
 
         

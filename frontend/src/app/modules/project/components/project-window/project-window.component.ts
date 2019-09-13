@@ -48,7 +48,7 @@ export class ProjectWindowComponent implements OnInit {
     public compilerTypes: any;
     public colors: { label: string, value: string }[];
     public access: any;
-
+    public isSpinnerLoadInofFromGit;
     public projectForm: FormGroup;
     public isFileSelected: boolean = false;
 
@@ -81,6 +81,7 @@ export class ProjectWindowComponent implements OnInit {
         private req: HttpClient) { }
 
     ngOnInit(): void {
+        this.isSpinnerLoadInofFromGit = false;
         this.isInsideModalWindow = this.config.data === undefined
         this.projectType = this.isInsideModalWindow ? ProjectType.Create : this.config.data.projectType;
         this.title = this.projectType === ProjectType.Create ? 'Create project' : 'Edit project';
@@ -158,12 +159,12 @@ export class ProjectWindowComponent implements OnInit {
     public resetSelection() {
         this.uploadElement.clear();
         this.isFileSelected = false;
-        
+
     }
     public selectHandler() {
         this.isFileSelected = true;
         this.fileSelectedEvent.next();
-        this.projectForm.get('name').setValue(this.uploadElement.files[0].name.split('.')[0]); 
+        this.projectForm.get('name').setValue(this.uploadElement.files[0].name.split('.')[0]);
     }
 
     public projectItemIsNotChange(): boolean {
@@ -184,6 +185,7 @@ export class ProjectWindowComponent implements OnInit {
     }
 
     public onSubmit() {
+        this.isNextFromGithub = false
         this.hasDetailsSaveResponse = false;
 
         if (this.isCreateForm()) {
@@ -381,6 +383,16 @@ export class ProjectWindowComponent implements OnInit {
         }
         console.log(proj);
     }
+    public resetFormFields() {
+        this.projectForm.get('name').setValue('');
+        this.projectForm.get('description').setValue('');
+        this.projectForm.get('access').setValue('');
+        this.projectForm.get('color').setValue('');
+        this.projectForm.get('compilerType').setValue('');
+        this.projectForm.get('language').setValue('');
+        this.projectForm.get('projectType').setValue('');
+        this.projectForm.get('githuburl').setValue('');
+    }
     // onlang(evt){
     // let a = document.querySelectorAll(".ng-trigger.ng-trigger-overlayAnimation.ng-tns-c11-4.ui-dropdown-panel.ui-widget.ui-widget-content.ui-corner-all.ui-shadow.ng-star-inserted");
 
@@ -388,24 +400,26 @@ export class ProjectWindowComponent implements OnInit {
     // console.log(a);
     // b.style.top = '-200px';
     // }
-   public  onccc() {
-        console.log("hello");
+    public onccc() {
+
         let a = document.querySelectorAll("input[type='file']");
         (a[0] as HTMLInputElement).click();
         console.log(a);
     }
-    public onContinueFromGithub(but: HTMLElement, spin: HTMLElement) {
-        but.hidden = true;
-        spin.hidden = false;
+    public onContinueFromGithub() {
+        this.isSpinnerLoadInofFromGit = true;
+
         this.onFocusoutGitInput();
         //this.isNextFromGithub = true;
 
     }
-    onBackToMenu(){
-        if(this.isFileSelected){
+    onBackToMenu() {
+        if (this.isFileSelected) {
             this.resetSelection();
         }
-        this.backEvent.next()
+        this.backEvent.next();
+        this.isNextFromGithub = false;
+
     }
 
     public onFocusoutGitInput() {
@@ -422,17 +436,17 @@ export class ProjectWindowComponent implements OnInit {
                         const desc = this.getDescription(domdoc).trim();
                         let projName = gitUrl.match(/[^/]+$/)[0];
                         projName = projName.replace(/\-/g, "");
-                        const projColorIndex = Math.floor(Math.random() * Math.floor(this.colors.length)) + 1;
+                        const projColorIndex = Math.floor(Math.random() * Math.floor(this.colors.length - 1)) + 1;
                         const projColor = this.colors[projColorIndex].value
 
 
-                        const langToChoose = this.languages.map(x => x.label.toLowerCase());
-                        if (langToChoose.includes(langList[0].toLowerCase())) {
+                        const langToChoose = this.languages.filter(l => l != null).map(x => x.label.toLowerCase());
+                        if (langList.length != 0 && langToChoose.includes(langList[0].toLowerCase())) {
                             console.log(langList[0].toLowerCase());
                             this.projectForm.patchValue(
                                 {
-                                    'language': this.languages.
-                                        find(x =>
+                                    'language': this.languages.filter(l => l != null)
+                                        .find(x =>
                                             x.label.toLowerCase() == langList[0].toLowerCase()
                                         )
                                         .value,
@@ -464,13 +478,15 @@ export class ProjectWindowComponent implements OnInit {
 
                         };
                         this.isNextFromGithub = true;
+                        this.isSpinnerLoadInofFromGit = false;
 
                     } else {
-                        console.log(response.status)
+                        console.log(response.status);
+                        this.isNextFromGithub = true;
                     }
 
                 },
-                    error => { console.log(error); this.isNextFromGithub = true; }
+                    error => { console.log(error); this.isNextFromGithub = true; this.isSpinnerLoadInofFromGit = false; }
                 )
         }
     }

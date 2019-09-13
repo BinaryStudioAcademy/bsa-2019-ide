@@ -52,14 +52,14 @@
           </div>
 
           <div class="buttonnext-container">
-            <div #fromgitbutton class="buttonwrapper">
+            <div #fromgitbutton [hidden]="isSpinnerLoadInofFromGit" class="buttonwrapper">
               <button class="ui-button-secondary" style="background-color: #a1a1a1" type="button" pButton label="Next"
-                (click)="onContinueFromGithub(fromgitbutton, fromgitspinner)"
+                (click)="onContinueFromGithub()"
                 [disabled]="!projectForm.get('githuburl').valid || !projectForm.get('githuburl').dirty">
               </button>
             </div>
 
-            <div #fromgitspinner class="spinner" [hidden]="true"><i class="pi pi-spin pi-spinner"
+            <div  class="spinner" [hidden]="!fromgitbutton.hidden"><i class="pi pi-spin pi-spinner"
                 style="font-size: 3em"></i></div>
           </div>
         </div>
@@ -69,7 +69,7 @@
       <!-- next form -->
       <div class="tempHide-container" [hidden]="typeOfCreation == 2 && !isNextFromGithub">
 
-        <div class="top-container">
+        <div class="top-container" *ngIf="typeOfCreation == 1 || typeOfCreation == 2">
           {{isNextFromGithub ? 'From GitHub: ' + projectForm.get('githuburl').value : isFileSelected ? 'From archive: ' + uploadElement.files[0].name : ''}}
         </div>
 
