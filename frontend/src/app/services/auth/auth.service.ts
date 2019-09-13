@@ -18,8 +18,8 @@ export class AuthService{
         domain: environment.auth.domain,
         responseType: 'token',
         redirectUri: environment.auth.auth0RedirectUri,
-        sso: false,
-        //audience: environment.auth.audience,
+        //sso: false,
+        audience: environment.auth.audience,
       });
 
   // Store authentication data
@@ -38,11 +38,11 @@ export class AuthService{
 
   // Looks for result of authentication in URL hash; result is processed in parseHash.
   public handleLoginCallback(): void {
-      console.log("here?")
     this.auth0.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken) {
         window.location.hash = '';
         this.getUserInfo(authResult);
+        localStorage.setItem('token', authResult.accessToken);
       } else if (err) {
         console.log(`Error: ${err.error}`);
         console.log('er');

@@ -8,10 +8,10 @@ export const environment = {
   auth: {
     clientID: 'IasXhVfWZoWeKaWhw0E9NB9fpLtv6mnZ',
     domain: 'dev-um9n3nhv.eu.auth0.com', // e.g., you.auth0.com
-    audience: 'https://dev-um9n3nhv.eu.auth0.com/user/ssodata',
+    audience: 'https://dev-um9n3nhv.eu.auth0.com/api/v2/',
     auth0RedirectUri: 'http://localhost:4200/callback', // URL to return to after auth0 login
     auth0ReturnTo: 'http://localhost:4200', // URL to return to after auth0 logout
-    scope: 'openid profile'
+    scope: 'openid profile email'
   }
 };
 
