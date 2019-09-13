@@ -1,6 +1,6 @@
 <p-progressBar *ngIf="!user" mode="indeterminate" [style]="{'height': '4px'}"></p-progressBar>
 
-<div class="p-grid p-justify-around p-align-start">
+<div class="container">
     <div *ngIf="user" class="panel p-grid p-dir-col">
         <div class="left-part">
             <div class="user-info-avatar">
@@ -11,9 +11,9 @@
                     <button *ngIf="isOwnPage && !isDefaultImage" class="ui-button-secondary image-btn second" pButton icon='pi pi-trash'
                         (click)="confirm()"></button>
                 </span>
+                <p class="tname p-col-align-center">{{user.firstName}} {{user.lastName}}</p>
             </div>
             <div class="user-profile-information">
-                <p class="tname p-col-align-center">{{user.firstName}} {{user.lastName}}</p>
                 <div class="user-info">
                     <p>
                         <span class="property-name">Nickname: </span>
@@ -23,17 +23,13 @@
                         <span class="property-name">Email: </span>
                         <span class="property-value">{{user.email}}</span>
                     </p>
-                    <p>
+                    <p *ngIf="user.gitHubUrl">
                         <span class="property-name">Github URL: </span>
-                        <span *ngIf="user.gitHubUrl" class="property-value"><a href="{{user.gitHubUrl}}"
-                                target="_blank">
-                                github</a></span>
-                        <span *ngIf="!user.gitHubUrl" class="property-value">GitHub not specified</span>
+                        <span class="property-value">{{user.gitHubUrl}}"</span>
                     </p>
-                    <p>
+                    <p *ngIf="user.birthday">
                         <span class="property-name">Birthday: </span>
-                        <span *ngIf="user.birthday" class="property-value">{{user.birthday | date:'mediumDate'}}</span>
-                        <span *ngIf="!user.birthday" class="property-value">Birthday not specified</span>
+                        <span class="property-value">{{user.birthday | date:'mediumDate'}}</span>
                     </p>
                     <p>
                         <span class="property-name">Registred At: </span>
@@ -53,7 +49,7 @@
                 <p-tabPanel *ngIf="isOwnPage" class="tab-item" header="Editor settings" [selected]="true">
                     <app-editor-settings [user]="user"></app-editor-settings>
                 </p-tabPanel>
-                <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="Author`s projects" [selected]="true">
+                <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="Author's projects" [selected]="true">
                     <app-user-projects [userId]="user.id" [isOwnProject]="true"></app-user-projects>
                 </p-tabPanel>
                 <p-tabPanel *ngIf="!isOwnPage" class="tab-item" header="Assigned projects">
