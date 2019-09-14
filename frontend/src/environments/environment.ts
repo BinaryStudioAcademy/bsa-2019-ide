@@ -4,8 +4,17 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://localhost:44352/'
+  apiUrl: 'https://localhost:44352/',
+  auth: {
+    clientID: 'IasXhVfWZoWeKaWhw0E9NB9fpLtv6mnZ',
+    domain: 'dev-um9n3nhv.eu.auth0.com', // e.g., you.auth0.com
+    audience: 'https://dev-um9n3nhv.eu.auth0.com/api/v2/',
+    auth0RedirectUri: 'callback', // URL to return to after auth0 login
+    auth0ReturnTo: '', // URL to return to after auth0 logout
+    scope: 'openid profile email'
+  }
 };
+
 /*vscode - apiUrl:'https://localhost:5001'*/
 /*
  * For easier debugging in development mode, you can import the following file

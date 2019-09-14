@@ -10,6 +10,7 @@ import { UserService } from 'src/app/services/user.service/user.service';
 import { SignalRService } from 'src/app/services/signalr.service/signal-r.service';
 import { EditorSettingDTO } from 'src/app/models/DTO/Common/editorSettingDTO';
 import { ErrorHandlerService } from 'src/app/services/error-handler.service/error-handler.service';
+import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Component({
     selector: 'app-auth-dialog',
@@ -54,6 +55,7 @@ export class AuthDialogComponent implements OnInit {
         public ref: DynamicDialogRef,
         public config: DynamicDialogConfig,
         private router: Router,
+        private auth: AuthService,
         private tokenService: TokenService,
         private toast: ToastrService,
         private userService: UserService,
@@ -82,6 +84,11 @@ export class AuthDialogComponent implements OnInit {
 
     public close() {
         this.ref.close();
+    }
+
+    public gAuth0(){
+        console.log("here")
+        this.auth.login();
     }
 
     public signIn() {

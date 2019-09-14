@@ -30,6 +30,8 @@
     "@fortawesome/free-solid-svg-icons": "^5.10.2",
     "@materia-ui/ngx-monaco-editor": "^2.0.6",
     "angular-resizable-element": "^3.2.4",
+    "auth0-js": "^9.11.3",
+    "auth0-lock": "^11.17.2",
     "chart.js": "^2.8.0",
     "file-saver": "^2.0.2",
     "font-awesome": "^4.7.0",

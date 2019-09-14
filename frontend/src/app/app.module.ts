@@ -39,13 +39,15 @@ import { HighlightMatchDirective } from './directives/highlight-match.directive'
 import { ImportFileComponent } from './modules/workspace/import-file/import-file.component';
 import { NotificationStatusDirective } from './directives/notification-status/notification-status.directive';
 import { NotificationComponent } from './notification/notification.component';
+import { CallbackComponent } from './callback/callback.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         NavMenuComponent,
         NotificationStatusDirective,
-        NotificationComponent
+        NotificationComponent,
+        CallbackComponent
 
     ],
     imports: [

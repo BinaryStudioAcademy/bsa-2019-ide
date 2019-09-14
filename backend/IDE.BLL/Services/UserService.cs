@@ -58,6 +58,14 @@ namespace IDE.BLL.Services
             userEntity.RegisteredAt = DateTime.Now;
             userEntity.EditorSettingsId = await _editorSettingService.CreateInitEditorSettings();
 
+            if (!string.IsNullOrEmpty(userDto.Picture))
+            {
+                userEntity.Avatar = new Image
+                {
+                    Url = userDto.Picture
+                };
+            }
+
             _context.Users.Add(userEntity);
             await _context.SaveChangesAsync();
             await SendConfirmationMail(userEntity.Id);
