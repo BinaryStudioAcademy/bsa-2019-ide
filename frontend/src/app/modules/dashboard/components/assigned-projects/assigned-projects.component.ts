@@ -9,10 +9,11 @@ import { ProjectService } from 'src/app/services/project.service/project.service
 })
 export class AssignedProjectsComponent implements OnInit {
     projects: ProjectDescriptionDTO[];
-
+    public loading: boolean = false;
     constructor(private projectService: ProjectService) { }
 
     ngOnInit() {
+        this.loading = true;
         this.projectService.getAssignedProjects()
         .subscribe(x => {
             this.projects = x.body;
@@ -20,6 +21,7 @@ export class AssignedProjectsComponent implements OnInit {
             y.created = new Date(y.created);
             y.lastBuild = y.lastBuild ? new Date(y.lastBuild) : null;
             });
+            this.loading = false;
         });
     }
 }

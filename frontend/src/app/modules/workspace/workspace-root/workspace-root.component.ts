@@ -524,7 +524,7 @@ export class WorkspaceRootComponent implements OnInit, OnDestroy, AfterViewInit,
     }
 
     public editProjectSettings() {
-        this.projectEditService.show(ProjectType.Update, this.projectId);
+        this.projectEditService.showEditDialog(this.projectId);
     }
 
     public saveFilesRequest(files: FileUpdateDTO[]): Observable<HttpResponse<FileUpdateDTO>[]> {

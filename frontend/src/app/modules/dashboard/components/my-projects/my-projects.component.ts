@@ -3,23 +3,26 @@ import { ProjectDescriptionDTO } from '../../../../models/DTO/Project/projectDes
 import { ProjectService } from 'src/app/services/project.service/project.service';
 
 @Component({
-  selector: 'app-my-projects',
-  templateUrl: './my-projects.component.html',
-  styleUrls: ['./my-projects.component.sass']
+    selector: 'app-my-projects',
+    templateUrl: './my-projects.component.html',
+    styleUrls: ['./my-projects.component.sass']
 })
 export class MyProjectsComponent implements OnInit {
     projects: ProjectDescriptionDTO[];
 
     constructor(private projectService: ProjectService) { }
+    public loading: boolean = false;
 
     ngOnInit() {
+        this.loading = true;
         this.projectService.getMyProjects()
-        .subscribe(x => {
+            .subscribe(x => {
                 this.projects = x.body;
                 this.projects.forEach(y => {
                     y.created = new Date(y.created);
                     y.lastBuild = y.lastBuild = y.lastBuild ? new Date(y.lastBuild) : null;
                 });
-        });
+                this.loading = false;
+            });
     }
 }
