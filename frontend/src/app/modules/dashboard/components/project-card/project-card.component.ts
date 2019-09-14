@@ -99,8 +99,16 @@ export class ProjectCardComponent implements OnInit {
         }
         else{
             this.contextMenu = [
-                {label: 'Details', icon: 'pi pi-info-circle', command: (event) => this.GoToPage('details') },
-                {label: 'Settings', icon: 'pi pi-cog', command: (event) => this.projectEditDialog.show(ProjectType.Update, this.project.id)}
+                {
+                    label: 'Details',
+                    icon: 'pi pi-info-circle',
+                    command: (event) => this.GoToPage('details')
+                },
+                {
+                    label: 'Settings',
+                    icon: 'pi pi-cog',
+                    command: (event) => this.projectEditDialog.showEditDialog(this.project.id)
+                }
             ];
         }
     }
