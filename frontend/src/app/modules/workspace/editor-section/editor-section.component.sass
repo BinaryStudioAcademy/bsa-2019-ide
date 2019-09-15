@@ -1,0 +1,120 @@
+.my-code-editor
+    width: 100%
+    height: calc(100% - 23px)
+
+::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem .ui-menuitem-link,
+::ng-deep .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem a,
+::ng-deep .ui-tabmenu .ui-tabmenu-nav a
+    padding: 0
+
+::ng-deep .tab-menu-wrapper
+    height: 23px
+
+::ng-deep .tab-menu-wrapper .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem.ui-state-active
+    height: 24px
+    z-index: 10
+
+::ng-deep body .ui-tabmenu .ui-tabmenu-nav
+    height: 24px
+    box-sizing: border-box
+    border: none
+    border-bottom: 1px solid #cacaca
+
+::ng-deep body .ui-tabmenu .ui-tabmenu-nav li
+    height: 23px
+
+::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem,
+::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem:not(.ui-state-active):not(.ui-state-disabled):hover
+    border: none
+    background-color: var(--inactive-tab-color)
+
+::ng-deep body .ui-tabmenu .ui-tabmenu-nav .ui-tabmenuitem.ui-state-active
+    border: none
+    background-color: var(--active-tab-color)
+
+
+.tab-item
+    display: flex
+    align-items: center
+    padding: 2px 4px
+
+.tab-icon
+    font-size: 0.8rem
+    color: var(--icon-tab-color)
+    display: flex
+    justify-content: center 
+
+.tab-text
+    font-size: 0.8rem
+    padding: 0 4px 0 4px
+    color: var(--text-tab-color)
+
+.tab-close
+    padding: 0
+    color: var(--close-cross-tab-color)
+    display: flex
+    justify-content: center
+
+.tab-close:hover
+    color: var(--close-cross-hover-tab-color)
+
+.tab-close .pi
+    font-size: 1rem
+
+.editor-icon
+    margin: auto
+    display: flex
+    justify-content: center
+
+::ng-deep .hightliter
+    background-color: #ffff9f !important 
+
+.help
+    width: 100%
+    margin-top: -1px
+    height: calc(100%)
+    display: flex
+    justify-content: center
+    align-items: center
+    background: white
+
+.help-blocks
+    width: 500px
+    height: 35vh
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+
+.block
+    display: flex
+    margin: 7px 0
+    font-size: 14px
+
+.block-header
+    margin: 0
+    width: 150px
+    padding: 2px 0
+    margin-right: 20px
+    text-align: right
+
+.block-buttons-group
+    width: 150px
+    display: flex 
+    flex-basis: 20px
+
+.button-holder
+    padding: 2px 4px
+    border: 0.5px solid #ccc
+    background: #f4f4f4
+    border-radius: 3px
+
+.plus
+    padding: 0 5px
+
+.logoWorkspace
+    padding: 100px 100px 110px 100px
+    background: url("../../../../assets/img/logo_BW.png")
+    background-size: contain
+    background-position: center
+    background-repeat: no-repeat 

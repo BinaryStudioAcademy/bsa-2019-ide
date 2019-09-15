@@ -1,0 +1,116 @@
+.title
+  padding-bottom: 10px
+  font-size: 24px
+  font-weight: normal
+  text-align: center
+  color: #116fbf
+
+.label
+  // padding-left: 5px
+  // padding-top: 10px
+  padding-bottom: 5px
+  font-size: 14px
+
+.invalid
+  color: red
+  padding-left: 10px
+  padding-bottom: 20px
+  font-size: 12px
+
+input, select, button
+    width:100%
+
+textarea
+    min-height: 32px
+    width: 100%
+
+.modal-close-btn 
+    color: #aaa
+    float: right
+    font-size: 28px
+    font-weight: bold
+  
+.modal-close-btn:hover,
+.modal-close-btn:focus 
+  color: black
+  text-decoration: none
+  cursor: pointer
+
+.project-upload .reset-btn
+    height: 34px
+    padding: 0px
+::ng-deep .project-upload .ui-inplace .ui-inplace-display
+    display: block
+    text-align: center
+
+$gridrow1: "projectname     projectname  projectname"
+$gridrow2: "descpription    descpription descpription"
+$gridrow3: "language        projtype     comptype"
+$gridrow4: "savebuild       projaccess   projcolor"
+$gridrow5:  "requiredmessage controlblock controlblock "
+
+.formgrid-conainter
+    
+    display: grid
+    grid-template-columns: 1fr 1fr 1fr
+    grid-gap: 1em
+    grid-template-rows: auto
+    grid-template-areas: $gridrow1 $gridrow2 $gridrow3 $gridrow4 $gridrow5
+
+.projectname-container
+    grid-area: projectname
+
+.projectdescription-container
+    grid-area: descpription
+
+.projectlanguage-container
+    grid-area: language
+
+.projecttype-container
+    grid-area: projtype
+
+.projectcompiler-container
+    grid-area: comptype
+
+.projectsavedbuilds-container
+    grid-area: savebuild
+
+.projectattempts-container
+.projectaccess-container
+    grid-area: projaccess
+.projectcolor-container
+    grid-area: projcolor
+.projectsubmit-container
+    grid-area: controlblock
+.requiredmessage
+    grid-area: requiredmessage
+.create-buttons
+    display: flex
+    flex-flow: row nowrap
+    justify-content: flex-end
+.project-create-button
+    width: 100px
+    order: 2
+.project-back-button
+    width: 100px
+    margin-right: 20px
+    order: 1
+::ng-deep body .project-back-button .ui-button.ui-state-default.ui-button-secondary:enabled:focus, body .ui-buttonset.ui-button-secondary > .ui-button.ui-state-default:enabled:focus
+    box-shadow: none
+::ng-deep body .project-back-button .ui-button:enabled:focus
+    box-shadow: none
+// ::ng-deep .ng-trigger.ng-trigger-overlayAnimation.ng-tns-c11-4.ui-dropdown-panel.ui-widget.ui-widget-content.ui-corner-all.ui-shadow.ng-star-inserted
+//     top: -300px
+
+
+//git hub input
+.gitinputformat-container
+    display: flex
+    flex-flow: column
+    
+    & label
+        margin-bottom: 5px
+.buttonnext-container
+    width: 100px
+    align-self: flex-end
+    margin: 10px 0

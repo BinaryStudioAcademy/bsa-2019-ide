@@ -1,0 +1,231 @@
+<span *ngIf="!isInsideModalWindow" class="modal-close-btn" (click)="close()">&times;</span>
+
+<div *ngIf="!isInsideModalWindow" class="ui-g ui-fluid">
+  <div class="ui-g-12">
+    <div class="title">{{ title }}</div>
+  </div>
+</div>
+
+<div id="page-loaded-spinner" class="p-grid p-justify-center" *ngIf="!isPageLoaded">
+  <p-progressSpinner></p-progressSpinner>
+</div>
+
+<div *ngIf="!isCreateForm() && !isPageLoaded && !projectUpdate" class="error">
+  <p>Can't load project details</p>
+</div>
+
+
+
+<div class="form-element" *ngIf="isPageLoaded">
+  <div class="form-container">
+    <form class="projectForm" [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+      <!-- Import -->
+      <div class="project-import" [hidden]="true">
+
+        <div *ngIf="isCreateForm()" class="label" >Choose Existing Project</div>
+        <div *ngIf="isCreateForm()" class="ui-g ui-fluid project-upload">
+          <div class="ui-g-5 ui-g-offset-1">
+            <p-fileUpload #uploadElement maxFileSize="10485760" accept=".zip" chooseLabel="Choose archive"
+              (onSelect)="selectHandler()" mode="basic" [customUpload]="true"></p-fileUpload>
+          </div>
+          <div class="ui-g-5">
+            <button class="ui-g-5 reset-btn" pButton label="Reset" [disabled]="!isFileSelected"
+              (click)="resetSelection()"></button>
+          </div>
+        </div>
+
+      </div>
+      <!-- github input field -->
+
+      <div class="github-input-container" [hidden]="typeOfCreation !== 2 || isNextFromGithub">
+
+        <div class="gitinputformat-container">
+
+          <label for="githubinput">
+            GitHub URL
+          </label>
+          <input type="text" id="githubinput" placeholder="Enter github url" pInputText formControlName="githuburl">
+
+          <div class="invalid" *ngIf="projectForm.get('githuburl').invalid && projectForm.get('githuburl').dirty">
+            {{getErrorMessage('githuburl')}}
+
+          </div>
+
+          <div class="buttonnext-container">
+            <div #fromgitbutton [hidden]="isSpinnerLoadInofFromGit" class="buttonwrapper">
+              <button class="ui-button-secondary" style="background-color: #a1a1a1" type="button" pButton label="Next"
+                (click)="onContinueFromGithub()"
+                [disabled]="!projectForm.get('githuburl').valid || !projectForm.get('githuburl').dirty">
+              </button>
+            </div>
+
+            <div  class="spinner" [hidden]="!fromgitbutton.hidden"><i class="pi pi-spin pi-spinner"
+                style="font-size: 3em"></i></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- next form -->
+      <div class="tempHide-container" [hidden]="typeOfCreation == 2 && !isNextFromGithub">
+
+        <div class="top-container" *ngIf="typeOfCreation == 1 || typeOfCreation == 2">
+          {{isNextFromGithub ? 'From GitHub: ' + projectForm.get('githuburl').value : isFileSelected ? 'From archive: ' + uploadElement.files[0].name : ''}}
+        </div>
+
+        <div class="formgrid-conainter">
+
+
+          <!-- Project Name -->
+          <div class="projectname-container">
+            <div class="label" (click)="onccc()">Project Name </div>
+            <div class="projectname-input">
+              <div class="ui-inputgroup">
+                <input type="text" pInputText pKeyFilter="alphanum" formControlName="name">
+              </div>
+            </div>
+          </div>
+          <div class="invalid" *ngIf="projectForm.get('name').invalid && projectForm.get('name').dirty">
+            {{getErrorMessage('name')}}</div>
+
+          <!-- Project Description -->
+          <div class="projectdescription-container">
+            <div class="label">Description</div>
+            <div class="projectdescription-input">
+              <div class="ui-inputgroup">
+                <textarea [rows]="3" pInputTextarea formControlName="description"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="invalid" *ngIf="projectForm.get('description').invalid && projectForm.get('description').dirty">
+            {{getErrorMessage('description')}}</div>
+
+
+          <!-- Project  Language -->
+          <div class="projectlanguage-container" *ngIf="isCreateForm()">
+            <div class="label" *ngIf="isCreateForm()">Language</div>
+            <div class="projectlanguage-input">
+              <div class="">
+                <p-dropdown [options]="languages" formControlName="language" (ngModelChange)="changeLanguage($event)"
+                  [style]="{'width':'100%', 'height': '100%'}" [showTransitionOptions]="'0ms'"
+                  [hideTransitionOptions]="'0ms'" [scrollHeight]="'80px'"></p-dropdown>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Project  type -->
+          <div class="projecttype-container" *ngIf="isCreateForm()">
+            <div class="label" *ngIf="isCreateForm()">Project type</div>
+            <div class="projecttype-input">
+              <div class="">
+                <p-dropdown [options]="projectTypes" formControlName="projectType"
+                  [style]="{'width':'100%', 'height': '100%'}" [scrollHeight]="'80px'">
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+
+          <!-- Project Compiler type -->
+          <div class="projectcompiler-container" *ngIf="isCreateForm()">
+            <div class="label" *ngIf="isCreateForm()">Compiler Type</div>
+            <div class="projectcompiler-input">
+              <div class="">
+                <p-dropdown [options]="compilerTypes" formControlName="compilerType"
+                  [style]="{'width':'100%', 'height': '100%'}" [scrollHeight]="'80px'">
+                </p-dropdown>
+                <!--<select required type="text" placeholder="compiler type" formControlName="compilerType">
+                            <option value="0">NetCore</option>
+                        </select>-->
+              </div>
+            </div>
+          </div>
+
+          <!-- Number of saved builds -->
+          <div class="projectsavedbuilds-container">
+            <div class="label">Number of saved builds</div>
+            <div class="projectsavedbuilds-input">
+              <div class="ui-inputgroup">
+                <input type="text" pInputText pKeyFilter="pint" formControlName="countOfSavedBuilds">
+              </div>
+            </div>
+          </div>
+          <div class="invalid"
+            *ngIf="projectForm.get('countOfSavedBuilds').invalid && projectForm.get('countOfSavedBuilds').dirty">
+            {{getErrorMessage('countOfSavedBuilds')}}</div>
+
+
+          <!-- Number of build attempts builds -->
+          <div class="projectattempts-container" hidden>
+            <div class="label">Number of build attempts for user</div>
+            <div class="projectattempts-input">
+              <div class="ui-inputgroup">
+                <input type="text" pInputText pKeyFilter="pint" formControlName="countOfBuildAttempts">
+              </div>
+            </div>
+          </div>
+          <div class="invalid"
+            *ngIf="projectForm.get('countOfBuildAttempts').invalid && projectForm.get('countOfBuildAttempts').dirty">
+            {{getErrorMessage('countOfBuildAttempts')}}</div>
+
+          <!-- Access modifier -->
+          <div class="projectaccess-container">
+            <div class="label">Access</div>
+            <div class="projectaccess-input">
+              <div class="">
+                <p-dropdown [options]="access" formControlName="access" [style]="{'width':'100%', 'height': '100%'}"
+                  [scrollHeight]="'50px'">
+
+                </p-dropdown>
+              </div>
+            </div>
+          </div>
+
+          <!-- Color -->
+          <div class="projectcolor-container">
+            <div class="label">Project color</div>
+            <div class="projectcolor-input">
+              <p-dropdown [options]="colors" formControlName="color" [style]="{'width':'100%', 'height': '100%'}"
+                [scrollHeight]="'400px'">
+                <ng-template let-item pTemplate="selectedItem">
+                  <div style="position: relative; height: 20px;" [style.background]="item.value"></div>
+                </ng-template>
+                <ng-template let-color pTemplate="item">
+                  <div class="ui-helper-clearfix" style="position: relative; height: 20px;"
+                    [style.background]="color.value"></div>
+                </ng-template>
+              </p-dropdown>
+            </div>
+          </div>
+
+
+          <!-- Submit -->
+          <div class="projectsubmit-container">
+            <div class="projectsubmit-buttons">
+              <div class="create-buttons">
+                <div class="project-create-button"><button *ngIf="isCreateForm() && hasDetailsSaveResponse"
+                    type="submit" [disabled]="!projectForm.valid" pButton label="Create"></button></div>
+                <div class="project-back-button"><button class="ui-button-secondary" style="background-color: #a1a1a1"
+                    *ngIf="isCreateForm() && hasDetailsSaveResponse" type="button" pButton label="Back"
+                    (click)="onBackToMenu()"></button></div>
+
+
+              </div>
+              <button *ngIf="!isCreateForm() && hasDetailsSaveResponse" type="submit"
+                [disabled]="!projectForm.valid || projectItemIsNotChange()" pButton label="Save"></button>
+
+              <div id="save-details-spinner" class="p-grid p-justify-center" *ngIf="!hasDetailsSaveResponse">
+                <i class="pi pi-spin pi-spinner" style="font-size: 3em"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="requiredmessage">
+            <p style="color: #b00000">* All fields are required</p>
+          </div>
+
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

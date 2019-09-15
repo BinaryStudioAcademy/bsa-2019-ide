@@ -1,0 +1,16 @@
+<p-table [value]="projects" class="project-list" class="nova-dark">
+    <ng-template pTemplate="header">
+        <tr>
+            <th class="name no-border">Name</th>
+            <th class="no-border">Description</th>
+            <th class="no-border static-width" *ngIf="!isOwnProject">Access</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-project>
+        <tr>
+            <td class="no-border" (click)="goToProjectDetails(project)"><p class="project-name">{{project.name}}</p></td>
+            <td class="no-border">{{project.description}}</td>
+            <td class="no-border" *ngIf="!isOwnProject">{{getUserAccess(project.userAccess)}}</td>
+        </tr>
+    </ng-template>
+</p-table>

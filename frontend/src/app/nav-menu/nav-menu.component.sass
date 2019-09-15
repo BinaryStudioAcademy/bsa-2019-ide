@@ -1,0 +1,106 @@
+::ng-deep body .ui-inputtext.ui-autocomplete-input
+    margin-right: 10px
+
+.right-part
+    margin-right: 6px
+
+.authorized-right-part
+    display: flex
+
+.notification-panel-content
+    max-height: 300px
+    overflow-y: auto
+    z-index: 100
+
+.notification
+    display: flex
+    justify-content: flex-end
+
+.right-part .authorized-right-part .bell-wrapper
+    background-color: white !important
+    border: none !important
+    margin-left: 10px !important
+
+.pi.pi-bell
+    font-size: 1.5rem
+
+.overlayPanel
+    display: none
+
+.count-of-notification
+    position: absolute
+    margin-left: 25px
+    margin-bottom: 25px
+    background: blue
+    border-radius: 10px
+    min-width: 19px
+    display: block
+    color: #fff
+    font-size: 0.7rem
+    padding: 2px
+
+.avatar
+    height: 16px
+    width: 16px
+    position: relative
+    top: 3px
+    left: 23px
+    z-index: 2
+    border-radius: 50%
+    margin-top: 7px
+    object-fit: cover
+
+@media screen and (max-width: 460px)
+    .avatar
+        display: none
+
+::ng-deep body .ui-overlaypanel .ui-overlaypanel-content,
+::ng-deep .ui-overlaypanel-content
+    padding: 5px
+
+.menu-wrapper
+    position: fixed
+    top: 0
+    width: 100%
+    background: #fff
+
+.menu-wrapper .right-part .common-btn,
+.menu-wrapper .right-part .common-btn:focus
+    border: none
+    background: #94d0ff
+    color: #000000
+    box-shadow: none
+    outline-width: 0
+
+
+.menu-wrapper .right-part .common-btn:hover
+    background: #34a6ff !important
+
+.profile-btn,
+.profile-btn:focus,
+.profile-btn:hover
+    width: 125px
+    border-right: 1px solid #FFFFFF !important
+
+.right-part .login-btn
+    margin-right: 5px
+
+.logo
+    display: inline-block
+    width: 50px
+    height: 30px
+    cursor: pointer
+    background: url(../../assets/img/logo-128.png)
+    background-size: contain
+    background-position: center
+    margin-left: 20px
+    background-repeat: no-repeat
+
+.menu-wrapper
+    width: 100% !important
+    display: flex !important
+    justify-content: space-between !important
+    padding-top: 6px
+    padding-bottom: 6px
+    border-bottom: 2px solid #E5E5E5
+    z-index: 90

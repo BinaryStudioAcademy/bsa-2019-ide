@@ -1,0 +1,67 @@
+<div class="top-panel p-grid p-nogutter" *ngIf="project">
+    <div class="hor-navbar p-col-12" [ngStyle]="{'background-color': getProjectColor()}">
+        <div class="hor-buttons-group">
+            <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onSaveButtonClick()"
+                icon="pi pi-save" iconPos="left" class="ui-button-secondary" label="Save" pTooltip="Save - Ctrl+S" [disabled] = "isSaveButtonDisabled"
+                tooltipPosition="bottom" showDelay="5000"></button>
+            <button pButton *ngIf="!canNotEdit || isAuthor()" type="button" (click)="onSaveAllButtonClick()" [disabled] = "isSaveAllButtonDisabled"
+                icon="pi pi-save-all" iconPos="left" class="ui-button-secondary" label="Save All"
+                pTooltip="Save All - Ctrl+Shift+S" tooltipPosition="bottom" showDelay="5000"></button>
+                <button pButton *ngIf="canRun || isAuthor()" type="button" icon="pi pi-play" iconPos="left"
+                class="ui-button-secondary btn" label="Run" (click)="onRun()" pTooltip="Run - Ctrl+R"
+                tooltipPosition="bottom" showDelay="500" [disabled]="getRunState()">
+                <p-progressSpinner *ngIf=getRunState() [style]="{width: '18px', height: '18px', top: '6px', right: '6px'}" strokeWidth="8" ></p-progressSpinner>
+            </button>
+            <button pButton *ngIf="canBuild || isAuthor()" type="button" icon="fa fa-simplybuilt" iconPos="left"
+                class="ui-button-secondary btn" label="Build" (click)="onBuild()" pTooltip="Build - Ctrl+B"
+                tooltipPosition="bottom" showDelay="500" [disabled]="getBuildState()">
+                <p-progressSpinner *ngIf="getBuildState()" [style]="{width: '18px', height: '18px', top: '6px', right: '6px'}" strokeWidth="8" ></p-progressSpinner>
+            </button>
+        </div>
+        <div class="project-name">
+            {{ project.name }}
+        </div>
+        <div class="buttons">
+            <button pButton routerLink="/project/{{projectId}}" pTooltip="Project details" tooltipPosition="right"
+                showDelay="100" type="button" icon="pi pi-info" class="ui-button-secondary"></button>
+        </div>
+    </div>
+</div>
+<div class="wks-wrapper p-grid p-nogutter">
+    <div class="left-panel p-col-fixed">
+        <div class="buttons-top">
+            <button pButton type="button" icon="fa fa-copy" pTooltip="Explorer"
+                tooltipPosition="right" showDelay="100" class="ui-button-secondary" (click)="hideFileBrowser()"></button>
+            <button pButton type="button" icon="pi pi-search" class="ui-button-secondary" pTooltip="Search in project"
+                tooltipPosition="right" showDelay="100" (click)="hideSearchField()"></button>
+        </div>
+        <div class="buttons-bottom">
+            <button pButton type="button" *ngIf="isAuthor()" (click)="Settings()" icon="pi pi-cog" iconPos="left"
+                class="ui-button-secondary" pTooltip="Editor settings" tooltipPosition="bottom"></button>
+        </div>
+    </div>
+    <div class="p-col" *ngIf="isOpenedConnection">
+        <div class="inner-wrapper p-grid p-nogutter" id="container" (mouseover)="draggableUp($event)"
+            (mousemove)="draggableMove($event)" (mouseup)="draggableUp($event)">
+            <div *ngIf="project" [hidden]="!showFileBrowser && !showSearchField" id="browser"
+                class="file-browser-content p-align-stretch browser">
+                <app-file-browser-section (fileSelected)="onFileSelected($event)" (renameFile)="onFileRenaming($event)"
+                    [showSearchField]="showSearchField" [project]="project">
+                </app-file-browser-section>
+            </div>
+            <div *ngIf="showFileBrowser" class="draggableLine" (mousedown)="draggableDown($event)"
+                (mousemove)="draggableMove($event)" (mouseup)="draggableUp($event)"></div>
+            <div *ngIf="project" id="workspace" class="p-align-stretch workspace"
+                [ngClass]="{large: !showFileBrowser}">
+                <app-editor-section [canEdit]="canNotEdit" [monacoOptions]='options'
+                    (tabClosedEvent)="onFileClosed($event)" [isInputTerminalOpen]="isInputTerminalOpen">
+                </app-editor-section>
+                <app-run-input *ngIf="inputItems" (OnChange)="OnChange($event)" [inputItems]="inputItems"
+                    [connectionId]="connectionId" [projectId]="project.id"></app-run-input>
+            </div>
+        </div>
+    </div>
+    <div class="p-col" *ngIf="isOpenedConnection === false">
+        Can't connect to server, please try again later, or refresh page
+    </div>
+</div>

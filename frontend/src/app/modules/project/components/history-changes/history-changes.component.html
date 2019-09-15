@@ -1,0 +1,53 @@
+<h2 class="title">History of changes</h2>
+<div class="search">
+    <input type="text" [(ngModel)]="personNickname" autocomplete="off" placeholder="Enter user nickname or file name" name="searchHistory">
+</div>
+<div class="history-content">
+    <div class="card">     
+        <p-accordion *ngIf="fileChangesList" [multiple]="true">
+            <!-- <p-accordionTab *ngFor="let history of fileChangesList | historySearch : personNickname"> -->
+            <p-accordionTab *ngFor="let file of fileChangesList">
+                <p-header>
+                    <div class="pheader-container">
+                        <div class="headerContainer">
+                            <div>{{file.fileName}}</div>
+                        </div>
+                    </div>
+                </p-header>
+                <div  *ngFor="let change of file.history">
+                    <div class="build-card">
+                        <div>
+                            <span class="property-name">Description: </span>
+                            <span> {{change.changingAction}} </span>
+                        </div>
+                        <div>
+                            <span class="property-name">Made by: </span>
+                            <span class="highlighted"> {{change.authorName}} </span>
+                        </div>
+                        <div>
+                            <span class="property-name">Changed at: </span>
+                            <span> {{change.changedAt | date:'medium'}} </span>
+                        </div>
+                         <div class="change-info">
+                            <div>
+                                <span class="property-name">Size diff: </span>
+                                <span> {{change.sizeDiff | sizeInfo}} </span>
+                            </div>
+                            <div>
+                                <span class="property-name">Added lines: </span>
+                                <i class="pi pi-arrow-up"></i>
+                                <span> {{change.linesIncreased}} </span>
+                            </div>
+                            <div>
+                                <span class="property-name">Removed lines: </span>
+                                <i class="pi pi-arrow-down"></i>
+                                <span> {{change.linesDecreased}} </span>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+            </p-accordionTab>
+        </p-accordion>
+    </div>
+</div>

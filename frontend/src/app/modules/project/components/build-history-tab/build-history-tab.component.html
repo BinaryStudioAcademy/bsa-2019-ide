@@ -1,0 +1,26 @@
+<div>
+    <div class="build-card" [ngStyle]="{'border-left-color': getBackgroundColor(build)}">
+        <div *ngIf="build.buildMessage" class="build-message">
+            <span class="property-name">Build message:</span>
+            <span class="build-message-value"> {{build.buildMessage}} </span>
+        </div>
+        <div class="user-name">
+            <span class="property-name">User name:</span>
+            <span> {{build.userName}} </span>
+        </div>
+        <div class="build-perior">
+            <div>
+                <span class="property-name">Build started:</span>
+                <span> {{build.buildStarted | date: 'MMM d, y \'at\' HH:mm:ss'}} </span>
+            </div>
+            <div *ngIf="build.buildFinished">
+                <span class="property-name">Build finished:</span>
+                <span> {{build.buildFinished | date: 'MMM d, y \'at\' HH:mm:ss'}} </span>
+            </div>
+        </div>
+        <div class="user-name" *ngIf="build.uriForArtifactsDownload">
+            <span class="property-name">Artifacts: </span>
+            <span> <a href="{{build.uriForArtifactsDownload}}">download</a> </span>
+        </div>
+    </div>
+</div>

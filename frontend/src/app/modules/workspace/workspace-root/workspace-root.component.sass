@@ -1,0 +1,90 @@
+.wks-wrapper
+    height: -webkit-calc(100% - 41px)
+    height:    -moz-calc(100% - 41px)
+    height:         calc(100vh - 41px - 47px)
+    background-color: #f4f4f4
+    
+.top-panel
+    height: 41px
+    background-color: #f4f4f4
+
+.file-browser-content
+    background-color: white
+
+.editor-content
+    opacity: 0.5
+
+.btn
+    display: inline-flex
+    flex-direction: row-reverse
+
+.inner-wrapper
+    height: 100%
+
+.large
+    width: 100%
+
+.hor-navbar button
+    background-color: rgba(255, 255, 255, 0.5)
+    margin: 4px 3px
+    border: none
+
+.hor-navbar button:disabled
+    opacity: 1
+    background: rgba(255, 255, 255, 0.5)
+    color: grey
+    
+.left-panel
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+
+.hor-navbar
+    display: flex
+    justify-content: space-between
+    align-items: center
+    padding: 0 2px
+
+.hor-buttons-group
+    display: flex
+
+.left-panel
+    width: 2.1rem
+
+.project-name
+    font-weight: 900
+    padding-bottom: 5px
+    padding-top: 3px
+    color: #fff
+
+.draggableLine
+    width: 3px
+    height: 100%
+    border-left: 3px double black
+    cursor: col-resize
+
+.browser
+    width: 25%
+
+.workspace
+    width: calc(75% - 3px)
+    display: flex
+    flex-direction: column
+
+app-editor-section
+    flex-grow: 1
+
+::ng-deep .ui-button-icon-left.ui-clickable.pi.pi-save-all
+    &:before
+        content: "\e95b"
+        position: relative
+        top: -8px
+        left: 1px
+
+        font-size: 0.7em
+    &::after
+        content: "\e95b"
+        position: absolute
+        left: -3px
+        top: 3px
+        font-size: 0.7em

@@ -1,7 +1,40 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+
+    <PackageReference Include="AutoMapper" Version="8.1.1" />
+
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
+
+    <PackageReference Include="LibGit2Sharp" Version="0.26.1" />
+
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="5.5.0" />
+    <PackageReference Include="Sendgrid" Version="9.12.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.5.0" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+
+    <ProjectReference Include="..\IDE.DAL\IDE.DAL.csproj" />
+
+    <ProjectReference Include="..\RabbitMQ.Shared\RabbitMQ.Shared.csproj" />
+  </ItemGroup>
 
 </Project>

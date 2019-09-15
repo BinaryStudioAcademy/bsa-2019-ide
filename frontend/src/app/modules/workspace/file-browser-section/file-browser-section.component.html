@@ -1,0 +1,45 @@
+<div class="tree-wrapper">
+    <p-progressBar *ngIf="!showSearchField && (!files || files.length == 0)" mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+    <div class="menu-items">
+        <div *ngIf="!showSearchField && files && files.length > 0" class="buttons">
+            <button pButton type="button" icon="pi pi-file" pTooltip="Create file" tooltipPosition="bottom"
+                showDelay="100" class="ui-button-secondary" (click)="createFile(files[0])"></button>
+            <button pButton type="button" icon="pi pi-folder" pTooltip="Create folder" tooltipPosition="bottom"
+                showDelay="100" class="ui-button-secondary" (click)="createFolder(files[0])"></button>
+            <button pButton type="button" icon="pi pi-refresh" pTooltip="Refresh file section" tooltipPosition="bottom"
+                showDelay="100" class="ui-button-secondary" (click)="refresh()"></button>
+            <button pButton type="button" icon="fa fa-angle-double-up fa-2x" pTooltip="Collapse all" tooltipPosition="bottom"
+                showDelay="100" class="ui-button-secondary" (click)="collapse()"></button>
+        </div>
+    </div>
+    <p-tree *ngIf="files && files.length > 0 && !showSearchField" class="custom-tree file-browser-tree" selectionMode="single" [(selection)]="selectedItem"  [value]="files" 
+            [contextMenu]="contextMenu" (onNodeSelect)="nodeSelect($event)" (onNodeContextMenuSelect)="nodeContextMenuSelect($event)">
+        <ng-template let-node pTemplate="0">
+                <input class="input-item" [value]="node.label" (focusout)="focusout(node)" 
+                        (keyup.enter)="focusout(node)" (keydown)="inputKeyDown($event)" disabled>
+        </ng-template>
+        <ng-template let-node pTemplate="1">
+            <div class="file-container-tree">
+                <input class="input-item" type="text" [ngModel]="node.label" (focusout)="focusout(node)"
+                            (input)="setIcon(node)" (keyup.enter)="focusout(node)" (keydown)="inputKeyDown($event)" disabled>
+                <i *ngIf="isTrue(node.data)" class="pi pi-lock" title="{{ getNickName(node.data) | lessSymbols : 20 }}" style="z-index: 1000"></i>
+            </div>
+        </ng-template>
+    </p-tree>
+    <div *ngIf="showSearchField">
+        <div class="file-search">
+            <div class="input-box">
+                <input type="text" [(ngModel)]="searchField" class="file-search-keyword" placeholder="Search..." #keywordInput (keydown.Enter)="searchByFiles(keywordInput.value)">
+                <button pButton class="clear-button" icon="pi pi-times" (click)="onSearchFieldClear()" pTooltip="Clear field and search results" tooltipPosition="bottom"></button>                    
+            </div>
+            <button class="search" pButton type="submit" icon="pi pi-search" (click)="searchByFiles(keywordInput.value)"></button>
+        </div>
+        <p-tree [loading]="isSearchLoading" emptyMessage="No files found..." selectionMode="single"  [(selection)]="selectedFilteredFile" [value]="filteredFiles"
+                filterMode="strict" (onNodeSelect)="onFilteredFileSelected()" class="custom-tree">
+            <ng-template let-node  pTemplate="1">
+                <div [innerHTML]="node.label"></div>
+            </ng-template>
+        </p-tree>
+    </div>
+    <p-contextMenu #contextMenu [model]="items"></p-contextMenu>
+</div>
