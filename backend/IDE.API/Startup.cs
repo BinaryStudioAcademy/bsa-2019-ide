@@ -41,10 +41,6 @@ namespace IDE.API
                 .AddJsonFormatters()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddFluentValidation();
-
-            //var serviceProvider = services.BuildServiceProvider();
-            //var queueService = serviceProvider.GetService<IQueueService>();
-            //queueService.ConfigureSubscription();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
