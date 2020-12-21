@@ -5,6 +5,8 @@
 # BSA IDE
 The main goal of the project is to provide an easy possibility to create and edit the user's project and then build and run it online in a browser. Users can collaborate with other people to update the project.
 
+[DEMO](https://imgur.com/a/jVbBg3k)
+
 ## Tech stack:
 - [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 - [MongoDB](https://www.mongodb.com)
